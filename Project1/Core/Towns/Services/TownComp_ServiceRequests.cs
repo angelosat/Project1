@@ -1,8 +1,10 @@
-﻿using Project1.Core.Blocks;
+﻿using Project1.Core.AI;
+using Project1.Core.Blocks;
 using Project1.Core.Entities.Actors;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services;
@@ -19,16 +21,32 @@ public class TownComp_ServiceRequests : TownComp
     readonly Dictionary<TownServiceRequestId, ServiceRequest> _openRequests = [];
     readonly Dictionary<EntityRefId, ServiceRequest> _openRequestsByCustomer = [];
     readonly Dictionary<EntityRefId, ServiceRequest> _openRequestsByVendor = [];
+    readonly HashSet<IntVec3> CountersAll = [];
+    readonly Dictionary<TownServiceDef, HashSet<IntVec3>> CountersByService = [];
+    readonly Dictionary<IntVec3, Queue<Actor>> QueuesByCounter = [];
+
     public IReadOnlyCollection<ServiceRequest> GetAllRequests() => this._openRequests.Values;
     public IEnumerable<T> GetAllRequests<T>() where T : ServiceRequest => this._openRequests.Values.OfType<T>();
-    HashSet<IntVec3> CountersAll = [];
-    Dictionary<TownServiceDef, HashSet<IntVec3>> CountersByService = [];
-    Dictionary<IntVec3, Queue<Actor>> QueuesByCounter = [];
 
     public TownComp_ServiceRequests(Town town) : base(town)
     {
         foreach (var def in Def.Get<TownServiceDef>())
             this.CountersByService.Add(def, []);
+        town.Map.Events.ListenTo<CounterServiceChangedEvent>(HandleCounterTownServiceChanged);
+    }
+
+    private void HandleCounterTownServiceChanged(CounterServiceChangedEvent e)
+    {
+        var cell = e.Comp.Parent.OriginGlobal;
+        if (e.OldService is TownServiceDef defold)
+        {
+            if (this.QueuesByCounter[cell].TryPeek(out var affectedCustomer))
+                if (this._openRequestsByCustomer.TryGetValue(affectedCustomer.RefId, out var affectedReq))
+                    affectedReq.MarkFailed();
+            this.CountersByService[defold].Remove(cell);
+        }
+        if (e.Comp.Service is TownServiceDef defnew)
+            this.CountersByService[defnew].Add(cell);
     }
 
     public override string Name => "Services";
@@ -50,6 +68,14 @@ public class TownComp_ServiceRequests : TownComp
         this._openRequests.Remove(id);
         this._openRequestsByCustomer.Remove(req.Customer);
         this._openRequestsByVendor.Remove(req.Vendor);
+
+        var cust = this.World.Get<Actor>(req.Customer);
+        if (cust.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req)
+            planCustomer.Cancel();
+        if (this.World.Get<Actor>(req.Vendor) is Actor vendor)
+            if (vendor.CurrentPlan is Plan planVendor && planVendor.ServiceRequest == req)
+                planVendor.Cancel();
+
         var counter = req.Counter;
         if(counter.HasValue)
         {
@@ -91,25 +117,23 @@ public class TownComp_ServiceRequests : TownComp
     }
     internal override void Scan(BlockEntity entity)
     {
-        if (!entity.HasComp<BlockShopComp>())
+        if (!entity.TryGetComp<BlockShopComp>(out var shopcomp))
             return;
-        RegisterCounterInt(entity.OriginGlobal);
+        RegisterCounterInt(shopcomp);
     }
 
-    private void RegisterCounterInt(IntVec3 cell)
+    private void RegisterCounterInt(BlockShopComp comp)
     {
+        var cell = comp.Parent.OriginGlobal;
         this.CountersAll.Add(cell);
         this.QueuesByCounter.Add(cell, new());
-        this.CountersByService[TownServiceDefOf.Repairing].Add(cell); // HACK
-        this.CountersByService[TownServiceDefOf.Buying].Add(cell); // HACK
+        if(comp.Service is not null)
+            this.CountersByService[comp.Service].Add(cell);
     }
 
-    internal IEnumerable<IntVec3> GetCounters(TownServiceDef service)
-    {
-        if (service == TownServiceDefOf.Repairing)
-            return this.Town.Repairs.Counters;
-        return [];
-    }
+    internal IReadOnlySet<IntVec3> GetCounters(TownServiceDef service)
+    
+        => this.CountersByService[service];
 
     internal void Enqueue(Actor actor, IntVec3 counter)
         => this.QueuesByCounter[counter].Enqueue(actor);

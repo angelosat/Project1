@@ -181,7 +181,7 @@ namespace Project1.Core.AI
        
         public static AIState GetState(GameObject entity)
         {
-            return entity.GetComponent<AIComponent>().State;
+            return entity.GetComponent<AIComp>().State;
         }
 
         public void Load(SaveTag tag)
@@ -260,7 +260,7 @@ namespace Project1.Core.AI
 
         public static bool TryGetState(GameObject entity, out AIState state)
         {
-            if (entity.TryGetComponent(out AIComponent ai))
+            if (entity.TryGetComponent(out AIComp ai))
                 state = ai.State;
             else
                 state = null;

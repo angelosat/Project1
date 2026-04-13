@@ -14,7 +14,7 @@ internal class ResourcesGui : SelectionBoundControl
         if (selectable is not Actor actor)
             return;
         this.Controls.Clear();
-        foreach(var ctrl in actor.Resources.GetSelectionInfo())
+        foreach(var ctrl in actor.Resources.GetInspectorControls())
             this.AddControlsBottomLeft(ctrl);
     }
 }

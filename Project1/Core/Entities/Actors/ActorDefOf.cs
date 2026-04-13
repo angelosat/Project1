@@ -29,7 +29,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(PossessionsComponent),
                 typeof(HaulComponent),
                 typeof(NpcComponent),
-                typeof(InventoryComponent),
+                typeof(InventoryComp),
                 typeof(StatsComponent),
                 typeof(MobileComponent),
                 typeof(MoodComp),
@@ -41,7 +41,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(SkillsComponent),
                 typeof(GearComponent),
                 typeof(PersonalityComponent),
-                typeof(AIComponent),
+                typeof(AIComp),
             ],
             CompDefs = [
                 EntityCompDefOf.Possessions,

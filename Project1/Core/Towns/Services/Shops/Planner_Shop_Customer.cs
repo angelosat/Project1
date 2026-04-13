@@ -21,8 +21,8 @@ sealed class Planner_Shop_Customer : Planner
         var map = actor.Map;
         var manager = actor.ItemPreferences;
         var shops = map.Town.Shops;
-        var servicepoints = map.Town.Shops.GetServicePoints();
-
+        //var servicepoints = map.Town.Shops.GetServicePoints();
+        var servicepoints = map.Town.ServiceRequests.GetCounters(TownServiceDefOf.Buying);
         if (!servicepoints.Any())
             return null;
         var carried = actor.Hauled;

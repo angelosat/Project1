@@ -259,7 +259,7 @@ public sealed class PlantComponent : EntityComp<PlantComponent.Spec>
         });
     }
 
-    internal override IEnumerable<Control> GetSelectionInfo()
+    internal override IEnumerable<Control> GetInspectorControls()
     {
         var guisunlight = Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{this.Owner.Map.Sunlight:##0%}"));
         var guigrowth = Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));

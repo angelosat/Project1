@@ -146,7 +146,7 @@ namespace Project1.Core.Towns.Zones
         {
             info.AddInfo(new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide));
         }
-        public IEnumerable<Control> GetSelectionInfo()
+        public IEnumerable<Control> GetInspectorControls()
         {
             yield return new CheckBoxNew("Hide", () => this.Hide = !this.Hide, () => this.Hide);
         }

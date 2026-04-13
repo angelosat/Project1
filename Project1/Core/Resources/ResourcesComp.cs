@@ -116,7 +116,7 @@ public sealed class ResourcesComp : EntityComp
     //{
     //    info.AddInfo(this.CachedGui);
     //}
-    internal override IEnumerable<Control> GetSelectionInfo()
+    internal override IEnumerable<Control> GetInspectorControls()
     {
         //yield return this.CachedGui;
         foreach (var r in this.Resources.Values)

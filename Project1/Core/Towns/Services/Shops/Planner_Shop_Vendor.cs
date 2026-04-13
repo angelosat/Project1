@@ -33,9 +33,10 @@ class Planner_Shop_Vendor : Planner
                 if (map.World.Get<Entity>(req.Money) is Entity money &&
                     money.Cell == counter.Above &&
                     money.StackSize >= req.Price)
-                    return new Plan(PlanDefOf.RingUpFinish, money) { AmountA = req.Price };//, Continuation = PlanContinuationPolicy.Yield };
+                    return new Plan(PlanDefOf.RingUpFinish, money) { ServiceRequest = req, AmountA = req.Price };//, Continuation = PlanContinuationPolicy.Yield };
 
-                return new Plan(TownServicesDefOf.PlanWaitMoney, new InteractionTarget(map, counter.Above)) { ServiceRequest = req };
+                //return new Plan(TownServicesDefOf.PlanWaitMoney, new InteractionTarget(map, counter.Above)) { ServiceRequest = req };
+                return new Plan(TownServicesDefOf.PlanWaitMoney) { ServiceRequest = req };
             }
             if (actor.Hauled is not null)
                 throw new InvalidOperationException("actor shouldn't be carrying something unrelated at this point");

@@ -2,6 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Networking;
+using Project1.Core.Systems.Ownership;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
@@ -32,7 +33,6 @@ public abstract class WorldBase : Inspectable, IEntityProvider
 
     public string Name { get; set; }
     public override string LabelReadable => this.Name;
-    //public abstract MapBase GetMap(Vector2 mapCoords);
     public Random Random { get; set; }
     public virtual float Gravity { get; }
     public int Seed { get; set; }
@@ -45,7 +45,6 @@ public abstract class WorldBase : Inspectable, IEntityProvider
 
     public virtual Block DefaultBlock { get; set; }
     public virtual PopulationManager Population { get; }
-
     public virtual List<Terraformer> Terraformers { get; set; }
 
     public T GetTerraformer<T>() where T : Terraformer => this.Terraformers.First(t => t is T) as T;
@@ -66,7 +65,10 @@ public abstract class WorldBase : Inspectable, IEntityProvider
 
     public abstract void ResolveReferences();
 
+    internal WorldComp_Ownership Ownership;
+
     readonly EntityRegistry EntityRegistry;
+    internal readonly List<WorldComp> Comps = [];
     public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
     public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;
     protected WorldBase()
@@ -80,19 +82,12 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     }
     public void Register(Entity entity, bool immediate = false)
     {
-        //entity.World = this;
-        //entity.Net = this.Net;
-        //foreach (var e in entity.GetSelfAndChildren())
-        //    this.EntityRegistry.Add(e);
-        //entity.World = this;
-        //entity.Net = this.Net;
         var toRegister = entity.GetSelfAndChildren();
         foreach (var e in toRegister)
         {
             this.EntityRegistry.Add(e);
             this.Events.Post(new EntityRegisteredEvent(e, immediate));
         }
-        //this.Events.Post(new EntityRegisteredEvent(entity, immediate));
     }
     public Entity Get(EntityRefId refId)
     {
@@ -174,9 +169,6 @@ public abstract class WorldBase : Inspectable, IEntityProvider
             obj.OnDispose();
             this.EntityRegistry.Remove(obj.RefId);
             obj.Net = null;
-            //obj.Container?.Remove(obj);
-            //obj.Slot?.Assign(null, out var _);
-            //obj.Map?.Despawn(obj);
             obj.Detach();
         }
         this.Events.Post(new EntityDisposedEvent(o));
@@ -205,7 +197,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         this.EntityRegistry.Read(r);
     }
 
-    public abstract /*FrontierDef*/ void PlaceAt(Entity entity, WorldSpacePosition pos);
+    public abstract void PlaceAt(Entity entity, WorldSpacePosition pos);
     public abstract FrontierDef GetFrontierOf(Entity entity);
 
     MapId NextMapID => ++field;

@@ -27,6 +27,7 @@ public class BehaviorExecutePlanNew : PlanExecutor
             InteractionRange.None => null,
             _ => throw new NotImplementedException(),
         };
+
         if(endMode is not null)
             yield return new BehaviorResolvePath(endMode).FailOnInvalidInteraction(this.Actor, this.Plan);
         yield return new BehaviorResolveInteraction();
@@ -66,7 +67,10 @@ public class BehaviorExecutePlanNew : PlanExecutor
     public sealed override BehaviorState Tick(Actor parent, AIState state)
     {
         if (this.Plan.IsCancelled)
+        {
+            parent.Work.Task?.Abort();
             return BehaviorState.Fail;
+        }
         if (this.HasFailedOrEnded())
             return BehaviorState.Fail;
         var current = this.CachedBehaviors[this.CurrentStepIndex];

@@ -22,6 +22,7 @@ using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Ownership;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
@@ -36,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities;
 
@@ -123,6 +125,30 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             info.ParentName = value;
         }
     }
+
+    public EntityRefId OwnerId { get; private set; } = EntityRefId.Null;
+    public void SetOwnerNew(EntityRefId actorId)
+    {
+        var old = this.OwnerId;
+        if (old == actorId)
+            return;
+        this.OwnerId = actorId;
+        this.World.Events.Post(new ItemOwnerChangedEvent(this as Entity, old));
+    }
+
+    public void SetOwnerNew(Actor actor)
+    {
+        if (actor is not null && actor.RefId == EntityRefId.Null)
+            throw new InvalidOperationException("Tried to assign an uninitialized owner");
+        this.SetOwnerNew(actor.RefId);
+        //var @new = actor?.RefId ?? EntityRefId.Null;
+
+        //var old = this.OwnerId;
+        //if (old == @new)
+        //    return;
+        //this.OwnerId = @new;
+        //this.World.Events.Post(new ItemOwnerChangedEvent(this as Entity, old));
+    }
     public virtual float Height => this.Def.Height;
 
     public int RefId;
@@ -153,12 +179,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     public Town Town;
    
-    public virtual IEnumerable<Control> GetSelectionInfo()
+    public virtual IEnumerable<Control> GetInspectorControls()
     {
+        yield return new LabelNew(() => $"Owner: {this.World.Get(this.OwnerId)?.Name ?? "<unassigned>"}");
         foreach (var comp in this.Components.Values)
         {
             var groupbox = new GroupBox();
-            foreach (var ctrl in comp.GetSelectionInfo())
+            foreach (var ctrl in comp.GetInspectorControls())
                 groupbox.AddControlsBottomLeft(ctrl);
             yield return groupbox;
         }
@@ -200,7 +227,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         return this.DefComponent.Quality.Color;
     }
-    public EntityBase OwnerNew;
     public GameObject Owner
     {
         get => this.Transform.ParentEntity;
@@ -307,10 +333,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         return obj;
     }
     
-    public GameObject SetStackSize(int value)
+    public Entity SetStackSize(int value)
     {
         this.StackSize = value;
-        return this;
+        return this as Entity;
     }
     public IEnumerable<GameObject> GetNearbyObjects(Func<float, bool> range, Func<GameObject, bool> filter = null)
     {
@@ -337,7 +363,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     [InspectorHidden]
     public SpriteComp SpriteComp => this._spriteCompCached ??= this.GetComponent<SpriteComp>();
 
-    public InventoryComponent Inventory => this.GetComponent<InventoryComponent>();
+    public InventoryComp Inventory => this.GetComponent<InventoryComp>();
     public NeedsComponent Needs => this.GetComponent<NeedsComponent>();
 
     ResourcesComp _resourcesCached;
@@ -648,6 +674,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             throw new Exception();
         w.Write(this.RefId);
         w.Write(this.StackSize);
+        w.Write(this.OwnerId);
         this.Components.Write(w);
     }
     public static Entity Create(IDataReader r, WorldBase entityResolver)
@@ -662,6 +689,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         obj.RefId = r.ReadInt32();
         var amount = r.ReadInt32();
         obj._stackSize = amount < 0 ? def.StackCapacity : amount;
+        obj.OwnerId = r.ReadEntityRefId();
         obj.Components.Read(r);
         return obj;
     }
@@ -1037,7 +1065,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     internal void MoveOrder(InteractionTarget target, bool enqueue)
     {
-        this.GetComponent<AIComponent>().MoveOrder(target, enqueue);
+        this.GetComponent<AIComp>().MoveOrder(target, enqueue);
     }
     internal bool IsAt(Vector3 global)
     {

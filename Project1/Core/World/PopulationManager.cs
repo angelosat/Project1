@@ -134,6 +134,10 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //inventory.Insert(damagedTool);
 
         this.World.Register(actor);
+
+        foreach (var i in inventory.Items)
+            i.SetOwnerNew(actor);
+
         return actor;
     }
 

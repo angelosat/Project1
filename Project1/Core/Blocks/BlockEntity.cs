@@ -226,7 +226,7 @@ namespace Project1.Core.Blocks
             foreach (var c in this.Comps.Values)
                 c.GetQuickButtons(register, map, vector3);
         }
-        public virtual IEnumerable<Control> GetSelectionInfo()
+        public virtual IEnumerable<Control> GetInspectorControls()
         {
 
             foreach (var c in this.Comps.Values)
@@ -234,12 +234,12 @@ namespace Project1.Core.Blocks
                 foreach (var ctrl in c.GetInspectorControls())
                     yield return ctrl;
         }
-        protected virtual IEnumerable<Control> GetInspectorControls()
-        {
-            foreach (var comp in this.Comps.Values)
-                foreach(var control in comp.GetInspectorControls())
-                    yield return control;
-        }
+        //protected virtual IEnumerable<Control> GetInspectorControls()
+        //{
+        //    foreach (var comp in this.Comps.Values)
+        //        foreach(var control in comp.GetInspectorControls())
+        //            yield return control;
+        //}
         [Obsolete]
         internal virtual void GetSelectionInfo(IUISelection info, MapBase map, IntVec3 vector3)
         {

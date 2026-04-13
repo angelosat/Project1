@@ -63,12 +63,7 @@ namespace Project1.Core.Interactions
         {
         }
       
-        public void Interrupt(bool success)
-        {
-            this.State = States.Finishing;
-            if (this.AnimationDef is not null)
-                this.CachedAnimation?.FadeOutAndRemove();
-        }
+      
 
         int CrossFadeAnimationLength;
         public void Start()
@@ -154,6 +149,17 @@ namespace Project1.Core.Interactions
                 return;
             }
             this.Def.Controller?.Tick(this);
+        }
+        [Obsolete]
+        public void Interrupt(bool success)
+        {
+            this.State = States.Finishing;
+            this.StopAnimation();
+        }
+        public void Abort()
+        {
+            this.State = this.AnimationDef is not null ? States.Finishing : States.Finished;
+            this.StopAnimation();
         }
         public void Finish()
         {

@@ -238,6 +238,7 @@ public sealed class TownComp_Shops : TownComp
                 this.Town.OpenTransactions.Remove(transaction.Customer);
                 if (transaction.Vendor != EntityRefId.Null)
                     this._transactionsBySeller.Remove(transaction.Vendor);
+                this.Town.ServiceRequests.Remove(transaction.Id);
                 this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, transaction));
             }
         }

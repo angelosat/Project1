@@ -37,7 +37,7 @@ namespace Project1.Core.Input
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Control> GetSelectionInfo()
+        public IEnumerable<Control> GetInspectorControls()
         {
             foreach (var ctrl in this.Cell.GetSelectionInfo())
                 yield return ctrl;

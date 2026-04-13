@@ -158,7 +158,7 @@ namespace Project1.Core.Rooms
         {
         }
        
-        public IEnumerable<Control> GetSelectionInfo()
+        public IEnumerable<Control> GetInspectorControls()
         {
             yield return new Label(() => $"Owner: {this.Owner?.Name ?? "none"}");
             yield return new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}");

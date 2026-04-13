@@ -23,6 +23,8 @@ sealed class PlannerBrowse : Planner
             return null;
         while (list.Dequeue() is Entity item)
         {
+            if (actor.AI.State.Knowledge.TryQuery(item, out _))
+                continue;
             if (item.Map != map)
                 continue;
             if (!actor.CanReachAndReserve(item))

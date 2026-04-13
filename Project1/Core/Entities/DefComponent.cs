@@ -57,7 +57,7 @@ namespace Project1.Core.Entities
             if(this.AuthorId != EntityRefId.Null)
                 tooltip.AddControlsBottomLeft(new LabelNew($"Author: {this.Author?.Name ?? "unknown"}"));
         }
-        internal override IEnumerable<Control> GetSelectionInfo()
+        internal override IEnumerable<Control> GetInspectorControls()
         {
             if (this.Author is null)
                 yield break;

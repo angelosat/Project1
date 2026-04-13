@@ -9,7 +9,7 @@ namespace Project1.Core.UI
     public interface ISelectable
     {
         string Name { get; }
-        IEnumerable<Control> GetSelectionInfo();
+        IEnumerable<Control> GetInspectorControls();
         IEnumerable<(string label, Type type)> GetSelectionTabs();
         IEnumerable<Control> GetSelectionDetails();
         bool Exists { get; }

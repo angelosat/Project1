@@ -4,6 +4,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Systems.Ownership;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
@@ -95,6 +96,10 @@ public class StaticWorld : WorldBase
         this.Terraformers = new List<Terraformer>();
         this.Trees = true;
         this.PopulationManager = new PopulationManager(this);
+        this.Ownership = new(this);
+        this.Comps.AddRange(
+            this.Ownership
+            );
         this.Space = new FrontierManager(this);
     }
     public StaticWorld(string name, List<Terraformer> mutators)
@@ -222,6 +227,9 @@ public class StaticWorld : WorldBase
     public override void ResolveReferences()
     {
         this.Population.ResolveReferences();
+        foreach (var entity in this.Entities.Values)
+            foreach(var comp in this.Comps)
+                comp.Scan(entity);
     }
 
     public static void CreateExpansionMaps(StaticWorld world)

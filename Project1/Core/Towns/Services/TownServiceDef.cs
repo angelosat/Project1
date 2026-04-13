@@ -17,20 +17,21 @@ namespace Project1.Core.Towns.Services
         //static public readonly TownServiceDef Lodging = new("Lodging", typeof(TownServiceLodging));
         //static public readonly TownServiceDef Healing = new("Healing", typeof(TownServiceHealing)); //, typeof(SpellRequest)
 
-        static public readonly TownServiceDef Buying = new("Buying", typeof(ServiceRequest_Shop));
-        static public readonly TownServiceDef Lodging = new("Lodging", typeof(ServiceRequest_Inn));
-        static public readonly TownServiceDef Healing = new("Healing", typeof(ServiceRequest_Spell));
-        static public readonly TownServiceDef Repairing = new("Repairing", typeof(ServiceRequest_Repair));
+        static public readonly TownServiceDef Buying = new("Buying", typeof(ServiceRequest_Shop), supportsCounter: true);
+        static public readonly TownServiceDef Lodging = new("Lodging", typeof(ServiceRequest_Inn), supportsCounter: true);
+        static public readonly TownServiceDef Healing = new("Healing", typeof(ServiceRequest_Spell), supportsCounter: false);
+        static public readonly TownServiceDef Repairing = new("Repairing", typeof(ServiceRequest_Repair), supportsCounter: true);
 
         static TownServiceDefOf()
         {
             Def.Register(typeof(TownServiceDefOf));
         }
     }
-    public sealed class TownServiceDef(string name, Type runtimeType) : Def(name)
+    public sealed class TownServiceDef(string name, Type runtimeType, bool supportsCounter) : Def(name)
     {
         public readonly Type RuntimeType = runtimeType;
         public readonly TownServiceWorker Worker;
+        public bool SupportsCounter = supportsCounter;
 
         public T CreateRuntime<T>() where T : ServiceRequest => ActivatorSafe<T>.CreateInstance(this.RuntimeType);
 

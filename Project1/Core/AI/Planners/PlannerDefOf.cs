@@ -19,7 +19,7 @@ namespace Project1.Core.AI.Planners
     static class PlannerDefOf
     {
         static public readonly PlannerDef Eating = new("Eating", typeof(PlannerEating));
-        static public readonly PlannerDef Hauling = new("Hauling", typeof(PlannerHauling));
+        static public readonly PlannerDef Hauling = new("Hauling", typeof(Planner_Hauling));
         static public readonly PlannerDef Crafting = new("Crafting", typeof(PlannerCrafting));
         static public readonly PlannerDef Building = new("Building", typeof(PlannerBuilding));
         static public readonly PlannerDef Deconstructing = new("Deconstructing", typeof(PlannerDeconstruct));
@@ -33,7 +33,7 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Refueling = new("Refueling", typeof(PlannerRefueling));
         static public readonly PlannerDef Restocking = new("Restocking", typeof(PlannerRestocking));
         static public readonly PlannerDef Withdraw = new("Withdrawing", typeof(PlannerWithdrawCashOverflow));
-        static public readonly PlannerDef Inventory = new("Inventory", typeof(PlannerInventory));
+        static public readonly PlannerDef Inventory = new("Inventory", typeof(Planner_Inventory));
         static public readonly PlannerDef Switching = new("Switching", typeof(PlannerToggleSwitch));
         static public readonly PlannerDef Workplace = new("Workplace", typeof(PlannerWorkplace));
         static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(PlannerSmartEquip));

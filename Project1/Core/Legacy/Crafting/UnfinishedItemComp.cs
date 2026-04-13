@@ -73,7 +73,7 @@ namespace Project1.Core.Legacy.Crafting
             this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, bindings);
             this.OrderId = order.Id;
         }
-        internal override IEnumerable<Control> GetSelectionInfo()
+        internal override IEnumerable<Control> GetInspectorControls()
         {
             //var box = new GroupBox();
             foreach (var b in this._materialBindings)

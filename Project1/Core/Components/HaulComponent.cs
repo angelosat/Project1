@@ -15,7 +15,7 @@ namespace Project1.Core.Components
         public new class Spec : Spec<HaulComponent> { }
 
         public override string Name { get; } = "Haul"; 
-        InventoryComponent Inventory;
+        InventoryComp Inventory;
         public GameObjectSlot GetSlot()
         {
             return this.Inventory.HaulSlot;
@@ -29,7 +29,7 @@ namespace Project1.Core.Components
 
         internal override void Resolve()
         {
-            this.Inventory = this.Owner.GetComponent<InventoryComponent>();
+            this.Inventory = this.Owner.GetComponent<InventoryComp>();
             if (this.Inventory == null || this.Inventory.Capacity == 0)
                 throw new Exception("HaulComponent requires a parent entity with PersonalInventoryComponent and an inventory of at least size 1");
             

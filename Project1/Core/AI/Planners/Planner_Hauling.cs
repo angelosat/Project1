@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Project1.Core.AI.Planners;
 
-internal sealed class PlannerHauling : Planner
+sealed class Planner_Hauling : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
@@ -17,7 +17,9 @@ internal sealed class PlannerHauling : Planner
         var stockpiles = map.Hauling.AllTargets.OrderByDescending(i => i.Priority);//  map.Town.ZoneManager.GetZones<Stockpile>().OrderByDescending(i => i.Priority);
         var mapItems = map.Haulables
             .Where(actor.CanReachAndReserve)
-            .Where(i => !town.IsClaimedBySystem(i))
+            .Where(i => 
+                i.OwnerId == EntityRefId.Null && 
+                !town.IsClaimedBySystem(i))
             .SortByReachableRegionDistance(actor)
             .Union(map.Hauling.InventoryItems)
             .ToList();

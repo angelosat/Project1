@@ -781,14 +781,14 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
     //    }
     //    this.Map.OnTargetSelected(info, this);
     //}
-    public IEnumerable<Control> GetSelectionInfo()
+    public IEnumerable<Control> GetInspectorControls()
     {
         var box = new GroupBox();
         switch (this.Type)
         {
             case TargetType.Entity:
                 //this.Object.GetSelectionInfo(info);
-                foreach (var ctrl in this.Object.GetSelectionInfo())
+                foreach (var ctrl in this.Object.GetInspectorControls())
                     yield return ctrl;
                 break;
 
@@ -800,7 +800,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
               
             case TargetType.BlockEntity:
                 //this.BlockEntity.GetSelectionInfo(box);
-                foreach (var ctrl in this.BlockEntity.GetSelectionInfo())
+                foreach (var ctrl in this.BlockEntity.GetInspectorControls())
                     yield return ctrl;
                 break;
 

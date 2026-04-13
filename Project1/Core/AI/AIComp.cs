@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.AI;
 
-public sealed class AIComponent : EntityComp<AIComponent.Spec>
+public sealed class AIComp : EntityComp<AIComp.Spec>
 {
     public override EntityCompDef CompDef => EntityCompDefOf.AI;
 
@@ -25,7 +25,7 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
     public static Dictionary<Guid, GameObject> Registry = new();
     public static Guid GetGuid(GameObject agent)
     {
-        return agent.GetComponent<AIComponent>().Guid;
+        return agent.GetComponent<AIComp>().Guid;
     }
     public static GameObject GetAgent(Guid guid)
     {
@@ -48,13 +48,13 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
     public RoleMetaWrapper Meta;
     public T GetMeta<T>() where T : RoleMetaWrapper => this.Meta as T;
     bool Enabled = true;
-    public AIComponent()
+    public AIComp()
     {
         this.Knowledge = new Knowledge();
     }
     internal override void CopyFrom(EntityComp source)
     {
-        var c = source as AIComponent;
+        var c = source as AIComp;
         this.Root = c.Root.Clone() as Behavior;
         this.Meta = c.Meta.Def.CreateWrapper();
         this.Meta.Actor = this.Owner as Actor;
@@ -93,7 +93,7 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
     {
         this.State.OnAttachedToMap();
     }
-    public AIComponent Initialize(Behavior root)
+    public AIComp Initialize(Behavior root)
     {
         return this;
     }
@@ -244,12 +244,12 @@ public sealed class AIComponent : EntityComp<AIComponent.Spec>
         }
     }
     readonly Label CachedGuiLabelCurrentTask = new();
-    internal override IEnumerable<Control> GetSelectionInfo()
+    internal override IEnumerable<Control> GetInspectorControls()
     {
         //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
         yield return this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle");
     }
-    public new class Spec : Spec<AIComponent>
+    public new class Spec : Spec<AIComp>
     {
         public readonly Behavior Root;
 

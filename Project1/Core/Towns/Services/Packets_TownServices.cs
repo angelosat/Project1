@@ -28,7 +28,7 @@ internal class Packets_TownServices
         {
             e.Comp.Service = e.Service;
         }
-        SendPlayerCounterServiceAssigned(Server.Instance, e.Comp.Parent.Map.ID, e.Comp.Parent.OriginGlobal, e.Service);
+        SendPlayerCounterServiceAssigned(Ingame.Net, e.Comp.Parent.Map.ID, e.Comp.Parent.OriginGlobal, e.Service);
     }
 
     private static void SendPlayerCounterServiceAssigned(NetEndpoint endpoint, MapId mapid, IntVec3 global, TownServiceDef service)

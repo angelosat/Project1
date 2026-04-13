@@ -38,7 +38,7 @@ namespace Project1.Core.Components
             this.Momentum = attacker.Velocity;
             this.CollisionType = collisionType;
             Charge = charge;
-            if (attacker.TryGetComponent<InventoryComponent>(c =>
+            if (attacker.TryGetComponent<InventoryComp>(c =>
             {
                 //GameObjectSlot holdSlot = null;
                 //this.Damage = WeaponComponent.GetDamage(holdSlot.Object) ?? WeaponComponent.GetDamage(attacker.GetComponent<BodyComponent>().BodyParts[Stat.Mainhand.Name].Base.Object);

@@ -34,12 +34,12 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Attributes = new("Attributes", typeof(AttributesComponent));
         public static readonly EntityCompDef Resources = new("Resources", typeof(ResourcesComp));
         public static readonly EntityCompDef Work = new("Work", typeof(WorkComponent));
-        public static readonly EntityCompDef AI = new("AI", typeof(AIComponent));
+        public static readonly EntityCompDef AI = new("AI", typeof(AIComp));
         public static readonly EntityCompDef Tool = new("Tool", typeof(ToolComp));
         public static readonly EntityCompDef Plant = new("Plant", typeof(PlantComponent));
         public static readonly EntityCompDef Sprite = new("Sprite", typeof(SpriteComp));
         public static readonly EntityCompDef Haul = new("Haul", typeof(HaulComponent));
-        public static readonly EntityCompDef Inventory = new("Inventory", typeof(InventoryComponent));
+        public static readonly EntityCompDef Inventory = new("Inventory", typeof(InventoryComp));
         public static readonly EntityCompDef Possessions = new("Possesions", typeof(PossessionsComponent));
         public static readonly EntityCompDef Mobile = new("Mobile", typeof(MobileComponent));
         public static readonly EntityCompDef Mood = new("Mood", typeof(MoodComp));

@@ -14,20 +14,20 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Inventory;
 
-public sealed class InventoryComponent : EntityComp
+public sealed class InventoryComp : EntityComp
 {
-    public new class Spec(int size) : Spec<InventoryComponent> 
+    public new class Spec(int size) : Spec<InventoryComp> 
     {
         public readonly int Capacity = size;
 
-        protected override void ApplyDefaultsTo(InventoryComponent comp)
+        protected override void ApplyDefaultsTo(InventoryComp comp)
         {
             comp.Capacity = this.Capacity;
         }
     }
     internal override void CopyFrom(EntityComp source)
     {
-        var comp = (InventoryComponent)source;
+        var comp = (InventoryComp)source;
         foreach (var i in comp.Contents)
             this.Contents.AddInternal(i.Clone() as Entity);
     }
@@ -94,14 +94,14 @@ public sealed class InventoryComponent : EntityComp
     {
         list.Add(this.HaulContainer);
     }
-    public InventoryComponent()
+    public InventoryComp()
         : base()
     {
         this.Owner = null;
         this.HaulContainer = new Container(1) { Name = "Hauling" };
         this.HaulSlot = this.HaulContainer.Slots.First();
     }
-    public InventoryComponent(byte capacity)
+    public InventoryComp(byte capacity)
         : this()
     {
         this.Capacity = capacity;
@@ -224,7 +224,7 @@ public sealed class InventoryComponent : EntityComp
         return true;
         // TODO: drop object if can't receive? here? or let whoever called this method do something else if it fails?
     }
-
+    public IEnumerable<Entity> Items => this.Contents;
     public IEnumerable<Entity> GetItems()
     {
         foreach (var sl in this.Contents)
@@ -423,4 +423,5 @@ public sealed class InventoryComponent : EntityComp
     }
     internal Entity Get(Func<Entity, bool> predicate)
         => this.Contents.FirstOrDefault(predicate);
+
 }

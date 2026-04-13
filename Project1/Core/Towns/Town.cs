@@ -214,7 +214,7 @@ public sealed class Town : Inspectable, IDutyProvider
    
     internal void AddMember(Actor actor)
     {
-        if (!actor.HasComponent<AIComponent>())
+        if (!actor.HasComponent<AIComp>())
             throw new Exception();
         this.Members.Add(actor);
         this.Map.Events.Post(new MemberAddedEvent(actor));
@@ -227,7 +227,7 @@ public sealed class Town : Inspectable, IDutyProvider
 
     internal void RemoveMember(Actor actor)
     {
-        if (actor.HasComponent<AIComponent>())
+        if (actor.HasComponent<AIComp>())
         {
             this.DutiesManager.Remove(actor);
             this.Members.Remove(actor);

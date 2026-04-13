@@ -7,6 +7,7 @@ using Project1.Framework.Events;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Towns.Services;
 
@@ -14,13 +15,13 @@ sealed class TownServiceAssignmentGui : GroupBox
 {
     BlockShopComp Comp;
     readonly Table<TownServiceDef> Table;
-    readonly Lazy<IEnumerable<TownServiceDef>> allDefs = new(Def.Get<TownServiceDef>);
+    readonly Lazy<IEnumerable<TownServiceDef>> allDefs = new(() => Def.Get<TownServiceDef>().Where(d => d.SupportsCounter));
     public TownServiceAssignmentGui()
     {
         var defs = Def.Get<TownServiceDef>();
         this.Table = new Table<TownServiceDef>()
             .AddColumn("label", 128, def => new Label(def))
-            .AddColumn("tick", CheckBoxFinalNew.DefaultBounds.Width, def => new CheckBoxFinalNew(() => toggle(def), () => this.Comp.Service == def).InvalidateOn(this.Comp.Notifier));
+            .AddColumn("tick", CheckBoxFinalNew.DefaultBounds.Width, def => new CheckBoxFinalNew(() => Toggle(def), () => this.Comp.Service == def).InvalidateOn(this.Comp.Notifier));
         this.Controls.Add(this.Table);
     }
 
@@ -31,10 +32,8 @@ sealed class TownServiceAssignmentGui : GroupBox
         this.Table.AddItems(allDefs.Value);
     }
 
-    private void toggle(TownServiceDef def)
-    {
-        Ingame.Instance.Events.Post(new PlayerAssignedServiceToCounterEvent(this.Comp, def));
-    }
+    private void Toggle(TownServiceDef def)
+        => Ingame.Instance.Events.Post(new PlayerAssignedServiceToCounterEvent(this.Comp, this.Comp.Service != def ? def : null));
 }
 
 internal class BlockShopComp : BlockComp
@@ -53,8 +52,12 @@ internal class BlockShopComp : BlockComp
         get => field;
         set
         {
+            if (field == value)
+                return;
+            var old = field;
             field = value;
             this.Notifier.Notify();
+            this.Parent.Map.Events.Post(new CounterServiceChangedEvent(this, old));
         }
     }
 

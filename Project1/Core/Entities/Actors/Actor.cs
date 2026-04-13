@@ -45,7 +45,7 @@ public sealed class Actor : Entity
 
     public WorkComponent Work => field ??= this.GetComponent<WorkComponent>();
 
-    public AIComponent AI => field ??= this.GetComponent<AIComponent>();
+    public AIComp AI => field ??= this.GetComponent<AIComp>();
 
     internal PersonalityComponent Personality => field ??= this.GetComponent<PersonalityComponent>();
     internal RelationshipsComp Relationships => field ??= this.GetComponent<RelationshipsComp>();
@@ -240,7 +240,7 @@ public sealed class Actor : Entity
     internal void EndCurrentTask()
     {
         this.Work.Interrupt();
-        this.GetComponent<AIComponent>().FindBehavior<BehaviorHandlePlans>().EndCurrentPlan(this);
+        this.GetComponent<AIComp>().FindBehavior<BehaviorHandlePlans>().EndCurrentPlan(this);
     }
     internal void MoveToggle(bool toggle)
     {

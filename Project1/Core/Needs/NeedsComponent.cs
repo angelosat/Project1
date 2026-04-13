@@ -123,7 +123,7 @@ public sealed class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
         this.NeedsNew.Clear();
         var profile = this.Owner.Profile as ActorDnaDef;
         var profileneeds = profile.Needs;
-        var role = this.Owner.GetComponent<AIComponent>().Meta;
+        var role = this.Owner.GetComponent<AIComp>().Meta;
         var roleneeds = role.Def.Needs;
         var allneeds = profileneeds.Concat(roleneeds);
         foreach (var n in allneeds)

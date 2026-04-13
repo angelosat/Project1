@@ -8,11 +8,11 @@ namespace Project1.Core.AI.MetaRoles.Adventurer;
 
 internal abstract class FrontierDecider
 {
-    internal abstract (FrontierDef frontier, int score) GetScore(AIComponent comp);
+    internal abstract (FrontierDef frontier, int score) GetScore(AIComp comp);
 }
 internal sealed class FrontierDecider_FromItem : FrontierDecider
 {
-    internal override (FrontierDef frontier, int score) GetScore(AIComponent comp)
+    internal override (FrontierDef frontier, int score) GetScore(AIComp comp)
     {
         var meta = comp.GetMeta<RoleAdventurerData>();
         var desire = meta.NextDesiredLoot;
@@ -23,7 +23,7 @@ internal sealed class FrontierDecider_FromItem : FrontierDecider
 }
 internal sealed class FrontierDecider_ReturnToTown : FrontierDecider
 {
-    internal override (FrontierDef frontier, int score) GetScore(AIComponent comp)
+    internal override (FrontierDef frontier, int score) GetScore(AIComp comp)
     {
         var meta = comp.GetMeta<RoleAdventurerData>();
         var desire = meta.NextDesiredLoot;

@@ -21,7 +21,6 @@ blockfuelcomp holds fuel, and make it rechargable by scraps, which are byproduct
 - sending empty snapshots: if i send empty snapshots, then entities "jump" to their next position on the client. if i dont send empty snapshots, entities "jump" to the position they last rested at when they start moving again on clients
 - durability-repair
 - harvesting-cooking
-- shops-customerplanner
 - list<control> controls make it private
 - change camera.rotation to int instead of double
 - influence resource for having visitors help with town jobs? or only when a certain reputation thershold has been reached?

@@ -30,7 +30,7 @@ namespace Project1.Core.Entities.Actors
             yield return new GearComponent.Spec(Gear);
             yield return new SkillsComponent.Spec(Skills);
             yield return new PersonalityComponent.Spec(Traits);
-            yield return new AIComponent.Spec(Behavior);
+            yield return new AIComp.Spec(Behavior);
         }
     }
 }

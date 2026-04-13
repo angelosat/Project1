@@ -40,7 +40,7 @@ namespace Project1.Core.UI.Hud
             this.Label_Name = new Label(Panel_Picture.TopRight, obj.Name);
             this.Panel_Bars.Controls.Clear();
 
-            foreach (var ui in obj.GetComponent<ResourcesComp>().GetSelectionInfo())
+            foreach (var ui in obj.GetComponent<ResourcesComp>().GetInspectorControls())
             {
                 if (ui is null)
                     continue;

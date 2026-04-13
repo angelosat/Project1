@@ -403,7 +403,7 @@ public sealed class SelectionManager
     }
     void RefreshInfo(ISelectable selected)
     {
-        foreach (var ctrl in selected.GetSelectionInfo())
+        foreach (var ctrl in selected.GetInspectorControls())
             this.AddInfo(ctrl);
     }
     void InitTabs(ISelectable selectable)

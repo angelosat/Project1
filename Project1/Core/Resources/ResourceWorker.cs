@@ -98,5 +98,5 @@ public abstract class ResourceWorker// : MetricWorker
     public virtual string Format => "";
     public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values) { }
     public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }
-    internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
+    //internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
 }

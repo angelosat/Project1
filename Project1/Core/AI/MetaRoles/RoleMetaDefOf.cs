@@ -10,10 +10,10 @@ namespace Project1.Core.AI.MetaRoles
     internal class RoleMetaDefOf
     {
         public readonly static RoleMetaDef TownMember = new("TownMember", typeof(RoleTownMemberData), typeof(RoleTownMemberWorker), [NeedDefOf.Work], 
-            [typeof(ThoughtItemEvaluatorTownMember)]); 
+            [typeof(ThoughtProcess_ItemEvaluatorTownMember)]); 
         public readonly static RoleMetaDef Adventurer = new("Adventurer", typeof(RoleAdventurerData), typeof(RoleAdventurerWorker), [
             AdventurerNeedsDefOf.Adventuring],
-            [typeof(ThoughtItemEvaluatorVisitor),
+            [typeof(ThoughProcess_tItemEvaluatorVisitor),
             typeof(ThoughtAdventuring),
             typeof(ThoughtProcess_Quests),
             typeof(ThoughtProcess_UseTownScroll)]);

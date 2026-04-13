@@ -106,12 +106,12 @@ public class Entity : GameObject
         mat.Apply(this);
         return this;
     }
-    internal Entity SetMaterials(Dictionary<string, MaterialDef> materials)
-    {
-        foreach (var c in this.Components.Values)
-            c.ApplyMaterials(this, materials);
-        return this;
-    }
+    //internal Entity SetMaterials(Dictionary<string, MaterialDef> materials)
+    //{
+    //    foreach (var c in this.Components.Values)
+    //        c.ApplyMaterials(this, materials);
+    //    return this;
+    //}
     internal Entity SetQuality(QualityDef quality)
     {
         if (this.Def.QualityLevels)
@@ -283,4 +283,9 @@ public class Entity : GameObject
         return newObject;
     }
 
+    internal void OnAttachedToWorld()
+    {
+        foreach (var c in this.Components.Values)
+            c.OnAttachedToWorld();
+    }
 }

@@ -5,6 +5,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Legacy.Storage;
 
 namespace Project1.Core.Crafting
 {
@@ -18,7 +19,7 @@ namespace Project1.Core.Crafting
     //internal record struct PlayerModifiedOrderFiltersEvent(CraftingOrder Order, BoneDef Bone, MaterialRefinementDef Refinement, MaterialDef Material) : IEventPayload { }
     internal record struct PlayerModifiedOrderFiltersEvent(CraftingOrder Order, BoneDef Bone, MaterialTypeDef Refinement, MaterialDef Material) : IEventPayload { }
     internal record struct PlayerModifiedStockpileFiltersEvent(Stockpile Stockpile, ItemDef Item, Def Profile, MaterialDef Material) : IEventPayload { }
-    internal record struct PlayerModifiedStockpileSettingsEvent(Stockpile Stockpile, bool ForSale) : IEventPayload { }
+    internal record struct PlayerModifiedStockpileSettingsEvent(Stockpile Stockpile, bool ForSale, StoragePriority Priority) : IEventPayload { }
     internal record struct PlayerIssuedCraftOrderEvent(BlockWorkstationComp Workstation, Def Craftable) : IEventPayload { }
     internal record struct PlayerIssuedCraftOrderEventNew(BlockWorkstationComp Workstation, AddOrderRequest Request) : IEventPayload { }
     internal record struct PlayerCancellingUnfinishedItemEvent(Entity Item) : IEventPayload { }

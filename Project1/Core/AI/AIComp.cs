@@ -85,13 +85,17 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.Root.AttachTo(this.Owner as Actor);
         this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
     }
-    internal override void ResolveReferences()
-    {
-        this.State.ResolveReferences();
-    }
+    //internal override void ResolveReferences()
+    //{
+    //    this.State.ResolveReferences();
+    //}
     internal override void ResolveReferencesNew()
     {
         this.State.OnAttachedToMap();
+    }
+    internal override void OnAttachedToWorld()
+    {
+        this.State.OnAttachedToWorld();
     }
     public AIComp Initialize(Behavior root)
     {
@@ -159,7 +163,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.Root.Load(save["Root"]);
         if (save.TryLoadNew<RoleMetaWrapper>("Meta", out var meta)) this.Meta = meta;
         this.Meta.Actor = this.Owner as Actor;
-        this.State.ResolveReferences();
+        //this.State.ResolveReferences();
     }
 
     public override void Write(IDataWriter w)
@@ -176,7 +180,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.Root.Read(r);
         this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
         this.Meta.Actor = this.Owner as Actor;
-        this.State.ResolveReferences();
+        //this.State.ResolveReferences();
     }
 
     internal override void GetInterface(GameObject gameObject, Control box)

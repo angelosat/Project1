@@ -231,6 +231,26 @@ namespace Project1.Framework.UI
             foreach (var c in this.Controls)
                 c.OnDetached();
         }
+        internal Control InvalidateOn<T>(T obs) where T : IUpdatable
+        {
+            if (this.AttachedAction != null || this.DetachedAction != null)
+                throw new InvalidOperationException(
+                    $"{nameof(Bind)} cannot be called when {nameof(AttachedAction)} or {nameof(DetachedAction)} is already assigned.");
+
+            IDisposable unsub = null;
+            this.AttachedAction = () =>
+            {
+                unsub?.Dispose();
+                unsub = obs.Subscribe(this.InvalidateAll);
+            };
+
+            this.DetachedAction = () =>
+            {
+                unsub?.Dispose();
+                unsub = null;
+            };
+            return this;
+        }
         public Control InvalidateOn(ChangeNotifier obs)
         {
             if (this.AttachedAction != null || this.DetachedAction != null)
@@ -249,6 +269,20 @@ namespace Project1.Framework.UI
                 unsub?.Dispose();
                 unsub = null;
             };
+            return this;
+        }
+
+        IDisposable subscription;
+        //protected override void OnHidden()
+        //{
+        //    this.subscription?.Dispose();
+        //    this.subscription = null;
+        //    base.OnHidden();
+        //}
+        internal Control Bind(IUpdatable updatable)
+        {
+            this.subscription?.Dispose();
+            this.subscription = updatable.Subscribe(() => this.Invalidate(true));
             return this;
         }
         void InvalidateAll() => this.Invalidate(true);
@@ -1399,19 +1433,6 @@ namespace Project1.Framework.UI
         public virtual Rectangle ContainerSize => this.BoundsLocal;
         public IBounded[] Children => this.Controls.ToArray();
 
-        IDisposable subscription;
-        //protected override void OnHidden()
-        //{
-        //    this.subscription?.Dispose();
-        //    this.subscription = null;
-        //    base.OnHidden();
-        //}
-        internal Control Bind(IUpdatable updatable)
-        {
-            this.subscription?.Dispose();
-            this.subscription = updatable.Subscribe(() => this.Invalidate(true));
-            return this;
-        }
 
         protected virtual void OnHidden()
         {

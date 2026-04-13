@@ -1,7 +1,6 @@
 ﻿using Project1.Core.AI.MetaRoles;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Needs;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
 using Project1.Core.Resources;
@@ -131,7 +130,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
 
         var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
-        //inventory.Insert(damagedTool);
+        inventory.Insert(damagedTool);
 
         this.World.Register(actor);
 

@@ -4,6 +4,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Ownership;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -12,6 +13,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Project1.Core.Systems.ItemRoles
 {
@@ -45,11 +47,21 @@ namespace Project1.Core.Systems.ItemRoles
         {
             this.Actor = actor;
         }
-        private void EnqueueNewSpawnedItem(EntitySpawnedEvent e)
+        private void HandleEntitySpawned(EntitySpawnedEvent e)
         {
-            if (!this.TempIgnore.ContainsKey(e.Entity.RefId))
-                this.TryEnqueue(e.Entity);
+            EnqueueItemInt(e.Entity);
         }
+
+        private bool EnqueueItemInt(Entity item)
+        {
+            if (item.OwnerId != EntityRefId.Null)
+                return false;
+            if (this.TempIgnore.ContainsKey(item.RefId))
+                return false;
+            this.TryEnqueue(item);
+            return true;
+        }
+
         Control GetGui()
         {
             var table = new Table<ItemPreference>()
@@ -264,6 +276,8 @@ namespace Project1.Core.Systems.ItemRoles
         }
         internal ItemEvaluation EvaluateAndRegister(Entity item)
         {
+            if (item.OwnerId != EntityRefId.Null)
+                throw new InvalidOperationException("shouldn't be evaluating an owned item");
             var knowledge = this.Actor.AI.State.Knowledge;
             if (knowledge.TryQuery(item, out var existing))
                 return existing;
@@ -592,7 +606,7 @@ namespace Project1.Core.Systems.ItemRoles
         {
             foreach (var i in newMap.Entities)
                 this.TryEnqueue(i);
-            newMap.Events.ListenTo<EntitySpawnedEvent>(EnqueueNewSpawnedItem);
+            newMap.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
         }
         public void RemoveJunk(Entity item)
         {
@@ -608,7 +622,6 @@ namespace Project1.Core.Systems.ItemRoles
 
         public void Tick()
         {
-            //this.EvaluateOne();
             this.UpdateBiases();
             this.UpdateTempIgnore();
         }
@@ -685,7 +698,16 @@ namespace Project1.Core.Systems.ItemRoles
         {
             foreach (var i in this.Actor.Map.Entities)
                 this.TryEnqueue(i);
-            this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(EnqueueNewSpawnedItem);
+            this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
+        }
+        internal void OnAttachedToWorld()
+        {
+            this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
+        }
+
+        private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
+        {
+            EnqueueItemInt(e.Item);
         }
         public SaveTag Save(string name = "")
         {
@@ -720,6 +742,8 @@ namespace Project1.Core.Systems.ItemRoles
         {
             w.WriteValues(this.PrefsInternal);
         }
+
+        
         #endregion
     }
 }

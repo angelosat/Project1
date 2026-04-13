@@ -89,6 +89,8 @@ sealed class Planner_Inventory : Planner
         }
         foreach (var item in entitlements.Select(world.Get))
         {
+            if (!item.IsSpawned)
+                continue;
             if (!actor.CanReachAndReserve(item))
                 continue;
             return new Plan(PlanDefOf.GoHaul, item);

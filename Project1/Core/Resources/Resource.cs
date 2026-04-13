@@ -168,10 +168,7 @@ namespace Project1.Core.Resources
         {
             return this.ResourceDef.Worker.GetThresholdValue(this, index);
         }
-        internal void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials)
-        {
-            this.ResourceDef.Worker.InitMaterials(obj, materials);
-        }
+       
         Action _unsub = () => { };
         internal void OnDespawn(Entity parent)
         {

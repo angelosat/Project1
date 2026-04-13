@@ -5,6 +5,7 @@ using Project1.Core.Legacy.Storage;
 using Project1.Core.Networking;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
+using Project1.Framework.Serialization;
 
 namespace Project1.Core.Towns.Stockpiles;
 
@@ -33,14 +34,16 @@ internal static class PacketsStockpiles
         var net = Client.Instance;
         var stockpile = e.Stockpile;
         var forSale = e.ForSale;
-        SendStockpileSettingsChanged(net, stockpile, forSale);
+        var priority = e.Priority;
+        SendStockpileSettingsChanged(net, stockpile, forSale, priority);
     }
-    private static void SendStockpileSettingsChanged(NetEndpoint net, Stockpile stockpile, bool forSale)
+    private static void SendStockpileSettingsChanged(NetEndpoint net, Stockpile stockpile, bool forsale, StoragePriority priority)
     {
         net.BeginPacketImmediate(_pSettingsChanged)
             .Write(stockpile.Map.ID)
             .Write(stockpile.ID)
-            .Write(forSale);
+            .Write(forsale)
+            .Write((int)priority);
     }
     private static void OnSettingsChanged(NetEndpoint endpoint, Packet packet)
     {
@@ -48,9 +51,11 @@ internal static class PacketsStockpiles
         var map = endpoint.World.Get((MapId)r.ReadInt32());
         var stockpile = map.Town.ZoneManager.GetZone<Stockpile>(r.ReadInt32());
         var forSale = r.ReadBoolean();
+        var priority = (StoragePriority)r.ReadInt32();
         stockpile.ForSale = forSale;
+        stockpile.Settings.Priority = priority;
         if (endpoint.IsServer)
-            SendStockpileSettingsChanged(endpoint, stockpile, forSale);
+            SendStockpileSettingsChanged(endpoint, stockpile, forSale, priority);
     }
     private static void HandlePlayerModifiedStockpileFilters(PlayerModifiedStockpileFiltersEvent e)
     {

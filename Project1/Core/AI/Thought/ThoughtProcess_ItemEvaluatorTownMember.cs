@@ -1,8 +1,9 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Towns.Services.Shops;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Project1.Core.AI.Thought;
-internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
+internal sealed class ThoughProcess_tItemEvaluatorVisitor : ThoughtProcess
 {
     internal override void TickOffMap(AIState state)
     {
@@ -49,7 +50,7 @@ internal sealed class ThoughtItemEvaluatorVisitor : ThoughtProcess
         //}
     }
 }
-internal class ThoughtItemEvaluatorTownMember : ThoughtProcess
+internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
 {
     internal override void TickOffMap(AIState state)
     {
@@ -62,6 +63,8 @@ internal class ThoughtItemEvaluatorTownMember : ThoughtProcess
         var manager = state.ItemPreferences;
         if(manager.DequeueUnevaluated() is Entity item)
         {
+            if (item.OwnerId != EntityRefId.Null)
+                return;
             var result = manager.EvaluateAndRegister(item);
             //state.Knowledge.Register(item, result);
             if (state.Owner.Map.Town.IsClaimedBySystem(item))

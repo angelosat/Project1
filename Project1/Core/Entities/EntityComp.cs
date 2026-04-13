@@ -45,13 +45,13 @@ namespace Project1.Core.Entities
         }
         public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
-        internal virtual void ResolveReferences() { }
+        //internal virtual void ResolveReferences() { }
         internal virtual void Resolve() { }
         internal virtual void InitializeOnce() { }
         public virtual void OnObjectLoaded(GameObject parent) { }
         public virtual void OnObjectSynced(GameObject parent) { }
         public virtual void SetMaterial(MaterialDef mat) { }
-        internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
+        //internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
         internal virtual void ApplyQuality(Entity parent, QualityDef quality) { }
         public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
         public virtual void Draw(MySpriteBatch sb, GameObject parent, Camera camera) { }
@@ -103,7 +103,7 @@ namespace Project1.Core.Entities
         internal virtual void OnKill() { }
         internal virtual void ResolveReferencesNew() { }
 
-        
+        internal virtual void OnAttachedToWorld() { }
 
         public abstract class Spec
         {

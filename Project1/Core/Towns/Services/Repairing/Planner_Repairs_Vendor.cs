@@ -32,10 +32,10 @@ internal sealed class Planner_Repairs_Vendor : Planner
                     return new Plan(PlanDefOf.Repairing, item);
 
                 if (actor.Hauled == item)
-                    return new Plan(PlanDefOf.GoPlace, map, req.RepairBench.Value.Above);
+                    return new Plan(PlanDefOf.GoPlace, map, req.RepairBench.Value.Above) { ServiceRequest = req };
 
                 if (actor.Hauled is null && item.IsSpawned)
-                    return new Plan(PlanDefOf.GoHaul, item);
+                    return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req };
 
                 return new Plan(TownServicesDefOf.PlanWaitItemSubmit, map, counter) { ServiceRequest = req };
             }
@@ -50,14 +50,14 @@ internal sealed class Planner_Repairs_Vendor : Planner
                     if (money.IsSpawned)
                     {
                         req.MarkIsPaidFor();
-                        return new Plan(PlanDefOf.SwapCarried, money);
+                        return new Plan(PlanDefOf.SwapCarried, money) { ServiceRequest = req };
                     }
                 }
                 if (actor.Hauled == item)
                     return new Plan(TownServicesDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req };
 
                 if (actor.Hauled is null && item.Cell != counter.Above)
-                    return new Plan(PlanDefOf.GoHaul, item);
+                    return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req };
 
                 return null;
 

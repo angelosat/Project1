@@ -127,11 +127,11 @@ public sealed class ResourcesComp : EntityComp
         var resource = this.GetResource(resourceRateModifier.Def.Source);
         resource.AddModifier(resourceRateModifier);
     }
-    internal override void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials)
-    {
-        foreach(var r in this.Resources.Values)
-            r.InitMaterials(parent, materials);
-    }
+    //internal override void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials)
+    //{
+    //    foreach(var r in this.Resources.Values)
+    //        r.InitMaterials(parent, materials);
+    //}
     public override void OnTooltipCreated(GameObject parent, Control tooltip)
     {
         foreach (var r in this.Resources.Values)

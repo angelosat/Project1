@@ -145,16 +145,18 @@ namespace Project1.Core.AI
 
         }
 
-        internal void ResolveReferences()
-        {
-        }
+        //internal void ResolveReferences()
+        //{
+        //}
 
         internal void OnAttachedToMap()
         {
             this.ItemPreferences.ResolveReferences();
-
         }
-
+        internal void OnAttachedToWorld()
+        {
+            this.ItemPreferences.OnAttachedToWorld();
+        }
         public void Assign(PlanExecutor bhav, PlannerDef source)
         {
             this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));

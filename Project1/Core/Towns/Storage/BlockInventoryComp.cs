@@ -22,7 +22,7 @@ namespace Project1.Core.Towns.Storage
         readonly InventoryList Contents;
         public IReadOnlyList<Entity> Items => this.Contents.Items;
 
-        public int Priority => (int)StoragePriority.Low;
+        public StoragePriority Priority => StoragePriority.Low;
         public event Action<Entity> ItemAdded, ItemRemoved;
 
         public BlockInventoryComp()

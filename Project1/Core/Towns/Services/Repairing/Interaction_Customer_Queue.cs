@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Interactions;
 using Project1.Core.Resources;
+using System;
 
 namespace Project1.Core.Towns.Services.Repairing;
 
@@ -27,10 +28,20 @@ internal sealed class Interaction_Vendor_WaitPayment : InteractionLogic
     internal override bool HasSucceeded(Interaction i)
     {
         var typed = (InteractionContext_Vendor)i.Context;
-        //if (i.Actor.World.Get(typed.Request.Money) is Entity item && item.Cell == typed.Request.Counter.Value.Above)
-        if (i.Actor.World.Get(typed.Request.Money)?.IsSpawned ?? false)
-            return true;
-        return false;
+
+        //if (i.Actor.World.Get(typed.Request.Money)?.IsSpawned ?? false)
+        //    return true;
+        //return false;
+
+        var money = i.Actor.World.Get(typed.Request.Money);
+        if (money is null)
+            return false;
+        if (money.HasOwner)
+            throw new InvalidOperationException("money entity shouldn't have ended up on the counter without its owner set to null");
+            //return false;
+        if (!money.IsSpawned)
+            return false;
+        return true;
     }
 }
 internal sealed class Interaction_Vendor_WaitItemSubmit : InteractionLogic

@@ -10,7 +10,7 @@ namespace Project1.Core.UI
     {
         string Name { get; }
         IEnumerable<Control> GetInspectorControls();
-        IEnumerable<(string label, Type type)> GetSelectionTabs();
+        IEnumerable<(string label, Type type)> GetInspectorTabs();
         IEnumerable<Control> GetSelectionDetails();
         bool Exists { get; }
         Vector3 Global { get; }

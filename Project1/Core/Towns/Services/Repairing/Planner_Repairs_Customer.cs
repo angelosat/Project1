@@ -50,6 +50,7 @@ internal sealed class Planner_Repairs_Customer : Planner
                     {
                         //existing.Money = carriedMoney.RefId;
                         existing.AllocateMoney(carriedMoney);
+                        carriedMoney.SetOwnerNew(null);
                         return new Plan(PlanDefOf.GoPlace, map, counter.Above);
                     }
                     var money = actor.Inventory.FirstToTake(e => e.Def == ItemDefOf.Coins, existing.Price)

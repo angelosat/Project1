@@ -163,7 +163,7 @@ namespace Project1.Core.Rooms
             yield return new Label(() => $"Owner: {this.Owner?.Name ?? "none"}");
             yield return new Label(() => $"Workplace: {this.Workplace?.Name ?? "none"}");
         }
-        public IEnumerable<(string label, Type type)> GetSelectionTabs()
+        public IEnumerable<(string label, Type type)> GetInspectorTabs()
         {
             yield return ("Room", typeof(RoomGui));
             //info.AddTabAction("Roomm", () => r.ShowGUI(selected.FaceGlobal));

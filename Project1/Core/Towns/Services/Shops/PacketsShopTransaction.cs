@@ -41,7 +41,7 @@ namespace Project1.Core.Towns.Services.Shops
             var item = endpoint.World.Get<Entity>(itemId);
             var price = r.ReadInt32();
             var counter = r.ReadIntVec3();
-            buyer.Map.Town.Shops.TryBeginTransaction(buyer, item, price, counter);
+            buyer.Map.Town.Shops.TryBeginTransaction(buyer, item, price, counter, out _);
         }
 
         private static void HandleShopTransactionUpdated(ShopTransactionUpdatedEvent e)

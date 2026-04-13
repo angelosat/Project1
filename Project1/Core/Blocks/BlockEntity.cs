@@ -320,7 +320,7 @@ namespace Project1.Core.Blocks
             //info.AddInfo(box);
         //}
 
-        public IEnumerable<(string label, Type type)> GetSelectionTabs()
+        public IEnumerable<(string label, Type type)> GetInspectorTabs()
         {
             //throw new NotImplementedException();
             //yield break;

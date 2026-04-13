@@ -192,11 +192,11 @@ public sealed class SelectionManager
     SelectionManager()
     {
         this.PanelInfo = Panel.FromClientSize(302, Label.DefaultHeight * 6);// 100); (302 = fit 3 x 100px widt bars, width 1 px spacing between them
-        this.BoxTabs = new GroupBox()
-        {
-            AutoSize = false,
-            Size = new Rectangle(0, 0, this.PanelInfo.Width, Button.DefaultHeight)
-        };
+        this.BoxTabs = new GroupBox();
+        //{
+        //    AutoSize = false,
+        //    Size = new Rectangle(0, 0, this.PanelInfo.Width, Button.DefaultHeight)
+        //};
         this.BoxTabs.AnchorTo(() => this.PanelInfo.ScreenLocation, Vector2.UnitY);
 
         this.PanelInfo.AnchorToBottomCenter();
@@ -408,7 +408,7 @@ public sealed class SelectionManager
     }
     void InitTabs(ISelectable selectable)
     {
-        var tabs = selectable.GetSelectionTabs();
+        var tabs = selectable.GetInspectorTabs();
         foreach (var (label, type) in tabs)
             this.AddTabAction(label, () => UIManager.ToggleSingleton(type, selectable), Color.Orange);
     }

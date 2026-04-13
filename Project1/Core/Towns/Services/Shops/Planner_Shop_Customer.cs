@@ -49,9 +49,9 @@ sealed class Planner_Shop_Customer : Planner
                     if (moneyInInventory.StackSize < price)
                         throw new InvalidOperationException(); // normally the amount of coins should exist.
                                                                // maybe cancel the transaction gracefully if otherwise
-                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { AmountA = price };
+                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { ServiceRequest = req, AmountA = price };
                 }
-                return new Plan(PlanDefOf.WaitForService);
+                return new Plan(PlanDefOf.WaitForService) { ServiceRequest = req };
 
             }
             if (carried is not null)
@@ -59,7 +59,10 @@ sealed class Planner_Shop_Customer : Planner
                 if (!req.IsMoneyAllocated)
                 {
                     if (carried.Def == ItemDefOf.Coins && req.IsVendorWaitingPayment)
+                    {
+                        carried.SetOwnerNew(null);
                         req.AllocateMoney(carried);
+                    }
                     //else
                     //    return null;
                 }
@@ -73,8 +76,9 @@ sealed class Planner_Shop_Customer : Planner
                     //throw new UnreachableException();
                     return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = req };
                 }
-
-                return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above));
+                else if(carried.RefId == req.Money)
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above)) { ServiceRequest = req };
+                throw new UnreachableException();
             }
         }
         if (carried is not null)
@@ -90,10 +94,10 @@ sealed class Planner_Shop_Customer : Planner
         {
             if (!IsValid(actor, item))
                 continue;
-            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint))
+            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint, out var reqnew))
                 continue;
             actor.AI.State.Log.Write($"I am impulsively buying {item.RefId}: {item.Name}!");
-            return new Plan(PlanDefOf.GoHaul) { TargetA = item };
+            return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew, TargetA = item };
         }
         if (!shoppingList.HasFinished)
             return null;
@@ -102,10 +106,10 @@ sealed class Planner_Shop_Customer : Planner
         {
             if (!IsValid(actor, item))
                 continue;
-            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint))
+            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint, out var reqnew))
                 continue;
             actor.AI.State.Log.Write($"I decided to buy {item.Name}");
-            return new Plan(PlanDefOf.GoHaul) { TargetA = item };
+            return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew, TargetA = item };
         }
         return null;
     }

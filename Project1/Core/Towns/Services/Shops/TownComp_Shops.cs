@@ -179,12 +179,12 @@ public sealed class TownComp_Shops : TownComp
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
     readonly List<ServiceRequest_Shop> _transactionsAll = [];
-    internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint)
+    internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint, out ServiceRequest_Shop req)
     {
-        var transaction = new ServiceRequest_Shop(actor, item, price, servicePoint);
-        AddInt(transaction);
-        this.Town.OpenTransactions.Add(actor.RefId, transaction);
-        actor.Map.Events.Post(new TransactionStartedEvent(actor.Map, transaction));
+        req = new ServiceRequest_Shop(actor, item, price, servicePoint);
+        AddInt(req);
+        this.Town.OpenTransactions.Add(actor.RefId, req);
+        actor.Map.Events.Post(new TransactionStartedEvent(actor.Map, req));
         return true;
         // TODO made it a bool return in case i have some conditions that can make it fail in the future
     }

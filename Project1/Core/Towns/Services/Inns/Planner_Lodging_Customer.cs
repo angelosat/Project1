@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Services.Inns;
 
-internal sealed class PlannerLodgingCheckIn : Planner
+internal sealed class Planner_Lodging_Customer : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
@@ -34,12 +34,14 @@ internal sealed class PlannerLodgingCheckIn : Planner
                         if (carried.StackSize != price)
                             return null;
                         req.AllocateMoney(carried);
+                        carried.SetOwnerNew(null);
                     }
                     else
                     {
-                        throw new System.Exception();
+                        //throw new System.Exception();
                         if (carried.RefId != req.Money)
-                            return null;
+                            throw new System.Exception();
+                            //return null;
                     }
                     return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value.Above));
                 }

@@ -14,6 +14,8 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
     //public override bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);
     internal override void OnStart(Interaction i)
     {
+        if (i.Actor.Net.IsClient)
+            return;
         Debug.Assert(i.Actor.CurrentPlan.ServiceRequest != null);
     }
     internal override void OnFinish(Interaction i)
@@ -27,9 +29,9 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
         var carried = actor.Hauled;
         var req = i.Actor.CurrentPlan.ServiceRequest;
         Debug.Assert(carried.RefId == req.Item);
-        carried.SetOwnerNew(req.Customer);
+        //carried.SetOwnerNew(req.Customer);
         Debug.Assert(ctx.Target.Entity.RefId == req.Money);
-        ctx.Target.Entity.SetOwnerNew(null);
+        //ctx.Target.Entity.SetOwnerNew(null);
 
         InteractionHelpers.TrySwapHauledItem(actor, ctx.Target.Entity, ctx.Count);
 

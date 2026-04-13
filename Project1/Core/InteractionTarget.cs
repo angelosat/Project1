@@ -745,7 +745,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
             };
         }
     }
-    public IEnumerable<(string label, Type type)> GetSelectionTabs()
+    public IEnumerable<(string label, Type type)> GetInspectorTabs()
     {
         switch (this.Type)
         {

@@ -145,7 +145,7 @@ public sealed class Stockpile : Zone, IStorageNew, IContextable, ISelectable, IU
 
         return true;
     }
-    public override IEnumerable<(string label, Type type)> GetSelectionTabs()
+    public override IEnumerable<(string label, Type type)> GetInspectorTabs()
     {
         //yield return ("Filters", typeof(StockpileFiltersGui));
         yield return ("Settings", typeof(StockpileSettingsGui));

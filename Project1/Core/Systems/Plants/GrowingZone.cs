@@ -126,7 +126,7 @@ namespace Project1.Core.Systems.Plants
             }
         }
         public void GetContextActions(GameObject playerEntity, ContextArgs a) { }
-        public override IEnumerable<(string label, Type type)> GetSelectionTabs()
+        public override IEnumerable<(string label, Type type)> GetInspectorTabs()
         {
             yield return ("Plant", typeof(GrowZoneGui));
         }

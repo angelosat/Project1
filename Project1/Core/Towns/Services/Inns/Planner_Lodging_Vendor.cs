@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Project1.Core.Towns.Services.Inns;
 
-internal sealed class PlannerLodgingRegisterGuest : Planner
+internal sealed class Planner_Lodging_Vendor : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {

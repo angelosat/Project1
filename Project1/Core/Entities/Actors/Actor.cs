@@ -264,7 +264,7 @@ public sealed class Actor : Entity
 
     readonly Button btnVisitor = new("Visitor");
 
-    public override IEnumerable<(string label, Type type)> GetSelectionTabs()
+    public override IEnumerable<(string label, Type type)> GetInspectorTabs()
     {
         yield return ("Log", typeof(NpcLogUINewNew));
         yield return ("Skills", typeof(SkillsUINew));

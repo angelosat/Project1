@@ -205,7 +205,7 @@ namespace Project1.Core.Towns.Zones
         }
         protected virtual void WriteExtra(IDataWriter w) { }
         protected virtual void ReadExtra(IDataReader r) { }
-        public virtual IEnumerable<(string label, Type type)> GetSelectionTabs()
+        public virtual IEnumerable<(string label, Type type)> GetInspectorTabs()
         {
             yield break;
         }

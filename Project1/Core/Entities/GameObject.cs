@@ -127,6 +127,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
 
     public EntityRefId OwnerId { get; private set; } = EntityRefId.Null;
+    public bool HasOwner => this.OwnerId != EntityRefId.Null;
     public void SetOwnerNew(EntityRefId actorId)
     {
         var old = this.OwnerId;
@@ -140,7 +141,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         if (actor is not null && actor.RefId == EntityRefId.Null)
             throw new InvalidOperationException("Tried to assign an uninitialized owner");
-        this.SetOwnerNew(actor.RefId);
+        this.SetOwnerNew(actor?.RefId ?? EntityRefId.Null);
         //var @new = actor?.RefId ?? EntityRefId.Null;
 
         //var old = this.OwnerId;
@@ -194,7 +195,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         yield return IconCameraFollow.Value;
     }
-    public virtual IEnumerable<(string label, Type type)> GetSelectionTabs() { yield break; }
+    public virtual IEnumerable<(string label, Type type)> GetInspectorTabs() { yield break; }
     
     internal void AttackTelegraph(GameObject parent)
     {

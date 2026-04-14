@@ -8,7 +8,7 @@ namespace Project1.Core.Input.Orders
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Mine.Worker.IsValid(target);
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
             => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Mine, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));
     }
 }

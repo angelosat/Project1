@@ -10,7 +10,7 @@ namespace Project1.Core.Input.Orders
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Deconstruct.Worker.IsValid(target);
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
         {
             if(selection.Begin.HasValue)
                 Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));
@@ -25,7 +25,7 @@ namespace Project1.Core.Input.Orders
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.Switch.Worker.IsValid(target);
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
         {
             if (selection.Begin.HasValue)
                 Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));
@@ -41,7 +41,7 @@ namespace Project1.Core.Input.Orders
     {
         internal override bool CanIssue(ISelectable target)
             => !target.Map.Town.DesignationManager.IsDesignation(target) && DesignationDefOf.SwitchOff.Worker.IsValid(target);
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
         {
             if (selection.Begin.HasValue)
                 Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));

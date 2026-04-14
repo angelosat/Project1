@@ -24,7 +24,7 @@ internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop 
 internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload { }
 internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload { }
 internal record struct ItemToggledForSaleEvent(Entity Item, bool ForSale) : IEventPayload { }
-internal record struct PlayerItemToggledForSaleEvent(Entity Item) : IEventPayload { }
+internal record struct PlayerItemToggledForSaleEvent(IReadOnlyCollection<Entity> Items) : IEventPayload { }
 internal record PriceTag(Entity Item, int Price);
 class WorkplacesGui : GroupBox
 {
@@ -185,6 +185,12 @@ public sealed class TownComp_Shops : TownComp
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
     readonly List<ServiceRequest_Shop> _transactionsAll = [];
+    internal event Action<(IEnumerable<Entity> added, IEnumerable<Entity> removed)> ItemsForSaleToggled;
+    internal IEnumerable<(Entity entity, PriceTag price)> GetPriceList()
+    {
+        foreach (var pricetag in this._itemsForSale)
+            yield return (this.World.Get(pricetag.Key), pricetag.Value);
+    }
 
     internal void ToggleForSale(Entity item)
     {
@@ -193,10 +199,26 @@ public sealed class TownComp_Shops : TownComp
         {
             forsale = true;
             this._itemsForSale.Add(item.RefId, new(item, item.GetValueTotal()));
+            this.ItemsForSaleToggled?.Invoke(([item], []));
+        }
+        else
+        {
+            this.ItemsForSaleToggled?.Invoke(([], [item]));
         }
         this.Notifier.Notify();
         this.Map.Events.Post(new ItemToggledForSaleEvent(item, forsale));
     }
+    //internal void ToggleForSale(IEnumerable<Entity> items)
+    //{
+    //    var forsale = false;
+    //    if (!this._itemsForSale.Remove(item.RefId))
+    //    {
+    //        forsale = true;
+    //        this._itemsForSale.Add(item.RefId, new(item, item.GetValueTotal()));
+    //    }
+    //    this.Notifier.Notify();
+    //    this.Map.Events.Post(new ItemToggledForSaleEvent(item, forsale));
+    //}
     internal bool IsForSale(Entity item)
         => this._itemsForSale.ContainsKey(item.RefId);
     internal int? GetPrice(EntityRefId itemId)
@@ -309,7 +331,8 @@ public sealed class TownComp_Shops : TownComp
 
     internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
     {
-        yield return (() => "Shops", () => UIManager.ToggleSingleton<WorkplacesGui>("Shops"));
+        //yield return (() => "Shops", () => UIManager.ToggleSingleton<WorkplacesGui>("Shops"));
+        yield return (() => "Shops", () => UIManager.ToggleSingleton<Gui_PriceList>("Shops"));
     }
 
     internal override void ResolveReferences()
@@ -431,4 +454,7 @@ public sealed class TownComp_Shops : TownComp
         }
         return false;
     }
+
+   
+
 }

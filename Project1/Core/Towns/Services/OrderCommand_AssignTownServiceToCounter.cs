@@ -12,7 +12,7 @@ internal class OrderCommand_AssignTownServiceToCounter : OrderCommandWorker
     internal override bool CanIssue(ISelectable target)
         => target is BlockEntity be && be.HasComp<BlockShopComp>();
 
-    internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+    internal override void Issue(SelectionFinal selection)
     {
         var comp = selection.BlockEntities.First().GetComp<BlockShopComp>();
         var win = UIManager.ToggleSingleton<TownServiceAssignmentGui>("Assign service");

@@ -11,7 +11,7 @@ namespace Project1.Core.Input.Orders
     {
         internal override bool CanIssue(ISelectable target)
             => target is BlockEntity construction && target.Map.Town.DesignationManager.GetDesignation(construction) == DesignationDefOf.Construct;
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
         {
             if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity construction)
                 Ingame.Instance.Events.Post(new PlayerCancelledConstructionEvent(Ingame.Net.MainViewport.Map.ID, [construction.Global]));

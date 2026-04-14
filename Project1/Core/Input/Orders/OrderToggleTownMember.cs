@@ -8,7 +8,7 @@ namespace Project1.Core.Input.Orders
     internal sealed class OrderToggleTownMember : OrderCommandWorker
     {
         internal override bool CanIssue(ISelectable target) => target is Actor;
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
         {
             Ingame.Instance.Events.Post(new PlayerTogglingTownMembersEvent([.. selection.Targets.OfType<Actor>()]));
         }

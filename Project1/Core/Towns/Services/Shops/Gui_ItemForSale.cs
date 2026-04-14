@@ -36,6 +36,6 @@ internal class Gui_ItemForSale : SelectionBoundControl
     void MarkForSale()
     {
         //Ingame.Net.MainViewport.Map.Town.Shops.ToggleForSale(this.Item);
-        Ingame.Instance.Events.Post(new PlayerItemToggledForSaleEvent(this.Item));
+        Ingame.Instance.Events.Post(new PlayerItemToggledForSaleEvent([this.Item]));
     }
 }

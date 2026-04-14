@@ -291,8 +291,8 @@ public class Entity : GameObject
             c.OnAttachedToWorld();
     }
 
-    public override IEnumerable<(string label, Type type)> GetInspectorTabs()
-    {
-        yield return ("Shops", typeof(Gui_ItemForSale));
-    }
+    //public override IEnumerable<(string label, Type type)> GetInspectorTabs()
+    //{
+    //    yield return ("Shops", typeof(Gui_ItemForSale));
+    //}
 }

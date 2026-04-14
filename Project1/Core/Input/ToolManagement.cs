@@ -119,7 +119,7 @@ public class ToolManagement : DefaultTool
         }
         else if(target.Type == TargetType.Entity)
         {
-            Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([target.Entity as Entity], SelectionHelper.GetSelectionOp()));
+            Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([target.Entity], SelectionHelper.GetSelectionOp()));
         }
         //else if (target.Type == TargetType.BlockEntity)
         //{

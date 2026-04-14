@@ -13,8 +13,6 @@ internal class Packets_TownServices
         _pSync = Registry.PacketHandlers.Register(ReceiveSync),
         _pCounterServiceAssigned = Registry.PacketHandlers.Register(ReceiveCounterServiceAssigned);
 
-   
-
     static Packets_TownServices()
     {
         Registry.MapEventHooksServer.Register<TownServiceRequestUpdatedEvent>(HandleRequestUpdated);

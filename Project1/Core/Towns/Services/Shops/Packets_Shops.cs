@@ -3,6 +3,9 @@ using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Framework;
+using Project1.Framework.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 #nullable enable
 
@@ -45,21 +48,25 @@ internal static class Packets_Shops
     {
         if(Ingame.Net.IsServer)
         {
-            Ingame.Net.MainViewport.Map.Town.Shops.ToggleForSale(e.Item);
+            foreach (var item in e.Items)
+                Ingame.Net.MainViewport.Map.Town.Shops.ToggleForSale(item);
         }
-        SendPlayerToggledItemForSale(e.Item);
+        SendPlayerToggledItemForSale(e.Items);
     }
 
-    private static void SendPlayerToggledItemForSale(Entity item)
+    private static void SendPlayerToggledItemForSale(IReadOnlyCollection<Entity> items)
     {
         Client.Instance.BeginPacketImmediate(_pPlayerToggledForSale)
-            .Write(item.RefId);
+            .Write(items.Select(i => (EntityRefId)i.RefId).ToList());
     }
     private static void ReceivePlayerToggledForSale(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var item = endpoint.World.Get(r.ReadEntityRefId());
-        item.Map.Town.Shops.ToggleForSale(item);
+        //var item = endpoint.World.Get(r.ReadEntityRefId());
+        var items = endpoint.World.Get(r.ReadListEntityRefId());
+        var map = items.First().Map;
+        foreach(var i in items)
+            map.Town.Shops.ToggleForSale(i);
     }
 
     private static void HandlePlayerCreateShop(PlayerCreateShopEvent e)

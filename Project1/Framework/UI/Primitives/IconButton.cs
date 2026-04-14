@@ -6,6 +6,15 @@ using System.Linq;
 
 namespace Project1.Framework.UI
 {
+    public class IconButtonSmall : IconButton
+    {
+        public IconButtonSmall(Icon icon, Action leftClickAction, string hoverText = "") : base(icon)
+        {
+            this.BackgroundTexture = UIManager.Icon16Background;
+            this.HoverText = hoverText;
+            this.LeftClickAction = leftClickAction ?? (() => { });
+        }
+    }
     public class IconButton : ButtonBase
     {
         static public readonly Texture2D Small = UIManager.Icon16Background;

@@ -109,13 +109,18 @@ namespace Project1.Framework.UI
         //    row.Tag = item;
         //    return row;
         //}
-        void RemoveItems(IEnumerable<TObject> items)
+        public void RemoveItems(IEnumerable<TObject> items)
         {
             if (items is null)
                 return;
             foreach (var i in items)
                 this.RemoveItem(i);
         }
+        //public void RemoveItems(IEnumerable<TObject> items)
+        //{
+        //    foreach (var i in items)
+        //        this.RemoveItem(i);
+        //}
         public void RemoveItem(TObject item)
         {
             if (item is null)

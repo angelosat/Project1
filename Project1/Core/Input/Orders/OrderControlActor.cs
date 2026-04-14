@@ -11,7 +11,7 @@ namespace Project1.Core.Input.Orders
         //internal override bool CanIssue(IReadOnlyCollection<ISelectable> targets)
         //    => targets.Count == 1 && this.CanIssue(targets.First());
         internal override bool CanIssue(ISelectable target) => target is Actor;
-        internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+        internal override void Issue(SelectionFinal selection)
             => Ingame.Instance.Events.Post(new PlayerControlActorRequestEvent(Client.Instance.CurrentPlayer, selection.Targets.FirstOrDefault() as Actor));
     }
 }

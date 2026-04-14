@@ -13,7 +13,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Zones;
 using Project1.Framework;
-using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -537,12 +536,7 @@ public sealed class SelectionManager
         {
             if (orderdef.Worker.CanIssue(orderdef.ValidCount, targets))
             {
-                var runtime = new OrderCommandRuntime(orderdef);
-                var button = new QuickButton(new Icon(orderdef.Sprite), null, orderdef.LabelReadable)
-                {
-                    LeftClickAction = () => runtime.Issue(this.Selection),
-                    HoverText = orderdef.LabelReadable
-                };
+                var button = new OrderCommandButton(orderdef, () => this.Selection);
                 this.BoxOrderButtons.AddControls(button);
             }
         }

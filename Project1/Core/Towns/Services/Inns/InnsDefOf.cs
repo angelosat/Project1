@@ -35,7 +35,7 @@ sealed class OrderCommandToggleInnBed : OrderCommandWorker
     internal override bool CanIssue(ISelectable target)
         => target is BlockEntity be && be.HasComp<BlockBedComp>();
 
-    internal override void Issue(OrderCommandRuntime runtime, SelectionFinal selection)
+    internal override void Issue(SelectionFinal selection)
     {
         if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be && be.HasComp<BlockBedComp>())
             Ingame.Instance.Events.Post(new PlayerToggledInnBedEvent(Ingame.Net.MainViewport.Map.ID, be.OriginGlobal));

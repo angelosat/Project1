@@ -4,37 +4,36 @@ using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Networking
-{
-    [EnsureStaticCtorCall]
-    internal class PacketPlayerForbidItem
-    {
-        static readonly public PacketId _pPlayerForbidItem;
-        static PacketPlayerForbidItem()
-        {
-            Registry.PlayerInputEventHooks.Register<PlayerForbiddingItemsEvent>(OnPlayerForbidItems);
+namespace Project1.Core.Networking;
 
-            _pPlayerForbidItem = Registry.PacketHandlers.Register(ReceivePlayerForbidItems);
-        }
-        private static void OnPlayerForbidItems(PlayerForbiddingItemsEvent e)
-        {
-            var entities = e.Entities;
-            var refIds = entities.Select(o => (EntityRefId)o.RefId).ToList();
-            SendPlayerForbidItem(Client.Instance, refIds);
-        }
-        static void SendPlayerForbidItem(NetEndpoint endpoint, List<EntityRefId> ids)
-        {
-            endpoint.BeginPacketImmediate(_pPlayerForbidItem)
-                .Write(ids);
-        }
-        private static void ReceivePlayerForbidItems(NetEndpoint endpoint, Packet packet)
-        {
-            var r = packet.PacketReader;
-            var list = r.ReadListEntityRefId();
-            foreach (var id in list)
-                endpoint.World.Get(id).ToggleForbidden();
-            if (endpoint is Server server)
-                SendPlayerForbidItem(server, list);
-        }
+[EnsureStaticCtorCall]
+internal class PacketPlayerForbidItem
+{
+    static readonly public PacketId _pPlayerForbidItem;
+    static PacketPlayerForbidItem()
+    {
+        Registry.PlayerInputEventHooks.Register<PlayerForbiddingItemsEvent>(OnPlayerForbidItems);
+
+        _pPlayerForbidItem = Registry.PacketHandlers.Register(ReceivePlayerForbidItems);
+    }
+    private static void OnPlayerForbidItems(PlayerForbiddingItemsEvent e)
+    {
+        var entities = e.Entities;
+        var refIds = entities.Select(o => (EntityRefId)o.RefId).ToList();
+        SendPlayerForbidItem(Client.Instance, refIds);
+    }
+    static void SendPlayerForbidItem(NetEndpoint endpoint, List<EntityRefId> ids)
+    {
+        endpoint.BeginPacketImmediate(_pPlayerForbidItem)
+            .Write(ids);
+    }
+    private static void ReceivePlayerForbidItems(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var list = r.ReadListEntityRefId();
+        foreach (var id in list)
+            endpoint.World.Get(id).ToggleForbidden();
+        if (endpoint is Server server)
+            SendPlayerForbidItem(server, list);
     }
 }

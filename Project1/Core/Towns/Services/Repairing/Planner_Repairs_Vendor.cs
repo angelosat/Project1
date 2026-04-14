@@ -49,7 +49,7 @@ internal sealed class Planner_Repairs_Vendor : Planner
 
                     if (money.IsSpawned)
                     {
-                        req.MarkIsPaidFor();
+                        req.MarkPaidFor();
                         // if money is on counter, swap with item.
                         // if item not on counter, leave item on counter and go pickup money on next tick
                         

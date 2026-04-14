@@ -38,7 +38,7 @@ namespace Project1.Core.Towns
         public ISaveable Load(SaveTag tag)
         {
             this.ActorID = tag.GetValue<int>("ActorID");
-            if(tag.TryLoadListOut<Duty>("Jobs", out var jobsList))
+            if(tag.TryLoadList<Duty>("Jobs", out var jobsList))
                 foreach(var job in jobsList)
                     this.Jobs[job.Def] = job;
             return this;

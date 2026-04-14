@@ -7,7 +7,7 @@ using System.Linq;
 namespace Project1.Core.Networking;
 
 [EnsureStaticCtorCall]
-internal class PacketPlayerForbidItem
+internal sealed class PacketPlayerForbidItem
 {
     static readonly public PacketId _pPlayerForbidItem;
     static PacketPlayerForbidItem()

@@ -7,7 +7,7 @@ namespace Project1.Core.Input;
 
 partial class HotkeyManager
 {
-    public class Hotkey : ChangeNotifier, IHotkey
+    public sealed class Hotkey : ChangeNotifier, IHotkey
     {
         public bool Pressed;
 

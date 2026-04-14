@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Input;
 
-public enum SelectionOp { Clear = 0, Add, Remove }
+public enum SelectionOp { Replace = 0, Add, Remove }
 internal record struct PlayerSelectionSingleEvent(InteractionTarget Single = null, InteractionTarget Add = null, List<InteractionTarget> Multiple = null) : IEventPayload { }
 internal record struct PlayerSelectionEventNew(SelectionIntent Selection) : IEventPayload { }
 internal record struct PlayerSelectionCubeEvent(IntVec3 Begin, IntVec3 End) : IEventPayload { }

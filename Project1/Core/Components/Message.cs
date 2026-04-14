@@ -8,7 +8,6 @@ namespace Project1.Core.Components
         public enum Types
         {
             ServerNoResponse,
-            ShopsUpdated,
             ShopUpdated,
             TavernMenuChanged,
         }

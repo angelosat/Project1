@@ -89,7 +89,7 @@ public class TownComp_Spells : TownComp
 
     internal void MarkPaid(ServiceRequest_Spell req, Actor caster)
     {
-        req.MarkIsPaidFor();
+        req.MarkPaidFor();
     }
 
     internal void MarkTargetReady(Actor target)

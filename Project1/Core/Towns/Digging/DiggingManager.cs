@@ -71,7 +71,7 @@ namespace Project1.Core.Towns.Digging
             //return true;
         }
        
-        protected override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             tag.Add(this.AllPositions.ToList().Save("Positions"));
         }

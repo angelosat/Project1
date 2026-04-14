@@ -82,7 +82,7 @@ public sealed class SelectionManager
     {
         switch (e.SelectionOp)
         {
-            case SelectionOp.Clear:
+            case SelectionOp.Replace:
                 this.SelectInternal(e.Entities);
                 break;
             case SelectionOp.Add:

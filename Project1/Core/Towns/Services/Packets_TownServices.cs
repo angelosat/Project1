@@ -7,7 +7,7 @@ using Project1.Framework;
 namespace Project1.Core.Towns.Services;
 
 [EnsureStaticCtorCall]
-internal class Packets_TownServices
+internal static class Packets_TownServices
 {
     static readonly PacketId
         _pSync = Registry.PacketHandlers.Register(ReceiveSync),

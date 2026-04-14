@@ -76,7 +76,7 @@ namespace Project1.Framework
                 return true;
             }
         }
-        public bool TryLoadList<T>(string name, ref List<T> output) where T : ISaveableNew
+        public bool TryLoadListOld<T>(string name, ref List<T> output) where T : ISaveableNew
         {
             if (!this.TryGetTag(name, out var tag))
             {
@@ -90,7 +90,7 @@ namespace Project1.Framework
                 return true;
             }
         }
-        public bool TryLoadListOut<T>(string name, out List<T> output) where T : ISaveableNewNew<T>
+        public bool TryLoadList<T>(string name, out List<T> output) where T : ISaveableNewNew<T>
         {
             if (!this.TryGetTag(name, out var tag))
             {

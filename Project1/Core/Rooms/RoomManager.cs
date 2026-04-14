@@ -292,7 +292,7 @@ public class RoomManager : TownComp
         this.ScanMap();
         this.Validate();
     }
-    protected override void AddSaveData(SaveTag tag)
+    protected override void SaveExtra(SaveTag tag)
     {
         //this.Rooms.Values.TrySaveNewBEST(tag, "Rooms");
         //tag.Add(this.RoomIDSequence.Save("RoomIDSequence"));

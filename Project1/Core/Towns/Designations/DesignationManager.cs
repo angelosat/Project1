@@ -353,7 +353,7 @@ namespace Project1.Core.Towns.Designations
             foreach (var designations in this.EntityDesignations.Values)
                     designations.Remove(obj.Entity);
         }
-        protected override void AddSaveData(SaveTag tag)
+        protected override void SaveExtra(SaveTag tag)
         {
             var cellsTag = new SaveTag(SaveTag.Types.Compound, "Cells");
             foreach(var des in this.CellDesignations)

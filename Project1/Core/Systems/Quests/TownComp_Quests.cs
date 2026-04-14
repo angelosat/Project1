@@ -335,7 +335,7 @@ public sealed class TownComp_Quests : TownComp
         if (entity.TryGetComp<BlockQuestsComp>(out var comp))
             this._questBoards.Add(entity.OriginGlobal, comp);
     }
-    protected override void AddSaveData(SaveTag tag)
+    protected override void SaveExtra(SaveTag tag)
     {
         tag.Save("Quests", this.AllQuestsInt.Values);
         tag.Save("Trackers", this.Trackers.Values);

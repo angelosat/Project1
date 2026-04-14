@@ -55,11 +55,11 @@ namespace Project1.Core.Towns
         public SaveTag Save()
         {
             var tag = new SaveTag(SaveTag.Types.Compound, this.Name);
-            this.AddSaveData(tag);
+            this.SaveExtra(tag);
             return tag;
         }
 
-        protected virtual void AddSaveData(SaveTag tag) { }
+        protected virtual void SaveExtra(SaveTag tag) { }
 
         public virtual void Load(SaveTag tag) { }
         public virtual void Write(IDataWriter w) { }

@@ -79,7 +79,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     internal void MarkVendorWaitingPayment()
         => this.Phase = States.VendorWaitingPay;
 
-    internal void MarkIsPaidFor()
+    internal void MarkPaidFor()
         => this.Phase = States.VendorIsPaid;
 
     internal void MarkSucceeded()

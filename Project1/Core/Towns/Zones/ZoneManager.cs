@@ -254,7 +254,7 @@ public class ZoneManager : TownComp
         foreach (var z in this.ZonesById.Values)
             z.OnCameraRotated(camera);
     }
-    protected override void AddSaveData(SaveTag tag)
+    protected override void SaveExtra(SaveTag tag)
     {
         this._zoneIDSequence.Save(tag, "IDSequence");
         this.ZonesById.Values.SaveNewBEST(tag, "Zones");

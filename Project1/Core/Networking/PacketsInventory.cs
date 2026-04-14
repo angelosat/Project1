@@ -147,6 +147,8 @@ internal static class PacketsInventory
         var r = packet.PacketReader;
         var e = SlotUpdatedEvent.Create(r);
         var entity = client.World.Get(e.Owner);
+        if (entity is null)
+            return; // probably received an immediate dispose/despawn entity prior to handling this
         var slot = entity.GetSlot(e.SlotIndex);
         slot.Assign(e.Content);
     }

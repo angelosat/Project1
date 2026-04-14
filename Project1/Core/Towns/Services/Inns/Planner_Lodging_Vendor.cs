@@ -33,7 +33,7 @@ internal sealed class Planner_Lodging_Vendor : Planner
                 }
                 if (money.Cell == req.Counter.Value.Above)
                 {
-                    req.MarkIsPaidFor();
+                    req.MarkPaidFor();
 
                     return new Plan(PlanDefOf.GoHaul, money);
                 }

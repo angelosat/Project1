@@ -1,10 +1,11 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.Blocks;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Networking;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services;
@@ -34,6 +35,27 @@ public class TownComp_ServiceRequests : TownComp
         foreach (var def in Def.Get<TownServiceDef>())
             this.CountersByService.Add(def, []);
         town.Map.Events.ListenTo<CounterServiceChangedEvent>(HandleCounterTownServiceChanged);
+        town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
+        town.Map.Events.ListenTo<EntityDespawnedEvent>(HandleEntityDespawned);
+    }
+
+    private void HandleEntityDespawned(EntityDespawnedEvent e)
+    {
+        if (this._openRequestsByCustomer.TryGetValue(e.Entity.RefId, out var req)
+            || this._openRequestsByVendor.TryGetValue(e.Entity.RefId, out req))
+            req.MarkFailed();
+    }
+
+    private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)
+    {
+        var cell = e.Entity.OriginGlobal;
+        if (this._openRequestsByCounter.TryGetValue(cell, out var req))
+            req.MarkFailed();
+        this.CountersAll.Remove(cell);
+        if (e.Entity.TryGetComp<BlockShopComp>(out var comp))
+            if (comp.Service is TownServiceDef service)
+                this.CountersByService[service].Remove(cell);
+        this.QueuesByCounter.Remove(cell);
     }
 
     private void HandleCounterTownServiceChanged(CounterServiceChangedEvent e)
@@ -77,17 +99,26 @@ public class TownComp_ServiceRequests : TownComp
         if (req.Counter.HasValue)
             this._openRequestsByCounter.Remove(req.Counter.Value);
 
-        var cust = this.World.Get<Actor>(req.Customer);
-        if (cust.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req)
-            planCustomer.Cancel();
+        if(this.World.Get<Actor>(req.Customer) is Actor customer)
+            if (customer.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req)
+                planCustomer.Cancel();
         if (this.World.Get<Actor>(req.Vendor) is Actor vendor)
             if (vendor.CurrentPlan is Plan planVendor && planVendor.ServiceRequest == req)
                 planVendor.Cancel();
 
         var counter = req.Counter;
-        if(counter.HasValue)
+        //if(counter.HasValue)
+        //{
+        //    if (!this.QueuesByCounter[counter.Value].TryDequeue(out var customer) || customer.RefId != req.Customer)
+        //    {
+        //        //throw new InvalidOperationException();
+        //        $"warning: service request removed before customer enqueued".ToConsole();
+        //    }
+        //}
+        if (counter.HasValue)
         {
-            if (!this.QueuesByCounter[counter.Value].TryDequeue(out var customer) || customer.RefId != req.Customer)
+            if (this.QueuesByCounter.TryGetValue(counter.Value, out var queue))
+                if(!queue.TryDequeue(out customer) || customer.RefId != req.Customer)
             {
                 //throw new InvalidOperationException();
                 $"warning: service request removed before customer enqueued".ToConsole();
@@ -120,8 +151,8 @@ public class TownComp_ServiceRequests : TownComp
     {
         if(this._openRequestsByVendor.TryGetValue(actor.RefId, out var found))
         {
-            req = (T)found;
-            return true;
+            req = found as T;
+            return req is not null;
         }
         req = null;
         return false;
@@ -154,8 +185,7 @@ public class TownComp_ServiceRequests : TownComp
 
     internal void AssignVendor(ServiceRequest req, Actor vendor)
     {
+        req.AssignVendor(vendor);
         this._openRequestsByVendor.Add(vendor.RefId, req);
     }
-
-    
 }

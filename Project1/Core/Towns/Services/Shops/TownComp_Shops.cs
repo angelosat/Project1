@@ -4,10 +4,9 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Ownership;
 using Project1.Core.Towns.Stockpiles;
-using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
@@ -25,39 +24,52 @@ internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayloa
 internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload { }
 internal record struct ItemToggledForSaleEvent(Entity Item, bool ForSale) : IEventPayload { }
 internal record struct PlayerItemToggledForSaleEvent(IReadOnlyCollection<Entity> Items) : IEventPayload { }
-internal record PriceTag(Entity Item, int Price);
-class WorkplacesGui : GroupBox
+internal class PriceTag : ISaveableNewNew<PriceTag>, ISerializableNew<PriceTag>
 {
-    public WorkplacesGui()
+    public EntityRefId Item;
+    public int Price;
+
+    public PriceTag(EntityRefId item, int price)
     {
-        var boxList = new GroupBox();
-        var town = Ingame.MainViewportMap.Town;
-        var shopUI = new Lazy<(Control control, Action<Workplace> refresh)>(Workplace.CreateUI);
-        var win = new Lazy<Window>(() => shopUI.Value.control.ToWindow("Shop"));
-
-        var shoplist = new TableCompact<Workplace>()
-            .AddColumn(new(), "name", 200, sh => new Label(() => sh.Name, () =>
-            {
-                shopUI.Value.refresh(sh);
-            }), 0)
-            .AddColumn(new(), "delete", Icon.Cross.SourceRect.Width,
-                w => IconButton.CreateSmall(Icon.Cross,
-                    () => MessageBox.CreateDialogue("Warning!", $"{w.Name} will be deleted. Are you sure?",
-                        //() => Packets.SendPlayerDeleteShop(this.Town.Net, this.Town.Net.GetPlayer(), w.ID)
-                        () => town.Map.Events.Post(new PlayerDeleteShopEvent(w))
-                        )));
-
-        var shoplistcontainer = shoplist.MakeScrollable(-1, 200);
-
-        var btnNew = new Button("New", () => town.Map.Events.Post(new PlayerCreateShopEvent()));
-        boxList.AddControlsVertically(shoplistcontainer, btnNew);
-        this.AddControlsHorizontally(boxList);
+        Item = item;
+        Price = price;
     }
+
+    private PriceTag()
+    {
+        
+    }
+    public SaveTag Save(string name = "")
+    {
+        var tag = new SaveTag(SaveTag.Types.Compound, name);
+        tag.Save("Item", this.Item);
+        tag.Save("Price", this.Price);
+        return tag;
+    }
+    public static PriceTag Create(SaveTag tag)
+    {
+        var itemid = tag.LoadEntityRefId("Item");
+        var price = tag.LoadInt("Price");
+        return new(itemid, price);
+    }
+    public void Write(IDataWriter w)
+    {
+        w.Write(this.Item);
+        w.Write(this.Price);
+    }
+
+    public PriceTag Read(IDataReader r)
+    {
+        this.Item = r.ReadEntityRefId();
+        this.Price = r.ReadInt32();
+        return this;
+    }
+
+    public static PriceTag Create(IDataReader r)
+        => new PriceTag().Read(r);
 }
 public sealed class TownComp_Shops : TownComp
 {
-    public ChangeNotifier Notifications = new();
-    const int UIListWidth = 250;
 
     readonly ObservableHashSet<Workplace> Shopss = new();
 
@@ -81,6 +93,20 @@ public sealed class TownComp_Shops : TownComp
         town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         town.Map.Events.ListenTo<StockpileUpdatedEvent>(HandleStockpileUpdated);
         town.Map.Events.ListenTo<EntityDespawnedEvent>(HandleEntityDespawned);
+        town.Map.World.Events.ListenTo<EntityDisposedEvent>(HandleEntityDisposed);
+        town.Map.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
+    }
+
+    private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
+    {
+        if (this._itemsForSale.ContainsKey(e.Item.RefId))
+            this.ToggleForSale(e.Item);
+    }
+
+    private void HandleEntityDisposed(EntityDisposedEvent e)
+    {
+        if (this._itemsForSale.ContainsKey(e.Entity.RefId))
+            this.ToggleForSale(e.Entity);
     }
 
     private void HandleEntityDespawned(EntityDespawnedEvent e)
@@ -127,7 +153,6 @@ public sealed class TownComp_Shops : TownComp
     {
         this.Shopss.Add(shop);
         this.Shops.Add(shop.ID, shop);
-        this.Notifications.Notify();
     }
 
     public T FindShop<T>(Stockpile stockpile) where T : Workplace
@@ -178,7 +203,7 @@ public sealed class TownComp_Shops : TownComp
     }
 
     internal readonly ChangeNotifier Notifier = new();
-    readonly Dictionary<EntityRefId, PriceTag> _itemsForSale = [];
+    Dictionary<EntityRefId, PriceTag> _itemsForSale = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsRequests = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsBySeller = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByBuyer = [];
@@ -198,27 +223,19 @@ public sealed class TownComp_Shops : TownComp
         if (!this._itemsForSale.Remove(item.RefId))
         {
             forsale = true;
-            this._itemsForSale.Add(item.RefId, new(item, item.GetValueTotal()));
+            this._itemsForSale.Add(item.RefId, new(item.RefId, item.GetValueTotal()));
             this.ItemsForSaleToggled?.Invoke(([item], []));
         }
         else
         {
+            if (this._transactionsByItem.TryGetValue(item.RefId, out var req))
+                req.MarkFailed();
             this.ItemsForSaleToggled?.Invoke(([], [item]));
         }
         this.Notifier.Notify();
         this.Map.Events.Post(new ItemToggledForSaleEvent(item, forsale));
     }
-    //internal void ToggleForSale(IEnumerable<Entity> items)
-    //{
-    //    var forsale = false;
-    //    if (!this._itemsForSale.Remove(item.RefId))
-    //    {
-    //        forsale = true;
-    //        this._itemsForSale.Add(item.RefId, new(item, item.GetValueTotal()));
-    //    }
-    //    this.Notifier.Notify();
-    //    this.Map.Events.Post(new ItemToggledForSaleEvent(item, forsale));
-    //}
+   
     internal bool IsForSale(Entity item)
         => this._itemsForSale.ContainsKey(item.RefId);
     internal int? GetPrice(EntityRefId itemId)
@@ -264,11 +281,11 @@ public sealed class TownComp_Shops : TownComp
     {
         if (transaction.Vendor != EntityRefId.Null)
             throw new Exception();
-        transaction.AssignVendor(seller);
+        //transaction.AssignVendor(seller);
+        this.Town.ServiceRequests.AssignVendor(transaction, seller);
         transaction.RefreshTimer();
         this._transactionsBySeller.Add(seller.RefId, transaction);
         this._transactionsRequests.Remove(transaction.Customer);
-        //this.Map.Events.Post(new ShopTransactionUpdatedEvent(this.Map, transaction));
     }
     internal override void Tick()
     {
@@ -289,12 +306,27 @@ public sealed class TownComp_Shops : TownComp
             }
         }
     }
+    protected override void SaveExtra(SaveTag tag)
+    {
+        tag.Add(this.CurrentShopID.Save("ShopIDSequence"));
+        this.Shopss.SaveAbstract(tag, "Shops");
+        tag.Save("PriceList", this._itemsForSale.Values);
+    }
 
     public override void Load(SaveTag tag)
     {
         tag.TryGetTagValue("ShopIDSequence", ref this.CurrentShopID);
         this.Shopss.LoadAbstract(tag, "Shops", this);
         this.Shops = this.Shopss.ToDictionary(i => i.ID, i => i);
+        if (tag.TryLoadList<PriceTag>("PriceList", out var prices))
+            this._itemsForSale = prices.ToDictionary(a => a.Item);
+    }
+
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.CurrentShopID);
+        this.Shopss.WriteAbstract(w);
+        w.Write(this._itemsForSale.Values);
     }
 
     public override void Read(IDataReader r)
@@ -302,6 +334,7 @@ public sealed class TownComp_Shops : TownComp
         this.CurrentShopID = r.ReadInt32();
         this.Shopss.ReadListAbstract(r, this);
         this.Shops = this.Shopss.ToDictionary(i => i.ID, i => i);
+        this._itemsForSale = r.ReadList<PriceTag>().ToDictionary(a => a.Item);
     }
 
     public void RemoveShop(int shopid)
@@ -309,7 +342,6 @@ public sealed class TownComp_Shops : TownComp
         var shop = this.Shops[shopid];
         this.Shopss.Remove(shop);
         this.Shops.Remove(shopid);
-        this.Town.Net.EventOccured((int)Message.Types.ShopsUpdated, shop);
     }
 
     public bool ShopExists(Workplace shop)
@@ -317,11 +349,7 @@ public sealed class TownComp_Shops : TownComp
         return this.Shops.ContainsKey(shop.ID);
     }
 
-    public override void Write(IDataWriter w)
-    {
-        w.Write(this.CurrentShopID);
-        this.Shopss.WriteAbstract(w);
-    }
+   
     
     internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
     {
@@ -356,78 +384,31 @@ public sealed class TownComp_Shops : TownComp
     {
         PacketsWorkplaces.SendPlayerAssignWorkerToShop(a.Net, a.Net.GetPlayer(), shop.Map, a, shop);
     }
-    protected override void AddSaveData(SaveTag tag)
-    {
-        tag.Add(this.CurrentShopID.Save("ShopIDSequence"));
-        this.Shopss.SaveAbstract(tag, "Shops");
-    }
-
-    private ListBoxNoScroll<Workplace, Button> CreateUIShopList(Action<Workplace> selectAction, Func<Workplace, bool> filter = null)
-    {
-        return this.CreateUIShopList<Workplace>(selectAction, filter);
-    }
-
-    private ListBoxNoScroll<T, Button> CreateUIShopList<T>(Action<T> selectAction, Func<T, bool> filter) where T : Workplace
-    {
-        var shoplist = new ListBoxNoScroll<T, Button>(s => new Button(s.Name, () => selectAction?.Invoke(s)));
-        shoplist.OnGameEventAction = e =>
-        {
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.ShopsUpdated:
-                    var shop = e.Parameters[0] as T;
-                    if (this.Shopss.Contains(shop))
-                        shoplist.AddItems(shop);
-                    else
-                        shoplist.RemoveItems(shop);
-                    break;
-
-                default:
-                    break;
-            }
-        };
-        shoplist.ShowAction = () =>
-        {
-            shoplist.Clear();
-            shoplist.AddItems(this.Shops.Values.OfType<T>().Where(v => filter?.Invoke(v) ?? true).ToArray());
-        };
-        return shoplist;
-    }
+   
 
     internal void MarkPaid(Actor buyer, Entity money)
     {
         var req = this._transactionsByBuyer[buyer.RefId];
-        //req.Money = money.RefId;
-        //req.MarkPaid();
-        //req.MarkIsPaidFor();
         req.AllocateMoney(money);
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
-
     }
     internal void RingUp(Actor seller, Entity item)
     {
         var req = this._transactionsBySeller[seller.RefId];
         if (item.RefId != req.Item)
             throw new InvalidOperationException();
-        //req.RingUp();
         req.MarkVendorWaitingPayment();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
     internal void FinishTransaction(Actor buyer)
     {
         var req = this._transactionsByBuyer[buyer.RefId];
         var shoppinglist = this._shoppingListsByActor[buyer.RefId];
         shoppinglist.MarkFulfilled();
-        //req.Dispose();
         req.MarkSucceeded();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
-    internal void MarkProcessed(Actor seller)
+    internal void MarkPaidFor(Actor seller)
     {
         var req = this._transactionsBySeller[seller.RefId];
-        //req.MarkProcessed();
-        req.MarkIsPaidFor();
-        //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
+        req.MarkPaidFor();
     }
 
     internal IEnumerable<Entity> GetStockpileItemsForSale()

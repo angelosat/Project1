@@ -81,7 +81,7 @@ public sealed class TownComp_Repairs : TownComp
 
     internal void AssignVendor(ServiceRequest_Repair req, Actor vendor)
     {
-        req.Vendor = vendor.RefId;
+        //req.Vendor = vendor.RefId;
         this.Town.ServiceRequests.AssignVendor(req, vendor);
     }
     internal void AssignRepairBench(ServiceRequest_Repair req, IntVec3 bench)

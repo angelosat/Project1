@@ -256,7 +256,7 @@ public sealed class ReservationManager : TownComp
     {
         return this.Reservations.Any(t => t.Target.Global == (Vector3)global);
     }
-    protected override void AddSaveData(SaveTag tag)
+    protected override void SaveExtra(SaveTag tag)
     {
         var reservationsTag = new SaveTag(SaveTag.Types.List, "Reservations", SaveTag.Types.Compound);
         foreach (var r in this.Reservations)

@@ -132,7 +132,7 @@ internal static class IOHelpers
 
     extension(SaveTag tag)
     {
-        public EntityRefId LoadEntityRefId(string name) => (EntityRefId)tag[name].Value;
+        public EntityRefId LoadEntityRefId(string name) => (EntityRefId)(int)tag[name].Value;
         public List<EntityRefId> LoadListEntityRefId(string name) => [.. tag.LoadListInt(name).Select(i => (EntityRefId)i)];
         public void Save(string name, ICollection<EntityRefId> list)
         {

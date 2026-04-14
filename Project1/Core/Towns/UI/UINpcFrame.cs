@@ -49,7 +49,7 @@ namespace Project1.Core.Towns.UI
             {
                 Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent(
                     [actor], 
-                    InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? SelectionOp.Add : SelectionOp.Clear));
+                    InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? SelectionOp.Add : SelectionOp.Replace));
             };
             this.Label = new Label()
             {

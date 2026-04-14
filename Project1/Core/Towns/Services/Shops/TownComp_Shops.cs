@@ -23,6 +23,9 @@ internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop 
 
 internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload { }
 internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload { }
+internal record struct ItemToggledForSaleEvent(Entity Item, bool ForSale) : IEventPayload { }
+internal record struct PlayerItemToggledForSaleEvent(Entity Item) : IEventPayload { }
+internal record PriceTag(Entity Item, int Price);
 class WorkplacesGui : GroupBox
 {
     public WorkplacesGui()
@@ -169,16 +172,37 @@ public sealed class TownComp_Shops : TownComp
     internal ShoppingList GetShoppingListPopulated(Actor buyer)
     {
         if (!this._shoppingListsByActor.TryGetValue(buyer.RefId, out var list))
-            this._shoppingListsByActor[buyer.RefId] = list = new(buyer, [.. this.GetItemsForSale()]);
+            //this._shoppingListsByActor[buyer.RefId] = list = new(buyer, [.. this.GetStockpileItemsForSale()]);
+            this._shoppingListsByActor[buyer.RefId] = list = new(buyer, [.. this.GetItemsMarkedForSale()]);
         return list;
     }
 
+    internal readonly ChangeNotifier Notifier = new();
+    readonly Dictionary<EntityRefId, PriceTag> _itemsForSale = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsRequests = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsBySeller = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByBuyer = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
     readonly List<ServiceRequest_Shop> _transactionsAll = [];
+
+    internal void ToggleForSale(Entity item)
+    {
+        var forsale = false;
+        if (!this._itemsForSale.Remove(item.RefId))
+        {
+            forsale = true;
+            this._itemsForSale.Add(item.RefId, new(item, item.GetValueTotal()));
+        }
+        this.Notifier.Notify();
+        this.Map.Events.Post(new ItemToggledForSaleEvent(item, forsale));
+    }
+    internal bool IsForSale(Entity item)
+        => this._itemsForSale.ContainsKey(item.RefId);
+    internal int? GetPrice(EntityRefId itemId)
+        => this._itemsForSale.TryGetValue(itemId, out var tag) ? tag.Price : null;
+    internal int? GetPrice(Entity item)
+    => this._itemsForSale.TryGetValue(item.RefId, out var tag) ? tag.Price : null;
     internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint, out ServiceRequest_Shop req)
     {
         req = new ServiceRequest_Shop(actor, item, price, servicePoint);
@@ -303,6 +327,8 @@ public sealed class TownComp_Shops : TownComp
             this.AddInt(req);
     }
 
+    
+
     internal void ToggleWorker(Actor a, Workplace shop)
     {
         PacketsWorkplaces.SendPlayerAssignWorkerToShop(a.Net, a.Net.GetPlayer(), shop.Map, a, shop);
@@ -381,14 +407,17 @@ public sealed class TownComp_Shops : TownComp
         //this.Map.Events.Post(new TownServiceRequestUpdatedEvent(this.Map, req));
     }
 
-    internal IEnumerable<Entity> GetItemsForSale()
+    internal IEnumerable<Entity> GetStockpileItemsForSale()
         => this.Town.Map.Stockpiles.Stockpiles
         .Where(s => s.ForSale)
         .SelectMany(s => s.Items);
+    internal IEnumerable<Entity> GetItemsMarkedForSale()
+        //=> this._itemsForSale.Keys.Select(id => this.World.Get(id));
+        => this.World.Get(this._itemsForSale.Keys);
 
     internal override bool IsClaimedBySystem(Entity item)
     {
-        if (item.IsForSale())
+        if (item.IsForSale)
             return true;
         foreach(var t in this._transactionsAll)
         {

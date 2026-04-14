@@ -1,38 +1,38 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.UI;
 using Project1.Framework.UI;
 
-namespace Project1.Core.Stats
+namespace Project1.Core.Stats;
+
+class StatsGuiNew : SelectionBoundControl
 {
-    class StatsGuiNew : SelectionBoundControl// GroupBox, ISelectionBound
+    PanelLabeledNew PanelAttributes;
+    PanelLabeledNew PanelStats;
+
+
+    protected internal override void OnBind(ISelectable selectable)
     {
-        PanelLabeledNew PanelAttributes;
-        PanelLabeledNew PanelStats;
+        this.Build(selectable as Actor);
+    }
 
+    protected void Build(Actor actor)
+    {
+        this.Name = "Stats";
 
-        protected internal override void OnBind(ISelectable selectable)
-        {
-            this.Build(selectable as Actor);
-        }
+        this.PanelAttributes = new PanelLabeledNew("Attributes") { AutoSize = true };
+        this.PanelStats = new PanelLabeledNew("Stats") { AutoSize = true };
+        this.ClearControls();
 
-        protected void Build(Actor actor)
-        {
-            this.Name = "Stats";
+        this.PanelAttributes.Client.ClearControls();
+        //PanelAttributes.Client.AddControls(actor.Attributes.GetGui());
+        PanelAttributes.Client.AddControls(actor.Attributes.CreateControl());
+        this.AddControlsTopRight(this.PanelAttributes);
 
-            this.PanelAttributes = new PanelLabeledNew("Attributes") { AutoSize = true };
-            this.PanelStats = new PanelLabeledNew("Stats") { AutoSize = true };
-            var comp = actor.GetComponent<StatsComponent>();
-            this.ClearControls();
-
-            this.PanelAttributes.Client.ClearControls();
-            PanelAttributes.Client.AddControls(actor.Attributes.GetGui());
-            this.AddControlsTopRight(this.PanelAttributes);
-
-            this.PanelStats.Client.ClearControls();
-            comp.GetInterface(actor, this.PanelStats.Client);
-            this.AddControlsBottomLeft(this.PanelStats);
-        }
+        this.PanelStats.Client.ClearControls();
+        var comp = actor.GetComponent<StatsComp>();
+        //comp.GetInterface(actor, this.PanelStats.Client);
+        this.PanelStats.Client.AddControls(comp.CreateControl());
+        this.AddControlsBottomLeft(this.PanelStats);
     }
 }

@@ -30,7 +30,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(HaulComponent),
                 typeof(NpcComponent),
                 typeof(InventoryComp),
-                typeof(StatsComponent),
+                typeof(StatsComp),
                 typeof(MobileComponent),
                 typeof(MoodComp),
                 typeof(WorkComponent),

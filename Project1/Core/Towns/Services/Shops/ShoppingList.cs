@@ -34,16 +34,18 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
         this.ItemsToBrowse.Add(item);
         this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
     }
-    internal void Add(Entity item, ItemEvaluation evaluation)
-    {
-        this.ItemsToBrowse.Add(item); 
-        this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
-        //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
-        this.Interest.Add(item, new ProgressFloat(0, evaluation.MaxScore * Ticks.PerGameMinute, 0));
-        this.AllResultsPerItem.Add(item, evaluation);
-    }
+    //internal void Add(Entity item, ItemEvaluation evaluation)
+    //{
+    //    this.ItemsToBrowse.Add(item); 
+    //    this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
+    //    //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
+    //    this.Interest.Add(item, new ProgressFloat(0, evaluation.MaxScore * Ticks.PerGameMinute, 0));
+    //    this.AllResultsPerItem.Add(item, evaluation);
+    //}
     internal void Add(Entity item, ItemEvaluation evaluation, int maxInterest)
     {
+        if (this.ItemsToBrowse.Contains(item))
+            throw new System.Exception();
         this.ItemsToBrowse.Add(item);
         this.IndicesRemaining.Enqueue(this.ItemsToBrowse.Count - 1);
         //this.Interest.Add(item, new ProgressInt(evaluation.MaxScore * Ticks.PerGameMinute));
@@ -56,7 +58,9 @@ sealed class ShoppingList(Actor actor, List<Entity> items)
     internal void Register(Entity item, int score)
     {
         this.Results[score] = item;
-        var entry = (item, score, item.GetValueTotal());
+        //var price = item.GetValueTotal();
+        var price = item.Map.Town.Shops.GetPrice(item.RefId)!.Value;
+        var entry = (item, score, price);
         this.ResultsUnsorted.Add(entry);
         var isImpulse = score >= InterestImpulse;
         if (isImpulse)

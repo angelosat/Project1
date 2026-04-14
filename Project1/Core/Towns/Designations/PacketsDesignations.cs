@@ -44,7 +44,7 @@ namespace Project1.Core.Towns.Designations
             var map = endpoint.World.Get(mapid);
             var isRemoval = r.ReadBoolean();
             var def = r.ReadDef<DesignationDef>();
-            var entities = endpoint.World.GetEntities(r.ReadListEntityRefId()).ToArray();
+            var entities = endpoint.World.Get(r.ReadListEntityRefId()).ToArray();
             map.Town.DesignationManager.Edit(def, entities, isRemoval);
             if (endpoint.IsServer)
                 Send(endpoint, mapid, entities, def, isRemoval);

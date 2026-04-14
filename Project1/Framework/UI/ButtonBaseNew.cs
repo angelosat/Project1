@@ -70,8 +70,8 @@ namespace Project1.Framework.UI
             set
             {
                 this._textFunc = value;
-                if (value is not null)
-                    this.Text = value();
+                //if (value is not null)
+                //    this.Text = value();
             }
         }
         internal ButtonBaseNew SetTextFunc(Func<string> textFunc)

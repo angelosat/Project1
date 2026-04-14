@@ -813,7 +813,7 @@ namespace Project1.Core
         public ISaveable Load(SaveTag tag)
         {
             //tag.TryGetTagValue<string>("Material", i => this.Material = Start_a_Town_.Def.GetDef<MaterialDef>(i));
-            tag.TryLoadDef("Material", ref this.Material);
+            tag.TryLoadDefOld("Material", ref this.Material);
             tag.TryGetTag("Sprite", t => this.Sprite = Sprite.Load(t));
             tag.TryGetTag("Joints", t =>
             {

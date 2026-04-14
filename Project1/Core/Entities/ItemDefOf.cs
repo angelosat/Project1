@@ -140,7 +140,7 @@ namespace Project1.Core.Entities
             VariantType = typeof(ToolProfileDef),
             StorageFilterVariations = Def.Get<ToolProfileDef>(),
             VariationGetter = e => e.Def,
-            Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComp), typeof(StatsComponent)],
+            Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComp), typeof(StatsComp)],
             CompDefs = [EntityCompDefOf.Tool, EntityCompDefOf.Ownership, EntityCompDefOf.Resources, EntityCompDefOf.Stats],
             Body = new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                             .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })

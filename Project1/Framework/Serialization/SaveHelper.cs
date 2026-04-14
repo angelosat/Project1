@@ -914,14 +914,15 @@ namespace Project1.Framework.Serialization
         {
             return Def.Get<T>(tag.Value as string);
         }
-        public static bool TryLoadDef<T>(this SaveTag tag, string name, ref T target) where T : Def
+        [Obsolete($"use {nameof(TryLoadDef)} instead")]
+        public static bool TryLoadDefOld<T>(this SaveTag tag, string name, ref T target) where T : Def
         {
             if (!tag.TryGetTag(name, out var deftag))
                 return false;
             target = Def.Get<T>((string)deftag.Value);
             return true;
         }
-        public static bool TryLoadDefOut<T>(this SaveTag tag, string name, out T target) where T : Def
+        public static bool TryLoadDef<T>(this SaveTag tag, string name, out T target) where T : Def
         {
             if (!tag.TryGetTag(name, out var deftag))
             {

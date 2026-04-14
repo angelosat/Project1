@@ -55,7 +55,7 @@ namespace Project1.Core.Systems.Plants
             tag.TryGetTagValue("Tilling", ref this.Tilling);
             tag.TryGetTagValue("Planting", ref this.Planting);
             tag.TryGetTagValue("Harvesting", ref this.Harvesting);
-            tag.TryLoadDef("Plant", ref this.Plant);
+            tag.TryLoadDefOld("Plant", ref this.Plant);
         }
         protected override void SaveExtra(SaveTag tag)
         {

@@ -1,22 +1,65 @@
-﻿using Project1.Core.Helpers;
+﻿using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Framework;
 
+#nullable enable
+
 namespace Project1.Core.Towns.Services.Shops;
 
 [EnsureStaticCtorCall]
-internal static class PacketsShops
+internal static class Packets_Shops
 {
     internal readonly static PacketId 
         _pShopCreated = Registry.PacketHandlers.Register(ReceiveCreateShop), 
         _pShopDeleted, 
         _pPlayerShopCreated = Registry.PacketHandlers.Register(ReceivePlayerCreateShop),
-        _pPlayerShopDeleted;
+        _pPlayerShopDeleted,
+        _pPlayerToggledForSale = Registry.PacketHandlers.Register(ReceivePlayerToggledForSale),
+        _pToggledForSale = Registry.PacketHandlers.Register(ReceiveToggledForSale);
 
-    static PacketsShops()
+    static Packets_Shops()
     {
         Registry.PlayerInputEventHooks.Register<PlayerCreateShopEvent>(HandlePlayerCreateShop);
+        Registry.PlayerInputEventHooks.Register<PlayerItemToggledForSaleEvent>(HandlePlayerItemToggledForSale);
+
+        Registry.MapEventHooksServer.Register<ItemToggledForSaleEvent>(HandleItemToggledForSale);
+    }
+
+    private static void HandleItemToggledForSale(ItemToggledForSaleEvent e)
+    {
+        Server.Instance.BeginPacketImmediate(_pToggledForSale)
+            .Write(e.Item.RefId)
+            .Write(e.ForSale);
+    }
+    private static void ReceiveToggledForSale(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var item = endpoint.World.Get(r.ReadEntityRefId());
+        var toggle = r.ReadBoolean();
+        item.Map.Town.Shops.ToggleForSale(item);
+
+    }
+    private static void HandlePlayerItemToggledForSale(PlayerItemToggledForSaleEvent e)
+    {
+        if(Ingame.Net.IsServer)
+        {
+            Ingame.Net.MainViewport.Map.Town.Shops.ToggleForSale(e.Item);
+        }
+        SendPlayerToggledItemForSale(e.Item);
+    }
+
+    private static void SendPlayerToggledItemForSale(Entity item)
+    {
+        Client.Instance.BeginPacketImmediate(_pPlayerToggledForSale)
+            .Write(item.RefId);
+    }
+    private static void ReceivePlayerToggledForSale(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var item = endpoint.World.Get(r.ReadEntityRefId());
+        item.Map.Town.Shops.ToggleForSale(item);
     }
 
     private static void HandlePlayerCreateShop(PlayerCreateShopEvent e)

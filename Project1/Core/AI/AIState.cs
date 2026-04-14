@@ -216,7 +216,7 @@ namespace Project1.Core.AI
 
             tag.TryLoad("Path", out this.Path);
    
-            tag.TryLoadDefOut("Planner", out this.CurrentPlanner);
+            tag.TryLoadDef("Planner", out this.CurrentPlanner);
             tag.TryGetTag("ItemPreferences", t => this.ItemPreferences.Load(t));
         }
         public void Read(IDataReader r)

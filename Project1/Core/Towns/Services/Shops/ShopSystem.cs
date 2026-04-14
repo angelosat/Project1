@@ -35,8 +35,9 @@ internal static class ShopSystem
 
     extension(Entity item)
     {
-        public bool IsForSale()
-            => item.Map.Town.ZoneManager.GetZoneAt<Stockpile>(item.Cell.Below)?.ForSale ?? false;
+        public bool IsForSale
+            //=> item.Map.Town.ZoneManager.GetZoneAt<Stockpile>(item.Cell.Below)?.ForSale ?? false;
+            => item.Map.Town.Shops.IsForSale(item);//.GetZoneAt<Stockpile>(item.Cell.Below)?.ForSale ?? false;
 
         public bool IsInvolvedInExistingTransaction()
             => item.Map.Town.Shops.TryGetTransactionByItem(item, out _);

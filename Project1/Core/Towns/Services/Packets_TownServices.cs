@@ -25,9 +25,7 @@ internal class Packets_TownServices
     private static void HandlePlayerAssignedServiceToCounter(PlayerAssignedServiceToCounterEvent e)
     {
         if(Ingame.Net.IsServer)
-        {
-            e.Comp.Service = e.Service;
-        }
+            e.Comp.SetService(e.Service);
         SendPlayerCounterServiceAssigned(Ingame.Net, e.Comp.Parent.Map.ID, e.Comp.Parent.OriginGlobal, e.Service);
     }
 
@@ -44,7 +42,7 @@ internal class Packets_TownServices
         var map = endpoint.World.Get(r.ReadMapId());
         var comp = map.GetBlockEntityComp<BlockShopComp>(r.ReadIntVec3());
         var service = r.ReadDef<TownServiceDef>();
-        comp.Service = service;
+        comp.SetService(service);
         if (endpoint is Server server)
             SendPlayerCounterServiceAssigned(server, map.ID, comp.Parent.OriginGlobal, service);
 

@@ -9,8 +9,8 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Ownership;
 using Project1.Core.Systems.Tools;
+using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
@@ -203,6 +203,8 @@ public class Entity : GameObject
     /// <returns></returns>
     public GameObject SetPosition(Vector3 nextGlobal) // TODO: merge this with SetGlobal
     {
+        if (this.Transform.Anchor is not null)
+            return this;
         // entity despawned and immediately respawned on the serve and sent a new snapshot while on client the entity's map was null
         if (this.Map is null) // entity has despawned on client before snapshot received?
             return this;
@@ -287,5 +289,10 @@ public class Entity : GameObject
     {
         foreach (var c in this.Components.Values)
             c.OnAttachedToWorld();
+    }
+
+    public override IEnumerable<(string label, Type type)> GetInspectorTabs()
+    {
+        yield return ("Shops", typeof(Gui_ItemForSale));
     }
 }

@@ -12,6 +12,7 @@ using Project1.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Project1.Framework.UI
 {
@@ -870,7 +871,7 @@ namespace Project1.Framework.UI
                 window.Show();
             }
         }
-        public static void ToggleUnique(Type type, ISelectable selectable)
+        public static void ToggleUnique(Type type, ISelectable selectable, string title)
         {
             var key = new WindowKey(type, selectable);
 
@@ -883,13 +884,47 @@ namespace Project1.Framework.UI
             {
                 var control = (SelectionBoundControl)Activator.CreateInstance(type);// new T();
                 control.Bind(selectable);
-                var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
-                window.Client.AddControls(control as Control);
+                var window = new Window { Movable = true, AutoSize = true, Title = $"{title} ({selectable.Name})" };
+                window.Client.AddControls(control);
                 window.SmartPosition();
                 _windowsUnique[key] = window;
                 window.Show();
+
+                //SelectionMiniButtonDefOf.CameraCenter
+                //foreach (var btn in Def.Get<SelectionMiniButtonDef>())
+                foreach (var btn in new SelectionMiniButtonDef[] { SelectionMiniButtonDefOf.CameraCenter, SelectionMiniButtonDefOf.CameraFollow })
+                    if (btn.Worker.IsVisible(selectable))
+                        window.AddMiniButton(new IconButton(btn.Icon, () => btn.Worker.OnClick(selectable))
+                        {
+                            BackgroundTexture = UIManager.Icon16Background,
+                            HoverText = btn.HoverText
+                        });
+
                 window.HideAction += () => _windowsUnique.Remove(key);
             }
+        }
+
+        public static void ToggleUnique(Type type, ISelectable selectable)
+        {
+            ToggleUnique(type, selectable, selectable.Name);
+            //var key = new WindowKey(type, selectable);
+
+            //if (_windowsUnique.TryGetValue(key, out var win))
+            //{
+            //    win.Close();
+            //    _windowsUnique.Remove(key);
+            //}
+            //else
+            //{
+            //    var control = (SelectionBoundControl)Activator.CreateInstance(type);// new T();
+            //    control.Bind(selectable);
+            //    var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
+            //    window.Client.AddControls(control as Control);
+            //    window.SmartPosition();
+            //    _windowsUnique[key] = window;
+            //    window.Show();
+            //    window.HideAction += () => _windowsUnique.Remove(key);
+            //}
         }
         public static void ToggleUnique<T>(ISelectable selectable) where T : SelectionBoundControl/*Control, ISelectionBound*/, new()
         {

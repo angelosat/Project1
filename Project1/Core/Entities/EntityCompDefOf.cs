@@ -30,7 +30,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Skills = new("Skills", typeof(SkillsComponent));
         public static readonly EntityCompDef Needs = new("Needs", typeof(NeedsComponent));
         public static readonly EntityCompDef Ownership = new("Ownership", typeof(OwnershipComponent));
-        public static readonly EntityCompDef Stats = new("Stats", typeof(StatsComponent));
+        public static readonly EntityCompDef Stats = new("Stats", typeof(StatsComp));
         public static readonly EntityCompDef Attributes = new("Attributes", typeof(AttributesComponent));
         public static readonly EntityCompDef Resources = new("Resources", typeof(ResourcesComp));
         public static readonly EntityCompDef Work = new("Work", typeof(WorkComponent));

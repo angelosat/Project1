@@ -13,6 +13,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Towns.Designations;
 using Project1.Core.Towns.Zones;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -410,7 +411,14 @@ public sealed class SelectionManager
     {
         var tabs = selectable.GetInspectorTabs();
         foreach (var (label, type) in tabs)
-            this.AddTabAction(label, () => UIManager.ToggleSingleton(type, selectable), Color.Orange);
+            //this.AddTabAction(label, () => UIManager.ToggleSingleton(type, selectable)
+            this.AddTabAction(label, () => UIManager.ToggleUnique(type, selectable, label)
+            //this.AddTabAction(label, () => {
+            //    this.PanelInfo.Controls.Clear();
+            //    var control = ActivatorSafe<SelectionBoundControl>.CreateInstance(type);
+            //    control.Bind(selectable);
+            //    this.PanelInfo.AddControls(control);}
+                , Color.Orange);
     }
     private void CreateButtons(IEnumerable<ISelectable> targets)
     {

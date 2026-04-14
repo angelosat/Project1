@@ -336,7 +336,7 @@ namespace Project1.Core.Blocks
         {
             this.GetQuickButtons(
                 (name, guiType) => panel.AddTabAction(name,
-                    () => UIManager.ToggleUnique(guiType, new InteractionTarget(this.Map, this.OriginGlobal)))
+                    () => UIManager.ToggleUnique(guiType, new InteractionTarget(this.Map, this.OriginGlobal), name))
                 ,this.Map,
                 this.Global);
         }

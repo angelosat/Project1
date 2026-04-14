@@ -1,10 +1,14 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
+using Project1.Core.Helpers;
 using Project1.Core.Resources;
 using Project1.Core.Screens;
+using Project1.Framework;
 using Project1.Framework.Events;
+using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,18 +51,28 @@ internal class BlockShopComp : BlockComp
     }
     public override BlockCompDef CompDef => BlockCompDefOf.Shop;
 
-    public TownServiceDef Service
+    public TownServiceDef Service { get; private set; }
+    //{
+    //    get => field;
+    //    set
+    //    {
+    //        if (field == value)
+    //            return;
+    //        var old = field;
+    //        field = value;
+    //        this.Notifier.Notify();
+    //        this.Parent.Map.Events.Post(new CounterServiceChangedEvent(this, old));
+    //    }
+    //}
+
+    internal void SetService(TownServiceDef def)
     {
-        get => field;
-        set
-        {
-            if (field == value)
-                return;
-            var old = field;
-            field = value;
-            this.Notifier.Notify();
-            this.Parent.Map.Events.Post(new CounterServiceChangedEvent(this, old));
-        }
+        if (this.Service == def)
+            return;
+        var old = this.Service;
+        this.Service = def;
+        this.Notifier.Notify();
+        this.Parent.Map.Events.Post(new CounterServiceChangedEvent(this, old));
     }
 
     public int CashFloat = 100;
@@ -88,5 +102,24 @@ internal class BlockShopComp : BlockComp
     internal override IEnumerable<Control> GetInspectorControls()
     {
         yield return new LabelNew(() => $"Service: {this.Service?.LabelReadable ?? "<unassigned>"}").InvalidateOn(this.Notifier);
+    }
+
+    protected override void SaveExtra(SaveTag tag)
+    {
+        tag.Save("Service", this.Service);
+    }
+    public override void Load(SaveTag tag)
+    {
+        if (tag.TryLoadDef<TownServiceDef>("Service", out var def))
+            this.Service = def;
+    }
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.Service);
+    }
+    public override ISerializable Read(IDataReader r)
+    {
+        this.Service = r.ReadDef<TownServiceDef>();
+        return this;
     }
 }

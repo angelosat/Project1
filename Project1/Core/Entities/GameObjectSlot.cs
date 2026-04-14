@@ -146,6 +146,7 @@ namespace Project1.Core.Entities
             {
                 item.Detach();
                 item.Owner = this.Owner;
+                item.Transform.Anchor = this.Owner;
             }
             this.Object = item;
             if(item != prevItem) 

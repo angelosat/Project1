@@ -116,7 +116,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     {
         return this.EntityRegistry.GetEntities(netIds);
     }
-    public IEnumerable<Entity> GetEntities(IEnumerable<EntityRefId> netIds)
+    public IEnumerable<Entity> Get(IEnumerable<EntityRefId> netIds)
     {
         return this.EntityRegistry.GetEntities(netIds);
     }

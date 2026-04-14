@@ -14,12 +14,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Project1.Core.Systems.ItemRoles;
 
 [EnsureStaticCtorCall]
 public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
-    static List<ItemRoleDef> _flatItemRolesList;
+    static List<ItemRoleDef> _flatItemRolesList;// = [];
     static readonly Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];
     readonly EntityQueryEnumerator EntityQuery = new();
     Control _gui;
@@ -53,6 +55,11 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
 
     private bool EnqueueItemInt(Entity item)
     {
+        if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
+        {
+            $"tried to enqueue already known item".ToConsole();
+            return false;
+        }
         if (item.OwnerId != EntityRefId.Null)
             return false;
         if (this.TempIgnore.ContainsKey(item.RefId))

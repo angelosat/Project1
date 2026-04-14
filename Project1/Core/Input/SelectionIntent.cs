@@ -26,7 +26,7 @@ namespace Project1.Core.Input
             else if (this.Type == SelectionType.Box)
                 return IntVec3Helper.GetBox(this.Begin, this.End).Select(c => new CellSelection(map, c)).Cast<ISelectable>();
             else if (this.Type == SelectionType.Entities)
-                return map.World.GetEntities(this.EntityIDs);
+                return map.World.Get(this.EntityIDs);
             throw new UnreachableException();
         }
         public IEnumerable<InteractionTarget> ResolveTargets(MapBase map)
@@ -38,7 +38,7 @@ namespace Project1.Core.Input
             else if (this.Type == SelectionType.Box)
                 return IntVec3Helper.GetBox(this.Begin, this.End).Select(c => new InteractionTarget(map, c));
             else if (this.Type == SelectionType.Entities)
-                return map.World.GetEntities(this.EntityIDs).Select(e => new InteractionTarget(e));
+                return map.World.Get(this.EntityIDs).Select(e => new InteractionTarget(e));
             throw new UnreachableException();
         }
         public SelectionResolved ResolveTargetsNew(MapBase map)
@@ -50,7 +50,7 @@ namespace Project1.Core.Input
             else if (this.Type == SelectionType.Box)
                 return new SelectionResolved(map.Select(this.Begin, this.End), this);
             else if (this.Type == SelectionType.Entities)
-                return new SelectionResolved(map.World.GetEntities(this.EntityIDs).Select(e => new InteractionTarget(e)), this);
+                return new SelectionResolved(map.World.Get(this.EntityIDs).Select(e => new InteractionTarget(e)), this);
             throw new UnreachableException();
         }
         public SelectionIntent(IEnumerable<EntityRefId> ids)

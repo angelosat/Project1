@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Towns.Services.Shops;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Project1.Core.AI.Thought;
 internal sealed class ThoughProcess_tItemEvaluatorVisitor : ThoughtProcess
@@ -19,7 +18,7 @@ internal sealed class ThoughProcess_tItemEvaluatorVisitor : ThoughtProcess
 
         while (manager.DequeueUnevaluated() is Entity nextEntity)
         {
-            if (!nextEntity.IsForSale())
+            if (!nextEntity.IsForSale)
                 continue;
             var tempEvaluation = manager.EvaluateWithoutRegistering(nextEntity);
 
@@ -64,6 +63,8 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
         if(manager.DequeueUnevaluated() is Entity item)
         {
             if (item.OwnerId != EntityRefId.Null)
+                return;
+            if (item.IsForSale)
                 return;
             var result = manager.EvaluateAndRegister(item);
             //state.Knowledge.Register(item, result);

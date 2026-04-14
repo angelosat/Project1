@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Towns.Services.Shops;
 
+#nullable enable
+
 namespace Project1.Core.Interactions;
 
 sealed class InteractionRingUp : InteractionLogic
@@ -7,7 +9,8 @@ sealed class InteractionRingUp : InteractionLogic
     sealed class Context : InteractionContext
     {
         internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.Shops.GetTransactionBySeller(this.Actor);
-        internal int? Price => field ??= this.Actor.World.Get(this.Transaction.Item).GetValueTotal();
+        //internal int? Price => field ??= this.Actor.World.Get(this.Transaction.Item).GetValueTotal();
+        internal int? Price => field ??= this.Actor.Map.Town.Shops.GetPrice(this.Transaction.Item)!.Value;
         public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInt() => new Context();

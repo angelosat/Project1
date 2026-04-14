@@ -64,7 +64,7 @@ internal static class ToolSystem
     
     static internal void BakeStats(Entity tool)
     {
-        var comp = tool.GetComponent<StatsComponent>();
+        var comp = tool.GetComponent<StatsComp>();
         comp.Bake(StatDefOf.ToolSpeed, BoneDefOf.ToolHandle);
         comp.Bake(StatDefOf.ToolEffectiveness, BoneDefOf.ToolHead);
     }

@@ -26,8 +26,8 @@ using System.Linq;
 
 namespace Project1.Core.Simulation;
 
-[Flags]
-public enum Edges { None = 0x0, West = 0x1, North = 0x2, East = 0x4, South = 0x8, All = 0xF }
+//[Flags]
+//public enum Edges { None = 0x0, West = 0x1, North = 0x2, East = 0x4, South = 0x8, All = 0xF }
 public record struct Light() : ISerializable
 {
     public byte Sky = 15;

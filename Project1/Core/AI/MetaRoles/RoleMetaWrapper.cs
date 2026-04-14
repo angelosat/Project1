@@ -112,7 +112,7 @@ namespace Project1.Core.AI.MetaRoles
             var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
             wrapper.Def = def;
             wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");
-            if (tag.TryLoadDefOut<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
+            if (tag.TryLoadDef<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
             return wrapper;
         }
 

@@ -73,7 +73,6 @@ sealed class Planner_Shop_Customer : Planner
                         return new Plan(PlanDefOf.GoPlace, map, counter.Above);
                     if (req.IsPaidFor)
                         return new Plan(PlanDefOf.StoreInInventory);
-                    //throw new UnreachableException();
                     return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = req };
                 }
                 else if(carried.RefId == req.Money)
@@ -89,7 +88,6 @@ sealed class Planner_Shop_Customer : Planner
         IntVec3 foundPoint = default;
         if (shoppingList.HasResults && !FindServicePoint(actor, servicepoints, out foundPoint))
             return null;
-        //while (shoppingList.DequeueImpulse() is var impulse && impulse.item is Entity item)
         foreach (var (item, score, price) in shoppingList.GetResultsImpulse())
         {
             if (!IsValid(actor, item))
@@ -118,7 +116,7 @@ sealed class Planner_Shop_Customer : Planner
     {
         if (item.Map != actor.Map)
             return false;
-        if (!item.IsForSale())
+        if (!item.IsForSale)
             return false;
         if (!actor.CanAfford(item))
             return false;

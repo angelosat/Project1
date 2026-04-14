@@ -433,7 +433,7 @@ namespace Project1.Core.AI
 
             tag.TryGetTagValue<int>("Continuation", v => this.Continuation = (PlanContinuationPolicy)v);
 
-            if (tag.TryLoadDefOut<DesignationDef>("Designation", out var designation))
+            if (tag.TryLoadDef<DesignationDef>("Designation", out var designation))
                 this.Designation = designation;
             if (tag.TryLoadInt("ZoneID", out var zoneID))
                 this._zoneID = zoneID;

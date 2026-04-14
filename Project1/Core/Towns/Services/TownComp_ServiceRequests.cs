@@ -21,6 +21,7 @@ public class TownComp_ServiceRequests : TownComp
     readonly Dictionary<TownServiceRequestId, ServiceRequest> _openRequests = [];
     readonly Dictionary<EntityRefId, ServiceRequest> _openRequestsByCustomer = [];
     readonly Dictionary<EntityRefId, ServiceRequest> _openRequestsByVendor = [];
+    readonly Dictionary<IntVec3, ServiceRequest> _openRequestsByCounter = [];
     readonly HashSet<IntVec3> CountersAll = [];
     readonly Dictionary<TownServiceDef, HashSet<IntVec3>> CountersByService = [];
     readonly Dictionary<IntVec3, Queue<Actor>> QueuesByCounter = [];
@@ -40,8 +41,11 @@ public class TownComp_ServiceRequests : TownComp
         var cell = e.Comp.Parent.OriginGlobal;
         if (e.OldService is TownServiceDef defold)
         {
-            if (this.QueuesByCounter[cell].TryPeek(out var affectedCustomer))
-                if (this._openRequestsByCustomer.TryGetValue(affectedCustomer.RefId, out var affectedReq))
+            //if (this.QueuesByCounter[cell].TryPeek(out var affectedCustomer))
+            //    if (this._openRequestsByCustomer.TryGetValue(affectedCustomer.RefId, out var affectedReq))
+            //        affectedReq.MarkFailed();
+            if(this._openRequestsByCounter.TryGetValue(cell, out var affectedReq))
+                //if (this._openRequestsByCustomer.TryGetValue(affectedCustomer.RefId, out var affectedReq))
                     affectedReq.MarkFailed();
             this.CountersByService[defold].Remove(cell);
         }
@@ -59,6 +63,8 @@ public class TownComp_ServiceRequests : TownComp
         request.Id = id;
         this._openRequests.Add(id, request);
         this._openRequestsByCustomer.Add(request.Customer, request);
+        if (request.Counter.HasValue)
+            this._openRequestsByCounter.Add(request.Counter.Value, request);
         return id;
     }
 
@@ -68,6 +74,8 @@ public class TownComp_ServiceRequests : TownComp
         this._openRequests.Remove(id);
         this._openRequestsByCustomer.Remove(req.Customer);
         this._openRequestsByVendor.Remove(req.Vendor);
+        if (req.Counter.HasValue)
+            this._openRequestsByCounter.Remove(req.Counter.Value);
 
         var cust = this.World.Get<Actor>(req.Customer);
         if (cust.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req)
@@ -80,7 +88,10 @@ public class TownComp_ServiceRequests : TownComp
         if(counter.HasValue)
         {
             if (!this.QueuesByCounter[counter.Value].TryDequeue(out var customer) || customer.RefId != req.Customer)
-                throw new InvalidOperationException();
+            {
+                //throw new InvalidOperationException();
+                $"warning: service request removed before customer enqueued".ToConsole();
+            }
         }
     }
 

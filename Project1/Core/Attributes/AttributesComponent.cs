@@ -9,7 +9,7 @@ using Project1.Framework.Helpers;
 
 namespace Project1.Core.Attributes
 {
-    class AttributesComponent : EntityComp<AttributesComponent.Spec>
+    class AttributesComponent : EntityComp<AttributesComponent.Spec>, IGuiNew
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Attributes;
         public override string Name { get; } = "Attributes";
@@ -41,7 +41,25 @@ namespace Project1.Core.Attributes
         {
             return this.Attributes[def];//.FirstOrDefault(att => att.Def == def);
         }
-
+        public Control CreateControl()
+        {
+            //var table = new TableScrollableCompact<AttributeRuntime>()
+            //    .AddColumn("name", "", 64, a => new Label(a.AttributeDef.LabelReadable)
+            //    {
+            //        TooltipFunc = (t) =>
+            //        {
+            //            t.AddControlsBottomLeft(
+            //                new Label(a.AttributeDef.Description),
+            //                a.GetProgressControl());
+            //        }
+            //    })
+            //    .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.Level.ToString()));
+            //table.AddItems(this.Attributes.Values);
+            //return table;
+            var list = new ListBoxNoScroll();
+            list.AddItems(this.Attributes.Values);
+            return list;
+        }
         TableScrollableCompact<AttributeRuntime> GUITableAttributes = new TableScrollableCompact<AttributeRuntime>()
                 .AddColumn("name", "", 64, a => new Label(a.AttributeDef.LabelReadable)
                 {
@@ -122,6 +140,7 @@ namespace Project1.Core.Attributes
         {
             this.GetAttribute(def).SetValue(value);
         }
+
         public new class Spec : Spec<AttributesComponent>
         {
             public AttributeDef[] Items;

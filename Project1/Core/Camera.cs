@@ -246,6 +246,11 @@ public sealed class Camera : ICamera, IInputEventHandler
                 this.Follow(this.Center.Value);
             return;
         }
+        if(this.Following.Map is null)
+        {
+            this.Following = null;
+            return;
+        }
         if (this.Following.IsIndoors())
             this.DrawLevel = (int)(this.Following.Global.CeilingZ().Z + this.Following.Physics.Height - 1);
         else

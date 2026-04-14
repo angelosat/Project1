@@ -53,7 +53,7 @@ namespace Project1.Core.Blocks.Construction
 
         public override void Load(SaveTag tag)
         {
-            if (tag.TryLoadDefOut<MaterialRefinementDef>("Ingredient", out var ingr))
+            if (tag.TryLoadDef<MaterialRefinementDef>("Ingredient", out var ingr))
                 this.IngredientUsed = ingr;
             this.Amount = tag.TryLoadInt("Amount", out var amount) ? amount : 1;
         }

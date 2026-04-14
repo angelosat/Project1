@@ -372,9 +372,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public ResourcesComp Resources => this._resourcesCached ??= this.GetComponent<ResourcesComp>();
 
 
-    private StatsComponent _stats;
+    private StatsComp _stats;
     [InspectorHidden]
-    internal StatsComponent Stats => _stats ??= this.GetComponent<StatsComponent>();
+    internal StatsComp Stats => _stats ??= this.GetComponent<StatsComp>();
 
     [InspectorHidden]
     public AttributeRuntime this[AttributeDef att] => this.GetAttribute(att);
@@ -1194,7 +1194,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
  
     internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
     {
-        this.TryGetComponent<StatsComponent>(out var stats);
+        this.TryGetComponent<StatsComp>(out var stats);
         return stats?.GetModifiers(statNewDef);
     }
     internal void AddResourceModifier(ResourceRateModifier resourceModifier)
@@ -1203,7 +1203,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     internal void AddStatModifier(StatNewModifier statNewModifier)
     {
-        this.GetComponent<StatsComponent>().AddModifier(statNewModifier);
+        this.GetComponent<StatsComp>().AddModifier(statNewModifier);
     }
     public int GetValueScore()
     {

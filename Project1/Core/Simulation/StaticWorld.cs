@@ -130,7 +130,7 @@ public class StaticWorld : WorldBase
             this.Flat = (bool)flatTag.Value;
         save.TryGetTagValue<ulong>("CurrentTick", v => this.CurrentTick = (ulong)v);
 
-        if (save.TryLoadDefOut<BlockDef>("DefaultBlock", out var bd))
+        if (save.TryLoadDef<BlockDef>("DefaultBlock", out var bd))
             this.DefaultBlock = bd.Block;
         else
             this.DefaultBlock = BlockDefOf.Soil.Block;

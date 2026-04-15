@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Magic;
-using Project1.Framework.Events;
 using System;
 
 namespace Project1.Core.Systems.Consumables.Scrolls;
@@ -24,7 +22,7 @@ internal sealed class ConsumableEffect_TownScroll : ConsumableEffect
             throw new InvalidOperationException();
         var waypoint = town.Waypoint.Value;
         map.Spawn(actor, waypoint.Above, Vector3.Zero);
-        map.Events.Post(new EntitySpellEvent(actor, SpellDefOf.Teleporting));
+        map.Events.Post(new Events_Spells(actor, SpellDefOf.Teleporting));
     }
 }
 
@@ -35,6 +33,3 @@ internal sealed class ConsumableEffect_Food : ConsumableEffect
 
     }
 }
-
-
-internal record struct EntitySpellEvent(Entity Entity, SpellDef Spell) : IEventPayload;

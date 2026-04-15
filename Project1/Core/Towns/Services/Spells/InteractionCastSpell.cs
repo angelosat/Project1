@@ -2,7 +2,7 @@
 using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Core.Systems.Magic;
 
-namespace Project1.Core.Towns.Services.Healing;
+namespace Project1.Core.Towns.Services.Spells;
 
 sealed class InteractionCastSpell : InteractionLogic
 {
@@ -11,7 +11,7 @@ sealed class InteractionCastSpell : InteractionLogic
     internal override void OnStart(Interaction i)
     {
         var spell = Spell(i.Context);
-        i.Progress.SetMax((int)Ticks.FromSeconds(spell.DurationSeconds));
+        i.Progress.SetMax((int)Ticks.FromSeconds(spell.CastTimeSeconds));
     }
 
     internal override bool HasSucceeded(Interaction i)
@@ -20,7 +20,8 @@ sealed class InteractionCastSpell : InteractionLogic
     internal override void OnFinish(Interaction i)
     {
         var spell = Spell(i.Context);
-        spell.Worker.Cast(i.Actor, i.Target);
-        i.Actor.Map.Events.Post(new EntitySpellEvent(i.Target, spell));
+        //spell.Worker.Cast(i.Actor, i.Target);
+        i.Actor.Cast(spell, i.Target);
+        i.Actor.Map.Events.Post(new Events_Spells(i.Target, spell));
     }
 }

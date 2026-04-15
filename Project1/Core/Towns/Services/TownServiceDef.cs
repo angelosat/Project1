@@ -1,4 +1,4 @@
-﻿using Project1.Core.Towns.Services.Healing;
+﻿using Project1.Core.Towns.Services.Spells;
 using Project1.Core.Towns.Services.Inns;
 using Project1.Core.Towns.Services.Repairing;
 using Project1.Core.Towns.Services.Shops;

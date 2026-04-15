@@ -7,6 +7,7 @@ using Project1.Core.Resources;
 using Project1.Core.Towns.Duties;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 
 namespace Project1.Core.Towns.Services.Repairing;
 
@@ -81,7 +82,8 @@ internal sealed class Planner_Repairs_Vendor : Planner
             var customer = world.Get(pending.Customer);
             if (!actor.CanReachAndReserve(customer))
                 continue;
-            manager.AssignVendor(typed, actor);
+            //manager.AssignVendor(typed, actor);
+            map.Town.ServiceRequests.AssignVendor(req, actor);
             manager.AssignRepairBench(typed, bench.Parent.OriginGlobal);
             return null;
         }

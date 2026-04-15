@@ -31,6 +31,7 @@ namespace Project1.Core.Effects
                 .Write(effect.Budget.HasValue)
                 .Write(effect.Budget ?? 0)
                 .Write(effect.TicksPerUnit);
+                //.Write(effect.Magnitude);
         }
 
         private static void ReceiveEffectApplied(NetEndpoint endpoint, Packet packet)
@@ -42,7 +43,8 @@ namespace Project1.Core.Effects
             var hasBudget = r.ReadBoolean();
             var budget = r.ReadInt32();
             var ticksPerUnit = r.ReadInt32();
-            var effect = new EntityEffectWrapper(effectdef, targetdef, hasBudget ? budget : null, ticksPerUnit);
+            //var mag = r.ReadInt32();
+            var effect = new EntityEffectWrapper(effectdef, targetdef, hasBudget ? budget : null, ticksPerUnit/*, Magnitude: mag*/);
             actor.Effects.Apply(effect);
         }
 

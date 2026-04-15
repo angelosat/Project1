@@ -2,7 +2,7 @@
 using Project1.Core.Towns.Services.Shops;
 
 namespace Project1.Core.AI.Thought;
-internal sealed class ThoughProcess_tItemEvaluatorVisitor : ThoughtProcess
+internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
 {
     internal override void TickOffMap(AIState state)
     {

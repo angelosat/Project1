@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Core.Systems.Magic;
 using Project1.Framework;
 
@@ -14,10 +13,10 @@ internal static class PacketsEffects
 
     static PacketsEffects()
     {
-        Registry.MapEventHooksServer.Register<EntitySpellEvent>(HandleSpell);
+        Registry.MapEventHooksServer.Register<Events_Spells>(HandleSpell);
     }
 
-    private static void HandleSpell(EntitySpellEvent e)
+    private static void HandleSpell(Events_Spells e)
     {
         SendSpell(Server.Instance, e.Entity, e.Spell);
     }
@@ -33,6 +32,6 @@ internal static class PacketsEffects
         var r = packet.PacketReader;
         var entity = endpoint.World.Get<Entity>(r.ReadEntityRefId());
         var spell = r.ReadDef<SpellDef>();
-        entity.Map.Events.Post(new EntitySpellEvent(entity, spell));
+        entity.Map.Events.Post(new Events_Spells(entity, spell));
     }
 }

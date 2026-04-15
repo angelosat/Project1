@@ -106,7 +106,8 @@ internal class BlockShopComp : BlockComp
 
     protected override void SaveExtra(SaveTag tag)
     {
-        tag.Save("Service", this.Service);
+        if(this.Service is not null)
+            tag.Save("Service", this.Service);
     }
     public override void Load(SaveTag tag)
     {

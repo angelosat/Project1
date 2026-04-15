@@ -5,7 +5,7 @@ using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Simulation;
-using Project1.Core.Systems.Consumables.Scrolls;
+using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Presentation;
 using Project1.Framework;
@@ -23,10 +23,10 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
         Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
-        Registry.MapEventHooksClient.Register<EntitySpellEvent>(OnEntityTeleport);
+        Registry.MapEventHooksClient.Register<Events_Spells>(OnEntityTeleport);
     }
 
-    private void OnEntityTeleport(EntitySpellEvent e)
+    private void OnEntityTeleport(Events_Spells e)
     {
         var entity = e.Entity;
         var map = entity.Map;

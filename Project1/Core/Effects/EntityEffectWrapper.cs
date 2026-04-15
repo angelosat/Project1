@@ -7,7 +7,7 @@ using System;
 
 namespace Project1.Core.Effects
 {
-    public record EntityEffectWrapper(EffectDef Def, Def Target, int? Budget, int TicksPerUnit) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
+    public record EntityEffectWrapper(EffectDef Def, Def Target, int? Budget, int TicksPerUnit/*, int Magnitude*/) : ISaveableNewNew<EntityEffectWrapper>, ISerializableNew<EntityEffectWrapper>
     {
         bool _aborted;
         //public bool IsFinished => this.RemainingBudget.HasValue && this.RemainingBudget == 0;
@@ -35,7 +35,8 @@ namespace Project1.Core.Effects
             var target = r.ReadDef();
             var value = r.ReadInt32();
             var rate = r.ReadInt32();
-            return new(def, target, value, rate);
+            //var mag = r.ReadInt32();
+            return new(def, target, value, rate/*, mag*/);
         }
 
         public SaveTag Save(string name = "")
@@ -45,6 +46,7 @@ namespace Project1.Core.Effects
             this.Target.Save(tag, "Target");
             //this.Budget.Save(tag, "Value");
             this.TicksPerUnit.Save(tag, "Rate");
+            //tag.Save("Magnitude", this.Magnitude);
             return tag;
         }
         public Control GetGui()
@@ -57,6 +59,7 @@ namespace Project1.Core.Effects
             w.Write(this.Target);
             //w.Write(this.Budget);
             w.Write(this.TicksPerUnit);
+            //w.Write(this.Magnitude);
         }
         public EntityEffectWrapper Read(IDataReader r) => throw new System.Exception();
         public static EntityEffectWrapper Create(SaveTag tag)
@@ -65,7 +68,8 @@ namespace Project1.Core.Effects
             var target = tag.LoadDef<Def>("Target");
             var value = tag.LoadInt("Value");
             var rate = tag.LoadInt("Rate");
-            return new EntityEffectWrapper(def, target, value, rate);
+            //var mag = tag.LoadInt("Magnitude");
+            return new EntityEffectWrapper(def, target, value, rate/*, mag*/);
         }
 
        

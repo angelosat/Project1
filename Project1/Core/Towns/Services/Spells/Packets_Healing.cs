@@ -1,23 +1,47 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Systems.Magic;
 using Project1.Framework;
 
-namespace Project1.Core.Towns.Services.Healing;
+namespace Project1.Core.Towns.Services.Spells;
 
 [EnsureStaticCtorCall]
 internal static class Packets_Healing
 {
     static readonly PacketId
+        _pPlayerSpellToggled = Registry.PacketHandlers.Register(ReceivePlayerSpellToggled),
         _pCreate = Registry.PacketHandlers.Register(ReceiveCreate);
-        //_pSync = Registry.PacketHandlers.Register(ReceiveSync);
+
     static Packets_Healing()
     {
-        //Registry.MapEventHooksServer.Register<HealingRequestUpdatedEvent>(HandleRequestUpdated);
         Registry.MapEventHooksServer.Register<HealingRequestCreatedEvent>(HandleRequestCreated);
+
+        Registry.PlayerInputEventHooks.Register<PlayerTownSpellToggledEvent>(HandlePlayerSpellToggle);
     }
 
+    private static void HandlePlayerSpellToggle(PlayerTownSpellToggledEvent e)
+    {
+        if (Ingame.Net.IsServer)
+            e.Map.Town.Spells.ToggleSpell(e.Spell);
+        Ingame.Net.BeginPacketImmediate(_pPlayerSpellToggled)
+            .Write(e.Map.ID)
+            .Write(e.Spell);
+    }
+    private static void ReceivePlayerSpellToggled(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var map = endpoint.World.Get(r.ReadMapId());
+        var spell = r.ReadDef<SpellDef>();
+        map.Town.Spells.ToggleSpell(spell);
+        if (endpoint is Server server)
+        {
+            server.BeginPacketImmediate(_pPlayerSpellToggled)
+                .Write(map.ID)
+                .Write(spell);
+        }
+    }
     private static void HandleRequestCreated(HealingRequestCreatedEvent e)
     {
         SendRequestCreated(Server.Instance, e.Target, e.Spell);

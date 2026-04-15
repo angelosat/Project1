@@ -180,6 +180,8 @@ public sealed class ResourcesComp : EntityComp
 
     internal float GetValue(ResourceDef def)
         => this.Resources[def].Value;
+    internal float GetDeficit(ResourceDef def)
+    => this.Resources[def].Deficit;
 
     public new sealed class Spec(ResourceDef[] defs) : Spec<ResourcesComp> 
     {

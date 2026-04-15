@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Interactions;
 using Project1.Core.Systems.Trading;
 
-namespace Project1.Core.Towns.Services.Healing;
+namespace Project1.Core.Towns.Services.Spells;
 
 sealed class InteractionHealingWaitPay : InteractionLogic
 {

@@ -13,7 +13,6 @@ public sealed class TownComp_Repairs : TownComp
 {
     public override string Name => "Repairs";
 
-    //private readonly Dictionary<IntVec3, Queue<Actor>> QueuesPerServicePoint = [];
     private readonly HashSet<IntVec3> _repairStationsAll = [];
     private readonly HashSet<IntVec3> _repairStationsAvailable = [];
     private readonly Dictionary<EntityRefId, ServiceRequest_Repair> _requests = [];
@@ -62,11 +61,6 @@ public sealed class TownComp_Repairs : TownComp
         this.Town.ServiceRequests.Remove(req.Id);
     }
 
-    internal void AssignVendor(ServiceRequest_Repair req, Actor vendor)
-    {
-        //req.Vendor = vendor.RefId;
-        this.Town.ServiceRequests.AssignVendor(req, vendor);
-    }
     internal void AssignRepairBench(ServiceRequest_Repair req, IntVec3 bench)
     {
         req.RepairBench = bench;
@@ -77,8 +71,6 @@ public sealed class TownComp_Repairs : TownComp
     internal override void Scan(BlockEntity entity)
     {
         var cell = entity.OriginGlobal;
-        //if (entity.HasComp<BlockShopComp>())
-        //    this.QueuesPerServicePoint.Add(cell, new());
         if (entity.TryGetComp<BlockWorkstationComp>(out var workstation) && workstation.WorkstationType.Capabilities.Contains(WorkstationCapabilityDefOf.Repairing))
         {
             this._repairStationsAll.Add(cell);

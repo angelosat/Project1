@@ -30,7 +30,7 @@ public class ConsumableComp : EntityComp
     {
         var comp = source as ConsumableComp;
         foreach (var f in comp.EffectsNew)
-            this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.TicksPerUnit));
+            this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.TicksPerUnit/*, f.Magnitude*/));
     }
 
     internal void Consume(GameObject actor)

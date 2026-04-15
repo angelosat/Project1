@@ -31,12 +31,12 @@ public sealed class EffectsComponent : EntityComp
             effect.Finish(this.Owner as Actor);
 
     }
-    [Obsolete("add EntityEffectWrapper instead")]
-    public void Apply(EffectDef effectt)
-    {
-        var wrapper = new EntityEffectWrapper(effectt, null, 1, 0);
-        this.Apply(wrapper);
-    }
+    //[Obsolete("add EntityEffectWrapper instead")]
+    //public void Apply(EffectDef effectt)
+    //{
+    //    var wrapper = new EntityEffectWrapper(effectt, null, 1, 0);
+    //    this.Apply(wrapper);
+    //}
 
     internal void Remove(EffectDef effect)
     {

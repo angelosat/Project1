@@ -127,7 +127,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         need.Value = this.World.Random.Next(0, 100);
         actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
         actor.Skills.Randomize();
-        //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
+        actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
         var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);

@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Magic;
 
-namespace Project1.Core.Towns.Services.Healing;
+namespace Project1.Core.Towns.Services.Spells;
 
 public sealed class ServiceRequest_Spell : ServiceRequest
 {

@@ -3,7 +3,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.Interactions;
 using Project1.Framework;
 
-namespace Project1.Core.Towns.Services.Healing;
+namespace Project1.Core.Towns.Services.Spells;
 
 [EnsureStaticCtorCall]
 public static class HealingDefOf

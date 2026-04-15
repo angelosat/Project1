@@ -2,6 +2,7 @@
 using Project1.Core.AI.Thought;
 using Project1.Core.Needs;
 using Project1.Core.Towns.AI.Needs;
+using Project1.Core.Towns.Services.Spells;
 using Project1.Framework;
 
 namespace Project1.Core.AI.MetaRoles
@@ -12,8 +13,9 @@ namespace Project1.Core.AI.MetaRoles
         public readonly static RoleMetaDef TownMember = new("TownMember", typeof(RoleTownMemberData), typeof(RoleTownMemberWorker), [NeedDefOf.Work], 
             [typeof(ThoughtProcess_ItemEvaluatorTownMember)]); 
         public readonly static RoleMetaDef Adventurer = new("Adventurer", typeof(RoleAdventurerData), typeof(RoleAdventurerWorker), [
-            AdventurerNeedsDefOf.Adventuring],
-            [typeof(ThoughProcess_tItemEvaluatorVisitor),
+            AdventurerNeedsDefOf.Adventuring],[
+            typeof(ThoughtProcess_ItemEvaluatorVisitor),
+            //typeof(ThoughtProcess_TownSpellScorer),
             typeof(ThoughtAdventuring),
             typeof(ThoughtProcess_Quests),
             typeof(ThoughtProcess_UseTownScroll)]);

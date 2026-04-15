@@ -147,6 +147,8 @@ public class TownComp_ServiceRequests : TownComp
     }
     internal bool TryGetByVendor(Actor actor, out ServiceRequest req)
         => this._openRequestsByVendor.TryGetValue(actor.RefId, out req);
+    internal bool TryGetByCustomer(Actor actor, out ServiceRequest req)
+     => this._openRequestsByCustomer.TryGetValue(actor.RefId, out req);
     internal bool TryGetByVendor<T>(Actor actor, out T req) where T : ServiceRequest
     {
         if(this._openRequestsByVendor.TryGetValue(actor.RefId, out var found))

@@ -34,7 +34,7 @@ internal sealed class Planner_Repairs_Customer : Planner
                 {
                     if (actor.Hauled == item)
                         return new Plan(PlanDefOf.StoreInInventory);
-                    if (item.IsSpawned && actor.CanReachAndReserve(item))// == counter.Above)
+                    if (item.IsSpawned && actor.CanReachAndReserve(item))
                         return new Plan(PlanDefOf.GoHaul, item);
                     return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing };
                 }
@@ -48,7 +48,6 @@ internal sealed class Planner_Repairs_Customer : Planner
                     }
                     if (actor.Hauled is Entity carriedMoney && carriedMoney.Def == ItemDefOf.Coins && carriedMoney.StackSize == existing.Price)
                     {
-                        //existing.Money = carriedMoney.RefId;
                         existing.AllocateMoney(carriedMoney);
                         carriedMoney.SetOwnerNew(null);
                         return new Plan(PlanDefOf.GoPlace, map, counter.Above);

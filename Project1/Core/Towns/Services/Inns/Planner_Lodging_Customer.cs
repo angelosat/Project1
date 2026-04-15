@@ -19,10 +19,11 @@ internal sealed class Planner_Lodging_Customer : Planner
         if (actor.HasCheckedIn)
             return null;
         var price = 100; // TODO: query manager for price
-        if (manager.TryGetTransaction(actor, out var req))
+        if (map.Town.ServiceRequests.TryGetByCustomer(actor, out var req))
         {
             if (req.IsPaidFor)
-                return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, req.Counter.Value.Above));
+                return new Plan(TownServicesDefOf.PlanQueue, map, req.Counter.Value.Above) { ServiceRequest = req };
+
             if (req.IsVendorWaitingPayment)
             {
                 if (actor.Hauled is Entity carried)
@@ -43,15 +44,17 @@ internal sealed class Planner_Lodging_Customer : Planner
                             throw new System.Exception();
                             //return null;
                     }
-                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value.Above));
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value.Above)) { ServiceRequest = req };
                 }
                 else
                 {
                     if (req.IsMoneyAllocated)
-                        return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, req.Counter.Value.Above));
+                        //return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, req.Counter.Value.Above)) { ServiceRequest = req };
+                        return new Plan(TownServicesDefOf.PlanQueue, map, req.Counter.Value.Above) { ServiceRequest = req };
+
                     if (!actor.Inventory.TryGet(e => e.Def == ItemDefOf.Coins && e.StackSize >= price, out Entity money))
                         return null;
-                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { AmountA = price };
+                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { ServiceRequest = req, AmountA = price };
                 }
             }
             return null;
@@ -61,7 +64,8 @@ internal sealed class Planner_Lodging_Customer : Planner
             return null;
         if (actor.Resources.GetPercentage(ResourceDefOf.Patience) < .5f) // TODO: make it variable
             return null;
-        var servicePoints = manager.GetServicePoints();
+        //var servicePoints = manager.GetServicePoints();
+        var servicePoints = map.Town.ServiceRequests.GetCounters(TownServiceDefOf.Lodging);
         if (!servicePoints.Any())
             return null;
         if (!actor.TryChoosePosition(servicePoints, out var desk))
@@ -69,6 +73,9 @@ internal sealed class Planner_Lodging_Customer : Planner
        
         if (!actor.Inventory.TryGet(e => e.Def == ItemDefOf.Coins && e.StackSize >= price, out _))
             return null;
-        return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(actor.Map, desk));
+        //return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(actor.Map, desk)) { ServiceRequest = req };
+        var newreq = manager.Begin(actor, desk);
+        return new Plan(TownServicesDefOf.PlanQueue, map, desk.Above) { ServiceRequest = newreq };
+
     }
 }

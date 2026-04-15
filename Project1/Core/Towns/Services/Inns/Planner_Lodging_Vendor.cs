@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Project1.Core.Towns.Services.Inns;
 
@@ -19,7 +20,7 @@ internal sealed class Planner_Lodging_Vendor : Planner
         if (manager.GetTransactionByClerk(actor) is ServiceRequest_Inn req)
         {
             if (req.IsPaidFor && actor.Hauled is null)
-                    return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, req.Counter.Value));
+                    return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, req.Counter.Value)) { ServiceRequest = req };
 
             if (req.IsMoneyAllocated)
             {
@@ -27,27 +28,39 @@ internal sealed class Planner_Lodging_Vendor : Planner
                 
                 if (actor.Hauled == money)
                 {
-                    if (!manager.TryFindBedFrom(req.Counter.Value, out _))
+                    if(!manager.AvailableBeds.Any(b => actor.CanReach(b)))
                         throw new Exception();
-                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value));
+                    var bed = manager.AvailableBeds.First(b => actor.CanReach(b));
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value)) { ServiceRequest = req };
                 }
                 if (money.Cell == req.Counter.Value.Above)
                 {
                     req.MarkPaidFor();
-
-                    return new Plan(PlanDefOf.GoHaul, money);
+                    return new Plan(PlanDefOf.GoHaul, money) { ServiceRequest = req };
                 }
             }
 
             throw new UnreachableException();
         }
-        var busyServicePoints = manager.GetServicePointsWithQueueUnserved();
-        foreach (var point in busyServicePoints)
+        //var busyServicePoints = manager.GetServicePointsWithQueueUnserved();
+        //foreach (var point in busyServicePoints)
+        //{
+        //    if (!manager.TryFindBedFrom(point, out var foundBed))
+        //        continue;
+        //    manager.AssignClerk(point, actor);
+        //    return new Plan(InnsDefOf.PlanWaitForPayForBed, new InteractionTarget(actor.Map, point));
+        //}
+        if (!manager.AvailableBeds.Any(b => actor.CanReach(b)))
+            return null;
+        foreach (var pending in map.Town.ServiceRequests.GetAllPendingRequests(TownServiceDefOf.Lodging))
         {
-            if (!manager.TryFindBedFrom(point, out var foundBed))
+            if (pending is not ServiceRequest_Inn typed)
                 continue;
-            manager.AssignClerk(point, actor);
-            return new Plan(InnsDefOf.PlanWaitForPayForBed, new InteractionTarget(actor.Map, point));
+            //if (!manager.TryFindBedFrom(typed.Counter.Value, out var foundBed))
+            //    continue;
+            manager.AssignClerk(typed.Counter.Value, actor);
+            //return new Plan(InnsDefOf.PlanWaitForPayForBed, actor.Map, typed.Counter.Value);
+            return new Plan(TownServicesDefOf.PlanWaitMoney, actor.Map, typed.Counter.Value) { ServiceRequest = pending };
         }
         return null;
     }

@@ -242,7 +242,7 @@ public sealed class TownComp_Shops : TownComp
         => this._itemsForSale.TryGetValue(itemId, out var tag) ? tag.Price : null;
     internal int? GetPrice(Entity item)
     => this._itemsForSale.TryGetValue(item.RefId, out var tag) ? tag.Price : null;
-    internal bool TryBeginTransaction(Actor actor, Entity item, int price, IntVec3 servicePoint, out ServiceRequest_Shop req)
+    internal bool TryBegin(Actor actor, Entity item, int price, IntVec3 servicePoint, out ServiceRequest_Shop req)
     {
         req = new ServiceRequest_Shop(actor, item, price, servicePoint);
         AddInt(req);
@@ -281,7 +281,6 @@ public sealed class TownComp_Shops : TownComp
     {
         if (transaction.Vendor != EntityRefId.Null)
             throw new Exception();
-        //transaction.AssignVendor(seller);
         this.Town.ServiceRequests.AssignVendor(transaction, seller);
         transaction.RefreshTimer();
         this._transactionsBySeller.Add(seller.RefId, transaction);

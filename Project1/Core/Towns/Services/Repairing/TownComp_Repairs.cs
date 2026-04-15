@@ -13,7 +13,7 @@ public sealed class TownComp_Repairs : TownComp
 {
     public override string Name => "Repairs";
 
-    private readonly Dictionary<IntVec3, Queue<Actor>> QueuesPerServicePoint = [];
+    //private readonly Dictionary<IntVec3, Queue<Actor>> QueuesPerServicePoint = [];
     private readonly HashSet<IntVec3> _repairStationsAll = [];
     private readonly HashSet<IntVec3> _repairStationsAvailable = [];
     private readonly Dictionary<EntityRefId, ServiceRequest_Repair> _requests = [];
@@ -23,24 +23,7 @@ public sealed class TownComp_Repairs : TownComp
 
     public TownComp_Repairs(Town town) : base(town)
     {
-        //town.Map.Events.ListenTo<ActorHaulingNewItemEvent>(HandleActorHaulingNewItem);
     }
-
-    //private void HandleActorHaulingNewItem(ActorHaulingNewItemEvent e)
-    //{
-    //    var item = e.Actor.Hauled;
-    //    if (!this._requestsByItem.TryGetValue(item.RefId, out var request))
-    //        return;
-    //    if (request.ItemSubmitted)
-    //        return;
-    //    if (e.Actor.RefId != request.Vendor)
-    //    {
-    //        if (e.Actor.RefId != request.Customer)
-    //            Debug.Fail("Unexpected item holder for repair request");
-    //        return;
-    //    }
-    //    request.ItemSubmitted = true;
-    //}
 
     internal override void Tick()
     {
@@ -90,13 +73,12 @@ public sealed class TownComp_Repairs : TownComp
         this._repairStationsAvailable.Remove(bench);
         this._requestsByRepairBench.Add(bench, req);
     }
-    internal IEnumerable<IntVec3> Counters => this.QueuesPerServicePoint.Keys;
 
     internal override void Scan(BlockEntity entity)
     {
         var cell = entity.OriginGlobal;
-        if (entity.HasComp<BlockShopComp>())
-            this.QueuesPerServicePoint.Add(cell, new());
+        //if (entity.HasComp<BlockShopComp>())
+        //    this.QueuesPerServicePoint.Add(cell, new());
         if (entity.TryGetComp<BlockWorkstationComp>(out var workstation) && workstation.WorkstationType.Capabilities.Contains(WorkstationCapabilityDefOf.Repairing))
         {
             this._repairStationsAll.Add(cell);

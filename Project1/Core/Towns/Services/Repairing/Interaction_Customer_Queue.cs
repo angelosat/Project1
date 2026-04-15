@@ -117,6 +117,11 @@ internal sealed class Interaction_Customer_Queue : InteractionLogic
         var req = i.Actor.CurrentPlan.ServiceRequest;
         if (req.IsVendorWaitingItemSubmit)
             return true;
+        // can i shove this condition here too or do i need separate interactions?
+        if (req.IsVendorWaitingPayment)
+            return true;
+        if (req.IsSucceeded)
+            return true;
         return false;
     }
 

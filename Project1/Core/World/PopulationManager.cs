@@ -1,6 +1,7 @@
 ﻿using Project1.Core.AI.MetaRoles;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Needs;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
 using Project1.Core.Resources;
@@ -124,13 +125,13 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         inventory.Insert(townscroll);
         var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
         need.Value = this.World.Random.Next(0, 100);
-        //actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
+        actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
         actor.Skills.Randomize();
         //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
         var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
-        //inventory.Insert(damagedTool);
+        inventory.Insert(damagedTool);
 
         this.World.Register(actor);
 

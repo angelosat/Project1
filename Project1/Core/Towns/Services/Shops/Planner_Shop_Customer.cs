@@ -92,7 +92,7 @@ sealed class Planner_Shop_Customer : Planner
         {
             if (!IsValid(actor, item))
                 continue;
-            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint, out var reqnew))
+            if (!map.Town.Shops.TryBegin(actor, item, price, foundPoint, out var reqnew))
                 continue;
             actor.AI.State.Log.Write($"I am impulsively buying {item.RefId}: {item.Name}!");
             return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew, TargetA = item };
@@ -104,7 +104,7 @@ sealed class Planner_Shop_Customer : Planner
         {
             if (!IsValid(actor, item))
                 continue;
-            if (!map.Town.Shops.TryBeginTransaction(actor, item, price, foundPoint, out var reqnew))
+            if (!map.Town.Shops.TryBegin(actor, item, price, foundPoint, out var reqnew))
                 continue;
             actor.AI.State.Log.Write($"I decided to buy {item.Name}");
             return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew, TargetA = item };

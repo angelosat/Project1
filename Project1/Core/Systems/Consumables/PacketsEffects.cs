@@ -13,17 +13,18 @@ internal static class PacketsEffects
 
     static PacketsEffects()
     {
-        Registry.MapEventHooksServer.Register<Events_Spells>(HandleSpell);
+        Registry.MapEventHooksServer.Register<SpellCastEvent>(HandleSpell);
     }
 
-    private static void HandleSpell(Events_Spells e)
+    private static void HandleSpell(SpellCastEvent e)
     {
-        SendSpell(Server.Instance, e.Entity, e.Spell);
+        SendSpell(Server.Instance, e.Caster, e.Target, e.Spell);
     }
-    private static void SendSpell(NetEndpoint endpoint, Entity entity, SpellDef spell)
+    private static void SendSpell(NetEndpoint endpoint, Entity entity, InteractionTarget target, SpellDef spell)
     {
         endpoint.BeginPacket(_pSpell)
             .Write(entity.RefId)
+            .Write(target)
             .Write(spell);
     }
 
@@ -31,7 +32,8 @@ internal static class PacketsEffects
     {
         var r = packet.PacketReader;
         var entity = endpoint.World.Get<Entity>(r.ReadEntityRefId());
+        var target = r.ReadTarget(endpoint.World);
         var spell = r.ReadDef<SpellDef>();
-        entity.Map.Events.Post(new Events_Spells(entity, spell));
+        entity.Map.Events.Post(new SpellCastEvent(entity, target, spell));
     }
 }

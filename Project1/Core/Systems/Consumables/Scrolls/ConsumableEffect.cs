@@ -22,7 +22,7 @@ internal sealed class ConsumableEffect_TownScroll : ConsumableEffect
             throw new InvalidOperationException();
         var waypoint = town.Waypoint.Value;
         map.Spawn(actor, waypoint.Above, Vector3.Zero);
-        map.Events.Post(new Events_Spells(actor, SpellDefOf.Teleporting));
+        map.Events.Post(new SpellCastEvent(actor, actor, SpellDefOf.Teleporting));
     }
 }
 

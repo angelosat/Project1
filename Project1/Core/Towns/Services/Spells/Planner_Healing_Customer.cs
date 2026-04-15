@@ -28,7 +28,8 @@ internal class Planner_Healing_Customer : Planner
             if (existing.IsPaidFor)
             {
                 if (existing.IsCasterReady && !actor.IsHauling)
-                    return new Plan(HealingDefOf.PlanHealingSeek, caster);
+                    return new Plan(HealingDefOf.PlanHealingSeek, caster) { ServiceRequest = existing };
+                    //return new Plan(TownServicesDefOf.PlanQueue, caster) { ServiceRequest = existing };
                 return null;
             }
             else
@@ -36,7 +37,8 @@ internal class Planner_Healing_Customer : Planner
                 var trade = actor.Map.Town.Trades.GetTradeById(existing.PaymentId);
 
                 if (trade.IsComplete)
-                    return new Plan(HealingDefOf.PlanHealingSeek, caster);
+                    return new Plan(HealingDefOf.PlanHealingSeek, caster) { ServiceRequest = existing };
+                    //return new Plan(TownServicesDefOf.PlanQueue, caster) { ServiceRequest = existing };
 
                 if (!trade.IsAccepted)
                     return null;
@@ -46,12 +48,12 @@ internal class Planner_Healing_Customer : Planner
                     if (carried.Def != ItemDefOf.Coins || carried.StackSize != existing.Price)
                         return null;
                     actor.Map.Town.Trades.MarkItem(trade.Id, carried);
-                    return new Plan(PlanDefOf.TradeOffer, caster) { TradeId = trade.Id };
+                    return new Plan(PlanDefOf.TradeOffer, caster) { ServiceRequest = existing, TradeId = trade.Id };
                 }
                 else
                 {
                     var money = actor.Inventory.First(i => i.Def == ItemDefOf.Coins);
-                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { AmountA = existing.Price };
+                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { ServiceRequest = existing, AmountA = existing.Price };
                 }
             }
 

@@ -23,12 +23,14 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<PlantChoppedEvent>(OnPlantChopped);
         Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
-        Registry.MapEventHooksClient.Register<Events_Spells>(OnEntityTeleport);
+        Registry.MapEventHooksClient.Register<SpellCastEvent>(OnSpellCast);
     }
 
-    private void OnEntityTeleport(Events_Spells e)
+    private void OnSpellCast(SpellCastEvent e)
     {
-        var entity = e.Entity;
+        if (e.Target.Entity is not Entity entity)
+            return;
+        //var entity = e.Caster;
         var map = entity.Map;
         var emitter = NewEmitter(entity.Global + Vector3.UnitZ);
         emitter.HasPhysics = false;

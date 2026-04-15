@@ -75,6 +75,23 @@ public class TownComp_Spells : TownComp
         var validspells = allspells.Where(spell => (spell.Subject & SpellSubject.Other) == SpellSubject.Other);
         foreach (var spell in validspells)
             this._spellsOffered.Add(spell, new(spell, price: spell.ManaCost, enabled: true));
+
+        town.Map.Events.ListenTo<SpellCastEvent>(HandleSpellCast);
+    }
+
+    private void HandleSpellCast(SpellCastEvent e)
+    {
+        if (SpellSubject.Other != (e.Spell.Subject & SpellSubject.Other))
+            return;
+        if (e.Target.Entity is not Actor target)
+            return;
+        if (!this._pendingRequestsByTarget.TryGetValue(target.RefId, out var req))
+            return;
+        if (req.Vendor != e.Caster.RefId)
+            return;
+        if (req.Spell != e.Spell)
+            return;
+        req.MarkSucceeded();
     }
 
     internal override void Tick()

@@ -16,16 +16,16 @@ sealed class InteractionHealingSeek : InteractionLogic
         var typedCtx = (InteractionContext_Healing)i.Context;
         typedCtx.Manager.MarkTargetReady(i.Actor);
     }
-    internal override bool HasSucceeded(Interaction i)
-    {
-        var typedCtx = (InteractionContext_Healing)i.Context;
-        var threshold = .5f;
-        if (i.Actor.Resources.GetPercentage(ResourceDefOf.Health) < threshold)
-            return false;
-        typedCtx.Manager.MarkSucceeded(i.Actor);
+    //internal override bool HasSucceeded(Interaction i)
+    //{
+    //    var typedCtx = (InteractionContext_Healing)i.Context;
+    //    var threshold = .5f;
+    //    if (i.Actor.Resources.GetPercentage(ResourceDefOf.Health) < threshold)
+    //        return false;
+    //    typedCtx.Manager.MarkSucceeded(i.Actor);
 
-        return true;
-    }
+    //    return true;
+    //}
     internal override bool HasFailed(Interaction i)
     {
         if (i.Actor.Resources.GetPercentage(ResourceDefOf.Patience) <= 0)

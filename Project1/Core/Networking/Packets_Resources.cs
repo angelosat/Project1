@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Blocks.Comps;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Input;
 using Project1.Core.Resources;
 using Project1.Framework;
 using System;
@@ -8,11 +8,12 @@ using System;
 namespace Project1.Core.Networking
 {
     [EnsureStaticCtorCall]
-    internal static class PacketsResources
+    internal static class Packets_Resources
     {
         readonly static PacketId 
             _pResourceDelta = Registry.PacketHandlers.Register(ReceiveResourceDelta),
             _pResourceValue = Registry.PacketHandlers.Register(ReceiveResourceValue),
+            _pResourceChanged = Registry.PacketHandlers.Register(ReceiveResourceChanged),
             _pBlockResourceDelta = Registry.PacketHandlers.Register(ReceiveBlockResourceDelta),
             _pBlockResourceValue = Registry.PacketHandlers.Register(ReceiveBlockResourceValue);
 
@@ -23,11 +24,29 @@ namespace Project1.Core.Networking
             throw new NotImplementedException();
         }
 
-        static PacketsResources()
+        static Packets_Resources()
         {
             Registry.WorldEventHooksServer.Register<ResourceDeltaAppliedEvent>(SendResourceDelta);
+            Registry.WorldEventHooksServer.Register<ResourceChangedEvent>(SendResourceChanged);
             Registry.WorldEventHooksServer.Register<BlockResourceDeltaAppliedEvent>(SendBlockResourceDelta);
             Registry.WorldEventHooksServer.Register<BlockResourceValueSetEvent>(SendBlockResourceValue);
+        }
+
+        private static void SendResourceChanged(ResourceChangedEvent e)
+        {
+            var w = Server.Instance.BeginPacket(_pResourceChanged)
+                .Write(e.Entity.RefId)
+                .Write(e.Resource.Def);
+
+            e.Resource.Write(w);
+        }
+        private static void ReceiveResourceChanged(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var entity = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+            var def = r.ReadDef<ResourceDef>();
+            //entity.Resources.View(def).Read(r);
+            entity.Resources.Sync(def, r);
         }
 
         private static void SendBlockResourceValue(BlockResourceValueSetEvent e)

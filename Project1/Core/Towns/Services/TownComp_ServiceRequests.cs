@@ -4,7 +4,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -49,7 +48,7 @@ public class TownComp_ServiceRequests : TownComp
     {
         if (this._openRequestsByCustomer.TryGetValue(visitor.RefId, out var req)
                     || this._openRequestsByVendor.TryGetValue(visitor.RefId, out req))
-            req.MarkFailed();
+            req.MarkAborted();
     }
 
     private void HandleEntityDespawned(EntityDespawnedEvent e)

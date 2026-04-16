@@ -12,10 +12,10 @@ namespace Project1.Core.Towns.Services;
 
 public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISerializableNew<ServiceRequest>
 {
-    enum States { Pending, VendorWaitingItem, VendorWorking, VendorWaitingPay, VendorIsPaid, Success, Failure }
+    enum States { Pending, VendorWaitingItem, VendorWorking, VendorWaitingPay, VendorIsPaid, Success, Failure, Aborted }
     private States Phase;
 
-    public bool IsDisposed => this.Phase == States.Failure || this.Phase == States.Success;
+    public bool IsDisposed => this.Phase == States.Failure || this.Phase == States.Success || this.Phase == States.Aborted;
     internal TownServiceRequestId Id { get; set; }
     public SimulationTick TickStarted { get; private set; }
     internal int PatienceInitial { get; private set; }
@@ -86,7 +86,8 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
         => this.Phase = States.Success;
     internal void MarkFailed()
         => this.Phase = States.Failure;
-
+    internal void MarkAborted()
+    => this.Phase = States.Aborted;
 
 
     public SaveTag Save(string name = "")

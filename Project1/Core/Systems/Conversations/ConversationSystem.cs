@@ -59,6 +59,7 @@ public sealed class ConversationSystem : TownComp
     {
         foreach(var convo in this.ActiveConversationsByInitiator.Values.ToArray())
         {
+
             if (!convo.IsFinished)
                 continue;
             this.ActiveConversationsByInitiator.Remove(convo.Initiator);

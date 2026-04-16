@@ -157,15 +157,31 @@ public sealed class ResourcesComp : EntityComp
     public float GetMax(ResourceDef def)
         => this.Resources[def].Max;
     public void SetMax(ResourceDef def, float max)
-        => this.Resources[def].Max = max;
+    {
+        var res = this.Resources[def];//.Max = max;
+        res.Max = max;
+        this.Owner.World?.Events.Post(new ResourceChangedEvent(this.Owner, res));
+    }
     public void SetPercentage(ResourceDef def, float percentage)
        => this.Resources[def].Percentage = percentage;
+    //public void SetValue(ResourceDef def, float value)
+    //    => this.Resources[def].SetValue(value);
     public void SetValue(ResourceDef def, float value)
-        => this.Resources[def].SetValue(value);
+    {
+        var res = this.Resources[def];
+        res.SetValue(value);
+        this.Owner.World?.Events.Post(new ResourceChangedEvent(this.Owner, res));
+    }
     public int GetTicksPerRecoverOne(ResourceDef def)
         => this.Resources[def].TicksPerRecoverOne;
+    //public void SetTicksPerRecoverOne(ResourceDef def, int value)
+    //    => this.Resources[def].SetTicksPerRecoverOne(value);
     public void SetTicksPerRecoverOne(ResourceDef def, int value)
-        => this.Resources[def].SetTicksPerRecoverOne(value);
+    {
+        var res = this.Resources[def];
+        res.SetTicksPerRecoverOne(value);
+        this.Owner.World?.Events.Post(new ResourceChangedEvent(this.Owner, res));
+    }
     internal Resource GetResource(ResourceDef def)
        => this.Resources[def];
     internal float GetPercentage(ResourceDef def)
@@ -197,6 +213,12 @@ public sealed class ResourcesComp : EntityComp
         => this.Resources[def].CurrentThreshold;
     public float GetThresholdValue(ResourceDef def, int index)
         => this.Resources[def].GetThresholdValue(index);
+
+    internal void Sync(ResourceDef def, IDataReader r)
+    {
+        this.Resources[def].Read(r);
+    }
+
     public record class EntityResourceView(ResourcesComp Comp, ResourceDef Def) : IResourceView
     {
         public float Value
@@ -225,6 +247,21 @@ public sealed class ResourcesComp : EntityComp
         //public float GetThresholdValue(int index) => this.Resource.GetThresholdValue(index);
         public ResourceThreshold CurrentThreshold => this.Comp.GetCurrentThreshold(this.Def);
         public float GetThresholdValue(int index) => this.Comp.GetThresholdValue(this.Def, index);
+
+        public IResourceView Write(IDataWriter w)
+        {
+            w.Write(this.Value);
+            w.Write(this.Max);
+            w.Write(this.TicksPerRecoverOne);
+            return this;
+        }
+        public IResourceView Read(IDataReader r)
+        {
+            this.Value = r.ReadSingle();
+            this.Max = r.ReadSingle();
+            this.TicksPerRecoverOne = r.ReadInt32();
+            return this;
+        }
     }
     [Obsolete]
     public record class EntityResourceViewOld(ResourcesComp Comp, Resource Resource) : IResourceView
@@ -254,16 +291,15 @@ public sealed class ResourcesComp : EntityComp
 
         public void ApplyDelta(float delta) => this.Comp.ApplyDelta(this.Def, delta);
         public float GetThresholdValue(int index) => this.Resource.GetThresholdValue(index);
+
+        public IResourceView Read(IDataReader r)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IResourceView Write(IDataWriter w)
+        {
+            throw new NotImplementedException();
+        }
     }
-}
-interface IResourceView
-{
-    public ResourceDef Def { get; }
-    float Value { get; set; }
-    float Percentage { get; set; }
-    float Max { get; set; }
-    int TicksPerRecoverOne { get; set; }
-    ResourceThreshold CurrentThreshold { get; }
-    void ApplyDelta(float delta);
-    float GetThresholdValue(int index);
 }

@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- serialize plan.servicerequest
 - head animation for conversations
 - scrollable log snap to recent entry
 - health going negative while losing it offmap

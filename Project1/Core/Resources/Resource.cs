@@ -150,12 +150,16 @@ namespace Project1.Core.Resources
             w.Write(this.ResourceDef);
             w.Write(this._value);
             w.Write(this._max);
+            w.Write(this.TicksPerRecoverOne);
+            w.Write(this.TicksPerDrainOne);
         }
         public Resource Read(IDataReader r)
         {
             this.ResourceDef = r.ReadDef<ResourceDef>();
             this._value = r.ReadSingle();
             this._max = r.ReadSingle();
+            this.TicksPerRecoverOne = r.ReadInt32();
+            this.TicksPerDrainOne = r.ReadInt32();
             return this;
         }
         internal void AddModifier(ResourceRateModifier resourceModifier)

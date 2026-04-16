@@ -28,7 +28,7 @@ public sealed class TownComp_Repairs : TownComp
     {
         foreach(var req in this._requests.Values.ToArray())
         {
-            if (!(req.IsFailed || req.IsSucceeded))
+            if (!req.IsDisposed)
                 continue;
             this.Map.Events.Post(new TownServiceCompleteEvent(this.Map, req));
             this.RemoveInt(req);

@@ -30,13 +30,13 @@ internal class Planner_Healing_Vendor : Planner
                     return new Plan(PlanDefOf.StoreInInventory);
                 }
                 map.Town.Trades.MarkAccepted(trade.Id);
-                return new Plan(HealingDefOf.PlanHealingWaitPay) { ServiceRequest = existing, TradeId = existing.PaymentId };
+                return new Plan(TownServiceSpellsDefOf.PlanHealingWaitPay) { ServiceRequest = existing, TradeId = existing.PaymentId };
             }
             else
             {
                 if (existing.IsTargetReady)
                     return new Plan(SpellDefOf.PlanCastSpell, target) { ServiceRequest = existing, Spell = existing.Spell, Continuation = PlanContinuationPolicy.Yield };
-                return new Plan(HealingDefOf.PlanHealingWaitCaster) { ServiceRequest = existing };
+                return new Plan(TownServiceSpellsDefOf.PlanHealingWaitCaster) { ServiceRequest = existing };
             }
         }
         var allRequests = manager.PendingRequests;

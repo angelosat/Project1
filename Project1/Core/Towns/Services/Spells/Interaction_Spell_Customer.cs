@@ -3,7 +3,7 @@ using Project1.Core.Resources;
 
 namespace Project1.Core.Towns.Services.Spells;
 
-sealed class InteractionHealingSeek : InteractionLogic
+sealed class Interaction_Spell_Customer : InteractionLogic
 {
     protected override InteractionContext_Healing CreateContextInt() => new();
 

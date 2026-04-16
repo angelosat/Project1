@@ -19,6 +19,7 @@ namespace Project1.Core.Interactions
             ctx.Count = count;
             return ctx;
         }
+
         internal virtual void OnStart(Interaction i) { }
         internal virtual void OnTick(Interaction i) //=> i.Progress.ApplyDelta(1);
         {
@@ -26,6 +27,7 @@ namespace Project1.Core.Interactions
             //    return;
             //i.Progress.ApplyDelta(1);
         }
+        public virtual string GetLabel(Interaction i) => i.Def.LabelReadable;
         internal virtual void OnFinish(Interaction i) { }
         internal virtual bool IsFinished(Interaction i) => false;
         internal virtual bool HasSucceeded(Interaction i) => i.Progress.Percentage >= 1;

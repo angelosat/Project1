@@ -2,7 +2,7 @@
 
 namespace Project1.Core.Towns.Services.Spells;
 
-sealed class InteractionHealingWaitCaster : InteractionLogic
+sealed class Interaction_Spell_WaitCustomer : InteractionLogic
 {
     protected override InteractionContext_Healing CreateContextInt() => new();
     static ServiceRequest_Spell Request(InteractionContext ctx) => ((InteractionContext_Healing)ctx).RequestByCaster;

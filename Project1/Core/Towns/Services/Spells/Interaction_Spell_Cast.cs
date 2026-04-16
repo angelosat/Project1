@@ -3,9 +3,12 @@ using Project1.Core.Systems.Magic;
 
 namespace Project1.Core.Towns.Services.Spells;
 
-sealed class Interaction_CastSpell : InteractionLogic
+sealed class Interaction_Spell_Cast : InteractionLogic
 {
     static SpellDef Spell(InteractionContext ctx) => ctx.Actor.CurrentPlan.Spell;
+
+    public override string GetLabel(Interaction i)
+    => Spell(i.Context).LabelReadable;
 
     internal override void OnStart(Interaction i)
     {

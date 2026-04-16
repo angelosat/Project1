@@ -46,7 +46,7 @@ internal class Planner_Healing_Customer : Planner
         if (existing.IsPaidFor)
         {
             if (existing.IsCasterReady && !actor.IsHauling)
-                return new Plan(HealingDefOf.PlanHealingSeek, caster) { ServiceRequest = existing };
+                return new Plan(TownServiceSpellsDefOf.PlanHealingSeek, caster) { ServiceRequest = existing };
             return null;
         }
         else
@@ -54,7 +54,7 @@ internal class Planner_Healing_Customer : Planner
             var trade = actor.Map.Town.Trades.GetTradeById(existing.PaymentId);
 
             if (trade.IsComplete)
-                return new Plan(HealingDefOf.PlanHealingSeek, caster) { ServiceRequest = existing };
+                return new Plan(TownServiceSpellsDefOf.PlanHealingSeek, caster) { ServiceRequest = existing };
 
             if (!trade.IsAccepted)
                 return null;

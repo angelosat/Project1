@@ -49,7 +49,7 @@ public sealed class Interaction : Inspectable
     internal InteractionTarget Target => this.Context.Target;
     //internal int Count;
 
-    private bool _drawProgressBar;
+    //private bool _drawProgressBar;
     public Func<Vector3> BarPosition;
     public Func<float> BarProgress;
 
@@ -186,12 +186,13 @@ public sealed class Interaction : Inspectable
  
     public void DrawUI(SpriteBatch sb, Camera camera)
     {
-        var actor = this.Actor;
+        //var actor = this.Actor;
         Bar.Draw(
             sb, 
             camera, 
             this.Actor.Global, 
-            this.Def.LabelReadable, 
+            //this.Def.LabelReadable, 
+            this.Def.Logic.GetLabel(this),
             this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, 
             camera.Zoom * .2f,
             this.Def.ProgressBarColor
@@ -235,7 +236,7 @@ public sealed class Interaction : Inspectable
     
     public void DrawProgressBar(Func<Vector3> position, Func<float> progress, Func<string> label)
     {
-        this._drawProgressBar = true;
+        //this._drawProgressBar = true;
         this.BarPosition = position;
         this.BarProgress = progress;
     }
@@ -349,7 +350,7 @@ public sealed class Interaction : Inspectable
 
         return toolspeed;
     }
-    protected void Calculate(out Entity equippedTool, out int workamount, out float speed)
+    void Calculate(out Entity equippedTool, out int workamount, out float speed)
     {
         if (this.Actor.Gear.GetGear(GearTypeDefOf.Mainhand) is not Entity tool || 
             this.Def.ToolUse is not ToolUseDef toolUse)

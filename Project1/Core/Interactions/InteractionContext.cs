@@ -10,6 +10,5 @@ namespace Project1.Core.Interactions
         public virtual float ProgressBarPercentage { get; }
 
         internal virtual float GetPercentage(Interaction i) => i.Progress.Percentage;
-
     }
 }

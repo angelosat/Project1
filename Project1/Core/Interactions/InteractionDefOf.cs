@@ -213,7 +213,7 @@ internal static class InteractionDefOf
         Controller = InteractionControllers.Timed
         //ProgressHandler = InteractionProgressHandlers.External
     };
-    public static readonly InteractionDef CastSpell = new("CastSpell", typeof(Interaction_CastSpell), InteractionControllers.Timed)
+    public static readonly InteractionDef CastSpell = new("CastSpell", typeof(Interaction_Spell_Cast), InteractionControllers.Timed)
     {
         ProgressBarColor = ResourceDefOf.Mana.Color,
     };

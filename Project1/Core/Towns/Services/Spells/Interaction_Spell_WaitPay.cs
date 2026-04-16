@@ -3,7 +3,7 @@ using Project1.Core.Systems.Trading;
 
 namespace Project1.Core.Towns.Services.Spells;
 
-sealed class InteractionHealingWaitPay : InteractionLogic
+sealed class Interaction_Spell_WaitPay : InteractionLogic
 {
     protected override InteractionContext_Trade CreateContextInt() => new();
     static TradeRuntime Trade(InteractionContext ctx) => ((InteractionContext_Trade)ctx).Trade;

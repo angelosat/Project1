@@ -28,7 +28,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Transform = new("Transform", typeof(TransformComp));
         public static readonly EntityCompDef Physics = new("Physics", typeof(PhysicsComp));
         public static readonly EntityCompDef Skills = new("Skills", typeof(SkillsComponent));
-        public static readonly EntityCompDef Needs = new("Needs", typeof(NeedsComponent));
+        public static readonly EntityCompDef Needs = new("Needs", typeof(NeedsComp));
         public static readonly EntityCompDef Ownership = new("Ownership", typeof(OwnershipComponent));
         public static readonly EntityCompDef Stats = new("Stats", typeof(StatsComp));
         public static readonly EntityCompDef Attributes = new("Attributes", typeof(AttributesComponent));
@@ -44,7 +44,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Mobile = new("Mobile", typeof(MobileComponent));
         public static readonly EntityCompDef Mood = new("Mood", typeof(MoodComp));
         public static readonly EntityCompDef Gear = new("Gear", typeof(GearComponent));
-        public static readonly EntityCompDef Effects = new("Effects", typeof(EffectsComponent));
+        public static readonly EntityCompDef Effects = new("Effects", typeof(EffectsComp));
         public static readonly EntityCompDef Personality = new("Personality", typeof(PersonalityComponent));
         public static readonly EntityCompDef Npc = new("Npc", typeof(NpcComponent));
         public static readonly EntityCompDef Seed = new("Seed", typeof(SeedComponent));

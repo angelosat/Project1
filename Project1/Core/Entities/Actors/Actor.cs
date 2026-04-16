@@ -228,7 +228,7 @@ public sealed class Actor : Entity
     {
         this.AI.State.Path = null;
     }
-    public EffectsComponent Effects => this.GetComponent<EffectsComponent>();
+    public EffectsComp Effects => this.GetComponent<EffectsComp>();
     public override Color GetNameplateColor()
     {
         if (this.IsPlayerControlled)
@@ -274,6 +274,7 @@ public sealed class Actor : Entity
         yield return ("Personality", typeof(PersonalityUI));
         yield return ("Relationships", typeof(RelationshipsCompGui));
         yield return ("Resources", typeof(ResourcesGui));
+        yield return ("Effects", typeof(Gui_Effects));
     }
     public bool CanOperate(InteractionTarget target)
     {

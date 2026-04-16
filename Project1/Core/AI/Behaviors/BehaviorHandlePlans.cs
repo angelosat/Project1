@@ -33,7 +33,7 @@ sealed class BehaviorHandlePlans : Behavior
     }
     static IEnumerable<PlannerDef> GetPlanners(Actor actor)
     {
-        var planners = actor.GetComponent<NeedsComponent>().NeedsNew.Values.Select(n => n.Planner);
+        var planners = actor.GetComponent<NeedsComp>().NeedsNew.Values.Select(n => n.Planner);
         planners = planners.Concat(Planner.EssentialPlanners);
         var jobs = actor.ActiveDuties;
         jobs = jobs.OrderBy(j => j.Priority);

@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Project1.Core.Needs;
 
-public sealed class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
+public sealed class NeedsComp : EntityComp<NeedsComp.Spec>, IGui
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Needs;
     public override string Name { get; } = "Needs";
@@ -20,11 +20,11 @@ public sealed class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
 
     internal override void CopyFrom(EntityComp source)
     {
-        var c = (NeedsComponent)source;
+        var c = (NeedsComp)source;
         foreach(var n in c.NeedsNew.Values)
             this.NeedsNew.Add(n.NeedDef, new NeedRuntime(this.Owner as Actor, n.NeedDef));
     }
-    public NeedsComponent()
+    public NeedsComp()
     {
     }
     public NeedRuntime AddNeed(NeedDef def)
@@ -160,14 +160,14 @@ public sealed class NeedsComponent : EntityComp<NeedsComponent.Spec>, IGui
         //=> this.NeedsNew[need].Accumulator += delta;
         => this.NeedsNew[need].ApplyAccumulatorDelta(delta);
 
-    public new class Spec: Spec<NeedsComponent>
+    public new class Spec: Spec<NeedsComp>
     {
         public NeedDef[] Needs;
         public Spec(params NeedDef[] defs)
         {
             this.Needs = defs;
         }
-        protected override void ApplyDefaultsTo(NeedsComponent comp)
+        protected override void ApplyDefaultsTo(NeedsComp comp)
         {
             if (this.Needs != null)
             {

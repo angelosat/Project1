@@ -24,7 +24,7 @@ namespace Project1.Core.UI
             if (selectable is not Actor actor)
                 return;
             //var actor = selectable as Actor;
-            var needs = actor.GetComponent<NeedsComponent>();
+            var needs = actor.GetComponent<NeedsComp>();
             var mood = actor.GetComponent<MoodComp>();
 
             this.BoxNeeds.ClearControls();

@@ -83,5 +83,6 @@ namespace Project1.Core.Resources
         {
             return Color.Orange;
         }
+
     }
 }

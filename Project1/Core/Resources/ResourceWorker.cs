@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
-using Project1.Core.Systems.Materials;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
@@ -11,7 +10,7 @@ using System.Linq;
 
 namespace Project1.Core.Resources;
 
-public abstract class ResourceWorker// : MetricWorker
+public abstract class ResourceWorker
 {
     protected ResourceDef ResourceDef;
     static public ProgressFloat Recovery { get { return new ProgressFloat(0, Ticks.PerSecond, Ticks.PerSecond); } }
@@ -90,7 +89,8 @@ public abstract class ResourceWorker// : MetricWorker
         foreach (var ratemod in resource.Modifiers)
             this.ApplyDelta(resource, ratemod.Def.GetRateMod(resource.Owner));
         this.TickExtra(resource);
-        this.ApplyDelta(resource, this.GetRegenRate(resource));
+        var regen = this.GetRegenRate(resource);
+        this.ApplyDelta(resource, regen);
     }
     protected virtual void updateRec(Resource resource) { }
     protected virtual void TickExtra(Resource resource) { }
@@ -98,5 +98,6 @@ public abstract class ResourceWorker// : MetricWorker
     public virtual string Format => "";
     public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values) { }
     public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }
-    //internal virtual void InitMaterials(Entity obj, Dictionary<string, MaterialDef> materials) { }
+
+    internal virtual float GetMax(Entity owner) => 100;
 }

@@ -2,6 +2,7 @@
 using Project1.Core.Skills;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Entities.Stats;
@@ -13,6 +14,8 @@ public static class StatSystem
     static readonly Dictionary<ToolUseDef, ToolProfileDef> _useToProfile = [];
     static readonly Dictionary<SkillDef, InteractionDef> _skillToInteraction = [];
     static readonly Dictionary<ToolUseDef, InteractionDef> _toolToInteraction = [];
+
+    static readonly Dictionary<Type, List<StatDef>> _statsByCompType = [];
     static public IReadOnlyDictionary<SkillDef, ToolUseDef> SkillsToTools => _skillsToTools;
     static public IReadOnlyDictionary<ToolUseDef, ToolProfileDef> UseToProfile => _useToProfile;
     static public IReadOnlyDictionary<SkillDef, InteractionDef> SkillToInteraction => _skillToInteraction;
@@ -36,7 +39,23 @@ public static class StatSystem
                 _skillToInteraction[use.Skill] = i;
                 _toolToInteraction[i.ToolUse] = i;
             }
+
+        var statdefs = Def.Get<StatDef>();
+        foreach(var stat in statdefs)
+        {
+            var comptype = stat.CompRequired;
+            if (!_statsByCompType.TryGetValue(comptype, out var list))
+                _statsByCompType[comptype] = list = [];
+            list.Add(stat);
+        }
     }
+
+    static public IEnumerable<StatDef> GetStatsFor(EntityComp comp)
+    {
+        return _statsByCompType.TryGetValue(comp.GetType(), out var list) ? list : [];
+        //return _statsByCompType[comp.GetType()];
+    }
+
     static public IEnumerable<ToolUseDef> GetToolUsesFor(SkillDef skill)
     {
         if (SkillsToTools.TryGetValue(skill, out var result))

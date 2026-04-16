@@ -43,7 +43,7 @@ namespace Project1.Core.Needs
             var entity = net.World.Get(r.ReadEntityRefId());
             var need = r.ReadDef<NeedDef>();
             var value = r.ReadInt32();
-            NeedsComponent.ModifyNeed(entity, need, value);
+            NeedsComp.ModifyNeed(entity, need, value);
         }
     }
 }

@@ -46,7 +46,6 @@ namespace Project1.Core.Entities
         public virtual void OnDespawnExtra(MapBase oldmap) { }
         public virtual void OnDispose() { }
         //internal virtual void ResolveReferences() { }
-        internal virtual void Resolve() { }
         internal virtual void InitializeOnce() { }
         public virtual void OnObjectLoaded(GameObject parent) { }
         public virtual void OnObjectSynced(GameObject parent) { }
@@ -102,6 +101,7 @@ namespace Project1.Core.Entities
         internal virtual IEnumerable<GameObjectSlot> GetSlots() { yield break; }
         internal virtual void OnKill() { }
         internal virtual void ResolveReferencesNew() { }
+        internal virtual void Resolve() { }
 
         internal virtual void OnAttachedToWorld() { }
 

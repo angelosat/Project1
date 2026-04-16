@@ -30,8 +30,8 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Foraging = new("Foraging", typeof(PlannerForaging));
         static public readonly PlannerDef Digging = new("Digging", typeof(PlannerDigging));
         static public readonly PlannerDef Sleeping = new("Sleeping", typeof(PlannerSleeping));
-        static public readonly PlannerDef Refueling = new("Refueling", typeof(PlannerRefueling));
-        static public readonly PlannerDef Restocking = new("Restocking", typeof(PlannerRestocking));
+        static public readonly PlannerDef Refueling = new("Refueling", typeof(Planner_Refueling));
+        static public readonly PlannerDef Restocking = new("Restocking", typeof(Planner_Restocking));
         static public readonly PlannerDef Withdraw = new("Withdrawing", typeof(PlannerWithdrawCashOverflow));
         static public readonly PlannerDef Inventory = new("Inventory", typeof(Planner_Inventory));
         static public readonly PlannerDef Switching = new("Switching", typeof(PlannerToggleSwitch));

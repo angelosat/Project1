@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns;
 
-sealed class PlannerRefueling : Planner
+sealed class Planner_Refueling : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {

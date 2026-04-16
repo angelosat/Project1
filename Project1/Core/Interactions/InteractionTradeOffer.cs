@@ -53,6 +53,12 @@ sealed class InteractionTradeOffer : InteractionLogic
             return true;
         return false;
     }
+    internal override void OnSuccess(Interaction i)
+    {
+        var trade = Trade(i.Context);
+        var item = i.Actor.World.Get(trade.Item);
+        item.SetOwnerNew(null);// i.Target.Entity as Actor);
+    }
     internal override bool HasFailed(Interaction i)
     {
         var actor = i.Actor;

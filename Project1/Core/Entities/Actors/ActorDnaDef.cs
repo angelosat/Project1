@@ -24,7 +24,7 @@ namespace Project1.Core.Entities.Actors
 
         public IEnumerable<EntityComp.Spec> GenerateSpecs()
         {
-            yield return new NeedsComponent.Spec(Needs);
+            yield return new NeedsComp.Spec(Needs);
             yield return new AttributesComponent.Spec(Attributes);
             yield return new ResourcesComp.Spec(Resources);
             yield return new GearComponent.Spec(Gear);

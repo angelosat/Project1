@@ -1,5 +1,5 @@
 ﻿using Project1.Core.Attributes;
-using Project1.Core.Entities.Stats.ValueGetters;
+using Project1.Core.Entities.Stats.Resolvers;
 using Project1.Core.Stats;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
@@ -19,16 +19,18 @@ namespace Project1.Core.Entities.Stats
         public Types Type = Types.Scalar;
         public string StringFormat = "";
         readonly Type ValueGetterType;
-        StatWorker _valueGetter;
-        public StatWorker Worker => this._valueGetter ??= ActivatorSafe<StatWorker>.CreateInstance(this.ValueGetterType);
+        StatResolver _valueGetter;
+        public readonly Type CompRequired;
+        public StatResolver Worker => this._valueGetter ??= ActivatorSafe<StatResolver>.CreateInstance(this.ValueGetterType);
 
         public StatDef(string name) : base(name)
         {
 
         }
-        public StatDef(string name, Type valueGetter) : base(name)
+        public StatDef(string name, Type valueGetter, Type compRequired) : base(name)
         {
             this.ValueGetterType = valueGetter;
+            this.CompRequired = compRequired;
         }
         float ApplyModifiers(Entity parent, float value)
         {

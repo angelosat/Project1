@@ -365,7 +365,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public SpriteComp SpriteComp => this._spriteCompCached ??= this.GetComponent<SpriteComp>();
 
     public InventoryComp Inventory => this.GetComponent<InventoryComp>();
-    public NeedsComponent Needs => this.GetComponent<NeedsComponent>();
+    public NeedsComp Needs => this.GetComponent<NeedsComp>();
 
     ResourcesComp _resourcesCached;
     [InspectorHidden]
@@ -971,11 +971,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     internal NeedRuntime GetNeed(NeedDef def)
     {
-        return this.GetComponent<NeedsComponent>().NeedsNew[def];//.First(n => n.NeedDef == def);
+        return this.GetComponent<NeedsComp>().NeedsNew[def];//.First(n => n.NeedDef == def);
     }
     internal IEnumerable<NeedRuntime> GetNeeds(NeedCategoryDef cat)
     {
-        return this.GetComponent<NeedsComponent>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
+        return this.GetComponent<NeedsComp>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
     }
     internal BoundingBox GetBoundingBox(Vector3 global)
     {

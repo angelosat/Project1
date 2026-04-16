@@ -15,7 +15,7 @@ namespace Project1.Core.Resources
 {
     public sealed class Resource : IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
     {
-        public Entity Owner;
+        public Entity Owner { get; private set; }
         public ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
         public int TicksPerRecoverOne, TicksPerDrainOne;
@@ -86,11 +86,19 @@ namespace Project1.Core.Resources
         public float Min => 0;
         public string Name => this.ResourceDef.Name;
         public ResourceDef Def => this.ResourceDef;
-        public Resource(ResourceDef def)
+        public Resource(ResourceDef def/*, Entity owner*/)
         {
             this.ResourceDef = def;
             this.Max = def.BaseMax;
+            //this.Owner = owner;
+            //this.Max = def.Worker.GetMax(owner);
             this.Value = this.Max;
+        }
+        public Resource Bind(Entity entity)
+        {
+            this.Owner = entity;
+            this.Max = this.Def.Worker.GetMax(entity);
+            return this;
         }
         public /*override*/ void Tick()
         {

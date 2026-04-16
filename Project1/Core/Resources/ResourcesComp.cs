@@ -29,7 +29,8 @@ public sealed class ResourcesComp : EntityComp
     }
     public void Add(ResourceDef def)
     {
-        this.Resources[def] = new(def) { Owner = this.Owner as Entity };
+        var res = new Resource(def).Bind(this.Owner);
+        this.Resources[def] = res;// { Owner = this.Owner };
     }
     public ResourcesComp()
     {
@@ -81,6 +82,7 @@ public sealed class ResourcesComp : EntityComp
         tag.LoadDefWrappers("Resources", this.Resources);
         this.Resolve();
     }
+
     public override void Write(IDataWriter writer)
     {
         writer.WriteValues(this.Resources);
@@ -137,16 +139,23 @@ public sealed class ResourcesComp : EntityComp
         foreach (var r in this.Resources.Values)
             tooltip.AddControlsBottomLeft(r.GetControlLabel());
     }
-    internal override void Resolve()
+    internal override void ResolveReferencesNew()
     {
+    //    base.ResolveReferencesNew();
+    //}
+    //internal override void Resolve()
+    //{
+        //if (this.Owner.Profile is ActorDnaDef dna) 
+        //    "tralala".ToConsole();
         foreach (var r in this.Resources.Values)
         {
-            r.Owner = this.Owner;
+            //r.Owner = this.Owner;
+            r.Bind(this.Owner);
         }
         // HACK
-        if(this.Owner.Profile is ActorDnaDef dna)
-        foreach (var res in dna.Resources.Where(r => !this.Resources.ContainsKey(r)))
-            this.Add(res);
+        //if(this.Owner.Profile is ActorDnaDef dna)
+        //foreach (var res in dna.Resources.Where(r => !this.Resources.ContainsKey(r)))
+        //    this.Add(res);
     }
     internal void ApplyDelta(ResourceDef def, float delta)
     {

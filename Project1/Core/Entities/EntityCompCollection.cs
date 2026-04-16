@@ -75,6 +75,8 @@ public class EntityCompCollection : Inspectable
             if (compData.TryGetValue(comp.CompDef.Name, out var data))
                 comp.Load(this._owner, data);
         }
+        //foreach (var comp in this._inner.Values)
+        //    comp.Resolve();
     }
     public void CreateAndResolve(ItemDef def)
     {

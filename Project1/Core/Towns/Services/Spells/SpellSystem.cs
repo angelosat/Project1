@@ -57,7 +57,7 @@ internal static class SpellSystem
             var placeholderMagnitude = 50;
             foreach (var fx in effects)
             {
-                var fxruntime = new EntityEffectWrapper(fx.effect, fx.target, placeholderMagnitude, spell.EffectDuration);
+                var fxruntime = new EntityEffectWrapper(fx.effect, fx.target, budget: placeholderMagnitude, ticksPerUnit: 1, duration: spell.EffectDuration);
                 target.Effects.Apply(fxruntime);
             }
             caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);

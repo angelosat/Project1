@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Project1.Core.Towns;
 
-sealed class PlannerRestocking : Planner
+sealed class Planner_Restocking : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {

@@ -2,6 +2,18 @@
 
 namespace Project1.Core.Effects;
 
+//public sealed class EntityEffectController_Duration : EntityEffectController
+//{
+//    internal override void Tick(Actor actor, EntityEffectWrapper runtime)
+//    {
+//        runtime.RemainingBudget = runtime.RemainingBudget.Value - 1;
+//    }
+//}
+//public abstract class EntityEffectController
+//{
+//    internal abstract void Tick(Actor actor, EntityEffectWrapper runtime); 
+//}
+
 public abstract class EntityEffectWorker
 {
     protected abstract void OnStart(Actor actor, EntityEffectWrapper wrapper);

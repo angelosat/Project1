@@ -41,10 +41,10 @@ namespace Project1.Core.AI
                         {
                             prog.Value = 0;
                             var socialInitiator = this.Initiator.GetNeed(NeedDefOf.Social);
-                            NeedsComponent.ModifyNeed(this.Initiator, NeedDefOf.Social, 1);
+                            NeedsComp.ModifyNeed(this.Initiator, NeedDefOf.Social, 1);
                             if (socialInitiator.Percentage == 1)
                                 this.State = States.Finished;
-                            NeedsComponent.ModifyNeed(this.Target, NeedDefOf.Social, 1);
+                            NeedsComp.ModifyNeed(this.Target, NeedDefOf.Social, 1);
                         }
                         break;
 

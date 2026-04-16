@@ -1,16 +1,17 @@
-﻿using Project1.Core.AI.Personality;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Needs;
 using Project1.Core.Skills;
 using Project1.Core.Towns;
 using Project1.Framework;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Systems.Conversations;
-public class ConversationSystem : TownComp
+public sealed class ConversationSystem : TownComp
 {
     readonly Dictionary<EntityRefId, ConversationRuntime> ActiveConversationsByInitiator = [];
     readonly Dictionary<EntityRefId, ConversationRuntime> ActiveConversationsByTarget = [];
@@ -85,7 +86,7 @@ public class ConversationSystem : TownComp
 
     internal bool TryStartConversation(Actor initiator, Actor target)
     {
-        var conversation = new ConversationRuntime(initiator.RefId, target.RefId);
+        var conversation = new ConversationRuntime(this.World.CurrentTick, initiator.RefId, target.RefId);
         this.ActiveConversationsByInitiator.Add(initiator.RefId, conversation);
         this.ActiveConversationsByTarget.Add(target.RefId, conversation);
         this.ActiveConversationsByActor.Add(initiator.RefId, conversation);
@@ -99,7 +100,9 @@ public class ConversationSystem : TownComp
     {
         if (entity is not Actor actor)
             return;
-        this._availableActors.Add(actor.RefId);
+        // because conversations are loaded before scanning/resolving references
+        if (!this.ActiveConversationsByActor.ContainsKey(actor.RefId))
+            this._availableActors.Add(actor.RefId);
     }
 
     internal void Advance(Actor actor)
@@ -131,62 +134,29 @@ public class ConversationSystem : TownComp
         convo.SwapRoles();
     }
 
-    internal void SetNextIntent(Actor actor, ConvoIntent_Compliment intent)
+    internal void SetNextIntent(Actor actor, ConvoIntentRuntime intent)
         => this.ActiveConversationsByActor[actor.RefId].NextIntent = intent;
-}
 
-record struct ConvoDeltas(float TalkerNeed, float ListenerNeed, int TalkerXp, int TalkerRel, int ListenerRel) { }
-record struct ConvoInputs(int TalkerSkill, float TalkerManner, float TalkerSelflessness, float ListenerResilience) { }
-abstract record class ConvoSubject;
-record class ConvoSubject_Entity(Entity Subject) : ConvoSubject;
-record class ConvoSubject_Concept(Def Concept) : ConvoSubject;
-record struct ConvoSubjectNew(EntityRefId Subject, Def Concept) { }
-
-
-abstract record ConvoIntent
-{
-    int Skill(Actor actor) => actor.Skills.GetLevel(SkillDefOf.Social);
-    float Manner(Actor actor) => actor.Personality.GetPercentage(TraitDefOf.Manners);
-    float Selflessness(Actor actor) => actor.Personality.GetPercentage(TraitDefOf.Selflessness);
-    float Resilience(Actor actor) => actor.Personality.GetPercentage(TraitDefOf.Resilience);
-    protected ConvoInputs Deconstruct(Actor talker, Actor listener)
+    protected override void SaveExtra(SaveTag tag)
     {
-        var talkerSkill = this.Skill(talker);
-        var talkerManner = this.Manner(talker);
-        var talkerSelflessness = this.Selflessness(talker);
-        var listenerResilience = this.Resilience(listener);
-        return new(talkerSkill, talkerManner, talkerSelflessness, listenerResilience);
+        var convos = this.ActiveConversationsByInitiator.Values.ToList();
+        tag.Save("Convos", convos);
     }
-    internal ConvoDeltas Calculate(Actor talker, Actor listener)
-        => this.OnCalculate(this.Deconstruct(talker, listener));
-    protected abstract ConvoDeltas OnCalculate(ConvoInputs inputs);
-}
-sealed record ConvoIntent_Compliment(float Magnitude) : ConvoIntent
-{
-    protected override ConvoDeltas OnCalculate(ConvoInputs inputs)
+
+    public override void Load(SaveTag tag)
     {
-        var sign = this.Magnitude > 0 ? 1 : -1;
-        var magnitude = (int)Math.Ceiling(Math.Abs(inputs.TalkerSkill * this.Magnitude));
-        var xp = 10 + magnitude;
-        //var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * magnitude / 2;
-        //var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * magnitude / 2); 
-        var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * xp;
-        var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * xp);
-        //var listenerRel = sign * magnitude;
-        var listenerRel = sign * (int)Math.Ceiling(magnitude / 33f);
-        var talkerRel = 0;
-        if(sign < 0)
+        if(tag.TryLoadList<ConversationRuntime>("Convos", out var convos))
         {
-            float harshness = 1 - inputs.TalkerManner;
-            talkerRel = -(int)Math.Ceiling(magnitude * harshness / 50f);
+            foreach(var c in convos)
+            {
+                this.ActiveConversationsByInitiator.Add(c.Initiator, c);
+                this.ActiveConversationsByTarget.Add(c.Target, c);
+                this.ActiveConversationsByActor.Add(c.Initiator, c);
+                this.ActiveConversationsByActor.Add(c.Target, c);
+                // because conversations are loaded before scanning/resolving references
+                //this._availableActors.Remove(c.Initiator);
+                //this._availableActors.Remove(c.Target);
+            }
         }
-        return new(talkerNeedDelta, listenerNeedDelta, xp, talkerRel, listenerRel);
-    }
-}
-sealed record ConvoIntent_Insult(int Magnitude) : ConvoIntent
-{
-    protected override ConvoDeltas OnCalculate(ConvoInputs inputs)
-    {
-        throw new NotImplementedException();
     }
 }

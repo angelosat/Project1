@@ -312,6 +312,10 @@ namespace Project1.Framework.Serialization
         {
             tag.Add(value.Save(name)); 
         }
+        public static void Save(this SaveTag tag, string name, float value)
+        {
+            tag.Add(value.Save(name));
+        }
         public static bool TryLoad(this ref int value, SaveTag save, string name)
         {
             return save.TryGetTagValueOrDefault(name, out value);

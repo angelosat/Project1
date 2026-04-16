@@ -7,7 +7,7 @@ using System;
 
 namespace Project1.Core.Systems.Conversations;
 
-internal sealed class PlannerConversation : Planner
+internal sealed class Planner_Conversation : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
@@ -45,7 +45,8 @@ internal sealed class PlannerConversation : Planner
 
                 float magnitude = sign * strength;
 
-                var intent = new ConvoIntent_Compliment(magnitude);// manners * 10);
+                //var intent = new ConvoIntent_Compliment(magnitude);// manners * 10);
+                var intent = new ConvoIntentRuntime(ConvoIntentDefOf.Compliment, magnitude);
                 manager.SetNextIntent(actor, intent);
                 return new Plan(ConversationDefOf.PlanTalk, other);
             }

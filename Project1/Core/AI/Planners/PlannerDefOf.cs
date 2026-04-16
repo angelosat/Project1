@@ -46,7 +46,7 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef OfferHealing = new("Healer", typeof(Planner_Healing_Vendor));
         static public readonly PlannerDef Buy = new("Buy", typeof(Planner_Shop_Customer));
         static public readonly PlannerDef Sell = new("Sell", typeof(Planner_Shop_Vendor));
-        static public readonly PlannerDef Departure = new("Departure", typeof(PlannerDeparture));
+        static public readonly PlannerDef Departure = new("Departure", typeof(Planner_Departure));
 
         static PlannerDefOf()
         {

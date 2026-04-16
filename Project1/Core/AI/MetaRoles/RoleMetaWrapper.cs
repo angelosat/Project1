@@ -5,143 +5,164 @@ using Project1.Core.World.WorldAreas;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
+using System;
 
-namespace Project1.Core.AI.MetaRoles
+namespace Project1.Core.AI.MetaRoles;
+
+public abstract class RoleMetaWrapper : ISaveableNewNew<RoleMetaWrapper>, ISerializableNew<RoleMetaWrapper>
 {
-    public abstract class RoleMetaWrapper : ISaveableNewNew<RoleMetaWrapper>, ISerializableNew<RoleMetaWrapper>
+    public class MetaDecision : ISaveableNewNew<MetaDecision>, ISerializableNew<MetaDecision>
     {
-        public struct MetaDecision : ISaveableNewNew<MetaDecision>, ISerializableNew<MetaDecision>
+        ulong NextTick;
+        int FailureStreak;
+        readonly Random Random;
+
+        public MetaDecision()
         {
-            ulong NextTick;
-            int FailureStreak;
-
-            internal bool CanEvaluate(ulong now) => now >= this.NextTick;
-            internal void RegisterFailure()
-            {
-                this.FailureStreak++;
-            }
-            internal void RegisterSuccess()
-            {
-                this.FailureStreak = 0;
-            }
-            internal void Reset() => this.NextTick = 0;
-            internal void ScheduleNext(WorldBase world)
-            {
-                //var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
-                var basedelay = (ulong)world.Random.Next(Ticks.FromMinutes(10), Ticks.FromMinutes(20));
-                var damping = (ulong)(this.FailureStreak * Ticks.FromHours(1));
-                this.NextTick = world.CurrentTick + basedelay + damping;
-            }
-            public static MetaDecision Create(SaveTag tag)
-            {
-                var nextTick = tag.LoadUlong("NextTick");
-                var failureStreak = tag.LoadInt("FailureStreak");
-                return new MetaDecision() { FailureStreak = failureStreak, NextTick = nextTick };
-            }
-
-            public SaveTag Save(string name = "")
-            {
-                var tag = new SaveTag(SaveTag.Types.Compound, name);
-                tag.Save("NextTick", this.NextTick);
-                tag.Save("FailureStreak", this.FailureStreak);
-                return tag;
-            }
-
-            public MetaDecision Read(IDataReader r)
-            {
-                this.NextTick = r.ReadUInt64();
-                this.FailureStreak = r.ReadInt32();
-                return this;
-            }
-
-            public void Write(IDataWriter w)
-            {
-                w.Write(this.NextTick);
-                w.Write(this.FailureStreak);
-            }
-
-            public static MetaDecision Create(IDataReader r)
-            {
-                return new MetaDecision().Read(r);
-            }
+            this.Random = new();
         }
 
-        public Actor Actor;
-        public RoleMetaDef Def;
-        public FrontierDef TargetFrontier { get; private set; }
-        public MetaDecision LocationDecision;
-        internal virtual void AssignTo(Actor actor)
+        internal bool CanEvaluate(SimulationTick now) //=>now >= this.NextTick;
         {
-            this.Actor = actor;
-            actor.AI.Meta?.RemoveFrom(actor);
-            actor.AI.Meta = this;
-            actor.Needs.Add(this.Def.Needs);
+            if (now < this.NextTick)
+                return false;
+            this.ScheduleNext(now);
+            return true;
         }
-
-        private void RemoveFrom(Actor actor)
+        internal void RegisterFailure()
         {
-            actor.Needs.Remove(this.Def.Needs);
+            this.FailureStreak++;
         }
-
-        internal virtual void TickOffMap()
+        internal void RegisterSuccess()
         {
-            foreach (var t in this.Def.Thoughts)
-                t.TickOffMap(this.Actor.AI.State);
-            this.Def.Worker.Tick(this);
+            this.FailureStreak = 0;
         }
-
-        internal void ReturnToTown()
+        internal void Reset() => this.NextTick = 0;
+        internal void ScheduleNext(WorldBase world)
         {
-            //this.TargetFrontier = null;
-            this.SetTargetFrontier(null);
+            //var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
+            var basedelay = (ulong)world.Random.Next(Ticks.FromMinutes(10), Ticks.FromMinutes(20));
+            var damping = (ulong)(this.FailureStreak * Ticks.FromHours(1));
+            this.NextTick = world.CurrentTick + basedelay + damping;
+        }
+        internal void ScheduleNext(SimulationTick now)
+        {
+            //var basedelay = (ulong)world.Random.Next(Ticks.FromHours(1), Ticks.FromHours(2));
+            var basedelay = (ulong)this.Random.Next(Ticks.FromMinutes(10), Ticks.FromMinutes(20));
+            var damping = (ulong)(this.FailureStreak * Ticks.FromHours(1));
+            this.NextTick = now + basedelay + damping;
+        }
+        public static MetaDecision Create(SaveTag tag)
+        {
+            var nextTick = tag.LoadUlong("NextTick");
+            var failureStreak = tag.LoadInt("FailureStreak");
+            return new MetaDecision() { FailureStreak = failureStreak, NextTick = nextTick };
         }
 
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Save("LocationDecision", this.LocationDecision);
-            tag.SaveDef("Def", this.Def);
-            if (this.TargetFrontier is not null)
-                tag.SaveDef("TargetFrontier", this.TargetFrontier);
+            tag.Save("NextTick", this.NextTick);
+            tag.Save("FailureStreak", this.FailureStreak);
             return tag;
         }
 
-        public static RoleMetaWrapper Create(SaveTag tag)
+        public MetaDecision Read(IDataReader r)
         {
-            var def = tag.LoadDef<RoleMetaDef>("Def");
-            var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
-            wrapper.Def = def;
-            wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");
-            if (tag.TryLoadDef<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
-            return wrapper;
-        }
-
-        public RoleMetaWrapper Read(IDataReader r)
-        {
-            this.LocationDecision.Read(r);
-            this.TargetFrontier = r.ReadDef<FrontierDef>();
+            this.NextTick = r.ReadUInt64();
+            this.FailureStreak = r.ReadInt32();
             return this;
         }
 
         public void Write(IDataWriter w)
         {
-            w.Write(this.Def);
-            this.LocationDecision.Write(w);
-            w.Write(this.TargetFrontier);
+            w.Write(this.NextTick);
+            w.Write(this.FailureStreak);
         }
 
-        public static RoleMetaWrapper Create(IDataReader r)
+        public static MetaDecision Create(IDataReader r)
         {
-            var def = r.ReadDef<RoleMetaDef>();
-            var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
-            wrapper.Read(r);
-            return wrapper;
+            return new MetaDecision().Read(r);
         }
+    }
 
-        internal void SetTargetFrontier(FrontierDef frontier)
-        {
-            this.TargetFrontier = frontier;
-            this.Actor.World.Events.Post(new AILocationDecisionEvent(this.Actor, frontier));
-        }
+    public Actor Actor;
+    public RoleMetaDef Def;
+    public FrontierDef TargetFrontier { get; private set; }
+    public MetaDecision LocationDecision = new();
+
+    
+    internal virtual void AssignTo(Actor actor)
+    {
+        this.Actor = actor;
+        actor.AI.Meta?.RemoveFrom(actor);
+        actor.AI.Meta = this;
+        actor.Needs.Add(this.Def.Needs);
+    }
+
+    private void RemoveFrom(Actor actor)
+    {
+        actor.Needs.Remove(this.Def.Needs);
+    }
+
+    internal virtual void TickOffMap()
+    {
+        foreach (var t in this.Def.Thoughts)
+            t.TickOffMap(this.Actor.AI.State);
+        this.Def.Worker.Tick(this);
+    }
+
+    internal void ReturnToTown()
+    {
+        //this.TargetFrontier = null;
+        this.SetTargetFrontier(null);
+    }
+
+    public SaveTag Save(string name = "")
+    {
+        var tag = new SaveTag(SaveTag.Types.Compound, name);
+        tag.Save("LocationDecision", this.LocationDecision);
+        tag.SaveDef("Def", this.Def);
+        if (this.TargetFrontier is not null)
+            tag.SaveDef("TargetFrontier", this.TargetFrontier);
+        return tag;
+    }
+
+    public static RoleMetaWrapper Create(SaveTag tag)
+    {
+        var def = tag.LoadDef<RoleMetaDef>("Def");
+        var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
+        wrapper.Def = def;
+        wrapper.LocationDecision = tag.Load<MetaDecision>("LocationDecision");
+        if (tag.TryLoadDef<FrontierDef>("TargetFrontier", out var frontDef)) wrapper.TargetFrontier = frontDef;
+        return wrapper;
+    }
+
+    public RoleMetaWrapper Read(IDataReader r)
+    {
+        this.LocationDecision.Read(r);
+        this.TargetFrontier = r.ReadDef<FrontierDef>();
+        return this;
+    }
+
+    public void Write(IDataWriter w)
+    {
+        w.Write(this.Def);
+        this.LocationDecision.Write(w);
+        w.Write(this.TargetFrontier);
+    }
+
+    public static RoleMetaWrapper Create(IDataReader r)
+    {
+        var def = r.ReadDef<RoleMetaDef>();
+        var wrapper = ActivatorSafe<RoleMetaWrapper>.CreateInstance(def.RuntimeType);
+        wrapper.Read(r);
+        return wrapper;
+    }
+
+    internal void SetTargetFrontier(FrontierDef frontier)
+    {
+        this.TargetFrontier = frontier;
+        this.Actor.World.Events.Post(new AILocationDecisionEvent(this.Actor, frontier));
     }
 }

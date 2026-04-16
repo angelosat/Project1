@@ -2,7 +2,9 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Towns.AI.Behaviors;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,13 +37,29 @@ public class TownComp_ServiceRequests : TownComp
         town.Map.Events.ListenTo<CounterServiceChangedEvent>(HandleCounterTownServiceChanged);
         town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
         town.Map.Events.ListenTo<EntityDespawnedEvent>(HandleEntityDespawned);
+        town.Map.Events.ListenTo<VisitorDepartingEvent>(HandleVisitorDeparting);
+    }
+
+    private void HandleVisitorDeparting(VisitorDepartingEvent e)
+    {
+        this.AbortVisitorRequest(e.Actor);
+    }
+
+    private void AbortVisitorRequest(Actor visitor)
+    {
+        if (this._openRequestsByCustomer.TryGetValue(visitor.RefId, out var req)
+                    || this._openRequestsByVendor.TryGetValue(visitor.RefId, out req))
+            req.MarkFailed();
     }
 
     private void HandleEntityDespawned(EntityDespawnedEvent e)
     {
-        if (this._openRequestsByCustomer.TryGetValue(e.Entity.RefId, out var req)
-            || this._openRequestsByVendor.TryGetValue(e.Entity.RefId, out req))
-            req.MarkFailed();
+        //if (this._openRequestsByCustomer.TryGetValue(e.Entity.RefId, out var req)
+        //    || this._openRequestsByVendor.TryGetValue(e.Entity.RefId, out req))
+        //    req.MarkFailed();
+        if (e.Entity is not Actor actor)
+            return;
+        this.AbortVisitorRequest(actor);
     }
 
     private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)

@@ -257,18 +257,13 @@ public sealed class InventoryComp : EntityComp
         .Select(e=>(e.e, e.Item2.Value));
    
     public int Count(ItemDef def)
-    {
-        return this.Count(e => e.Def == def);
-    }
-    public int Count(ItemDef def, MaterialDef mat)
-    {
-        return this.Count(e => e.Def == def && e.PrimaryMaterial == mat);
-    }
+        => this.Count(e => e.Def == def);
+    
+   
     public int Count(Func<Entity, bool> filter)
-    {
-        return this.Where(filter).Sum(i => i.StackSize);
+        => this.Where(filter).Sum(i => i.StackSize);
 
-    }
+    
     public bool Contains(GameObject item)
     {
         return this.Contents.FirstOrDefault(s => s == item) != null;

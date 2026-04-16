@@ -22,7 +22,7 @@ internal class Planner_Healing_Vendor : Planner
             {
                 var trade = map.Town.Trades.GetTradeById(existing.PaymentId);
                 if (trade.IsOffered)
-                    return new Plan(PlanDefOf.TradeComplete, target) { TradeId = existing.PaymentId };
+                    return new Plan(PlanDefOf.TradeComplete, target) { ServiceRequest = existing, TradeId = existing.PaymentId };
                 if (trade.IsComplete)
                 {
                     map.Town.Trades.MarkDisposed(trade);
@@ -30,13 +30,13 @@ internal class Planner_Healing_Vendor : Planner
                     return new Plan(PlanDefOf.StoreInInventory);
                 }
                 map.Town.Trades.MarkAccepted(trade.Id);
-                return new Plan(HealingDefOf.PlanHealingWaitPay) { TradeId = existing.PaymentId };
+                return new Plan(HealingDefOf.PlanHealingWaitPay) { ServiceRequest = existing, TradeId = existing.PaymentId };
             }
             else
             {
                 if (existing.IsTargetReady)
-                    return new Plan(SpellDefOf.PlanCastSpell, target) { Spell = existing.Spell, Continuation = PlanContinuationPolicy.Yield };
-                return new Plan(HealingDefOf.PlanHealingWaitCaster);
+                    return new Plan(SpellDefOf.PlanCastSpell, target) { ServiceRequest = existing, Spell = existing.Spell, Continuation = PlanContinuationPolicy.Yield };
+                return new Plan(HealingDefOf.PlanHealingWaitCaster) { ServiceRequest = existing };
             }
         }
         var allRequests = manager.PendingRequests;

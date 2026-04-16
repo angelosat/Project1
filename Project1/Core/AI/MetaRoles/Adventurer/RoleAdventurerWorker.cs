@@ -6,33 +6,6 @@ using System.Linq;
 
 namespace Project1.Core.AI.MetaRoles.Adventurer;
 
-internal abstract class FrontierDecider
-{
-    internal abstract (FrontierDef frontier, int score) GetScore(AIComp comp);
-}
-internal sealed class FrontierDecider_FromItem : FrontierDecider
-{
-    internal override (FrontierDef frontier, int score) GetScore(AIComp comp)
-    {
-        var meta = comp.GetMeta<RoleAdventurerData>();
-        var desire = meta.NextDesiredLoot;
-        if (!desire.HasValue)
-            return default;
-        return (FrontierManager.GetFrontier(desire.Value.matdef.Tier), 100);
-    }
-}
-internal sealed class FrontierDecider_ReturnToTown : FrontierDecider
-{
-    internal override (FrontierDef frontier, int score) GetScore(AIComp comp)
-    {
-        var meta = comp.GetMeta<RoleAdventurerData>();
-        var desire = meta.NextDesiredLoot;
-        if (!desire.HasValue)
-            return default;
-        var need = comp.Owner.Needs.GetValue(AdventurerNeedsDefOf.Adventuring);
-        return (null, need);
-    }
-}
 internal class RoleAdventurerWorker : RoleMetaWorker
 {
     internal override void Tick(RoleMetaWrapper meta)
@@ -64,17 +37,28 @@ internal class RoleAdventurerWorker : RoleMetaWorker
             //    typedMeta.SetTargetFrontier(frontier);
 
         }
-        meta.LocationDecision.ScheduleNext(world);
+        //meta.LocationDecision.ScheduleNext(world);
     }
 
     private static void DecideFrontier(Actor actor, Simulation.WorldBase world, RoleAdventurerData meta)
     {
         if (!meta.LocationDecision.CanEvaluate(world.CurrentTick))
             return;
-        meta.LocationDecision.ScheduleNext(world);
+        //meta.LocationDecision.ScheduleNext(world);
         if (meta.TargetFrontier is null) // actor is already returning to town
             return;
-        var frontier = FrontierManager.Deciders.Select(d => d.GetScore(actor.AI)).MaxBy(i => i.score).frontier;
+        var scored = FrontierManager.Deciders.Select(d => d.GetScore(actor.AI));
+        var best = scored.MaxBy(i => i.score);
+        if (best.score <= 0)
+            return;
+
+        var candidates = scored.Where(a => a.score > 0).OrderBy(a => a.score).ToArray();
+        //var sum = candidates.Sum(a => a.score);
+        var roll = world.Random.Next(100);
+        var found = candidates.FirstOrDefault(c => roll <= c.score);
+       
+        //var frontier = best.frontier;
+        var frontier = found.decider is not null ? found.frontier : meta.TargetFrontier;
         if (frontier is null)
         {
             meta.ReturnToTown();

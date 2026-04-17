@@ -10,6 +10,7 @@ namespace Project1.Core.Systems.Consumables
     {
         public static ConsumableDef Pie = new("Pie", "Bake", Sprite.Default, typeof(ConsumableEffect_Food));
         public static ConsumableDef TownScroll = new("TownScroll", "Scribe", ItemContent.PageWritten, typeof(ConsumableEffect_TownScroll));
+        public static ConsumableDef Potion = new("Potion", "Brew", ItemContent.Potion, typeof(ConsumableEffect_TownScroll));
         static ConsumableDefOf()
         {
             Def.Register(typeof(ConsumableDefOf));

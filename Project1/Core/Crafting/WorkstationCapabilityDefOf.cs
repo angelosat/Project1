@@ -41,6 +41,11 @@ namespace Project1.Core.Crafting
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting
         };
+        static public readonly WorkstationCapabilityDef Alchemy = new("Alchemy", typeof(WorkstationCapabilityScribing), DutyDefOf.Scribe)
+        {
+            Output = typeof(ConsumableDef),
+            Plan = PlanDefOf.Crafting
+        };
         static WorkstationCapabilityDefOf()
         {
             Def.Register(typeof(WorkstationCapabilityDefOf));

@@ -49,6 +49,7 @@ namespace Project1.Core.Assets
         static public readonly Sprite BerriesFull = new Sprite("berries", new Vector2(16, 32), new Vector2(16, 24));
         static public readonly Sprite SeedsFull = new Sprite("seeds", new Vector2(16, 32), new Vector2(16, 24));
         static public readonly Sprite Sapling = new Sprite("sapling", new Vector2(16, 32), new Vector2(16, 24));
+        static public readonly Sprite Potion = new Sprite("potion", new Vector2(16, 32), new Vector2(16, 24));
 
         static public readonly Sprite BerryBushGrowing = new Sprite("berrybush1", BlockDepthMap) { OriginY = 8, OriginGround = new Vector2(30 / 2, 28 - 8) };
         //static public readonly Sprite BerryBushGrown = new Sprite("berrybush2", BlockDepthMap) { OriginY = 8, OriginGround = new Vector2(30 / 2, 28 - 8) };

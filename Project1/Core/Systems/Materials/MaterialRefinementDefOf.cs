@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Assets;
+using Project1.Core.Graphics;
 using Project1.Framework;
 
 namespace Project1.Core.Systems.Materials
@@ -21,6 +22,9 @@ namespace Project1.Core.Systems.Materials
 
 
         static public readonly MaterialRefinementDef Parchment = new("Parchment", null, MaterialTypeDefOf.Fiber, ItemContent.PageBlank);
+
+        static public readonly MaterialRefinementDef Powder = new("Powder", null, MaterialTypeDefOf.Fiber, Sprite.Default);
+        static public readonly MaterialRefinementDef Paste = new("Paste", null, MaterialTypeDefOf.Flesh, Sprite.Default);
 
 
         static MaterialRefinementDefOf()

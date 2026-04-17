@@ -185,6 +185,14 @@ namespace Project1.Core.Blocks
                 ],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };
+        static public readonly BlockDef AlchemistDesk = new("AlchemistDesk", typeof(BlockWorkstation))
+        {
+            BlockEntityCompSpecs = [
+               new BlockBuildingComp.Spec(),
+                new BlockWorkstationComp.Spec(WorkstationDefOf.ScribeDesk)
+               ],
+            ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+        };
         static BlockDefOf()
         {
             Def.Register(typeof(BlockDefOf));

@@ -11,6 +11,7 @@ namespace Project1.Core
         static public readonly WorkstationDef Workbench = new("Workbench", capabilities: [WorkstationCapabilityDefOf.ToolMaking, WorkstationCapabilityDefOf.Repairing], maxModules: 3);
         static public readonly WorkstationDef Kitchen = new("Kitchen", capabilities: [WorkstationCapabilityDefOf.Cooking]);
         static public readonly WorkstationDef ScribeDesk = new("ScribeDesk", capabilities: [WorkstationCapabilityDefOf.Scribing]) { MaxModules = 1 };
+        static public readonly WorkstationDef AlchemistDesk = new("AlchemistDesk", capabilities: [WorkstationCapabilityDefOf.Alchemy]) { MaxModules = 1 };
         static WorkstationDefOf()
         {
             Def.Register(typeof(WorkstationDefOf));

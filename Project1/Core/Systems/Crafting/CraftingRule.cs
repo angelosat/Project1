@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 #nullable enable
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public record struct CraftingRule(BoneDef Bone, ItemDef? Def, HashSet<Def> Profiles, HashSet<MaterialTypeDef> MaterialTypes, int Quantity)
     {

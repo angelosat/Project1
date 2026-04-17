@@ -7,7 +7,7 @@ using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Legacy.Storage;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     internal record struct CraftOrderAddedEvent(BlockWorkstationComp Comp, CraftingOrder Order) : IEventPayload { }
     internal record struct CraftOrderRemovedEvent(BlockWorkstationComp Comp, CraftingOrder Order) : IEventPayload { }

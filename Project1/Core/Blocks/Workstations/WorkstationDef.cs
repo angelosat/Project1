@@ -1,4 +1,4 @@
-﻿using Project1.Core.Crafting;
+﻿using Project1.Core.Systems.Crafting;
 using System.Collections.Generic;
 
 namespace Project1.Core

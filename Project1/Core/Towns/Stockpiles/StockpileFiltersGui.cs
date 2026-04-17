@@ -1,4 +1,4 @@
-﻿using Project1.Core.Crafting;
+﻿using Project1.Core.Systems.Crafting;
 using Project1.Core.UI;
 using Project1.Framework.UI;
 using System;

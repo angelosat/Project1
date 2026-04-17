@@ -6,7 +6,7 @@ using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     [EnsureStaticCtorCall]
     internal static class WorkstationCapabilityDefOf

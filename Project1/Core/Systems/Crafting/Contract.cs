@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 #nullable enable
 
-namespace Project1.Core.Crafting;
+namespace Project1.Core.Systems.Crafting;
 
 internal record Contract(Actor Author, BlockWorkstationComp Workstation, CraftingOrder Order, IEnumerable<Entity> Ingredients)
 {

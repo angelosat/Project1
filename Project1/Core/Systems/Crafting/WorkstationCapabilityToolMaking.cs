@@ -6,7 +6,7 @@ using Project1.Core.Systems.Tools;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public class WorkstationCapabilityToolMaking/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
     {

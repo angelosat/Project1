@@ -2,7 +2,7 @@
 using Project1.Core.Resources;
 using Project1.Core.Systems.Materials;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     internal class CraftingSystem
     {

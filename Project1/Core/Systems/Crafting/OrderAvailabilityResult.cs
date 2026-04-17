@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
-namespace Project1.Core.Crafting
+using Project1;
+
+namespace Project1.Core.Systems.Crafting
 {
     internal record struct OrderAvailabilityResult(bool Result, string Message) { }
 }

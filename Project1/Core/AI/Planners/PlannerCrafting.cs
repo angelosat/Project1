@@ -1,11 +1,11 @@
 ﻿using Project1.Core.AI.Behaviors;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Crafting;
 using System.Linq;
-using static Project1.Core.Crafting.CraftingOrder;
+using static Project1.Core.Systems.Crafting.CraftingOrder;
 
 namespace Project1.Core.AI.Planners;
 

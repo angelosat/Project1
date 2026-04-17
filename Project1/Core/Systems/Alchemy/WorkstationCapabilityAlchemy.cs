@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Blocks;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Materials;
 using Project1.Framework.Serialization;
 using System;

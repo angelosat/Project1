@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public record IngredientRequirement(HashSet<MaterialRefinementDef> Refinements, int Quantity, IntVec3 Slot, List<Entity> InSlot)
     {

@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, ISerializableNew<CraftingOrder>
     {

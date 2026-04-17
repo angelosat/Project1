@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Crafting;
+using Project1.Core.Entities;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
@@ -8,7 +9,7 @@ using Project1.Core.Towns.Stockpiles;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Crafting;
+namespace Project1.Core.Systems.Crafting;
 
 internal static class IngredientGroupBuilder
 {

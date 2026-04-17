@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Blocks.Comps;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
+using Project1.Core.Systems.Crafting;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;

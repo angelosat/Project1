@@ -1,8 +1,8 @@
-﻿using Project1.Core.Crafting;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Networking;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Serialization;

@@ -1,6 +1,5 @@
 ﻿using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Planners;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
@@ -8,6 +7,7 @@ using Project1.Core.Interactions;
 using Project1.Core.Legacy;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Trading;
 using Project1.Core.Towns;

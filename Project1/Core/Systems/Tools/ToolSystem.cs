@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
@@ -7,6 +6,7 @@ using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Helpers;

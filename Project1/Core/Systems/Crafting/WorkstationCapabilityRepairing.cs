@@ -3,7 +3,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Skills;
 using System.Collections.Generic;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public class WorkstationCapabilityRepairing/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
     {

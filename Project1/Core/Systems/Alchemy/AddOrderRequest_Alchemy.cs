@@ -1,7 +1,7 @@
-﻿using Project1.Core.Crafting;
-using Project1.Core.Effects;
+﻿using Project1.Core.Effects;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Crafting;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 

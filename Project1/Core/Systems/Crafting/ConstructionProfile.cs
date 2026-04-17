@@ -2,7 +2,7 @@
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public class ConstructionProfile(ConstructionCategoryDef category, MaterialRefinementDef[] refinements) : Inspectable
     {

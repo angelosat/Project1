@@ -8,6 +8,7 @@ using Project1.Core.Towns.AI;
 using Project1.Core.Towns.Services.Spells;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Framework;
+using Project1.Core.Systems.Crafting;
 
 namespace Project1.Core.Interactions;
 
@@ -131,7 +132,7 @@ internal static class InteractionDefOf
         Skill = SkillDefOf.Construction,
         ToolUse = ToolUseDefOf.Building
     };
-    public static readonly InteractionDef Craft = new("Crafting", typeof(InteractionCrafting))
+    public static readonly InteractionDef Craft = new("Crafting", typeof(Interaction_Crafting))
     {
         Animation = AnimationDefOf.Tool,
         Controller = InteractionControllers.Internal,// new InteractionProgressTool(),

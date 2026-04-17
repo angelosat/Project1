@@ -6,7 +6,7 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using System.Collections.Generic;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     public class WorkstationCapabilitySmelting/*(WorkstationCapabilityDef def) */: WorkstationCapabilityWorker/*(def)*/
     {

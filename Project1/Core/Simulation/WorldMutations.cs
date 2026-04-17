@@ -1,8 +1,8 @@
 ﻿using Project1.Core.Blocks;
 using Project1.Core.Blocks.Construction;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Loot;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using System.Collections.Generic;

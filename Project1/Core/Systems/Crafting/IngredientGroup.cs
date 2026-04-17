@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Project1.Core.Crafting;
+namespace Project1.Core.Systems.Crafting;
 
 public record IngredientGroup
 {

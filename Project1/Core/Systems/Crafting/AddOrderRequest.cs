@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Project1;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
 using Project1.Framework;
@@ -7,7 +8,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
 
-namespace Project1.Core.Crafting;
+namespace Project1.Core.Systems.Crafting;
 
 public class AddOrderRequest : ISaveableNewNew<AddOrderRequest>, ISerializableNewNew<AddOrderRequest>
 {

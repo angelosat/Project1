@@ -1,8 +1,9 @@
 ﻿#nullable enable
 
+using Project1;
 using Project1.Core.Blocks;
 
-namespace Project1.Core.Crafting
+namespace Project1.Core.Systems.Crafting
 {
     internal sealed class CraftingOrderModuleReq(int moduleCount) : CraftingOrderAvailabilityCondition
     {

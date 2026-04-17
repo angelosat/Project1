@@ -1,9 +1,9 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
-using Project1.Core.Crafting;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Towns.Duties;
 using System.Diagnostics;
 using System.Linq;

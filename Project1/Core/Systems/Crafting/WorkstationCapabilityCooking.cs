@@ -8,7 +8,7 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
 using System.Collections.Generic;
 
-namespace Project1.Core.Crafting;
+namespace Project1.Core.Systems.Crafting;
 
 public sealed class WorkstationCapabilityCooking : WorkstationCapabilityWorker
 {

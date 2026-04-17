@@ -13,7 +13,7 @@ using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
 using System;
 
-namespace Project1.Core.Crafting;
+namespace Project1.Core.Systems.Crafting;
 
 [EnsureStaticCtorCall]
 static class Packets_Crafting

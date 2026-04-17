@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Core.Crafting;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework.Helpers;

@@ -6,6 +6,8 @@ namespace Project1.Core.Systems.Magic;
 
 public sealed class Effect_RestoreResource : EntityEffectWorker
 {
+    public override EffectDef Def => EffectDefOf.RestoreResource;
+
     protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;
@@ -14,6 +16,8 @@ public sealed class Effect_RestoreResource : EntityEffectWorker
 }
 public sealed class Effect_FortifyResource : EntityEffectWorker
 {
+    public override EffectDef Def => EffectDefOf.FortifyResource;
+
     protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;

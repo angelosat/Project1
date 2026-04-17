@@ -5,6 +5,8 @@ namespace Project1.Core.Effects
 {
     internal class SleepEffectWorker : EntityEffectWorker
     {
+        public override EffectDef Def => throw new System.NotImplementedException();
+
         protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
         {
             actor.GetNeed(NeedDefOf.Energy).AddMod(EffectDefOf.Sleeping, Ticks.FromMinutes(10));

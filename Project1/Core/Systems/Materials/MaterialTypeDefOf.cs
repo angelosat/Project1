@@ -1,4 +1,5 @@
-﻿using Project1.Core.Legacy.Crafting.Defs;
+﻿using Project1.Core.Effects;
+using Project1.Core.Legacy.Crafting.Defs;
 using Project1.Core.Skills;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
@@ -18,7 +19,9 @@ namespace Project1.Core.Systems.Materials
         static public readonly MaterialTypeDef Metal = new("Metal", MaterialChemistryDefOf.Inorganic) { 
             JobToExtract = DutyDefOf.Miner,
             GatheringSkill = SkillDefOf.Mining, 
-            SkillToRefine = SkillDefOf.Smithing };
+            SkillToRefine = SkillDefOf.Smithing,
+            AlchemyEffect = EffectDefOf.FortifyResource
+        };
 
         static public readonly MaterialTypeDef Gas = new("Gas", MaterialChemistryDefOf.Inorganic);
         static public readonly MaterialTypeDef Water = new("Water", MaterialChemistryDefOf.Inorganic);
@@ -34,7 +37,7 @@ namespace Project1.Core.Systems.Materials
             JobToExtract = DutyDefOf.Lumberjack, 
             Shininess = .8f };
         static public readonly MaterialTypeDef Seed = new("Seed", MaterialChemistryDefOf.Organic);
-        static public readonly MaterialTypeDef Fruit = new("Fruit", MaterialChemistryDefOf.Organic);
+        static public readonly MaterialTypeDef Fruit = new("Fruit", MaterialChemistryDefOf.Organic) { AlchemyEffect = EffectDefOf.RestoreResource };
         
         static public readonly MaterialTypeDef Fiber = new("Fiber", MaterialChemistryDefOf.Organic);
         static public readonly MaterialTypeDef Dye = new("Dye", MaterialChemistryDefOf.Inorganic);

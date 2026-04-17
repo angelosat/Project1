@@ -5,6 +5,8 @@ namespace Project1.Core.Effects;
 
 internal class EffectModifyNeedWorker : EntityEffectWorker
 {
+    public override EffectDef Def => EffectDefOf.ModifyNeed;
+
     protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
     {
     }
@@ -16,4 +18,5 @@ internal class EffectModifyNeedWorker : EntityEffectWorker
     protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
     {
     }
+
 }

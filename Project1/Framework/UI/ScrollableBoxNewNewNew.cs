@@ -306,11 +306,11 @@ public class ScrollableBoxNewNewNew : GroupBox
             this.AutoSize = true;
             this.Height = DefaultHeight;
             var arealength = client.Width - 2 * DefaultHeight;
-            this.BtnLeft = new IconButton(Icon.ArrowUp) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = StepUp };
+            this.BtnLeft = new IconButton(Icon.ArrowLeft) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = StepUp };
             this.Thumb = new PictureBox(Vector2.Zero, UIManager.DefaultVScrollbarSprite, new Rectangle(0, 16, 16, 16), Alignment.Horizontal.Left, Alignment.Vertical.Top);
             this.Area = new GroupBox() { MouseThrough = false, AutoSize = false, Size = new Rectangle(0, 0, arealength, this.Height), Location = this.BtnLeft.TopRight };
             this.Area.AddControls(this.Thumb);
-            this.BtnRight = new IconButton(Icon.ArrowDown) { BackgroundTexture = UIManager.Icon16Background, Location = this.Area.TopRight, LeftClickAction = StepDown };
+            this.BtnRight = new IconButton(Icon.ArrowRight) { BackgroundTexture = UIManager.Icon16Background, Location = this.Area.TopRight, LeftClickAction = StepDown };
             this.AddControls(this.BtnLeft, this.BtnRight, this.Area);
         }
 

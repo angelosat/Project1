@@ -53,6 +53,11 @@ public static class SkillDefOf
         Description = "Carpentry description",
         Icon = new Icon(UIManager.Icons32, 12, 32)
     };
+    static public readonly SkillDef Alchemy = new("Alchemy")
+    {
+        Description = "Alchemy description",
+        Icon = new Icon(UIManager.Icons32, 12, 32)
+    };
     static public readonly SkillDef Crafting = new("Crafting")
     {
         Description = "Crafting description",

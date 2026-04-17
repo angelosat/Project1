@@ -5,6 +5,8 @@ namespace Project1.Core.Effects
 {
     internal class AdventuringEffectWorker : EntityEffectWorker
     {
+        public override EffectDef Def => null;
+
         protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
         {
             //var rate = wrapper.Rate;

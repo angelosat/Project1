@@ -1,4 +1,5 @@
 ﻿using Project1.Core.AI;
+using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
@@ -41,7 +42,7 @@ namespace Project1.Core.Crafting
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting
         };
-        static public readonly WorkstationCapabilityDef Alchemy = new("Alchemy", typeof(WorkstationCapabilityScribing), DutyDefOf.Scribe)
+        static public readonly WorkstationCapabilityDef Alchemy = new("Alchemy", typeof(WorkstationCapabilityAlchemy), DutyDefOf.Alchemist)
         {
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting

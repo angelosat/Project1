@@ -1,7 +1,7 @@
-﻿namespace Project1.Core.Effects
+﻿namespace Project1.Core.Effects;
+
+public class EffectDef(string name, string verb, EntityEffectWorker worker) : Def(name)
 {
-    public class EffectDef(string name, EntityEffectWorker worker) : Def(name)
-    {
-        internal EntityEffectWorker Worker = worker;
-    }
+    internal string Verb = verb;
+    internal EntityEffectWorker Worker = worker;
 }

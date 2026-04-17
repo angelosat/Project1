@@ -16,6 +16,7 @@ namespace Project1.Core.Effects;
 
 public abstract class EntityEffectWorker
 {
+    public abstract EffectDef Def { get; }
     protected abstract void OnStart(Actor actor, EntityEffectWrapper wrapper);
     protected virtual void OnTick(Actor actor, EntityEffectWrapper wrapper) { }
     protected virtual void OnFinish(Actor actor, EntityEffectWrapper wrapper) { }
@@ -38,4 +39,6 @@ public abstract class EntityEffectWorker
             return;
         this.OnTick(actor, entityEffectWrapper);
     }
+
+    internal string Label(Def target) => $"{this.Def.Verb} {target.LabelReadable}";
 }

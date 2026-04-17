@@ -20,7 +20,7 @@ public sealed class DutyDefOf
     static public readonly DutyDef Carpenter = new DutyDef("Carpenter").SetTool(ToolUseDefOf.Carpentry);
     static public readonly DutyDef Cook = new("Cook");
     static public readonly DutyDef Scribe = new("Scribe");
-    static public readonly DutyDef Aclhemist = new("Aclhemist");
+    static public readonly DutyDef Alchemist = new("Alchemist");
     static public readonly DutyDef Guide = new("Guide");
     static public readonly DutyDef MiscDuties = new("MiscDuties", PlannerDefOf.Switching);
     static public readonly DutyDef Cashier = new("Cashier", PlannerDefOf.Sell);

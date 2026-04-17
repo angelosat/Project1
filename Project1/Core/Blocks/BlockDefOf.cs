@@ -189,7 +189,7 @@ namespace Project1.Core.Blocks
         {
             BlockEntityCompSpecs = [
                new BlockBuildingComp.Spec(),
-                new BlockWorkstationComp.Spec(WorkstationDefOf.ScribeDesk)
+                new BlockWorkstationComp.Spec(WorkstationDefOf.AlchemistDesk)
                ],
             ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
         };

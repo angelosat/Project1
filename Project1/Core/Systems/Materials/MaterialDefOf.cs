@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Resources;
 using Project1.Framework;
 
 namespace Project1.Core.Systems.Materials
@@ -45,7 +46,8 @@ namespace Project1.Core.Systems.Materials
         { 
             Shine = 1,
             Color = Color.Gold,
-            Tier = 5
+            Tier = 5,
+            AlchemyTarget = ResourceDefOf.Mana
         }
             .SetPrefix("Golden")
             .SetValue(100);
@@ -113,7 +115,7 @@ namespace Project1.Core.Systems.Materials
             .SetValue(20);
 
         static public readonly MaterialDef Berry = 
-            new MaterialDef("Berry", MaterialTemplates.Fruit) { Tier = 1 }
+            new MaterialDef("Berry", MaterialTemplates.Fruit) { Tier = 1, AlchemyTarget = ResourceDefOf.Health }
             .SetPrefix("Berry")
             //.SetColor(new Color(141, 78, 133));
             .SetColor(Color.MediumVioletRed);

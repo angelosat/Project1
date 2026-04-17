@@ -16,21 +16,23 @@ using System;
 namespace Project1.Core.Crafting;
 
 [EnsureStaticCtorCall]
-static class PacketsCrafting
+static class Packets_Crafting
 {
     readonly static PacketId 
         _pPlayerCancellingUnfinished,
         _pPlayerCreatedOrder, 
+        _pPlayerCreatedOrderNew,
         _pPlayerDeletedOrder, 
         _pPlayerModifiedOrder, 
         _pOrderUpdated, 
         _pPlayerModifiedOrderFilters, 
         _pPlayerSetWorkstationIO;
-    static PacketsCrafting()
+    static Packets_Crafting()
     {
         _pPlayerSetWorkstationIO = Registry.PacketHandlers.Register(OnPlayerSetWorkstationIO);
 
         _pPlayerCreatedOrder = Registry.PacketHandlers.Register(OnPlayerCreatedOrder);
+        _pPlayerCreatedOrderNew = Registry.PacketHandlers.Register(OnPlayerCreatedOrderNew);
         _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
         _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
         _pPlayerModifiedOrderFilters = Registry.PacketHandlers.Register(OnPlayerModifiedOrderFilters);
@@ -75,9 +77,19 @@ static class PacketsCrafting
         var net = workstation.Map.World.Net;
         if(net is Server)
         { }
-        SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Request.ProductDef, e.Request.WorkstationCapability);
-    }
+        SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Request);
 
+        //SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Request.ProductDef, e.Request.WorkstationCapability);
+    }
+    private static void SendPlayerCreatedOrderNew(BlockEntity workstation, AddOrderRequest req)
+    {
+        var net = workstation.Map.Net;
+        var w = net.BeginPacketImmediate(_pPlayerCreatedOrderNew)
+            .Write(workstation.Map.ID)
+            .Write(workstation.OriginGlobal)
+            .Write(req.WorkstationCapability);
+        req.Write(w);
+    }
     private static void SendPlayerCreatedOrderNew(BlockEntity workstation, Def product, WorkstationCapabilityDef capability)
     {
         var net = workstation.Map.Net;
@@ -183,6 +195,18 @@ static class PacketsCrafting
         w.Write(workstation.OriginGlobal);
         w.Write(processDef);
     }
+    private static void OnPlayerCreatedOrderNew(NetEndpoint net, Packet pck)
+    {
+        var r = pck.PacketReader;
+        var mapid = r.ReadMapId();
+        var map = net.World.Get(mapid);
+        var workstationPosition = r.ReadIntVec3();
+        var capability = r.ReadDef<WorkstationCapabilityDef>();
+        var req = capability.Worker.DeserializeOrder(r);
+        if (map.Town.CraftingManager.CreateOrderNewInt(workstationPosition, req) is CraftingOrder order &&
+            net is Server server)
+            SendPlayerCreatedOrderNew(map.GetBlockEntity(workstationPosition), req);
+    }
     private static void OnPlayerCreatedOrder(NetEndpoint net, Packet pck)
     {
         var r = pck.PacketReader;
@@ -191,7 +215,7 @@ static class PacketsCrafting
         var workstationPosition = r.ReadIntVec3();
         var product = r.ReadDef();
         var capability = r.ReadDef<WorkstationCapabilityDef>();
-        if(map.Town.CraftingManager.CreateOrderNew(workstationPosition, product, capability) is CraftingOrder order &&
+        if (map.Town.CraftingManager.CreateOrderNew(workstationPosition, product, capability) is CraftingOrder order &&
             net is Server server)
             SendPlayerCreatedOrderNew(map.GetBlockEntity(workstationPosition), product, capability);
     }

@@ -14,7 +14,7 @@ namespace Project1.Core.UI
     class WorkstationGuiNew : SelectionBoundControl// GroupBox, ISelectionBound
     {
         Panel PanelReactions;
-        readonly ListBoxNoScroll<CraftingOrder, OrderGuiContainer> ListOrdersNew;
+        readonly ListBoxNoScroll<CraftingOrder, Gui_CraftingOrderContainer> ListOrdersNew;
         Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)> IOTable;
         BlockWorkstationComp Workstation;
 
@@ -22,14 +22,14 @@ namespace Project1.Core.UI
 
         public WorkstationGuiNew()
         {
-            this.ListOrdersNew = new(s => new OrderGuiContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
+            this.ListOrdersNew = new(s => new Gui_CraftingOrderContainer(s, s => this.MoveUp(s), s => this.MoveDown(s)));
 
         }
-        class OrderGuiContainer : GroupBox
+        class Gui_CraftingOrderContainer : GroupBox
         {
             public readonly ButtonIcon Up, Down;
             readonly Control ItemControl;
-            public OrderGuiContainer(CraftingOrder s, Action<CraftingOrder> moveUp, Action<CraftingOrder> modeDown)
+            public Gui_CraftingOrderContainer(CraftingOrder s, Action<CraftingOrder> moveUp, Action<CraftingOrder> modeDown)
             {
                 this.Up = new ButtonIcon(Icon.ArrowUp, () => moveUp(s));
                 this.Down = new ButtonIcon(Icon.ArrowDown, () => modeDown(s));
@@ -51,8 +51,8 @@ namespace Project1.Core.UI
             this.PanelReactions = new Panel() { AutoSize = true };
             this.PanelReactions.HideOnAnyClick();
             var manager = workstation.Parent.Map.Town.CraftingManager;
-            var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
             //var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.GetLabel(), () => this.PlaceOrderNew(r)));
+            var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
             var availableRefinementsControl =
                 new ListBoxNoScroll<AddOrderRequest>(r =>
                     new LabelNew(r.GetLabel(), () => this.PlaceOrderNew(r))
@@ -128,7 +128,7 @@ namespace Project1.Core.UI
             var newindex = s.Workstation.Orders.IndexOf(s) + 1;
             this.ListOrdersNew.Move(s, newindex);
             UpdateArrows();
-            PacketsCrafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, 1, 0, s.Mode);
+            Packets_Crafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, 1, 0, s.Mode);
         }
 
         private void MoveUp(CraftingOrder s)
@@ -137,7 +137,7 @@ namespace Project1.Core.UI
             var newindex = s.Workstation.Orders.IndexOf(s) - 1;
             this.ListOrdersNew.Move(s, newindex);
             UpdateArrows();
-            PacketsCrafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, -1, 0, s.Mode);
+            Packets_Crafting.SendPlayerModifiedOrder(s.Workstation.Parent.Map, s, -1, 0, s.Mode);
         }
         void UpdateArrows()
         {
@@ -174,7 +174,7 @@ namespace Project1.Core.UI
             if (this.Workstation != e.Comp)
                 return;
             this.ListOrdersNew.AddItems(e.Order);
-            OrderGuiContainer cntr = this.ListOrdersNew.GetControlFor(e.Order);
+            Gui_CraftingOrderContainer cntr = this.ListOrdersNew.GetControlFor(e.Order);
             UpdateArrows();
 
         }
@@ -186,7 +186,7 @@ namespace Project1.Core.UI
         private void PlaceOrder(MaterialRefinementDef r)
         {
             this.PanelReactions.Hide();
-            PacketsCrafting.PlayerCreatedOrder(this.Workstation.Parent, r);
+            Packets_Crafting.PlayerCreatedOrder(this.Workstation.Parent, r);
         }
         private void PlaceOrderNew(Def craftableProfile)
         {

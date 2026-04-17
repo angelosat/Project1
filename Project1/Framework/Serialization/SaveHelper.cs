@@ -2,6 +2,7 @@
 using Project1.Core;
 using Project1.Core.Entities;
 using Project1.Framework.Interfaces;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -896,6 +897,16 @@ namespace Project1.Framework.Serialization
         {
             return GameObject.Load(tag[name]);
         }
+        //public static bool TryLoad<T>(this SaveTag tag, string name, out T result) where T : ISaveableNewNew<T>
+        //{
+        //    if (tag.TryGetTag(name, out var t))
+        //    {
+        //        result = T.Create(tag[name]);
+        //        return true;
+        //    }
+        //    result = default;
+        //    return false;
+        //}
         public static T Load<T>(this SaveTag tag, string name) where T : ISaveableNewNew<T>
         {
             return T.Create(tag[name]);
@@ -909,6 +920,10 @@ namespace Project1.Framework.Serialization
             }
             value = default;
             return false;
+        }
+        public static Def LoadDef(this SaveTag tag, string name)
+        {
+            return Def.Get<Def>(tag[name].Value as string);
         }
         public static T LoadDef<T>(this SaveTag tag, string name) where T : Def
         {

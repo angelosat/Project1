@@ -248,7 +248,32 @@ public class CraftingManager : TownComp
 
         this._byType[workstation.WorkstationType].Add(workstation);
     }
-    public CraftingOrder CreateOrderNew(IntVec3 workstationPosition, Def recipe, WorkstationCapabilityDef capability)
+    internal CraftingOrder CreateOrderNewInt(IntVec3 workstationPosition, AddOrderRequest req)
+    {
+        //var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
+        //var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
+        var recipe = req.ProductDef;
+        var capability = req.WorkstationCapability;
+        //var order = CreateOrderNew(workstationPosition, recipe, capability);
+        var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
+        var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
+
+        //var reqs = CraftingSystem.GetValidIngredientsPerSlot(recipe);
+        var reqs = capability.Worker.GetValidIngredientsPerSlot(recipe);
+        if (reqs.Count() > workstation.CellsOccupied.Count)
+        {
+            Log.Error($"Not enough workstation modules to craft {recipe.LabelReadable}");
+            return null;
+        }
+        var order = new CraftingOrder(this.NextOrderId++, comp, recipe, capability) { Source = req };
+        comp.Orders.Add(order);
+        this._ordersById.Add(order.Id, order);
+
+        this.Map.Events.Post(new CraftOrderAddedEvent(comp, order));
+        return order;
+    }
+    [Obsolete($"use {nameof(CreateOrderNewInt)}")]
+    internal CraftingOrder CreateOrderNew(IntVec3 workstationPosition, Def recipe, WorkstationCapabilityDef capability)
     {
         var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
         var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
@@ -261,7 +286,6 @@ public class CraftingManager : TownComp
             return null;
         }
         var order = new CraftingOrder(this.NextOrderId++, comp, recipe, capability);
-
         comp.Orders.Add(order);
         this._ordersById.Add(order.Id, order);
 
@@ -269,19 +293,19 @@ public class CraftingManager : TownComp
         return order;
     }
 
-    public CraftingOrder CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
-    {
-        var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
-        var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
+    //public CraftingOrder CreateOrder(IntVec3 workstationPosition, MaterialRefinementDef refinement)
+    //{
+    //    var workstation = this.Map.GetBlockEntity(workstationPosition) ?? throw new ArgumentException($"Block entity doesn't exist at {workstationPosition}");
+    //    var comp = workstation.GetComp<BlockWorkstationComp>() ?? throw new ArgumentException($"{workstation} doesn't own a {nameof(BlockWorkstationComp)}");
 
-        var order = new CraftingOrder(this.NextOrderId++, comp, refinement);
+    //    var order = new CraftingOrder(this.NextOrderId++, comp, refinement);
 
-        comp.Orders.Add(order);
-        this._ordersById.Add(order.Id, order);
+    //    comp.Orders.Add(order);
+    //    this._ordersById.Add(order.Id, order);
 
-        this.Map.Events.Post(new CraftOrderAddedEvent(comp, order));
-        return order;
-    }
+    //    this.Map.Events.Post(new CraftOrderAddedEvent(comp, order));
+    //    return order;
+    //}
 
     internal CraftingOrder DeleteOrder(int id)
     {

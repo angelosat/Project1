@@ -54,6 +54,11 @@ internal class PotionSystem
 
     static PotionSystem()
     {
+        CacheRecipes();
+    }
+
+    private static void CacheRecipes()
+    {
         foreach (var s in MaterialSystem.MaterialsByType)
         {
             if (s.Key.AlchemyEffect is not EffectDef fx)
@@ -62,6 +67,8 @@ internal class PotionSystem
             {
                 if (m.AlchemyTarget is not Def target)
                     continue;
+                if (!fx.TargetDefType.IsAssignableFrom(target.GetType()))
+                    throw new System.Exception();
                 var key = (fx, target);
                 if (!_matsByEffect.TryGetValue(key, out var list))
                     _matsByEffect[key] = list = [];

@@ -5,6 +5,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -13,6 +14,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Crafting
 {
@@ -48,10 +50,12 @@ namespace Project1.Core.Crafting
         public Def ProductDef { get; internal set; }
         public WorkstationCapabilityDef WorkstationCapability { get; internal set;}
         public BlockWorkstationComp Workstation { get; internal set; }
-        public string LabelReadable
-            => this.ProductDef is Def def ?
-            $"{this.WorkstationCapability.LabelReadable}: {def.LabelReadable}" :
-            $"{this.WorkstationCapability.LabelReadable}";
+        //public string LabelReadable
+        //    => this.ProductDef is Def def ?
+        //    $"{this.WorkstationCapability.LabelReadable}: {def.LabelReadable}" :
+        //    $"{this.WorkstationCapability.LabelReadable}";
+        public string LabelReadable => this.Source.GetLabel();
+        public AddOrderRequest Source;
         public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
         public Dictionary<BoneDef, IngredientRequirement> FiltersNew = [];
         public Dictionary<BoneDef, CraftingRule> Rules = [];
@@ -428,7 +432,7 @@ namespace Project1.Core.Crafting
 
         public Control GetListControlGui()
         {
-            return new OrderSettingsGui(this);
+            return new Gui_CraftingOrderControl(this);
         }
         public void ChangePriority(int priorityDelta)
         {
@@ -460,7 +464,7 @@ namespace Project1.Core.Crafting
             this.Amount.Save(tag, "Amount");
             this.ProductDef.Save(tag, "Product");
             this.WorkstationCapability.Save(tag, "Domain");
-
+            tag.Save("Source", this.Source);
             return tag;
         }
 
@@ -472,6 +476,8 @@ namespace Project1.Core.Crafting
             if (tag.TryLoadInt("Id", out var id)) order.Id = id;
             if (tag.TryLoadInt("Mode", out var mode)) order.Mode = (CraftMode)mode;
             if (tag.TryLoadInt("Amount", out var amount)) order.Amount = amount;
+            if (tag.TryLoadNew<AddOrderRequest>("Source", out var source))
+                order.Source = source;
             return order;
         }
 
@@ -480,6 +486,7 @@ namespace Project1.Core.Crafting
             this.Id = r.ReadInt32();
             this.Mode = (CraftMode)r.ReadInt32();
             this.Amount = r.ReadInt32();
+            this.Source = r.Read<AddOrderRequest>();
             return this;
         }
 
@@ -490,6 +497,7 @@ namespace Project1.Core.Crafting
             w.Write(this.Id);
             w.Write((int)this.Mode);
             w.Write(this.Amount);
+            w.Write(this.Source);
         }
         public static CraftingOrder Create(IDataReader r)
         {

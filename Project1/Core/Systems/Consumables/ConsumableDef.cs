@@ -3,12 +3,11 @@ using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Framework.Helpers;
 using System;
 
-namespace Project1.Core.Systems.Consumables
+namespace Project1.Core.Systems.Consumables;
+
+public sealed class ConsumableDef(string name, string verb, Sprite sprite, Type effectType) : Def(name)
 {
-    public class ConsumableDef(string name, string verb, Sprite sprite, Type effectType) : Def(name)
-    {
-        public string Verb = verb;
-        public Sprite Sprite = sprite;
-        public ConsumableEffect Effect => field ??= ActivatorSafe<ConsumableEffect>.CreateInstance(effectType);
-    }
+    public string Verb = verb;
+    public Sprite Sprite = sprite;
+    public ConsumableEffect Effect => field ??= ActivatorSafe<ConsumableEffect>.CreateInstance(effectType);
 }

@@ -47,7 +47,7 @@ public record struct Light() : ISerializable
     }
 }
 
-public class Chunk : Inspectable
+public sealed class Chunk : Inspectable
 {
     public const int Size = 16;
     public const int SizeSquared = Size * Size;

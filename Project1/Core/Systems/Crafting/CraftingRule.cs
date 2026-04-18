@@ -5,38 +5,37 @@ using System.Collections.Generic;
 
 #nullable enable
 
-namespace Project1.Core.Systems.Crafting
+namespace Project1.Core.Systems.Crafting;
+
+public record struct CraftingRule(BoneDef Bone, ItemDef Def, HashSet<Def> Profiles, HashSet<MaterialTypeDef> MaterialTypes, int Quantity)
 {
-    public record struct CraftingRule(BoneDef Bone, ItemDef? Def, HashSet<Def> Profiles, HashSet<MaterialTypeDef> MaterialTypes, int Quantity)
+    public readonly bool Matches(Entity item, out int missingAmount)
     {
-        public readonly bool Matches(Entity item, out int missingAmount)
-        {
-            missingAmount = Quantity - item.StackSize;
+        missingAmount = Quantity - item.StackSize;
 
-            if (this.Def is ItemDef def && def != item.Def)
-                return false;
+        if (this.Def is ItemDef def && def != item.Def)
+            return false;
 
-            if (!this.Profiles.Contains(item.Profile))
-                return false;
+        if (!this.Profiles.Contains(item.Profile))
+            return false;
 
-            if (!this.MaterialTypes.Contains(item.PrimaryMaterial.Type))
-                return false;
+        if (!this.MaterialTypes.Contains(item.PrimaryMaterial.Type))
+            return false;
 
-            return true;
-        }
+        return true;
     }
-    //public record struct CraftingRule(BoneDef Bone, HashSet<MaterialRefinementDef> Forms, int Quantity)
-    ////public record struct CraftingRule(BoneDef Bone, HashSet<Def> Forms, int Quantity)
-    //{
-    //    public readonly bool Matches(Entity item, out int missingAmount)
-    //    {
-    //        if (item.Def == ItemDefOf.Ingredient && this.Forms.Contains(item.Profile))
-    //        {
-    //            missingAmount = Quantity - item.StackSize;
-    //            return true;
-    //        }
-    //        missingAmount = -1;
-    //        return false;
-    //    }
-    //}
 }
+//public record struct CraftingRule(BoneDef Bone, HashSet<MaterialRefinementDef> Forms, int Quantity)
+////public record struct CraftingRule(BoneDef Bone, HashSet<Def> Forms, int Quantity)
+//{
+//    public readonly bool Matches(Entity item, out int missingAmount)
+//    {
+//        if (item.Def == ItemDefOf.Ingredient && this.Forms.Contains(item.Profile))
+//        {
+//            missingAmount = Quantity - item.StackSize;
+//            return true;
+//        }
+//        missingAmount = -1;
+//        return false;
+//    }
+//}

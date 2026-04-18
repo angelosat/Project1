@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Project1.Framework.Events;
 
-public class EventBus
+public sealed class EventBus
 {
     private class Subscription
     {
@@ -23,7 +23,7 @@ public class EventBus
             this.Post(e);
         }
     }
-    protected virtual void Post(GameEvent a)
+    /*protected virtual*/ void Post(GameEvent a)
     {
         var id = a.Type;
         if (_eventBus.TryGetValue(id, out var list))

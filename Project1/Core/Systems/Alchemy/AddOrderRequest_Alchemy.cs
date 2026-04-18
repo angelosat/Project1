@@ -32,15 +32,7 @@ internal class AddOrderRequest_Alchemy : AddOrderRequest
         w.Write(this.Effect);
         w.Write(this.Target);
     }
-    //internal new static AddOrderRequest_Alchemy Create(IDataReader r)
-    //{
-    //    var req = new AddOrderRequest_Alchemy();
-    //    req.Read(r);
-    //    return req;
-    //    //var effect = r.ReadDef<EffectDef>();
-    //    //var target = r.ReadDef();
-    //    //return new(effect, target);
-    //}
+   
     protected override void ReadExtra(IDataReader r)
     {
         this.Effect = r.ReadDef<EffectDef>();

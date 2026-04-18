@@ -3,10 +3,8 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Materials;
 using Project1.Framework.Helpers;
-using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +20,6 @@ public abstract class WorkstationCapabilityWorker
     public virtual (ResourceDef resource, int value) ResourceConsumption { get; }
 
     public abstract IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp);
-    public abstract IEnumerable<(Def[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe);
     public abstract IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe);
     public abstract IEnumerable<BoneDef> GetBoneLayout();
 
@@ -33,8 +30,6 @@ public abstract class WorkstationCapabilityWorker
 
     internal virtual int GetOutputStackSize(Def recipe) => 1;
 
-    public virtual AddOrderRequest DeserializeOrder(IDataReader r)
-    {
-        return AddOrderRequest.Create(r);
-    }
+    //public virtual AddOrderRequest DeserializeOrder(IDataReader r)
+    //    => AddOrderRequest.Create(r);
 }

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Crafting;
 
-public sealed class WorkstationCapabilityCarpentryWorker/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
+public sealed class WorkstationCapability_Carpentry : WorkstationCapabilityWorker
 {
     public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.Carpentry;
 
@@ -29,11 +29,5 @@ public sealed class WorkstationCapabilityCarpentryWorker/*(WorkstationCapability
         {
             yield return new(BoneDefOf.Item, ItemDefOf.Ingredient, [matRefinement.Source], [matRefinement.Source.MaterialType], 1);
         }
-    }
-
-    public override IEnumerable<(Def[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe)
-    {
-        if (recipe is MaterialRefinementDef matRefinement)
-            yield return ([matRefinement.Source], 1);
     }
 }

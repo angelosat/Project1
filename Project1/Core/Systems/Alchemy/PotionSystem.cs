@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Project1.Core.Systems.Alchemy;
 
 [EnsureStaticCtorCall]
-internal class PotionSystem
+internal static class PotionSystem
 {
     static readonly Dictionary<(EffectDef effect, Def target), List<MaterialDef>> _matsByEffect = [];
     static public IEnumerable<(EffectDef effect, Def target)> Recipes => _matsByEffect.Keys;

@@ -11,19 +11,19 @@ namespace Project1.Core.Systems.Crafting
     [EnsureStaticCtorCall]
     internal static class WorkstationCapabilityDefOf
     {
-        static public readonly WorkstationCapabilityDef Smelting = new("Smelting", typeof(WorkstationCapabilitySmelting), DutyDefOf.Smelter) 
+        static public readonly WorkstationCapabilityDef Smelting = new("Smelting", typeof(WorkstationCapability_Smelting), DutyDefOf.Smelter) 
         {
             Output = typeof(MaterialRefinementDef), 
             OutputSpecific = [MaterialRefinementDefOf.Ingots],
             Plan = PlanDefOf.Crafting,
         };
-        static public readonly WorkstationCapabilityDef Carpentry = new("Carpentry", typeof(WorkstationCapabilityCarpentryWorker), DutyDefOf.Carpenter)
+        static public readonly WorkstationCapabilityDef Carpentry = new("Carpentry", typeof(WorkstationCapability_Carpentry), DutyDefOf.Carpenter)
         {
             Output = typeof(MaterialRefinementDef),
             OutputSpecific = [MaterialRefinementDefOf.Planks],
             Plan = PlanDefOf.Crafting
         };
-        static public readonly WorkstationCapabilityDef ToolMaking = new("ToolMaking", typeof(WorkstationCapabilityToolMaking), DutyDefOf.Craftsman)
+        static public readonly WorkstationCapabilityDef ToolMaking = new("ToolMaking", typeof(WorkstationCapability_ToolMaking), DutyDefOf.Craftsman)
         {
             Output = typeof(ToolProfileDef),
             Plan = PlanDefOf.Crafting
@@ -37,7 +37,7 @@ namespace Project1.Core.Systems.Crafting
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting
         };
-        static public readonly WorkstationCapabilityDef Scribing = new("Scribing", typeof(WorkstationCapabilityScribing), DutyDefOf.Scribe)
+        static public readonly WorkstationCapabilityDef Scribing = new("Scribing", typeof(WorkstationCapability_Scribing), DutyDefOf.Scribe)
         {
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting

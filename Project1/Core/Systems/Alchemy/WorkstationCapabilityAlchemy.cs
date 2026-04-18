@@ -27,7 +27,7 @@ internal class WorkstationCapabilityAlchemy : WorkstationCapabilityWorker
 
     public override IEnumerable<BoneDef> GetBoneLayout()
     {
-        throw new NotImplementedException();
+        yield return BoneDefOf.Item;
     }
 
     public override IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
@@ -35,14 +35,6 @@ internal class WorkstationCapabilityAlchemy : WorkstationCapabilityWorker
         yield return new(BoneDefOf.Item, ItemDefOf.Ingredient, [MaterialRefinementDefOf.Powder, MaterialRefinementDefOf.Paste], [MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh], 1);
     }
 
-    public override IEnumerable<(Def[] validRefinements, int quantity)> GetValidIngredientsPerSlot(Def recipe)
-    {
-        yield return ([MaterialRefinementDefOf.Powder, MaterialRefinementDefOf.Paste], 1);
-    }
-
-    public override AddOrderRequest DeserializeOrder(IDataReader r)
-    {
-        //return AddOrderRequest_Alchemy.Create(r);
-        return AddOrderRequest.Create(r);
-    }
+    //public override AddOrderRequest DeserializeOrder(IDataReader r)
+    //    => AddOrderRequest.Create(r);
 }

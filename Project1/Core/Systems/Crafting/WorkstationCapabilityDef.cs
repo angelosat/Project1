@@ -5,7 +5,7 @@ using System;
 
 namespace Project1.Core.Systems.Crafting;
 
-public class WorkstationCapabilityDef(string name, Type workerType, DutyDef operatorDuty) : Def(name)
+public sealed class WorkstationCapabilityDef(string name, Type workerType, DutyDef operatorDuty) : Def(name)
 {
     public Type Output;
     public Def[] OutputSpecific = [];

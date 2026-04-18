@@ -1,5 +1,4 @@
-﻿using Project1.Core.Crafting;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;

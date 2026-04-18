@@ -7,7 +7,7 @@ using System;
 
 namespace Project1.Core.Systems.Materials;
 
-public class MaterialDef : Def, ILabeled
+public sealed class MaterialDef : Def, ILabeled
 {
     public static readonly Random Randomizer = new();
 

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
 
-class Interaction_Crafting : InteractionLogic
+sealed class Interaction_Crafting : InteractionLogic
 {
     public sealed class Context : InteractionContext
     {

@@ -5,7 +5,7 @@ using Project1.Core.Systems.Quests;
 
 namespace Project1.Core.AI.MetaRoles.Adventurer;
 
-internal class RoleAdventurerData : RoleMetaWrapper
+internal sealed class RoleAdventurerData : RoleMetaWrapper
 {
     internal QuestId ActiveQuest;
     internal (MaterialRefinementDef refdef, MaterialDef matdef)? NextDesiredLoot;

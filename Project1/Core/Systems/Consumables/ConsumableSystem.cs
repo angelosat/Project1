@@ -4,14 +4,15 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Project1.Core.Systems.Consumables
 {
     [EnsureStaticCtorCall]
-    internal class ConsumableSystem
+    internal static class ConsumableSystem
     {
         public static Dictionary<BoneDef, CraftingRules> Rules = [];
-        static CraftingRules Rule;
+        //static CraftingRules Rule;
         static ConsumableSystem()
         {
             //Rule = new CraftingRules(BoneDefOf.Item).Allow(MaterialDefOf.Berry);
@@ -40,6 +41,10 @@ namespace Project1.Core.Systems.Consumables
         }
 
         //public static IEnumerable<CraftingRules> GetRules(ConsumableDef def) => Rules.Values;
-
+        extension(Entity item)
+        {
+            public bool IsConsumable => item.Consumable is not null;
+            public ConsumableComp Consumable => item.TryGetComponent<ConsumableComp>(out var comp) ? comp : null;
+        }
     }
 }

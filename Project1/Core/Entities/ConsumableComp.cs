@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
@@ -71,6 +72,13 @@ public sealed class ConsumableComp : EntityComp
     {
         this.EffectsNew = tag.LoadList<EntityEffectWrapper>("Effects");
     }
+
+    internal void ApplyEffects(Actor actor)
+    {
+        foreach(var fx in this.EffectsNew)
+            actor.Effects.Apply(fx.Clone());
+    }
+
     public new class Spec : Spec<ConsumableComp>
     {
         Func<Entity, Entity> Byproduct;

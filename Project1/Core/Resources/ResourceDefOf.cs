@@ -7,7 +7,7 @@ namespace Project1.Core.Resources;
 public static class ResourceDefOf
 {
     static public readonly ResourceDef Health = new("Health", typeof(Health)) { SupportsRestore = true, SupportsFortify = true };
-    static public readonly ResourceDef Mana = new("Mana", typeof(ResourceWorkerPassive)) { SupportsRestore = true, SupportsFortify = true, Color = Color.RoyalBlue };
+    static public readonly ResourceDef Mana = new("Mana", typeof(ResourceWorkerPassive), baseRegenRate: .01f) { SupportsRestore = true, SupportsFortify = true, Color = Color.RoyalBlue };
     static public readonly ResourceDef Stamina = new("Stamina", typeof(Stamina)) { SupportsRestore = true, SupportsFortify = true };
     static public readonly ResourceDef Durability = new("Durability", typeof(ResourceWorkerPassive));
     static public readonly ResourceDef HitPoints = new("Hit Points", typeof(HitPoints));

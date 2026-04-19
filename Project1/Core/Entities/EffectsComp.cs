@@ -34,7 +34,7 @@ sealed class Gui_Effects : SelectionBoundControl
         this.Comp = actor.Effects;
         this.Comp.Changed += Comp_Changed;
         this.Table.ClearControls();
-        this.Table.AddItems(actor.Effects.Effects);
+        this.Table.AddItems(actor.Effects.Active);
     }
 
     private void Comp_Changed((IEnumerable<EntityEffectWrapper> added, IEnumerable<EntityEffectWrapper> removed) e)
@@ -56,7 +56,7 @@ public sealed class EffectsComp : EntityComp
     public override string Name => "Effects";
 
     List<EntityEffectWrapper> ActiveEffects = [];
-    public IReadOnlyList<EntityEffectWrapper> Effects => this.ActiveEffects;
+    public IReadOnlyList<EntityEffectWrapper> Active => this.ActiveEffects;
     public void Apply(EntityEffectWrapper effect)
     {
         effect.Start(this.Owner as Actor);
@@ -155,4 +155,7 @@ public sealed class EffectsComp : EntityComp
     {
         return base.GetDetailedGui();
     }
+
+    internal bool Any(EffectDef effect, Def target)
+        => this.ActiveEffects.Any(f => f.Def == effect && f.Target == target);    
 }

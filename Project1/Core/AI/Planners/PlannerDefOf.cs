@@ -36,7 +36,7 @@ namespace Project1.Core.AI.Planners
         static public readonly PlannerDef Inventory = new("Inventory", typeof(Planner_Inventory));
         static public readonly PlannerDef Switching = new("Switching", typeof(PlannerToggleSwitch));
         static public readonly PlannerDef Workplace = new("Workplace", typeof(PlannerWorkplace));
-        static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(PlannerSmartEquip));
+        static public readonly PlannerDef SmartEquip = new("SmartEquip", typeof(Planner_SmartEquip));
         static public readonly PlannerDef Idle = new("Idle", typeof(PlannerIdle));
 
         static public readonly PlannerDef LodgingCheckin = new("LodgingCheckin", typeof(Planner_Lodging_Customer));

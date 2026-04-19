@@ -32,13 +32,15 @@ public class EntityEffectWrapper
     //    this.RemainingBudget -= toConsume;
     //    return toConsume;
     //}
-    public bool IsInstant => this.Duration == 0;
+    //public bool IsInstant => this.Duration == 0;
+    public bool IsInstant => this.Def.BaseDuration == 0;
     //public bool IsInstant => this.TicksPerUnit == 0;
 
     public SimulationTick RemainingDuration(SimulationTick now) => this.StartTick + (ulong)this.Duration - now;
     //public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)(ulong)this.RemainingDuration(now) / Ticks.PerGameMinute);
     //public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)Ticks.FromDays(1) - now) / Ticks.PerGameMinute);
-    public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Duration - now) / Ticks.PerGameMinute);
+    //public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Duration - now) / Ticks.PerGameMinute);
+    public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
     EntityEffectWrapper(EffectDef def, Def target)
     {
         this.Def = def;
@@ -60,11 +62,17 @@ public class EntityEffectWrapper
         this.Magnitude = budget.Value;
     }
 
+    public static EntityEffectWrapper CopyFrom(EntityEffectWrapper source)
+        => new(source.Def, source.Target, source.Budget, source.TicksPerUnit, source.Duration);
+    public EntityEffectWrapper Clone()
+     => new(this.Def, this.Target, this.Budget, this.TicksPerUnit, this.Duration);
+
     internal void Tick(Actor actor)
     {
         var now = actor.World.CurrentTick;
         this.Def.Worker.Tick(actor, this);
-        if (now > this.StartTick + (ulong)this.Duration)
+        //if (now > this.StartTick + (ulong)this.Duration)
+        if (now > this.StartTick + (ulong)this.Def.BaseDuration)
             this.IsExpired = true;
     }
     internal void Start(Actor actor)

@@ -22,38 +22,19 @@ namespace Project1.Core.Systems.ItemRoles;
 public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
     static List<ItemRoleDef> _flatItemRolesList;// = [];
-    static readonly Dictionary<ItemRoleContextDef, List<ItemRoleDef>> ContextToItemRolesMap = [];
     readonly EntityQueryEnumerator EntityQuery = new();
     Control _gui;
 
     readonly Actor Actor;
     readonly Dictionary<ItemRoleDef, (Entity item, int score)> PreCommitScanCache = [];
 
-    //static Dictionary<ItemRoleKey, ItemPref> commitsNew = [];
-    //static Dictionary<ItemRoleKey, ItemRoleContextDef> allKeys => field ??= populate();
-    //static Dictionary<ItemRoleKey, ItemRoleContextDef> populate()
-    //{
-    //    var defs = Def.Get<ItemRoleContextDef>();
-    //    var dic = new Dictionary<ItemRoleKey, ItemRoleContextDef>();
-    //    foreach (var role in defs)
-    //    {
-    //        var keys = role.Worker.GenerateKeys();
-    //        foreach (var k in keys)
-    //        {
-    //            dic.Add(k, role);
-    //        }
-    //    }
-    //    return dic;
-    //}
-    
-
     readonly Dictionary<int, ItemBias> ItemBiases = [];
     readonly Queue<Entity> notScannedYet = [];
     readonly HashSet<EntityRefId> alreadyQueued = [];
     readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
     readonly Dictionary<Entity, List<ItemPreference>> ItemsToPrefs = [];
-    readonly Dictionary<int, int> TempIgnore = [];
-    readonly HashSet<int> ToDiscard = [];
+    readonly Dictionary<EntityRefId, int> TempIgnore = [];
+    readonly HashSet<EntityRefId> ToDiscard = [];
     public Entity? DequeueUnevaluated()
     {
         if (this.notScannedYet.Count == 0)
@@ -208,18 +189,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
   
     static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
     static List<ItemRoleDef> GenerateItemRolesAll()
-    {
-        var flat = new List<ItemRoleDef>();
-        var defs = Def.Get<ItemRoleDef>();
-        foreach (var rDef in defs)
-        {
-            if (!ContextToItemRolesMap.TryGetValue(rDef.Context, out var list))
-                ContextToItemRolesMap[rDef.Context] = list = [];
-            list.Add(rDef);
-            flat.Add(rDef);
-        }
-        return flat;
-    }
+        => [.. Def.Get<ItemRoleDef>()];
     bool IsScanning => notScannedYet.Count > 0;
     event Action<ItemPreference> PrefUpdated;
     event Action<ItemPreference> PrefRemoved;
@@ -263,7 +233,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         if (!this.ItemsToPrefs.TryGetValue(item, out var list))
             this.ItemsToPrefs[item] = list = [];
         list.Add(pref);
-        Packets.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
+        Packets_ItemPrefs.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
         this.PreCommitScanCache.Remove(role);
     }
     internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
@@ -549,7 +519,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
             }
         this.ItemsToPrefs.Remove(item);
 
-        Packets.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
+        Packets_ItemPrefs.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
 
         foreach (var i in this.Actor.Map.Entities)
             if (i != item)
@@ -579,8 +549,6 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
                 .Where(e => filter(e.Key))
                 .SelectMany(e => e.Value);
 
-        // TODO: For large inventories, consider replacing SortedDictionary with a simple List<(Entity, int)> + Sort()
-        // to reduce allocations and overhead. Current approach is fine for typical small inventories.
         var scored = potential
             .Select(pref => (pref.Item, pref.Role.Worker.GetSituationalScore(actor, pref.Item, pref.Role)))
             .Where(t => t.Item2 != 0)
@@ -601,8 +569,10 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         scoredList.Sort((a, b) => b.score.CompareTo(a.score));
 
         // Yield only the ItemPreference part
-        foreach (var (pref, score) in scoredList)
-            yield return pref;
+        //foreach (var (pref, score) in scoredList)
+        //    yield return pref;
+
+        return scoredList.Select(a => a.pref);
     }
     public int GetTotalSituationalScoreFor(Entity item)
     {
@@ -642,56 +612,6 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
 
     public Control Gui => this._gui ??= this.GetGui();
 
-    [EnsureStaticCtorCall]
-    static class Packets
-    {
-        static readonly int pSyncPrefsAll;
-
-        static Packets()
-        {
-            pSyncPrefsAll = Registry.PacketHandlers.Register(Receive);
-        }
-
-        private static void Receive(INetEndpoint net, Packet pck)
-        {
-            if (net is Server)
-                throw new Exception();
-            var r = pck.PacketReader;
-
-            var actor = net.World.Get<Actor>(r.ReadInt32());
-            var manager = actor.ItemPreferences;
-
-            // read deltas
-            var length = r.ReadInt32();
-            for (int i = 0; i < length; i++)
-            {
-                var role = r.ReadDef<ItemRoleDef>();
-                var olditemid = r.ReadEntityRefId();
-                var newitemid = r.ReadEntityRefId();
-                var olditem = olditemid > 0 ? actor.Map.World.Get(olditemid) : null;
-                var newitem = newitemid > 0 ? actor.Map.World.Get(newitemid) : null;
-                var score = r.ReadInt32();
-                manager.UpdatePref(role, newitem, score);
-            }
-        }
-
-        public static void SyncDeltas(Actor actor, (ItemRoleDef role, Entity oldItem, Entity newItem, int score)[] deltas)
-        {
-            var w = (actor.Net as Server).BeginPacket(pSyncPrefsAll);
-            w.Write(actor.RefId);
-            w.Write(deltas.Length);
-            for (int i = 0; i < deltas.Length; i++)
-            {
-                var (role, olditem, newitem, score) = deltas[i];
-                w.Write(role);
-                w.Write(olditem?.RefId ?? -1);
-                w.Write(newitem?.RefId ?? -1);
-                w.Write(score);
-            }
-        }
-    }
-
-    #region ISaveable implementations
     public ISaveable Load(SaveTag tag)
     {
         tag.TryGetTag("Preferences", pt =>
@@ -725,8 +645,6 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         tag.Add(this.PrefsInternal.Values.Save("Preferences"));
         return tag;
     }
-    #endregion
-    #region ISerializableNew implementations
     public static ItemPreferenceManager Create(IDataReader r) => new ItemPreferenceManager().Read(r);
     public ItemPreferenceManager()
     {
@@ -754,5 +672,4 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     }
 
     
-    #endregion
 }

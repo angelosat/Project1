@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Needs;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Needs;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
@@ -23,4 +24,22 @@ sealed class ItemRoleNutritionWorker : ItemRoleWorker
     }
     public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
         => HungerUtility.GetNutrition(actor, item) * item.StackMax;
+
+    public override IEnumerable<Def> GetValidTargetDefs()
+        => [null];
+
+    //public override IEnumerable<ItemRoleKey> GenerateKeys()
+    //{
+    //    yield return new ItemRoleKey_Nutrition();
+    //}
+
+    //public override int GetInventoryScore(Actor actor, Entity item, ItemRoleKey key)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
+
+    //public override int GetSituationalScore(Actor actor, Entity item, ItemRoleKey key)
+    //{
+    //    throw new System.NotImplementedException();
+    //}
 }

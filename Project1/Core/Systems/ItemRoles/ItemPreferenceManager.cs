@@ -29,6 +29,24 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     readonly Actor Actor;
     readonly Dictionary<ItemRoleDef, (Entity item, int score)> PreCommitScanCache = [];
 
+    //static Dictionary<ItemRoleKey, ItemPref> commitsNew = [];
+    //static Dictionary<ItemRoleKey, ItemRoleContextDef> allKeys => field ??= populate();
+    //static Dictionary<ItemRoleKey, ItemRoleContextDef> populate()
+    //{
+    //    var defs = Def.Get<ItemRoleContextDef>();
+    //    var dic = new Dictionary<ItemRoleKey, ItemRoleContextDef>();
+    //    foreach (var role in defs)
+    //    {
+    //        var keys = role.Worker.GenerateKeys();
+    //        foreach (var k in keys)
+    //        {
+    //            dic.Add(k, role);
+    //        }
+    //    }
+    //    return dic;
+    //}
+    
+
     readonly Dictionary<int, ItemBias> ItemBiases = [];
     readonly Queue<Entity> notScannedYet = [];
     readonly HashSet<EntityRefId> alreadyQueued = [];
@@ -36,7 +54,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     readonly Dictionary<Entity, List<ItemPreference>> ItemsToPrefs = [];
     readonly Dictionary<int, int> TempIgnore = [];
     readonly HashSet<int> ToDiscard = [];
-    public Entity DequeueUnevaluated()
+    public Entity? DequeueUnevaluated()
     {
         if (this.notScannedYet.Count == 0)
             return null;
@@ -47,6 +65,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     public ItemPreferenceManager(Actor actor)
     {
         this.Actor = actor;
+        //populate();
     }
     private void HandleEntitySpawned(EntitySpawnedEvent e)
     {
@@ -295,7 +314,20 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         var result = new ItemEvaluation(item.RefId, [.. results]);
         return result;
     }
-
+    //private ItemPrefEval EvaluateIntNew(Entity item)
+    //{
+    //    List<(ItemRoleKey key, int score)> results = [];
+    //    foreach (var (key, context) in allKeys)
+    //    {
+    //        var score = context.Worker.GetInventoryScore(this.Actor, item, key);
+    //        if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
+    //            score += bias.Value;
+    //        if (score > 0)
+    //            results.Add((key, score));
+    //    }
+    //    var result = new ItemPrefEval(item.RefId, [.. results]);
+    //    return result;
+    //}
     internal bool TryGetExistingScore(ItemRoleDef role, out Entity item, out int score)
     {
         if (this.PrefsInternal.TryGetValue(role, out var pref))

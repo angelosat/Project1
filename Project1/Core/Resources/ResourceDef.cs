@@ -11,6 +11,8 @@ public sealed class ResourceDef(string name, Type workerClass, float baseRegenRa
    
     public readonly int BaseMax = 100;
     ResourceWorker workerCached;
+    internal bool SupportsFortify;
+    internal bool SupportsRestore;
 
     public ResourceWorker Worker => workerCached ??= (ResourceWorker)Activator.CreateInstance(this.WorkerClass, this);
 

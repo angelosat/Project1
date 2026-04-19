@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Towns.AI.Needs;
 using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.Effects
+namespace Project1.Core.Systems.Effects
 {
     internal class AdventuringEffectWorker : EntityEffectWorker
     {

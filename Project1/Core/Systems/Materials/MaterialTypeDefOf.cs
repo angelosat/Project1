@@ -1,5 +1,5 @@
-﻿using Project1.Core.Effects;
-using Project1.Core.Skills;
+﻿using Project1.Core.Skills;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 
@@ -34,7 +34,8 @@ namespace Project1.Core.Systems.Materials
         static public readonly MaterialTypeDef Wood = new("Wood", MaterialChemistryDefOf.Organic) {
             GatheringSkill = SkillDefOf.Plantcutting,
             JobToExtract = DutyDefOf.Lumberjack, 
-            Shininess = .8f };
+            Shininess = .8f,
+            AlchemyEffect = EffectDefOf.FortifyResource };
         static public readonly MaterialTypeDef Seed = new("Seed", MaterialChemistryDefOf.Organic);
         static public readonly MaterialTypeDef Fruit = new("Fruit", MaterialChemistryDefOf.Organic) { AlchemyEffect = EffectDefOf.RestoreResource };
         

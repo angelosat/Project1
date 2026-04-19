@@ -122,7 +122,19 @@ namespace Project1.Framework
             }
         }
 
-        
+        public bool TryLoadSingle(string name, out float value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (float)tag.Value;
+                return true;
+            }
+        }
         public bool TryLoadBool(string name, out bool value)
         {
             if (!this.TryGetTag(name, out var tag))

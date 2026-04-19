@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
-using Project1.Core.Effects;
 using Project1.Core.Needs;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Effects;
 using Project1.Framework;
 using System;
 using System.Linq;

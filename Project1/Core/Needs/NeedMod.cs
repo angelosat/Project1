@@ -1,5 +1,5 @@
-﻿using Project1.Core.Effects;
-using Project1.Core.Helpers;
+﻿using Project1.Core.Helpers;
+using Project1.Core.Systems.Effects;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 

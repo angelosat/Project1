@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
@@ -29,6 +30,8 @@ public abstract class WorkstationCapabilityWorker
         => this.GetBoneLayout().Zip(materials).ToDictionary();
 
     internal virtual int GetOutputStackSize(Def recipe) => 1;
+
+    internal virtual void PostProcess(Entity product, Actor author, AddOrderRequest parameters) { }
 
     //public virtual AddOrderRequest DeserializeOrder(IDataReader r)
     //    => AddOrderRequest.Create(r);

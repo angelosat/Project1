@@ -1,36 +1,8 @@
-﻿using Project1.Core.Effects;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Effects;
 
 namespace Project1.Core.Systems.Magic;
-
-public sealed class Effect_RestoreResource : EntityEffectWorker
-{
-    public override EffectDef Def => EffectDefOf.RestoreResource;
-
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
-    {
-        var resource = (ResourceDef)wrapper.Target;
-        actor.Resources.ApplyDelta(resource, wrapper.Budget.Value);
-    }
-}
-public sealed class Effect_FortifyResource : EntityEffectWorker
-{
-    public override EffectDef Def => EffectDefOf.FortifyResource;
-
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
-    {
-        var resource = (ResourceDef)wrapper.Target;
-        var max = actor.Resources.GetMax(resource);
-        actor.Resources.SetMax(resource, max + wrapper.RemainingBudget.Value);
-    }
-    protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
-    {
-        var resource = (ResourceDef)wrapper.Target;
-        var max = actor.Resources.GetMax(resource);
-        actor.Resources.SetMax(resource, max - wrapper.RemainingBudget.Value);
-    }
-}
 public sealed class SpellWorker_RestoreHealth() : SpellWorker_RestoreResource(ResourceDefOf.Health);
 public abstract class SpellWorker_RestoreResource(ResourceDef resource) : SpellWorker
 {
@@ -68,4 +40,6 @@ public sealed class SpellWorker_Null : SpellWorker
 public abstract class SpellWorker
 {
     public abstract void Cast(Actor Caster, InteractionTarget Target);
+
+
 }

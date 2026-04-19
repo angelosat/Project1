@@ -38,7 +38,11 @@ public sealed class ReservationManager : TownComp
             if (r.Target.Object != e.SplitSource)
                 continue;
             if (e.Actor.Hauled.StackSize != r.Amount)
-                throw new InvalidOperationException("Mismatch between reserved amount and amount picked up");
+            {
+                // this exception was thrown because if picked item is merged with already carried item,
+                // then the mismatch is normal
+                //throw new InvalidOperationException("Mismatch between reserved amount and amount picked up");
+            }
             found = r;
             break;
         }

@@ -8,9 +8,9 @@ namespace Project1.Core.Systems.Consumables;
 [EnsureStaticCtorCall]
 public static class ConsumableDefOf
 {
-    public static ConsumableDef Pie = new("Pie", "Bake", Sprite.Default, typeof(ConsumableEffect_Food));
-    public static ConsumableDef TownScroll = new("TownScroll", "Scribe", ItemContent.PageWritten, typeof(ConsumableEffect_TownScroll));
-    public static ConsumableDef Potion = new("Potion", "Brew", ItemContent.Potion, typeof(ConsumableEffect_TownScroll));
+    public static readonly ConsumableDef Pie = new("Pie", "Bake", Sprite.Default, typeof(ConsumableEffect_Food), typeof(ConsumableWorker_Food));
+    public static readonly ConsumableDef Scroll = new("Scroll", "Scribe", ItemContent.PageWritten, typeof(ConsumableEffect_TownScroll), typeof(ConsumableWorker_Scroll));
+    public static readonly ConsumableDef Potion = new("Potion", "Brew", ItemContent.Potion, typeof(ConsumableEffect_TownScroll), typeof(ConsumableWorker_Potion));
     static ConsumableDefOf()
     {
         Def.Register(typeof(ConsumableDefOf));

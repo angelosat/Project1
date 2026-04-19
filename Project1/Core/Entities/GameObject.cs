@@ -20,6 +20,7 @@ using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Ownership;
@@ -111,6 +112,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             var obj = ToolSystem.Create(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
             AddTemplate(obj);
         }
+
+        AddTemplates(PotionSystem.GenerateTemplates());
 
         AddTemplate(ItemDefOf.Coins.Create());
     }
@@ -914,6 +917,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         //return true;
 
         ArgumentNullException.ThrowIfNull(otherItem);
+
+        if (this.Def.IsSingleUnit)
+            return false;
 
         if (this == otherItem)
             return false;

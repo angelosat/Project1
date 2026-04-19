@@ -16,7 +16,7 @@ public sealed class WorkstationCapability_Scribing : WorkstationCapabilityWorker
 
     public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
     {
-        yield return new(this.CapabilityDef, ConsumableDefOf.TownScroll);
+        yield return new(this.CapabilityDef, ConsumableDefOf.Scroll);
     }
 
     public override IEnumerable<BoneDef> GetBoneLayout()

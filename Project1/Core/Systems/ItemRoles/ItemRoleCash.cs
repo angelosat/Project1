@@ -25,7 +25,7 @@ sealed class ItemRoleTownScroll : ItemRoleWorker
     {
         if (item.Def != ItemDefOf.Consumable)
             return 0;
-        if (item.Profile != ConsumableDefOf.TownScroll)
+        if (item.Profile != ConsumableDefOf.Scroll)
             return 0;
         return 100;
     }

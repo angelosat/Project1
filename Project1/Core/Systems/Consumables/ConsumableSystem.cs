@@ -27,8 +27,10 @@ namespace Project1.Core.Systems.Consumables
             //item.Profile = profile;
             //item.Body.Sprite = Sprite.Default;
             item.Body.Sprite = profile.Sprite;
+            item.Body.Material = material;
             item.Name = $"{material.LabelReadable} {profile.LabelReadable}";
             item.Initialize();
+            profile.Worker.PostProcess(item);
             return item;
         }
 

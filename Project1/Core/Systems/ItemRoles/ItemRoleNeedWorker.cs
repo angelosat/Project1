@@ -26,6 +26,6 @@ sealed class ItemRoleNeedWorker : ItemRoleWorker
         if (!item.TryGetComponent<ConsumableComp>(out var consumableComp))
             return -1;
         var benefit = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
-        return benefit.HasValue ? benefit.Value * item.StackMax : 0;
+        return (int)(benefit.HasValue ? benefit.Value * item.StackMax : 0);
     }
 }

@@ -1,7 +1,11 @@
-﻿using Project1.Core.Effects;
+﻿using Project1.Core.Entities;
+using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using System.Collections.Generic;
+using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Project1.Core.Systems.Alchemy;
 
@@ -34,5 +38,44 @@ internal static class PotionSystem
                 list.Add(m);
             }
         }
+    }
+
+    //public static Entity Create(EffectDef effect, Def target, byte level)
+    //{
+    //    var potion = ItemDefOf.Consumable.Create(ConsumableDefOf.Potion);
+    //    var comp = potion.GetComponent<ConsumableComp>();
+    //    var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
+    //    comp.Tier = level;
+    //    comp.Add(wrapper);
+    //    potion.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
+    //    return potion;
+    //}
+
+    public static void PostProcess(Entity entity)
+    {
+        var mat = entity.Body.Material;
+        var effect = mat.Type.AlchemyEffect;
+        var target = mat.AlchemyTarget;
+        // todo calculate potion magnitude/level from item quality
+        var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
+        var comp = entity.GetComponent<ConsumableComp>();
+        comp.Add(wrapper);
+        entity.Name = GetName(comp);
+        entity.Body.TintΟverride = effect.Worker.GetTint(target);
+    }
+
+    internal static string GetName(ConsumableComp comp)
+    {
+        var effect = comp.EffectsNew.First();
+        return $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Def.Verb} {effect.Target.LabelReadable}";
+    }
+
+    internal static IEnumerable<GameObject> GenerateTemplates()
+    {
+        //foreach (var (effect, target) in Recipes)
+        //    yield return Create(effect, target, 1);
+        foreach (var recipe in _matsByEffect)
+            foreach (var mat in recipe.Value)
+                yield return ConsumableSystem.Create(ConsumableDefOf.Potion, mat);
     }
 }

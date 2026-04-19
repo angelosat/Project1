@@ -5,6 +5,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -469,6 +470,8 @@ public class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, ISeriali
     public static CraftingOrder Create(SaveTag tag)
     {
         var product = tag.LoadDef<Def>("Product");
+        //if (product is null)
+        //    product = ConsumableDefOf.Scroll;
         var domain = tag.LoadDef<WorkstationCapabilityDef>("Domain");
         var order = new CraftingOrder(product, domain);
         if (tag.TryLoadInt("Id", out var id)) order.Id = id;

@@ -53,6 +53,7 @@ public sealed class ItemDef : Def
     public float Height = 1;
     public bool IsHaulable = true;
     public string Description;
+    internal bool IsSingleUnit;
 
     public ItemDef(string name, Type itemClass) : base(name)//, itemClass)
     {

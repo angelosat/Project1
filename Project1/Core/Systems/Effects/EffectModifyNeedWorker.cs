@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
 
-namespace Project1.Core.Effects;
+namespace Project1.Core.Systems.Effects;
 
 internal class EffectModifyNeedWorker : EntityEffectWorker
 {

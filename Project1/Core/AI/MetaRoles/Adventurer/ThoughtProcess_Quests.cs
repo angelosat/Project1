@@ -18,12 +18,12 @@ internal class ThoughtProcess_UseTownScroll : ThoughtProcess
         var meta = actor.AI.Meta;
         if (meta.TargetFrontier is not null)
             return;
-        if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.TownScroll) is not Entity item)
+        if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.Scroll) is not Entity item)
             return;
         var map = actor.Net.World.MainMap;
         if (!map.Town.Waypoint.HasValue)
             return;
-        ConsumableDefOf.TownScroll.Effect.Execute(actor);
+        ConsumableDefOf.Scroll.Effect.Execute(actor);
         item.Consume(1);
     }
 

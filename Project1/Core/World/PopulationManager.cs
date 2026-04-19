@@ -119,7 +119,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
         var coins = ItemDefOf.Coins.Create().SetStackSize(500);
-        var townscroll = ConsumableSystem.Create(ConsumableDefOf.TownScroll, MaterialDefOf.ShrubStem, 1);
+        var townscroll = ConsumableSystem.Create(ConsumableDefOf.Scroll, MaterialDefOf.ShrubStem, 1);
         var inventory = actor.Inventory;
         inventory.Insert(coins);
         inventory.Insert(townscroll);

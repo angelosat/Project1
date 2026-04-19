@@ -1,6 +1,7 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.Effects;
+namespace Project1.Core.Systems.Effects;
 
 //public sealed class EntityEffectController_Duration : EntityEffectController
 //{
@@ -40,5 +41,6 @@ public abstract class EntityEffectWorker
         this.OnTick(actor, entityEffectWrapper);
     }
 
-    internal string Label(Def target) => $"{this.Def.Verb} {target.LabelReadable}";
+    internal virtual string Label(Def target) => $"{this.Def.Verb} {target.LabelReadable}";
+    internal virtual Color GetTint(Def target) => Color.White;
 }

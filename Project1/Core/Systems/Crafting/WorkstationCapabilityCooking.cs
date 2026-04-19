@@ -32,7 +32,6 @@ public sealed class WorkstationCapabilityCooking : WorkstationCapabilityWorker
     }
 
     internal override int GetOutputStackSize(Def recipe)
-    {
-        return ItemDefOf.Ingredient.StackCapacity;
-    }
+        => ItemDefOf.Consumable.StackCapacity;
+    
 }

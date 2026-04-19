@@ -3,7 +3,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Framework;
 
-namespace Project1.Core.Effects
+namespace Project1.Core.Systems.Effects
 {
     [EnsureStaticCtorCall]
     internal static class Packets_Effects

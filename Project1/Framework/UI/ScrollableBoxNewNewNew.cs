@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Windows.Forms;
 
 namespace Project1.Framework.UI;
@@ -11,7 +10,7 @@ public class ScrollableBoxNewNewNew : GroupBox
     readonly ScrollbarH HScroll;
     public GroupBox Viewport;
     public readonly GroupBox Client;
-    public bool Autoscroll = true;
+    public bool Autoscroll;
     public IconButton ButtonSnapToBottom;
     public override Rectangle ClientSize => this.Viewport.ClientSize;
     readonly ScrollModes Mode;

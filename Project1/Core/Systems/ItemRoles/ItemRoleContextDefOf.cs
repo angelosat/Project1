@@ -12,6 +12,7 @@ namespace Project1.Core.Systems.ItemRoles
         public static readonly ItemRoleContextDef Nutrition = new("Nutrition", null, typeof(ItemRoleNutritionWorker));
         public static readonly ItemRoleContextDef Cash = new("Cash", null, typeof(ItemRoleCash));
         public static readonly ItemRoleContextDef TownScroll = new("TownScroll", null, typeof(ItemRoleTownScroll));
+        public static readonly ItemRoleContextDef Potion = new("Potion", null, typeof(ItemRoleTownScroll));
 
         static ItemRoleContextDefOf()
         {

@@ -14,7 +14,7 @@ class NpcLogUINewNew : SelectionBoundControl
 
     public NpcLogUINewNew()
     {
-        var scrollbox = new ScrollableBoxNewNewNew(this.Table.TotalWidth, 300, ScrollModes.Vertical);
+        var scrollbox = new ScrollableBoxNewNewNew(this.Table.TotalWidth, 300, ScrollModes.Vertical) { Autoscroll = true };
         scrollbox.AddControls(this.Table);
         this.AddControls(scrollbox.ToPanel());
     }

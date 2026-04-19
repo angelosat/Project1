@@ -63,10 +63,11 @@ static class ItemDefOf
     static public readonly ItemDef Consumable = new ItemDef("Consumable", typeof(Entity))
     {
         StackCapacity = 32,
+        IsSingleUnit = true,
         ReplaceName = true,
         Comps = [typeof(ConsumableComp)],
         CompDefs = [EntityCompDefOf.Consumable],
-        Body = new Bone(BoneDefOf.Item, Sprite.Default),
+        Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         //DefaultSprite = Sprite.Default
     };
 

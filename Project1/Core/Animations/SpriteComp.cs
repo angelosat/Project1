@@ -8,6 +8,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -230,7 +231,6 @@ public class SpriteComp : EntityComp
         Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(shaderRect);
 
         float depth = global.GetDrawDepth(map, camera);
-
         var body = this.Body;
         // TODO: slow?
         if (Flash)

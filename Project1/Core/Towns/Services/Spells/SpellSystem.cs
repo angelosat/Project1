@@ -1,6 +1,6 @@
-﻿using Project1.Core.Effects;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Framework.Helpers;
 using System;
@@ -57,7 +57,7 @@ internal static class SpellSystem
             var placeholderMagnitude = 50;
             foreach (var fx in effects)
             {
-                var fxruntime = new EntityEffectWrapper(fx.effect, fx.target, budget: placeholderMagnitude, ticksPerUnit: 1, duration: spell.EffectDuration);
+                var fxruntime = new EntityEffectWrapper(fx.effect, fx.target, budget: placeholderMagnitude, ticksPerUnit: 1);
                 target.Effects.Apply(fxruntime);
             }
             caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);

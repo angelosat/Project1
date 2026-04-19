@@ -1,4 +1,7 @@
-﻿namespace Project1.Core
+﻿using System;
+using System.Collections.Generic;
+
+namespace Project1.Core
 {
     static class Ticks
     {
@@ -31,5 +34,21 @@
         {
             return FromDays(days) * FromHours(hours) * FromMinutes(minutes);
         }
+        public static TimeSpan ToTimespan(int ingameTicks)
+            => TimeSpan.FromSeconds(PerGameSecond * ingameTicks);
+        public static string ToString(int ingameTicks)
+        {
+            var span = ToTimespan(ingameTicks);
+            List<string> final = [];
+            if (span.Days > 0) final.Add($"{span.Days:d}d");
+            if (span.Hours > 0) final.Add($"{span.Hours:hh}h");
+            if (span.Minutes > 0) final.Add($"{span.Minutes:mm}m");
+            if (span.Seconds > 0) final.Add($"{span.Seconds:ss}s");
+            return string.Join(" ", final);
+        }
+        //extension(ulong ingameTicks)
+        //{
+        //    public TimeSpan ToRealTime
+        //}
     }
 }

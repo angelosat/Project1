@@ -63,7 +63,7 @@ namespace Project1.Core
         public Bone Parent;
         public MaterialDef Material;
 
-        public Color Tint = Color.White;
+        public Color? TintΟverride;// = Color.White;
 
         /// <summary>
         /// The coordinates on the bone's parent (relative to it's parent sprite origin) where the current bone attaches to.
@@ -167,7 +167,7 @@ namespace Project1.Core
             newnode.SlotFunc = this.SlotFunc;
             newnode.Offset = this.Offset;
             newnode.OriginGroundOffset = this.OriginGroundOffset;
-            newnode.Tint = this.Tint;
+            newnode.TintΟverride = this.TintΟverride;
             newnode.Material = this.Material;
             newnode.DrawMaterialColor = this.DrawMaterialColor;
             newnode.ScaleFunc = this.ScaleFunc;

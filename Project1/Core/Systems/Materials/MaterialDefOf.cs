@@ -85,7 +85,9 @@ static class MaterialDefOf
         .SetPrefix("Vine Wood")
         .SetColor(Color.GreenYellow)
         .SetValue(30);
-    static public readonly MaterialDef BlackWood = new MaterialDef("Black Wood", MaterialTemplates.Wood) { Shine = .5f, Tier = 5 }
+    static public readonly MaterialDef BlackWood = new MaterialDef("Black Wood", MaterialTemplates.Wood) { 
+        AlchemyTarget = ResourceDefOf.Mana,
+        Shine = .5f, Tier = 5 }
         .SetPrefix("Black Wood")
         .SetColor(Color.DarkSlateGray)
         .SetValue(40);

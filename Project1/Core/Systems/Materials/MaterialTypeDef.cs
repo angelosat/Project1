@@ -1,6 +1,6 @@
-﻿using Project1.Core.Effects;
-using Project1.Core.Legacy.Crafting.Defs;
+﻿using Project1.Core.Legacy.Crafting.Defs;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Collections.Generic;

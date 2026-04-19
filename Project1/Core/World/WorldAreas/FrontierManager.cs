@@ -2,7 +2,6 @@
 using Project1.Core.AI.MetaRoles.Adventurer;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Input.Building;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Tools;

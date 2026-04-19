@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.AI;
 using Project1.Core.AI.Planners;
-using Project1.Core.Effects;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Systems.Effects;
 using Project1.Framework;
 using Project1.Framework.Input;
 using Project1.Framework.Interfaces;

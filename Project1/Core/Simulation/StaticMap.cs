@@ -36,6 +36,7 @@ public class StaticMap : MapBase, ITooltippable
 {
     public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
 
+
     public MapSize Size;
     public class MapSize(
         string name, int blocks) : INamed
@@ -953,4 +954,11 @@ public class StaticMap : MapBase, ITooltippable
         return index;
     }
     int Index(IntVec3 v) => this.Index(v.X, v.Y, v.Z);
+
+    public IEnumerable<Control> GetTooltipControls()
+    {
+        var box = new GroupBox();
+        this.GetTooltipInfo(box);
+        yield return box;
+    }
 }

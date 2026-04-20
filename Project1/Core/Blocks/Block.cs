@@ -919,6 +919,13 @@ namespace Project1.Core.Blocks
 
         internal virtual void OnPlaced(CellQuery cellQuery) { }
 
+        public IEnumerable<Control> GetTooltipControls()
+        {
+            var box = new GroupBox();
+            this.GetTooltipInfo(box);
+            yield return box;
+        }
+
         public class DefaultState : IBlockState
         {
             public void Apply(MapBase map, Vector3 global)

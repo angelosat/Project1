@@ -145,4 +145,10 @@ public class WorldInhabitantView : Inspectable, ITooltippable
         gui.GetWindow().SetTitle(this.Actor.Name).Show();
     }
 
+    public IEnumerable<Control> GetTooltipControls()
+    {
+        var box = new GroupBox();
+        this.GetTooltipInfo(box);
+        yield return box;
+    }
 }

@@ -283,6 +283,9 @@ namespace Project1.Core.Entities
             get { return new GameObjectSlot(); }
         }
 
+        public string LabelReadable => this.Object?.LabelReadable ?? "";
+
+
         /// <summary>
         /// Sets Object to null and returns true if Object was non-null.
         /// </summary>
@@ -306,6 +309,13 @@ namespace Project1.Core.Entities
                 this.Object.Net.DisposeObject(this.Object as Entity);
                 this.Clear();
             }
+        }
+
+        public IEnumerable<Control> GetTooltipControls()
+        {
+            var box = new GroupBox();
+            this.GetTooltipInfo(box);
+            yield return box;
         }
     }
 }

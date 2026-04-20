@@ -1,16 +1,17 @@
-﻿using System;
-using Project1.Core.UI;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Framework.UI;
-using Project1.Core.Input;
 using Project1.Core.Blocks;
-using Project1.Core.Screens;
-using Project1.Core.Helpers;
-using Project1.Core.Graphics;
-using Project1.Core.Simulation;
 using Project1.Core.Entities;
+using Project1.Core.Graphics;
+using Project1.Core.Helpers;
+using Project1.Core.Input;
+using Project1.Core.Screens;
+using Project1.Core.Simulation;
+using Project1.Core.UI;
 using Project1.Core.UI.NamePlates;
+using Project1.Framework.UI;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Map
 {
@@ -37,6 +38,9 @@ namespace Project1.Core.Map
         { get { return Map.GetName().Length > 0 ? Map.GetName() : Map.GetOffset().ToString(); } }
         public Vector3 Global
         { get { return new Vector3(Map.GetOffset(), 0); } }
+
+        public string LabelReadable => this.Map.LabelReadable;
+
         public Color GetNameplateColor()
         {
             return Color.White;
@@ -126,6 +130,13 @@ namespace Project1.Core.Map
         public void GetTooltipInfo(Control tooltip)
         {
             this.Map.GetTooltipInfo(tooltip);
+        }
+
+        public IEnumerable<Control> GetTooltipControls()
+        {
+            var box = new GroupBox();
+            this.GetTooltipInfo(box);
+            yield return box;
         }
     }
 }

@@ -30,13 +30,18 @@ public sealed class ConsumableComp : EntityComp
             tooltip.Controls.Add(
                 new Label(effect) { Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.ForestGreen }
                 );
-
+        if (this.Spell is SpellDef spell)
+        {
+            //tooltip.AddControlsBottomLeft(new LabelNew(() => $"Cast: {spell}") { TextColorFunc = () => Color.Aquamarine });
+            tooltip.AddControlsBottomLeft(new LabelNew(spell) { TextColorFunc = () => Color.Aquamarine });
+        }
     }
     internal override void CopyFrom(EntityComp source)
     {
         var comp = source as ConsumableComp;
         foreach (var f in comp.EffectsNew)
             this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.TicksPerUnit/*, f.Magnitude*/));
+        this.Spell = comp.Spell;
     }
 
     public void Add(EntityEffectWrapper effect)

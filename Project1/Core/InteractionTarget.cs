@@ -931,4 +931,11 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
     {
         yield break;
     }
+
+    public IEnumerable<Control> GetTooltipControls()
+    {
+        var box = new GroupBox();
+        this.GetTooltipInfo(box);
+        yield return box;
+    }
 }

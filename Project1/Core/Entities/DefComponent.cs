@@ -51,7 +51,7 @@ namespace Project1.Core.Entities
         {
             tooltip.Color = GetQualityColor();
             var namelabel = new Label(Vector2.Zero, parent.Name, tooltip.Color, Color.Black, UIManager.FontBold) { TextColorFunc = () => tooltip.Color, TextFunc = () => parent.Name };
-            tooltip.Controls.Add(namelabel);
+            //tooltip.Controls.Add(namelabel);
             tooltip.Controls.Add(new Label(this.Quality.LabelReadable) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
             tooltip.Controls.Add(new Label(parent.Def.Description) { Location = tooltip.Controls.BottomLeft });
             if(this.AuthorId != EntityRefId.Null)

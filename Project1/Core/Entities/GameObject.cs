@@ -511,13 +511,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     public void GetTooltip(Control tooltip)//Message msg)
     {
-        GetInfo().OnTooltipCreated(this, tooltip);
+        //GetInfo().OnTooltipCreated(this, tooltip);
         // TODO: LOL fix, i need the object name to be on top
         //foreach (var comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
         foreach (var comp in Components.Values)
         {
             //if(comp.GetType() != typeof(DefComponent))
-            if(!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
+            //if(!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
                 comp.OnTooltipCreated(this, tooltip);
         }
 
@@ -1309,5 +1309,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         this.Components.ResolveReferences();
     }
-    
+
+    public IEnumerable<Control> GetTooltipControls()
+    {
+        var box = new GroupBox();
+        this.GetTooltipInfo(box);
+        yield return box;
+    }
 }

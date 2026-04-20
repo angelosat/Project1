@@ -18,15 +18,17 @@ public class SelectionMiniButtonDef(string name, Icon icon, string hoverText, Ty
 public static class SelectionMiniButtonDefOf
 {
     public static readonly SelectionMiniButtonDef CameraFollow = 
-        new("CameraFollow", Icon.Replace, "Camera Follow", typeof(MiniButtonCameraFollow));
+        new("CameraFollow", Icon.Replace, "Camera Follow", typeof(MiniButton_CameraFollow));
     public static readonly SelectionMiniButtonDef SlizeZ =
-        new("SliceZlevel", Icon.ArrowDown, "Slice z-level", typeof(MiniButtonSlizeZ)); 
+        new("SliceZlevel", Icon.ArrowDown, "Slice z-level", typeof(MiniButton_SlizeZ)); 
     public static readonly SelectionMiniButtonDef CameraCenter =
-        new("CameraCenter", Icon.ArrowUp, "Camera Center", typeof(MiniButtonCameraCenter)); 
+        new("CameraCenter", Icon.ArrowUp, "Camera Center", typeof(MiniButton_CameraCenter)); 
     public static readonly SelectionMiniButtonDef CycleSelection =
-        new("CycleSelection", Icon.Replace, "Cycle Selection", typeof(MiniButtonCycleSelection)); 
+        new("CycleSelection", Icon.Replace, "Cycle Selection", typeof(MiniButton_CycleSelection)); 
     public static readonly SelectionMiniButtonDef Inspect =
-        new("Inspect", Icon.ArrowRight, "Inspect", typeof(MiniButtonInspect));
+        new("Inspect", Icon.ArrowRight, "Inspect", typeof(MiniButton_Inspect));
+    public static readonly SelectionMiniButtonDef DetachTooltip =
+    new("Detach", Icon.ArrowUp, "Detach Tooltip", typeof(MiniButton_DetachTooltip));
     static SelectionMiniButtonDefOf()
     {
         Def.Register(typeof(SelectionMiniButtonDefOf));
@@ -38,7 +40,7 @@ public abstract class SelectionMiniButtonWorker
     internal abstract void OnClick(ISelectable selectable);
 }
 
-internal class MiniButtonCameraFollow : SelectionMiniButtonWorker
+internal class MiniButton_CameraFollow : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => selectable is Entity;
@@ -46,28 +48,28 @@ internal class MiniButtonCameraFollow : SelectionMiniButtonWorker
     internal override void OnClick(ISelectable selectable)
         => ScreenManager.CurrentScreen.Camera.ToggleFollowing(selectable as Entity);
 }
-internal class MiniButtonSlizeZ : SelectionMiniButtonWorker
+internal class MiniButton_SlizeZ : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => true;
     internal override void OnClick(ISelectable selectable)
         => ScreenManager.CurrentScreen.Camera.SliceOn((int)selectable.Global.Z);
 }
-internal class MiniButtonCameraCenter : SelectionMiniButtonWorker
+internal class MiniButton_CameraCenter : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => true;
     internal override void OnClick(ISelectable selectable)
         => ScreenManager.CurrentScreen.Camera.CenterOn(selectable.Global);
 }
-internal class MiniButtonCycleSelection : SelectionMiniButtonWorker
+internal class MiniButton_CycleSelection : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => true;
     internal override void OnClick(ISelectable selectable)
         => SelectionManager.Instance.CycleTargetsNew();
 }
-internal class MiniButtonInspect : SelectionMiniButtonWorker
+internal class MiniButton_Inspect : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => selectable is Inspectable;
@@ -76,6 +78,15 @@ internal class MiniButtonInspect : SelectionMiniButtonWorker
         var inspected = selectable as Inspectable;
         Inspector.Refresh(inspected);
         //Inspector.Show();
+    }
+}
+internal class MiniButton_DetachTooltip : SelectionMiniButtonWorker
+{
+    internal override bool IsVisible(ISelectable selectable)
+        => selectable is ITooltippable;
+    internal override void OnClick(ISelectable selectable)
+    {
+        TooltipManager.Detach(selectable as ITooltippable);
     }
 }
 internal class MiniButtonIssues : SelectionMiniButtonWorker

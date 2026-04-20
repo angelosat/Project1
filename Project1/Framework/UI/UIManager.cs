@@ -930,10 +930,15 @@ namespace Project1.Framework.UI
         {
             var key = new WindowKey(typeof(T), selectable);//, WindowMultiplicity.UniquePerTarget);
 
-            if (_windowsUnique.TryGetValue(key, out var win))
+            //var dic = _windows;
+            var dic = _windowsUnique;
+
+            //if (_windowsUnique.TryGetValue(key, out var win))
+            if (dic.TryGetValue(key, out var win))
             {
                 win.Close();
-                _windows.Remove(key);
+                dic.Remove(key);
+                //_windowsUnique.Remove(key);
             }
             else
             {
@@ -942,9 +947,11 @@ namespace Project1.Framework.UI
                 var window = new Window { Movable = true, AutoSize = true, Title = selectable.Name };
                 window.Client.AddControls(control);
 
-                _windows[key] = window;
+                dic[key] = window;
+                //_windowsUnique[key] = window;
                 window.Show();
                 window.HideAction += () => _windows.Remove(key);
+                //window.HideAction += () => _windowsUnique.Remove(key);
             }
         }
         private static readonly Dictionary<WindowKey, Window> _windows = [];

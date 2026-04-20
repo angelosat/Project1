@@ -75,6 +75,8 @@ public class TooltipManager
     {
         var tooltip = new Tooltip(item);
         tooltip.AutoSize = true;
+        if (!string.IsNullOrEmpty(item.LabelReadable))
+            tooltip.Controls.Add(new Label(item.LabelReadable));
         item.GetTooltipInfo(tooltip);
         foreach (var comp in Game1.Instance.GameComponents)
             comp.OnTooltipCreated(item, tooltip);
@@ -113,7 +115,7 @@ public class TooltipManager
 
     internal static void OnGameEvent(GameEvent e)
     {
-        switch(e.Type)
+        switch (e.Type)
         {
             default:
                 Instance.Tooltip?.OnGameEvent(e);
@@ -129,7 +131,7 @@ public class TooltipManager
     {
         var map = e.Map;
         var cells = e.Positions;
-        if(Ingame.Net.MainViewport.Map == map)
+        if (Ingame.Net.MainViewport.Map == map)
             if (Instance.Object is InteractionTarget target && target.Type == TargetType.Cell && cells.Contains((IntVec3)target.Global))
                 Instance.Reset();
     }

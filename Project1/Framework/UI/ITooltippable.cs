@@ -6,5 +6,5 @@ public interface ITooltippable
 {
     void GetTooltipInfo(Control tooltip);
     IEnumerable<Control> GetTooltipControls();
-    //string LabelReadable { get; }
+    string LabelReadable { get; }
 }

@@ -1018,9 +1018,13 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
             return;
         }
         if (this._hoverText.Length > 0)
-            tooltip.Controls.Add(new GroupBox().AddControlsLineWrap(Label.ParseNew(this._hoverText)));
+            tooltip.AddControlsBottomLeft(new GroupBox().AddControlsLineWrap(Label.ParseNew(this._hoverText)));
         else if (this.HoverText.Length > 0)
-            tooltip.Controls.Add(new Label(this.HoverText, this.HoverFormat) { TextFunc = this.HoverFunc });
+            tooltip.AddControlsBottomLeft(new Label(this.HoverText, this.HoverFormat) { TextFunc = this.HoverFunc });
+        //if (this._hoverText.Length > 0)
+        //    tooltip.Controls.Add(new GroupBox().AddControlsLineWrap(Label.ParseNew(this._hoverText)));
+        //else if (this.HoverText.Length > 0)
+        //    tooltip.Controls.Add(new Label(this.HoverText, this.HoverFormat) { TextFunc = this.HoverFunc });
     }
     public override void Update()
     {
@@ -1433,7 +1437,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     public virtual Rectangle ContainerSize => this.BoundsLocal;
     public IBounded[] Children => [.. this.Controls];
 
-    public string LabelReadable => this.ToString();
+    public virtual string LabelReadable => string.Empty;
 
     protected virtual void OnHidden()
     {

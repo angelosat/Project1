@@ -21,37 +21,19 @@ public class EntityEffectWrapper
     public readonly float Magnitude;
     public float? RemainingBudget { get; private set; }
 
-    //public bool IsFinished => this.RemainingBudget.HasValue && this.RemainingBudget == 0;
     internal bool IsExpired { get; private set; }
     public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
-    //public float Consume(float budget)
-    //{
-    //    if (!this.RemainingBudget.HasValue)
-    //        return budget;
-    //    var toConsume = Math.Min(budget, this.RemainingBudget.Value);
-    //    this.RemainingBudget -= toConsume;
-    //    return toConsume;
-    //}
-    //public bool IsInstant => this.Duration == 0;
+
     public bool IsInstant => this.Def.BaseDuration == 0;
-    //public bool IsInstant => this.TicksPerUnit == 0;
 
     public SimulationTick RemainingDuration(SimulationTick now) => this.StartTick + (ulong)this.Duration - now;
-    //public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)(ulong)this.RemainingDuration(now) / Ticks.PerGameMinute);
-    //public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)Ticks.FromDays(1) - now) / Ticks.PerGameMinute);
-    //public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Duration - now) / Ticks.PerGameMinute);
     public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
     EntityEffectWrapper(EffectDef def, Def target)
     {
         this.Def = def;
         this.Target = target;
     }
-    //public EntityEffectWrapper(EffectDef def, Def target, ulong duration, int magnitude) 
-    //    : this(def, target)
-    //{
-    //    this.Duration = duration;
-    //    this.Magnitude = magnitude;
-    //}
+ 
     public EntityEffectWrapper(EffectDef def, Def target, float? budget, int ticksPerUnit, int duration = 0) 
         : this(def, target)
     {
@@ -87,7 +69,6 @@ public class EntityEffectWrapper
     {
         w.Write(this.Def);
         w.Write(this.Target);
-        //w.Write(this.Budget);
         w.Write(this.Budget.HasValue);
         if (this.Budget.HasValue)
             w.Write(this.Budget.Value);
@@ -95,7 +76,6 @@ public class EntityEffectWrapper
         w.Write(this.TicksPerUnit);
         w.Write(this.StartTick);
         w.Write(this.Duration);
-        //w.Write(this.Magnitude);
     }
     public static EntityEffectWrapper Create(IDataReader r)
     {
@@ -106,7 +86,6 @@ public class EntityEffectWrapper
         var rate = r.ReadInt32();
         var starttick = (SimulationTick)r.ReadUInt64();
         var duration = r.ReadInt32();
-        //var mag = r.ReadInt32();
         var fx = new EntityEffectWrapper(def, target, value, rate, duration)
         {
             StartTick = starttick
@@ -121,11 +100,9 @@ public class EntityEffectWrapper
         this.Target.Save(tag, "Target");
         if(this.RemainingBudget.HasValue)
             tag.Save("Budget", this.RemainingBudget.Value);
-        //this.Budget.Save(tag, "Value");
         this.TicksPerUnit.Save(tag, "Rate");
         tag.Save("StartTick", this.StartTick);
         tag.Save("Duration", this.Duration);
-        //tag.Save("Magnitude", this.Magnitude);
         return tag;
     }
     public Control GetGui()

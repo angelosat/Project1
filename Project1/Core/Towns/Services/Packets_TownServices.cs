@@ -64,7 +64,8 @@ internal static class Packets_TownServices
         var r = packet.PacketReader;
         var map = endpoint.World.Get(r.ReadMapId());
         var manager = map.Town.ServiceRequests;
-        var request = manager.Get(r.ReadUInt64());
+        //var request = manager.Get(r.ReadUInt64());
+        var request = manager.Get(r.ReadId<TownServiceRequestId>());
         request.Read(r);
     }
 }

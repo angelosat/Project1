@@ -22,7 +22,8 @@ class InteractionCommitUnfinishedLogic : InteractionLogic
         if (actor.Net.IsClient)
             return;
         var plan = actor.CurrentPlan;
-        var order = plan.Order;
+        var orderId = plan.Order;
+        var order = actor.Map.Town.Crafting.Get(orderId);
         var ctx = (Context)i.Context;
 
         var workstationCell = i.Target;

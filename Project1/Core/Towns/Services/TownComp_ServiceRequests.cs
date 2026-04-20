@@ -2,6 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Towns.AI.Behaviors;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -9,11 +10,14 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Services;
 
-public readonly record struct TownServiceRequestId(ulong Value)
+public readonly record struct TownServiceRequestId(int Value) : IStructIdInt<TownServiceRequestId>
 {
     public static readonly TownServiceRequestId Null = new(0);
-    public static implicit operator TownServiceRequestId(ulong v) => new(v);
-    public static implicit operator ulong(TownServiceRequestId v) => (ulong)v.Value;
+
+    public static TownServiceRequestId Create(int value) => new(value);
+
+    public static implicit operator TownServiceRequestId(int v) => new(v);
+    public static implicit operator int(TownServiceRequestId v) => v.Value;
 }
 
 public class TownComp_ServiceRequests : TownComp
@@ -115,10 +119,10 @@ public class TownComp_ServiceRequests : TownComp
             this._openRequestsByCounter.Remove(req.Counter.Value);
 
         if(this.World.Get<Actor>(req.Customer) is Actor customer)
-            if (customer.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req)
+            if (customer.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req.Id)
                 planCustomer.Cancel();
         if (this.World.Get<Actor>(req.Vendor) is Actor vendor)
-            if (vendor.CurrentPlan is Plan planVendor && planVendor.ServiceRequest == req)
+            if (vendor.CurrentPlan is Plan planVendor && planVendor.ServiceRequest == req.Id)
                 planVendor.Cancel();
 
         var counter = req.Counter;

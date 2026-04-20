@@ -75,7 +75,6 @@ public class TooltipManager
     {
         var tooltip = new Tooltip(item);
         tooltip.AutoSize = true;
-        tooltip.Controls.Add(new Label(item.LabelReadable));
         item.GetTooltipInfo(tooltip);
         foreach (var comp in Game1.Instance.GameComponents)
             comp.OnTooltipCreated(item, tooltip);
@@ -130,18 +129,13 @@ public class TooltipManager
     {
         var map = e.Map;
         var cells = e.Positions;
-        //if(Engine.Map == map)
-            if(Ingame.Net.MainViewport.Map == map)
-        if (Instance.Object is InteractionTarget target && target.Type == TargetType.Cell && cells.Contains((IntVec3)target.Global))
-            Instance.Reset();
+        if(Ingame.Net.MainViewport.Map == map)
+            if (Instance.Object is InteractionTarget target && target.Type == TargetType.Cell && cells.Contains((IntVec3)target.Global))
+                Instance.Reset();
     }
 
     internal static void Detach(ITooltippable tooltippable)
     {
-        //var box = new GroupBox();
-        //foreach (var control in tooltippable.GetTooltipControls())
-        //    box.AddControlsBottomLeft(control);
-        //box.ToWindow(tooltippable.LabelReadable).Show();
         UIManager.ToggleUnique<TooltipNew>(tooltippable as ISelectable);
     }
 }

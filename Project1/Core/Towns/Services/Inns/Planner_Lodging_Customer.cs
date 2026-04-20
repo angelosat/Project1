@@ -22,7 +22,7 @@ internal sealed class Planner_Lodging_Customer : Planner
         if (map.Town.ServiceRequests.TryGetByCustomer(actor, out var req))
         {
             if (req.IsPaidFor)
-                return new Plan(TownServicesDefOf.PlanQueue, map, req.Counter.Value.Above) { ServiceRequest = req };
+                return new Plan(TownServicesDefOf.PlanQueue, map, req.Counter.Value.Above) { ServiceRequest = req.Id };
 
             if (req.IsVendorWaitingPayment)
             {
@@ -44,17 +44,17 @@ internal sealed class Planner_Lodging_Customer : Planner
                             throw new System.Exception();
                             //return null;
                     }
-                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value.Above)) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value.Above)) { ServiceRequest = req.Id };
                 }
                 else
                 {
                     if (req.IsMoneyAllocated)
                         //return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(map, req.Counter.Value.Above)) { ServiceRequest = req };
-                        return new Plan(TownServicesDefOf.PlanQueue, map, req.Counter.Value.Above) { ServiceRequest = req };
+                        return new Plan(TownServicesDefOf.PlanQueue, map, req.Counter.Value.Above) { ServiceRequest = req.Id };
 
                     if (!actor.Inventory.TryGet(e => e.Def == ItemDefOf.Coins && e.StackSize >= price, out Entity money))
                         return null;
-                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { ServiceRequest = req, AmountA = price };
+                    return new Plan(PlanDefOf.RetrieveFromInventory, money) { ServiceRequest = req.Id, AmountA = price };
                 }
             }
             return null;
@@ -75,7 +75,7 @@ internal sealed class Planner_Lodging_Customer : Planner
             return null;
         //return new Plan(InnsDefOf.PlanCheckIn, new InteractionTarget(actor.Map, desk)) { ServiceRequest = req };
         var newreq = manager.Begin(actor, desk);
-        return new Plan(TownServicesDefOf.PlanQueue, map, desk.Above) { ServiceRequest = newreq };
+        return new Plan(TownServicesDefOf.PlanQueue, map, desk.Above) { ServiceRequest = newreq.Id };
 
     }
 }

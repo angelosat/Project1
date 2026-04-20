@@ -113,7 +113,7 @@ public sealed class Town : Inspectable, IDutyProvider
     [InspectorHidden]
     public RoomManager RoomManager;
     [InspectorHidden]
-    public CraftingManager CraftingManager;
+    public CraftingManager Crafting;
     [InspectorHidden]
     public DutyRoster DutiesManager;
     [InspectorHidden]
@@ -153,7 +153,7 @@ public sealed class Town : Inspectable, IDutyProvider
         this.DiggingManager = new(this);
         this.DesignationManager = new(this);
         this.RoomManager = new(this);
-        this.CraftingManager = new(this);
+        this.Crafting = new(this);
         this.DutiesManager = new(this);
         this.ReservationManager = new(this);
         this.Shops = new(this);
@@ -176,7 +176,7 @@ public sealed class Town : Inspectable, IDutyProvider
             this.DiggingManager,
             this.DesignationManager,
             this.RoomManager,
-            this.CraftingManager,
+            this.Crafting,
             this.ReservationManager,
             this.Shops,
             this.Inns,

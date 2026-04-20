@@ -36,7 +36,7 @@ internal sealed class Planner_Repairs_Customer : Planner
                         return new Plan(PlanDefOf.StoreInInventory);
                     if (item.IsSpawned && actor.CanReachAndReserve(item))
                         return new Plan(PlanDefOf.GoHaul, item);
-                    return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing };
+                    return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing.Id };
                 }
                 if (existing.IsVendorWaitingPayment)
                 {
@@ -44,7 +44,7 @@ internal sealed class Planner_Repairs_Customer : Planner
                     {
                         var itemMoney = actor.World.Get(existing.Money);
                         if (itemMoney.Cell == counter.Above)
-                            return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing };
+                            return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing.Id };
                     }
                     if (actor.Hauled is Entity carriedMoney && carriedMoney.Def == ItemDefOf.Coins && carriedMoney.StackSize == existing.Price)
                     {
@@ -63,14 +63,14 @@ internal sealed class Planner_Repairs_Customer : Planner
                 return new Plan(PlanDefOf.GoPlace, map, counter.Above);
 
             if (existing.IsVendorWorking)
-                return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemReady, map, counter.Above) { ServiceRequest = existing };
+                return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemReady, map, counter.Above) { ServiceRequest = existing.Id };
 
             if (actor.Hauled is Entity carried)
             {
                 if (carried != item)
                     return null;
 
-                return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = existing };
+                return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = existing.Id };
             }
             return new Plan(PlanDefOf.RetrieveFromInventory, item);
         }

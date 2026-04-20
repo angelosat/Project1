@@ -62,10 +62,7 @@ public sealed class ConversationSystem : TownComp
 
             if (!convo.IsFinished)
                 continue;
-            this.ActiveConversationsByInitiator.Remove(convo.Initiator);
-            this.ActiveConversationsByTarget.Remove(convo.Target);
-            this.ActiveConversationsByActor.Remove(convo.Initiator);
-            this.ActiveConversationsByActor.Remove(convo.Target);
+            RemoveInt(convo);
             this._availableActors.Add(convo.Initiator);
             this._availableActors.Add(convo.Target);
 
@@ -74,6 +71,8 @@ public sealed class ConversationSystem : TownComp
             $"{this.World.Net} convo between {convo.Initiator} and {convo.Target} finished and removed".ToConsole();
         }
     }
+
+
 
     private void Finish(ConversationRuntime convo)
     {
@@ -88,10 +87,11 @@ public sealed class ConversationSystem : TownComp
     internal bool TryStartConversation(Actor initiator, Actor target)
     {
         var conversation = new ConversationRuntime(this.World.CurrentTick, initiator.RefId, target.RefId);
-        this.ActiveConversationsByInitiator.Add(initiator.RefId, conversation);
-        this.ActiveConversationsByTarget.Add(target.RefId, conversation);
-        this.ActiveConversationsByActor.Add(initiator.RefId, conversation);
-        this.ActiveConversationsByActor.Add(target.RefId, conversation);
+        //this.ActiveConversationsByInitiator.Add(initiator.RefId, conversation);
+        //this.ActiveConversationsByTarget.Add(target.RefId, conversation);
+        //this.ActiveConversationsByActor.Add(initiator.RefId, conversation);
+        //this.ActiveConversationsByActor.Add(target.RefId, conversation);
+        this.AddInt(conversation);
         this._availableActors.Remove(initiator.RefId);
         this._availableActors.Remove(target.RefId);
         return true;
@@ -150,14 +150,26 @@ public sealed class ConversationSystem : TownComp
         {
             foreach(var c in convos)
             {
-                this.ActiveConversationsByInitiator.Add(c.Initiator, c);
-                this.ActiveConversationsByTarget.Add(c.Target, c);
-                this.ActiveConversationsByActor.Add(c.Initiator, c);
-                this.ActiveConversationsByActor.Add(c.Target, c);
+                AddInt(c);
                 // because conversations are loaded before scanning/resolving references
                 //this._availableActors.Remove(c.Initiator);
                 //this._availableActors.Remove(c.Target);
             }
         }
+    }
+
+    private void AddInt(ConversationRuntime c)
+    {
+        this.ActiveConversationsByInitiator.Add(c.Initiator, c);
+        this.ActiveConversationsByTarget.Add(c.Target, c);
+        this.ActiveConversationsByActor.Add(c.Initiator, c);
+        this.ActiveConversationsByActor.Add(c.Target, c);
+    }
+    private void RemoveInt(ConversationRuntime convo)
+    {
+        this.ActiveConversationsByInitiator.Remove(convo.Initiator);
+        this.ActiveConversationsByTarget.Remove(convo.Target);
+        this.ActiveConversationsByActor.Remove(convo.Initiator);
+        this.ActiveConversationsByActor.Remove(convo.Target);
     }
 }

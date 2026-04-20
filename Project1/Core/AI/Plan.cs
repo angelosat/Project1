@@ -46,10 +46,11 @@ namespace Project1.Core.AI
         public List<ObjectAmount> PlacedObjects = [];
         public List<Entity> CraftedItems = [];
         public DesignationDef Designation;
-        public CraftingOrder Order;
+        public CraftingOrderId Order;
+        internal TownServiceRequestId ServiceRequest;
         public SpellDef Spell;
         public TradeId TradeId;
-        public InteractionTarget Product = InteractionTarget.Null;
+        //public InteractionTarget Product = InteractionTarget.Null;
         public bool Forced;
         public bool Urgent = true; // TODO default should be false
         int ReservedBy = -1;
@@ -106,7 +107,6 @@ namespace Project1.Core.AI
             };
         }
         public bool IsImmediate = true;
-        internal ServiceRequest ServiceRequest;
 
         internal InteractionTarget GetTarget(int targetInd)
         {
@@ -336,7 +336,7 @@ namespace Project1.Core.AI
             tag.Add(this.AmountsC.Save("AmountsC"));
 
             tag.Add(this.Count.Save("Count"));
-            tag.Add(this.Product.Save("Product"));
+            //tag.Add(this.Product.Save("Product"));
             tag.Add(this.Forced.Save("Forced"));
 
             this.TicksWaited.Save(tag, "TicksWaited");
@@ -373,13 +373,13 @@ namespace Project1.Core.AI
             if(this._zoneID != ZoneId.Null)
                 tag.Save("ZoneID", this._zoneID);
 
-            this.AddSaveData(tag);
+            tag.Save("ServiceRequestId", this.ServiceRequest);
+            tag.Save("CraftingOrderId", this.Order);
+            tag.Save("TradeId", this.TradeId);
+
             return tag;
         }
-        protected void AddSaveData(SaveTag tag)
-        {
-
-        }
+       
         public void LoadData(SaveTag tag)
         {
             this.Def = tag.LoadDef<PlanDef>("Def");
@@ -406,7 +406,7 @@ namespace Project1.Core.AI
 
 
             tag.TryGetTagValueOrDefault("Count", out this.Count);
-            tag.TryGetTag("Product", t => this.Product = new InteractionTarget(t));
+            //tag.TryGetTag("Product", t => this.Product = new InteractionTarget(t));
             tag.TryGetTagValueOrDefault("Forced", out this.Forced);
             if (tag.TryGetTagValueOrDefault("Queues", out List<SaveTag> queuestag))
             {
@@ -437,27 +437,34 @@ namespace Project1.Core.AI
                 this.Designation = designation;
             if (tag.TryLoadInt("ZoneID", out var zoneID))
                 this._zoneID = zoneID;
+
+            if (tag.TryLoadId<TownServiceRequestId>("ServiceRequestId", out var reqId)) 
+                this.ServiceRequest = reqId;
+
+            if (tag.TryLoadId<CraftingOrderId>("CraftingOrderId", out var orderId))
+                this.Order = orderId;
+
+            if (tag.TryLoadId<TradeId>("TradeId", out var tradeId))
+                this.TradeId = tradeId;
         }
         internal void SyncToClients(IDataWriter w)
         {
             w.Write(this.Def);
             w.Write(this.Spell);
             this.TargetA.Write(w);
-            var hasOrder = this.Order is not null;
-            w.Write(hasOrder);
-            if (hasOrder)
-                w.Write(this.Order.Id);
+            w.Write(this.Order);
         }
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
             this.Def = r.ReadDef<PlanDef>();
             this.Spell = r.ReadDef<SpellDef>();
             this.TargetA = InteractionTarget.Read(provider.World, r);
-            if (r.ReadBoolean())
-            {
-                var orderid = r.ReadInt32();
-                this.Order = this.TargetA.Map.Town.CraftingManager.GetOrder(orderid);
-            }
+            this.Order = r.ReadInt32();
+            //if (r.ReadBoolean())
+            //{
+            //    var orderid = r.ReadInt32();
+            //    this.Order = this.TargetA.Map.Town.CraftingManager.GetOrder(orderid);
+            //}
         }
         public void ObjectLoaded(GameObject parent)
         {

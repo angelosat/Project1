@@ -71,7 +71,7 @@ static class Packets_Crafting
         var workstation = e.Workstation;
         var net = workstation.Map.World.Net;
         if (net is Server)
-            workstation.Map.Town.CraftingManager.CreateOrderNewInt(workstation.Parent.OriginGlobal, e.Request);
+            workstation.Map.Town.Crafting.CreateOrderNewInt(workstation.Parent.OriginGlobal, e.Request);
         SendPlayerCreatedOrderNew(e.Workstation.Parent, e.Request);
     }
     private static void SendPlayerCreatedOrderNew(BlockEntity workstation, AddOrderRequest req)
@@ -89,7 +89,7 @@ static class Packets_Crafting
         var map = net.World.Get(mapid);
         var workstationPosition = r.ReadIntVec3();
         var req = AddOrderRequest.Create(r);
-        if (map.Town.CraftingManager.CreateOrderNewInt(workstationPosition, req) is CraftingOrder order &&
+        if (map.Town.Crafting.CreateOrderNewInt(workstationPosition, req) is CraftingOrder order &&
             net is Server server)
             SendPlayerCreatedOrderNew(map.GetBlockEntity(workstationPosition), req);
     }
@@ -138,7 +138,7 @@ static class Packets_Crafting
         var r = packet.PacketReader;
         var mapid = r.ReadMapId();
         var map = endpoint.World.Get(mapid);
-        var order = map.Town.CraftingManager.GetOrder(r.ReadInt32());
+        var order = map.Town.Crafting.Get(r.ReadInt32());
         var bone = r.ReadDef<BoneDef>();
         var refinement = r.ReadDef<MaterialTypeDef>();
         var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.Get<MaterialDef>(matName) : null;
@@ -159,7 +159,7 @@ static class Packets_Crafting
         var r = packet.PacketReader;
         var mapid = r.ReadMapId();
         var map = endpoint.World.Get(mapid);
-        var order = map.Town.CraftingManager.GetOrder(r.ReadInt32());
+        var order = map.Town.Crafting.Get(r.ReadInt32());
         var actor = endpoint.World.Get<Actor>(r.ReadInt32());
         order.CompletedBy(actor);
     }
@@ -178,7 +178,7 @@ static class Packets_Crafting
         var r = pck.PacketReader;
         var mapid = r.ReadMapId();
         var map = net.World.Get(mapid);
-        var order = map.Town.CraftingManager.DeleteOrder(r.ReadInt32());
+        var order = map.Town.Crafting.DeleteOrder(r.ReadInt32());
         if (net is Server server)
             SendPlayerDeletedOrder(map, order);
     }
@@ -197,7 +197,7 @@ static class Packets_Crafting
         var r = packet.PacketReader;
         var mapid = r.ReadMapId();
         var map = endpoint.World.Get(mapid);
-        var order = map.Town.CraftingManager.GetOrder(r.ReadInt32());
+        var order = map.Town.Crafting.Get(r.ReadInt32());
         var priorityDelta = r.ReadInt32();
         var amountDelta = r.ReadInt32();
         var mode = (CraftingOrder.CraftMode)r.ReadInt32();

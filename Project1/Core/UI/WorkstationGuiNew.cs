@@ -47,7 +47,7 @@ class WorkstationGuiNew : SelectionBoundControl
 
         this.PanelReactions = new Panel() { AutoSize = true };
         this.PanelReactions.HideOnAnyClick();
-        var manager = workstation.Parent.Map.Town.CraftingManager;
+        var manager = workstation.Parent.Map.Town.Crafting;
         //var availableRefinementsControl = new ListBoxNoScroll<AddOrderRequest>(r => new Label(r.GetLabel(), () => this.PlaceOrderNew(r)));
         var availableRecipesNew = workstation.WorkstationType.Capabilities.SelectMany(cap => cap.Worker.GetAddOrderRequests(workstation));
         var availableRefinementsControl =

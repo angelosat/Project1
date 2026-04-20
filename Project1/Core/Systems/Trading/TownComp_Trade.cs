@@ -2,6 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Towns;
 using Project1.Framework;
 using System;
@@ -10,11 +11,14 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Trading;
 
-public readonly record struct TradeId(ulong Value)
+public readonly record struct TradeId(int Value) : IStructIdInt<TradeId>
 {
     public static readonly TradeId Null = new(0);
-    public static implicit operator TradeId(ulong v) => new(v);
-    public static implicit operator ulong(TradeId v) => (ulong)v.Value;
+
+    public static TradeId Create(int value) => new(value);
+
+    public static implicit operator TradeId(int v) => new(v);
+    public static implicit operator int(TradeId v) => v.Value;
 }
 
 sealed class TradeRuntime(TradeId id, Actor giver, Actor recipient)

@@ -49,9 +49,9 @@ sealed class Planner_Shop_Customer : Planner
                     if (moneyInInventory.StackSize < price)
                         throw new InvalidOperationException(); // normally the amount of coins should exist.
                                                                // maybe cancel the transaction gracefully if otherwise
-                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { ServiceRequest = req, AmountA = price };
+                    return new Plan(PlanDefOf.RetrieveFromInventory, moneyInInventory) { ServiceRequest = req.Id, AmountA = price };
                 }
-                return new Plan(PlanDefOf.WaitForService) { ServiceRequest = req };
+                return new Plan(PlanDefOf.WaitForService) { ServiceRequest = req.Id };
 
             }
             if (carried is not null)
@@ -73,10 +73,10 @@ sealed class Planner_Shop_Customer : Planner
                         return new Plan(PlanDefOf.GoPlace, map, counter.Above);
                     if (req.IsPaidFor)
                         return new Plan(PlanDefOf.StoreInInventory);
-                    return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = req };
+                    return new Plan(TownServicesDefOf.PlanQueue, map, counter.Above) { ServiceRequest = req.Id };
                 }
                 else if(carried.RefId == req.Money)
-                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above)) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, counter.Above)) { ServiceRequest = req.Id };
                 throw new UnreachableException();
             }
         }
@@ -95,7 +95,7 @@ sealed class Planner_Shop_Customer : Planner
             if (!map.Town.Shops.TryBegin(actor, item, price, foundPoint, out var reqnew))
                 continue;
             actor.AI.State.Log.Write($"I am impulsively buying {item.RefId}: {item.Name}!");
-            return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew, TargetA = item };
+            return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew.Id, TargetA = item };
         }
         if (!shoppingList.HasFinished)
             return null;
@@ -107,7 +107,7 @@ sealed class Planner_Shop_Customer : Planner
             if (!map.Town.Shops.TryBegin(actor, item, price, foundPoint, out var reqnew))
                 continue;
             actor.AI.State.Log.Write($"I decided to buy {item.Name}");
-            return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew, TargetA = item };
+            return new Plan(PlanDefOf.GoHaul) { ServiceRequest = reqnew.Id, TargetA = item };
         }
         return null;
     }

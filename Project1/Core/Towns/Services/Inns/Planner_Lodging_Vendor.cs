@@ -20,7 +20,7 @@ internal sealed class Planner_Lodging_Vendor : Planner
         if (manager.GetTransactionByClerk(actor) is ServiceRequest_Inn req)
         {
             if (req.IsPaidFor && actor.Hauled is null)
-                    return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, req.Counter.Value)) { ServiceRequest = req };
+                    return new Plan(InnsDefOf.PlanRegisterGuest, new InteractionTarget(actor.Map, req.Counter.Value)) { ServiceRequest = req.Id };
 
             if (req.IsMoneyAllocated)
             {
@@ -31,12 +31,12 @@ internal sealed class Planner_Lodging_Vendor : Planner
                     if(!manager.AvailableBeds.Any(b => actor.CanReach(b)))
                         throw new Exception();
                     var bed = manager.AvailableBeds.First(b => actor.CanReach(b));
-                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value)) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, req.Counter.Value)) { ServiceRequest = req.Id };
                 }
                 if (money.Cell == req.Counter.Value.Above)
                 {
                     req.MarkPaidFor();
-                    return new Plan(PlanDefOf.GoHaul, money) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoHaul, money) { ServiceRequest = req.Id };
                 }
             }
 
@@ -60,7 +60,7 @@ internal sealed class Planner_Lodging_Vendor : Planner
             //    continue;
             manager.AssignClerk(typed.Counter.Value, actor);
             //return new Plan(InnsDefOf.PlanWaitForPayForBed, actor.Map, typed.Counter.Value);
-            return new Plan(TownServicesDefOf.PlanWaitMoney, actor.Map, typed.Counter.Value) { ServiceRequest = pending };
+            return new Plan(TownServicesDefOf.PlanWaitMoney, actor.Map, typed.Counter.Value) { ServiceRequest = pending.Id };
         }
         return null;
     }

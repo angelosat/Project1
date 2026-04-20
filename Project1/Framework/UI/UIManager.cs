@@ -949,6 +949,7 @@ namespace Project1.Framework.UI
 
                 dic[key] = window;
                 //_windowsUnique[key] = window;
+                window.SmartPosition();
                 window.Show();
                 window.HideAction += () => _windows.Remove(key);
                 //window.HideAction += () => _windowsUnique.Remove(key);

@@ -19,7 +19,8 @@ sealed class InteractionRingUpTransactionFinish : InteractionLogic
             return;
         var money = ctx.Target.Entity;
         var carried = actor.Hauled;
-        var req = i.Actor.CurrentPlan.ServiceRequest;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.Town.ServiceRequests.Get(reqid);
         Debug.Assert(carried.RefId == req.Item);
         Debug.Assert(money.RefId == req.Money);
         carried.SetOwnerNew(req.Customer);

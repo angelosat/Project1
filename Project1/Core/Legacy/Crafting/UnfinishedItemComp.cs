@@ -121,7 +121,7 @@ namespace Project1.Core.Legacy.Crafting
         {
             this.OrderId = r.ReadInt32();
             //this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
-            var order = this.Owner.Map.Town.CraftingManager.GetOrder(this.OrderId);
+            var order = this.Owner.Map.Town.Crafting.Get(this.OrderId);
             this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
         }
 

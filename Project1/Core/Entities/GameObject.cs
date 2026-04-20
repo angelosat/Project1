@@ -514,6 +514,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         //GetInfo().OnTooltipCreated(this, tooltip);
         // TODO: LOL fix, i need the object name to be on top
         //foreach (var comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
+
         foreach (var comp in Components.Values)
         {
             //if(comp.GetType() != typeof(DefComponent))
@@ -1313,6 +1314,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public IEnumerable<Control> GetTooltipControls()
     {
         var box = new GroupBox();
+        box.AddControls(new LabelNew(() => this.LabelReadable));
         this.GetTooltipInfo(box);
         yield return box;
     }

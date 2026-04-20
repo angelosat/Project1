@@ -12,13 +12,37 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
 
+//public interface IStructId
+//{
+//    int Value { get; }
+//}
+public interface IStructIdInt<T>
+{
+    int Value { get; }
+    static abstract T Create(int value);
+}
+public readonly record struct CraftingOrderId(int Value) : IStructIdInt<CraftingOrderId>
+{
+    public static readonly CraftingOrderId Null = new(0);
+
+    public static CraftingOrderId Create(int value) => new(value);
+
+    public static implicit operator CraftingOrderId(int v) => new(v);
+    public static implicit operator int(CraftingOrderId v) => (int)v.Value;
+}
+//public readonly record struct CraftingOrderId(int Value)
+//{
+//    public static readonly CraftingOrderId Null = new(0);
+//    public static implicit operator CraftingOrderId(int v) => new(v);
+//    public static implicit operator int(CraftingOrderId v) => (int)v.Value;
+//}
 public sealed class CraftingManager : TownComp
 {
-    private int NextOrderId = 1;
+    private CraftingOrderId NextOrderId = 1;
     public override string Name => "CraftingManager";
     readonly Dictionary<IntVec3, BlockWorkstationComp> _workstationsByPosition = [];
     readonly Dictionary<WorkstationDef, HashSet<BlockWorkstationComp>> _byType = [];
-    readonly Dictionary<int, CraftingOrder> _ordersById = [];
+    readonly Dictionary<CraftingOrderId, CraftingOrder> _ordersById = [];
     readonly Dictionary<BlockEntity, CraftingOrder> _ordersByWorkstation = [];
 
     readonly Dictionary<BlockWorkstationComp, Contract> _contractsByWorkstation = [];
@@ -284,10 +308,10 @@ public sealed class CraftingManager : TownComp
         return order;
     }
 
-    internal CraftingOrder GetOrder(int id)
-    {
-        return this._ordersById[id];
-    }
+    //internal CraftingOrder GetOrder(int id)
+    //{
+    //    return this._ordersById[id];
+    //}
     internal bool TryGetOrder(int orderId, out CraftingOrder order)
         => this._ordersById.TryGetValue(orderId, out order);
     internal float GetProgressFor(Actor actor)
@@ -297,4 +321,7 @@ public sealed class CraftingManager : TownComp
 
     internal bool CanContinueItem(Actor actor, UnfinishedItemComp comp)
         => this.TryGetOrder(comp.OrderId, out var order) && order.Pending;
+
+    internal CraftingOrder Get(CraftingOrderId id)
+        => this._ordersById[id];
 }

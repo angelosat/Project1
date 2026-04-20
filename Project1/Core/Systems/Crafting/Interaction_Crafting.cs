@@ -27,7 +27,8 @@ sealed class Interaction_Crafting : InteractionLogic
             return;
         var map = actor.Map;
         var plan = actor.CurrentPlan;
-        var order = plan.Order;
+        var orderid = plan.Order;
+        var order = map.Town.Crafting.Get(orderid);
         var workstation = i.Target;
 
         // consume fuel
@@ -47,6 +48,6 @@ sealed class Interaction_Crafting : InteractionLogic
         order.WorkstationCapability.Worker.PostProcess(product, actor, order.Source);
         map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
         //order.CompletedBy(actor);
-        actor.Map.Town.CraftingManager.MarkCompleted(order, actor, product);
+        actor.Map.Town.Crafting.MarkCompleted(order, actor, product);
     }
 }

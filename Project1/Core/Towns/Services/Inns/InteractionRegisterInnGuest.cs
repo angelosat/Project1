@@ -19,6 +19,8 @@ sealed class InteractionRegisterInnGuest : InteractionLogic
     {
         //var typedCtx = (Context)i.Context;
         //var manager = typedCtx.Manager;
-        i.Actor.Map.Town.Inns.RegisterGuest(i.Actor.CurrentPlan.ServiceRequest as ServiceRequest_Inn);
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.Town.ServiceRequests.Get(reqid);
+        i.Actor.Map.Town.Inns.RegisterGuest(req as ServiceRequest_Inn);
     }
 }

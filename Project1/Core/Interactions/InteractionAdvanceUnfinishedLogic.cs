@@ -19,7 +19,7 @@ namespace Project1.Core.Interactions
         }
         protected override InteractionContext CreateContextInt() => new Context();
         public override bool CanPerform(InteractionContext ctx)
-            => ctx.Actor.Map.Town.CraftingManager.CanContinueItem(ctx.Actor, ((Context)ctx).UnfinishedComp);// .GetContract(ctx.Actor)?.IsValid ?? false;
+            => ctx.Actor.Map.Town.Crafting.CanContinueItem(ctx.Actor, ((Context)ctx).UnfinishedComp);// .GetContract(ctx.Actor)?.IsValid ?? false;
         public override void ApplyWork(InteractionContext ctx, int workAmount)
         {
             var actor = ctx.Actor;
@@ -47,7 +47,7 @@ namespace Project1.Core.Interactions
 
             map.Spawn(product, unfinishedItem.Global, unfinishedItem.Velocity);
             map.World.DisposeEntity(unfinishedItem);
-            var order = map.Town.CraftingManager.GetOrder(orderId);
+            var order = map.Town.Crafting.Get(orderId);
             order.CompletedBy(actor);
         }
     }

@@ -13,7 +13,9 @@ sealed class InteractionContext_Customer : InteractionContext
 
 sealed class InteractionContext_Vendor : InteractionContext
 {
-    internal ServiceRequest Request => field ??= this.Actor.CurrentPlan.ServiceRequest;
+
+    //internal ServiceRequest Request => field ??= this.Actor.CurrentPlan.ServiceRequest;
+    internal ServiceRequest Request => field ??= this.Actor.Town.ServiceRequests.Get(this.Actor.CurrentPlan.ServiceRequest);
 }
 internal sealed class Interaction_Vendor_WaitPayment : InteractionLogic
 {
@@ -50,15 +52,18 @@ internal sealed class Interaction_Vendor_WaitItemSubmit : InteractionLogic
     {
         if (i.Actor.Net.IsClient)
             return;
-        var req = i.Actor.CurrentPlan.ServiceRequest;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.Town.ServiceRequests.Get(reqid);
         req.MarkVendorWaiting();
     }
 
     internal override bool HasSucceeded(Interaction i)
     {
-        var req = i.Actor.CurrentPlan.ServiceRequest;
+        //var req = i.Actor.CurrentPlan.ServiceRequest;
         //if (i.Actor.Map.World.Get(req.Item).Cell == req.Counter.Value.Above)
         //    return true;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.Town.ServiceRequests.Get(reqid);
         if (req.IsItemSubmitted(i.Actor.Map.World))
             return true;
         return false;
@@ -67,7 +72,8 @@ internal sealed class Interaction_Vendor_WaitItemSubmit : InteractionLogic
     {
         if (i.Actor.Net.IsClient)
             return;
-        var req = i.Actor.CurrentPlan.ServiceRequest;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.Town.ServiceRequests.Get(reqid);
         req.MarkVendorWorking();
     }
 }
@@ -77,7 +83,9 @@ internal sealed class Interaction_RepairCustomer_WaitItemAvailable : Interaction
     protected override InteractionContext_Customer CreateContextInt() => new();
     internal override bool HasSucceeded(Interaction i)
     {
-        var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        //var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = (ServiceRequest_Repair)i.Actor.Town.ServiceRequests.Get(reqid);
         var item = i.Actor.World.Get(req.Item);
         if(item.IsSpawned)
             return true;
@@ -90,7 +98,9 @@ internal sealed class Interaction_RepairCustomer_WaitPriceAnnounce : Interaction
 
     internal override bool HasSucceeded(Interaction i)
     {
-        var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        //var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = (ServiceRequest_Repair)i.Actor.Town.ServiceRequests.Get(reqid);
         if (req.IsVendorWaitingPayment)
             return true;
         return false;
@@ -114,7 +124,9 @@ internal sealed class Interaction_Customer_Queue : InteractionLogic
 
     internal override bool HasSucceeded(Interaction i)
     {
-        var req = i.Actor.CurrentPlan.ServiceRequest;
+        //var req = i.Actor.CurrentPlan.ServiceRequest;
+        var reqid = i.Actor.CurrentPlan.ServiceRequest;
+        var req = i.Actor.Town.ServiceRequests.Get(reqid);
         if (req.IsVendorWaitingItemSubmit)
             return true;
         // can i shove this condition here too or do i need separate interactions?

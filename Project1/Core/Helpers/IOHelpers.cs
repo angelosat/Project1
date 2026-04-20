@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Crafting;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -13,6 +14,7 @@ internal static class IOHelpers
 {
     public static EntityRefId ReadEntityRefId(this IDataReader r) => new(r.ReadInt32());
     public static MapId ReadMapId(this IDataReader r) => new(r.ReadInt32());
+    public static T ReadId<T>(this IDataReader r) where T : IStructIdInt<T> => T.Create(r.ReadInt32());
     public static List<EntityRefId> ReadListEntityRefId(this IDataReader r)
     {
         var count = r.ReadInt32();

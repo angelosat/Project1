@@ -18,7 +18,7 @@ sealed class PlannerCrafting : Planner
 
         var map = actor.Map;
         var carried = actor.Hauled;
-        var manager = map.Town.CraftingManager;
+        var manager = map.Town.Crafting;
 
         if (manager.TryGetCommitedOrder(actor, out var existing))
         {
@@ -176,7 +176,7 @@ sealed class PlannerCrafting : Planner
             var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
             var plan = new Plan(plandef, new InteractionTarget(map, order.Workstation.Parent.OriginGlobal))
             {
-                Order = order,
+                Order = order.Id,
                 TargetB = new InteractionTarget(order.Workstation.Parent)
             };
 
@@ -285,7 +285,7 @@ sealed class PlannerCrafting : Planner
             return new Plan(PlanDefOf.CraftingUnfinishedAdvance, new InteractionTarget(map, workstation.OriginGlobal))
             {
                 TargetB = new InteractionTarget(workstation),
-                Order = order
+                Order = order.Id
             };
         }
         if(actor.Hauled is Entity carried && carried == order.UnfinishedItem)

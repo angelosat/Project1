@@ -42,7 +42,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     public int SkillFilter;
 
     public EntityRefId CurrentWorker;
-    public int Id { get; private set; }
+    public CraftingOrderId Id { get; private set; }
     public SkillDef Skill { get; init; }
     public MaterialRefinementDef Refinement { get; init; }
     public Def ProductDef { get; internal set; }
@@ -457,7 +457,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     public SaveTag Save(string name = "")
     {
         var tag = new SaveTag(SaveTag.Types.Compound, name);
-        this.Id.Save(tag, "Id");
+        //this.Id.Save(tag, "Id");
+        tag.Save("Id", this.Id);
         ((int)this.Mode).Save(tag, "Mode");
         this.Amount.Save(tag, "Amount");
         this.ProductDef.Save(tag, "Product");

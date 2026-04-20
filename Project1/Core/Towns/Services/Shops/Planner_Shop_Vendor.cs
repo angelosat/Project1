@@ -34,15 +34,15 @@ class Planner_Shop_Vendor : Planner
                     money.Cell == counter.Above &&
                     money.StackSize >= req.Price)
                 {
-                    return new Plan(PlanDefOf.RingUpFinish, money) { ServiceRequest = req, AmountA = req.Price };//, Continuation = PlanContinuationPolicy.Yield };
+                    return new Plan(PlanDefOf.RingUpFinish, money) { ServiceRequest = req.Id, AmountA = req.Price };//, Continuation = PlanContinuationPolicy.Yield };
                 }
-                return new Plan(TownServicesDefOf.PlanWaitMoney) { ServiceRequest = req };
+                return new Plan(TownServicesDefOf.PlanWaitMoney) { ServiceRequest = req.Id };
             }
             if (actor.Hauled is not null)
                 throw new InvalidOperationException("actor shouldn't be carrying something unrelated at this point");
             if (req.IsItemSubmitted(actor.World))
-                return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req };
-            return new Plan(TownServicesDefOf.PlanWaitItemSubmit, map, counter) { ServiceRequest = req };
+                return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req.Id };
+            return new Plan(TownServicesDefOf.PlanWaitItemSubmit, map, counter) { ServiceRequest = req.Id };
 
         }
 

@@ -112,7 +112,8 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     {
         var def = tag.LoadDef<TownServiceDef>("Def");
         var runtime = def.Worker.CreateRuntime();
-        runtime.Id = (TownServiceRequestId)tag.LoadUlong("Id");
+        //runtime.Id = (TownServiceRequestId)tag.LoadUlong("Id");
+        runtime.Id = tag.LoadInt("Id");
         runtime.TickStarted = (SimulationTick)tag.LoadUlong("TickStarted");
         runtime.PatienceInitial = tag.LoadInt("PatienceInitial");
         runtime.Price = tag.LoadInt("Price");
@@ -156,7 +157,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     {
         _ = r.ReadDef<TownServiceDef>();
 
-        this.Id = r.ReadUInt64();
+        this.Id = r.ReadInt32();
         this.TickStarted = r.ReadUInt64();
         this.PatienceInitial = r.ReadInt32();
         this.Price = r.ReadInt32();

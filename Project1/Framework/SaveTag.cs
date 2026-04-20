@@ -121,7 +121,19 @@ namespace Project1.Framework
                 return true;
             }
         }
-
+        public bool TryLoad<T>(string name, out T value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (T)tag.Value;
+                return true;
+            }
+        }
         public bool TryLoadSingle(string name, out float value)
         {
             if (!this.TryGetTag(name, out var tag))
@@ -493,9 +505,22 @@ namespace Project1.Framework
         }
         //public T Load<T>(string name) where T : struct
         //    => (T)this[name].Value;
-        public ulong LoadUlong()
+        //public ulong LoadUlong()
+        //{
+        //    return (ulong)this.Value;
+        //}
+        public bool TryLoadULong(string name, out ulong value)
         {
-            return (ulong)this.Value;
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (ulong)tag.Value;
+                return true;
+            }
         }
         public bool TryLoadIntVec3(string name, out IntVec3 value)
         {

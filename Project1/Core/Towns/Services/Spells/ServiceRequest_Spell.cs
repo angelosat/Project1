@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Magic;
+using Project1.Core.Systems.Trading;
 
 namespace Project1.Core.Towns.Services.Spells;
 
@@ -21,7 +22,7 @@ public sealed class ServiceRequest_Spell : ServiceRequest
 
     internal override TownServiceDef Service => TownServiceDefOf.Healing;
 
-    public ulong PaymentId { get; internal set; }
+    public TradeId PaymentId { get; internal set; }
 
     internal void MarkTargetReady()
         => this.IsTargetReady = true;

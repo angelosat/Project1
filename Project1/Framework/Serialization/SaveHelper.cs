@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core;
 using Project1.Core.Entities;
+using Project1.Core.Systems.Crafting;
 using Project1.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ static class SaveHelper
     {
         item = save.TryGetTag(name, out var t) ? new T().Load(t) as T : null;
     }
-
+    
     public static void Save<T, U>(this Dictionary<T, U> dic, SaveTag save, string name, SaveTag.Types keyType, Func<T, object> keySelector) where U : ISaveable
     {
         var tag = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.Compound);
@@ -802,6 +803,20 @@ static class SaveHelper
                 list.Add(new SaveTag(SaveTag.Types.Int, "", item));
             tag.Add(list);
         }
+
+        public T LoadId<T>(string name) where T : struct, IStructIdInt<T>
+            => T.Create(tag.LoadInt(name));
+
+        public bool TryLoadId<T>(string name, out T id) where T : struct, IStructIdInt<T>
+        {
+            if(tag.TryLoadInt(name, out var value))
+            {
+                id = T.Create(value);
+                return true;
+            }
+            id = default;
+            return false;
+        }
     }
     
     public static void Save(this IEnumerable<int> ints, SaveTag save, string name)
@@ -1141,4 +1156,5 @@ static class SaveHelper
     
     public static void Save(this SaveTag tag, string name, Def def) => tag.Save(name, def.Name);
     
+
 }

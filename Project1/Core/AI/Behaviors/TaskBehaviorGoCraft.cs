@@ -12,7 +12,8 @@ namespace Project1.Core
         {
             var map = this.Actor.Map;
             var plan = this.Plan;
-            var item = plan.Order.UnfinishedItem;
+            var order = map.Town.Crafting.Get(plan.Order);
+            var item = order.UnfinishedItem;
             ArgumentNullException.ThrowIfNull(item);
             if (!map.Town.ReservationManager.Reserve(this.Actor, plan, new InteractionTarget(item)))
                 return false;
@@ -28,7 +29,7 @@ namespace Project1.Core
         public override bool CommitReservations()
         {
             var map = this.Actor.Map;
-            var contract = map.Town.CraftingManager.GetContract(this.Actor);
+            var contract = map.Town.Crafting.GetContract(this.Actor);
             var ingredients = contract.Ingredients;
             bool ingredientSuccess = true;
             foreach (var i in ingredients)

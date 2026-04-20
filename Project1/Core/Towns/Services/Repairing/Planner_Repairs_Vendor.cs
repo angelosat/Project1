@@ -33,12 +33,12 @@ internal sealed class Planner_Repairs_Vendor : Planner
                     return new Plan(PlanDefOf.Repairing, item);
 
                 if (actor.Hauled == item)
-                    return new Plan(PlanDefOf.GoPlace, map, req.RepairBench.Value.Above) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoPlace, map, req.RepairBench.Value.Above) { ServiceRequest = req.Id};
 
                 if (actor.Hauled is null && item.IsSpawned)
-                    return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req.Id };
 
-                return new Plan(TownServicesDefOf.PlanWaitItemSubmit, map, counter) { ServiceRequest = req };
+                return new Plan(TownServicesDefOf.PlanWaitItemSubmit, map, counter) { ServiceRequest = req.Id };
             }
             else
             {
@@ -54,21 +54,21 @@ internal sealed class Planner_Repairs_Vendor : Planner
                         // if money is on counter, swap with item.
                         // if item not on counter, leave item on counter and go pickup money on next tick
                         
-                        return new Plan(PlanDefOf.SwapCarried, money) { ServiceRequest = req };
+                        return new Plan(PlanDefOf.SwapCarried, money) { ServiceRequest = req.Id };
                     }
                 }
                 if (actor.Hauled == item)
-                    return new Plan(TownServicesDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req };
+                    return new Plan(TownServicesDefOf.PlanWaitMoney, map, counter) { ServiceRequest = req.Id };
 
                 if (actor.Hauled is null && item.Cell != counter.Above)
-                    return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req };
+                    return new Plan(PlanDefOf.GoHaul, item) { ServiceRequest = req.Id };
 
                 return null;
             }
             throw new UnreachableException();
         }
 
-        var bench = map.Town.CraftingManager.AllWorkstations
+        var bench = map.Town.Crafting.AllWorkstations
             .Where(e => e.WorkstationType.Capabilities.Contains(WorkstationCapabilityDefOf.Repairing))
             .FirstOrDefault(e => actor.CanReachAndReserve(e.Parent.OriginGlobal));
 

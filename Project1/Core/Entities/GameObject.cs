@@ -21,6 +21,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Alchemy;
+using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Ownership;
@@ -38,7 +39,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities;
 
@@ -114,6 +114,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         }
 
         AddTemplates(PotionSystem.GenerateTemplates());
+        AddTemplates(ScrollSystem.GenerateTemplates());
 
         AddTemplate(ItemDefOf.Coins.Create());
     }
@@ -686,8 +687,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         string defName = r.ReadString();
         var def = Core.Def.Get<ItemDef>(defName);
         var profile = Core.Def.GetDef(r.ReadString());
-        //var def = r.ReadDef<ItemDef>();
-        //var profile = r.ReadDef<Def>();
         var obj = def.Create(profile);
         obj.World = entityResolver;
         obj.RefId = r.ReadInt32();
@@ -702,8 +701,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         string defName = r.ReadString();
         var def = Core.Def.Get<ItemDef>(defName);
         var profile = Core.Def.GetDef(r.ReadString());
-        //var def = r.ReadDef<ItemDef>();
-        //var profile = r.ReadDef<Def>();
         var obj = def.Create(profile);
         obj.RefId = r.ReadInt32();
         var amount = r.ReadInt32();

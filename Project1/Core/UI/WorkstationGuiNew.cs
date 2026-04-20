@@ -10,14 +10,12 @@ using System.Linq;
 
 namespace Project1.Core.UI;
 
-class WorkstationGuiNew : SelectionBoundControl// GroupBox, ISelectionBound
+class WorkstationGuiNew : SelectionBoundControl
 {
     Panel PanelReactions;
     readonly ListBoxNoScroll<CraftingOrder, Gui_CraftingOrderContainer> ListOrdersNew;
     Table<(string label, Func<ZoneId> zoneIdGetter, WorkstationIOType iotype)> IOTable;
     BlockWorkstationComp Workstation;
-
-    //public ISelectable CurrentSelection { get; set; }
 
     public WorkstationGuiNew()
     {
@@ -157,9 +155,10 @@ class WorkstationGuiNew : SelectionBoundControl// GroupBox, ISelectionBound
     }
     private void OnCraftOrderRemoved(CraftOrderRemovedEvent e)
     {
+        if (e.Comp != this.Workstation)
+            return;
         this.ListOrdersNew.RemoveItems(e.Order);
         UpdateArrows();
-
     }
 
     public override bool Show()

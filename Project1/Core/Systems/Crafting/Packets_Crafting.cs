@@ -19,7 +19,6 @@ static class Packets_Crafting
 {
     readonly static PacketId 
         _pPlayerCancellingUnfinished,
-        //_pPlayerCreatedOrder, 
         _pPlayerCreatedOrderNew,
         _pPlayerDeletedOrder, 
         _pPlayerModifiedOrder, 
@@ -65,7 +64,6 @@ static class Packets_Crafting
         var r = packet.PacketReader;
         var item = endpoint.World.Get(r.ReadEntityRefId());
         ToolSystem.CancelUnfinished(item);
-        //SendPlayerCancellingUnfinishedItem(endpoint, item);
     }
 
     private static void HandlePlayerIssuedCraftOrderNew(PlayerIssuedCraftOrderEventNew e)
@@ -142,7 +140,6 @@ static class Packets_Crafting
         var map = endpoint.World.Get(mapid);
         var order = map.Town.CraftingManager.GetOrder(r.ReadInt32());
         var bone = r.ReadDef<BoneDef>();
-        //var refinement = r.ReadDef<MaterialRefinementDef>();
         var refinement = r.ReadDef<MaterialTypeDef>();
         var material = r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace() ? Def.Get<MaterialDef>(matName) : null;
         order.Toggle(bone, refinement, material);
@@ -213,10 +210,4 @@ static class Packets_Crafting
         if (endpoint is Server server)
             SendPlayerModifiedOrder(map, order, priorityDelta, amountDelta, mode);
     }
-    //internal static void Send(NetEndpoint net, Vector3 global, Reaction reaction)
-    //{
-    //    var w = net.BeginPacketImmediate(_pPlayerCreatedOrder);
-    //    w.Write(global);
-    //    reaction.Write(w);
-    //}
 }

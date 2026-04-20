@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
+using Project1.Core.Systems.Magic;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -10,18 +11,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Entities;
+namespace Project1.Core.Systems.Consumables;
 
 public sealed class ConsumableComp : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Consumable;
     public override string Name { get; } = "Consumable";
 
+    public SpellDef Spell;
     public List<EntityEffectWrapper> EffectsNew = [];
-    public GameObject Seeds;
     public Tier Tier;
 
-    public EntityEffectWrapper Effect => this.EffectsNew.First();
+    public EntityEffectWrapper Effect => this.EffectsNew.FirstOrDefault();
     public bool HasEffectTarget(Def target) => this.EffectsNew.Any(f => f.Target == target);
     public override void OnTooltipCreated(GameObject parent, Control tooltip)
     {
@@ -45,9 +46,6 @@ public sealed class ConsumableComp : EntityComp
     {
         var profile = (ConsumableDef)this.Owner.Profile;
         this.Owner.Name = profile.Worker.GetLabel(this);
-        var fx = EffectsNew.First();
-        //this.Owner.Body.TintΟverride = fx.Def.Worker.GetTint(fx.Target);
-        //this.Owner.SpriteComp.Tint = fx.Def.Worker.GetTint(fx.Target);
         this.Owner.Body.Sprite = profile.Sprite;
     }
 
@@ -59,18 +57,28 @@ public sealed class ConsumableComp : EntityComp
     public override void Write(IDataWriter w)
     {
         w.Write(this.EffectsNew);
+        var hasspell = this.Spell is not null;
+        w.Write(hasspell);
+        if (hasspell)
+            w.Write(this.Spell);
     }
     public override void Read(IDataReader r)
     {
         this.EffectsNew = r.ReadList<EntityEffectWrapper>();
+            if (r.ReadBoolean())
+            this.Spell = r.ReadDef<SpellDef>();
     }
     internal override void SaveExtra(SaveTag tag)
     {
         tag.Save("Effects", this.EffectsNew);
+        if(this.Spell is not null)
+        tag.Save("Spell", this.Spell);
     }
     internal override void LoadExtra(SaveTag tag)
     {
         this.EffectsNew = tag.LoadList<EntityEffectWrapper>("Effects");
+        if (tag.TryLoadDef<SpellDef>("Spell", out var spell))
+            this.Spell = spell;
     }
 
     internal void ApplyEffects(Actor actor)

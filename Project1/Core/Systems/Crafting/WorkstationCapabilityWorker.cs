@@ -6,7 +6,6 @@ using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using Project1.Framework.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +13,6 @@ namespace Project1.Core.Systems.Crafting;
 
 public abstract class WorkstationCapabilityWorker
 {
-    public virtual Type OrderRequestType => typeof(AddOrderRequest);
     public abstract WorkstationCapabilityDef CapabilityDef { get; }
     public abstract bool CreatesUnfinished { get; }
     public abstract SkillDef CraftingSkill { get; }
@@ -32,7 +30,4 @@ public abstract class WorkstationCapabilityWorker
     internal virtual int GetOutputStackSize(Def recipe) => 1;
 
     internal virtual void PostProcess(Entity product, Actor author, AddOrderRequest parameters) { }
-
-    //public virtual AddOrderRequest DeserializeOrder(IDataReader r)
-    //    => AddOrderRequest.Create(r);
 }

@@ -61,7 +61,7 @@ public class AddOrderRequest : ISaveableNewNew<AddOrderRequest>, ISerializableNe
     public static AddOrderRequest Create(IDataReader r)
     {
         var cap = r.ReadDef<WorkstationCapabilityDef>();
-        var req = ActivatorSafe<AddOrderRequest>.CreateInstance(cap.Worker.OrderRequestType);
+        var req = ActivatorSafe<AddOrderRequest>.CreateInstance(cap.OrderType);
         req.WorkstationCapability = cap;
         req.ProductDef = r.ReadDef();
         req.ReadExtra(r);
@@ -88,22 +88,11 @@ public class AddOrderRequest : ISaveableNewNew<AddOrderRequest>, ISerializableNe
     public static AddOrderRequest Create(SaveTag tag)
     {
         var capability = tag.LoadDef<WorkstationCapabilityDef>("Capability");
-        var req = ActivatorSafe<AddOrderRequest>.CreateInstance(capability.Worker.OrderRequestType);
+        var req = ActivatorSafe<AddOrderRequest>.CreateInstance(capability.OrderType);
         req.WorkstationCapability = capability;
         req.ProductDef = tag.LoadDef("Product");
         req.LoadExtra(tag);
         return req;
     }
     protected virtual void LoadExtra(SaveTag tag) { }
-
-    //IDataWriter ISerializableNewNew<AddOrderRequest>.Write(IDataWriter w)
-    //{
-    //    return Write(w);
-    //}
-
-    //static AddOrderRequest ISerializableNewNew<AddOrderRequest>.Create(IDataReader r)
-    //{
-    //    return this.Create(r);
-    //}
-    
 }

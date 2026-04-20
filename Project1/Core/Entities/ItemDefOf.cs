@@ -10,6 +10,7 @@ using Project1.Core.Legacy.Properties;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;

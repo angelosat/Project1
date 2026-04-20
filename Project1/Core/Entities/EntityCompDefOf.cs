@@ -13,6 +13,7 @@ using Project1.Core.Needs;
 using Project1.Core.Resources;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Relationships;

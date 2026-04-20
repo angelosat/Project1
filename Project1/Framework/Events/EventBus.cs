@@ -7,7 +7,7 @@ namespace Project1.Framework.Events;
 
 public sealed class EventBus
 {
-    private class Subscription
+    private sealed class Subscription
     {
         public object Owner;
         public Delegate OriginalHandler;
@@ -23,7 +23,7 @@ public sealed class EventBus
             this.Post(e);
         }
     }
-    /*protected virtual*/ void Post(GameEvent a)
+    void Post(GameEvent a)
     {
         var id = a.Type;
         if (_eventBus.TryGetValue(id, out var list))

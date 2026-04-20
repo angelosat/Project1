@@ -3,10 +3,10 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Materials;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +14,6 @@ namespace Project1.Core.Systems.Alchemy;
 
 internal class WorkstationCapability_Alchemy : WorkstationCapabilityWorker
 {
-    public override Type OrderRequestType => typeof(AddOrderRequest_Alchemy);
     public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.Alchemy;
 
     public override bool CreatesUnfinished => false;
@@ -44,9 +43,6 @@ internal class WorkstationCapability_Alchemy : WorkstationCapabilityWorker
         var comp = craftingProduct.GetComponent<ConsumableComp>();
         comp.Add(wrapper);
     }
-    //public override AddOrderRequest DeserializeOrder(IDataReader r)
-    //    => AddOrderRequest.Create(r);
-
     internal override int GetOutputStackSize(Def recipe)
      => ItemDefOf.Consumable.StackCapacity;
 }

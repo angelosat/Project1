@@ -7,6 +7,7 @@ namespace Project1.Core.Systems.Crafting;
 
 public sealed class WorkstationCapabilityDef(string name, Type workerType, DutyDef operatorDuty) : Def(name)
 {
+    public Type OrderType;
     public Type Output;
     public Def[] OutputSpecific = [];
     public PlanDef Plan;

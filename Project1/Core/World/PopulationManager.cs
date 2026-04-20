@@ -7,6 +7,7 @@ using Project1.Core.Networking.Entities;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
@@ -119,7 +120,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
         var coins = ItemDefOf.Coins.Create().SetStackSize(500);
-        var townscroll = ConsumableSystem.Create(ConsumableDefOf.Scroll, MaterialDefOf.ShrubStem, 1);
+        var townscroll = ConsumableSystem.CreateScroll(SpellDefOf.Teleporting, MaterialDefOf.ShrubStem);
         var inventory = actor.Inventory;
         inventory.Insert(coins);
         inventory.Insert(townscroll);

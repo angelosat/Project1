@@ -5,7 +5,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -17,7 +16,7 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
 
-public class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, ISerializableNew<CraftingOrder>
+public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, ISerializableNew<CraftingOrder>
 {
     public enum CraftMode
     {

@@ -19,7 +19,7 @@ namespace Project1.Framework.Helpers
             }
             return true;
         }
-        static public bool LineOfSight(int x0, int y0, int z0, int x1, int y1, int z1, Predicate<Vector3> check, out List<Vector3> points)
+        static public bool LineOfSight(int x0, int y0, int z0, int x1, int y1, int z1, Predicate<IntVec3> check, out List<IntVec3> points)
         {
             points = Plot3dThickFrom2d(x0, y0, x1, y1, z1);
 
@@ -32,9 +32,9 @@ namespace Project1.Framework.Helpers
             return true;
         }
 
-        static public List<Vector2> Plot2D(int x0, int y0, int x1, int y1)
+        static public List<IntVec2> Plot2D(int x0, int y0, int x1, int y1)
         {
-            var points = new List<Vector2>();
+            var points = new List<IntVec2>();
 
             var dx = x1 - x0;
             var dy = y1 - y0;
@@ -62,7 +62,7 @@ namespace Project1.Framework.Helpers
             {
                 while (x != x1) // doesn't add last point?
                 {
-                    var p = new Vector2(x, y);
+                    var p = new IntVec2(x, y);
                     points.Add(p);
 
                     f += dy;
@@ -78,7 +78,7 @@ namespace Project1.Framework.Helpers
             {
                 while (y != y1)
                 {
-                    var p = new Vector2(x, y);
+                    var p = new IntVec2(x, y);
                     points.Add(p);
 
                     f += dx;
@@ -91,7 +91,7 @@ namespace Project1.Framework.Helpers
                 }
             }
 
-            points.Add(new Vector2(x1, y1));
+            points.Add(new IntVec2(x1, y1));
 
             return points;
         }
@@ -123,10 +123,10 @@ namespace Project1.Framework.Helpers
             }
             return points;
         }
-        static public List<Vector3> Plot3dThickFrom2d(int x0, int y0, int x1, int y1, int z)
+        static public List<IntVec3> Plot3dThickFrom2d(int x0, int y0, int x1, int y1, int z)
         {
             var points = Plot2dThick(x0, y0, x1, y1);
-            return points.Select(v => new Vector3(v, z)).ToList();
+            return [.. points.Select(v => new IntVec3(v, z))];
         }
     }
 }

@@ -1,24 +1,22 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.AI.Behaviors.Pathing;
-using Project1.Core.Simulation;
+﻿using Project1.Core.Simulation;
+using Project1.Framework;
 
-namespace Project1.Core.Pathing
+namespace Project1.Core.AI.Behaviors.Pathing;
+
+public partial class PathingSync
 {
-    public partial class PathingSync
+    public class Node : NodeBase
     {
-        public class Node : NodeBase
+        public RegionNode RegionNodeGlobal;
+        public bool IsQueued;
+        public Node(MapBase map, IntVec3 global, IntVec3 goal)
         {
-            public RegionNode RegionNodeGlobal;
-            public bool IsQueued;
-            public Node(MapBase map, Vector3 global, Vector3 goal)
-            {
-                this.Map = map;
-                this.Global = global;
-            }
-            public override string ToString()
-            {
-                return this.Global.ToString() + " from " + (this.Parent != null ? this.Parent.Global.ToString() : "null");
-            }
+            this.Map = map;
+            this.Global = global;
+        }
+        public override string ToString()
+        {
+            return this.Global.ToString() + " from " + (this.Parent != null ? this.Parent.Global.ToString() : "null");
         }
     }
 }

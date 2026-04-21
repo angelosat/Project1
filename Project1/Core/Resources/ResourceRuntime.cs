@@ -80,7 +80,7 @@ public sealed class ResourceRuntime : IProgressBar, ISaveableNewNew<ResourceRunt
     static ProgressFloat CreateCooldown() => new(0, Ticks.PerGameMinute, Ticks.PerGameMinute);
     public ResourceThreshold CurrentThreshold => this.ResourceDef.Worker.GetCurrentThreshold(this);
     public ProgressFloat RechargingDelay = CreateCooldown();
-    public float Percentage { get => this.Value / this.Max; set => this.Value = (int)(this.Max * value); }
+    public float Percentage { get => (float)this.Value / this.Max; set => this.Value = (int)(this.Max * value); }
     public int Min => 0;
     public string Name => this.ResourceDef.Name;
     public ResourceDef Def => this.ResourceDef;

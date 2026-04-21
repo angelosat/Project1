@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Resources;
 
-namespace Project1.Core.Simulation.Biology;
+namespace Project1.Core.Systems.Biology;
 
 internal class BiologyComp : EntityComp
 {

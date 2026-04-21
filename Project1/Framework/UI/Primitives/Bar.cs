@@ -7,7 +7,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Interfaces;
 using System;
 
-namespace Project1.Framework.UI
+namespace Project1.Framework.UI.Primitives
 {
     public class BarFinal : ButtonBaseNew
     {

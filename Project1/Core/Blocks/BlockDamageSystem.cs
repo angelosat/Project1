@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Simulation;
-using Project1.Framework.UI;
+using Project1.Framework.UI.Primitives;
 using System;
 using System.Collections.Generic;
 

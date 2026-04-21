@@ -11,8 +11,9 @@ using Project1.Core.Gear;
 using Project1.Core.Needs;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Inventory;
-using Project1.Core.Simulation.Biology;
 using Project1.Core.Systems.Abilities;
+using Project1.Core.Systems.Biology;
+using Project1.Core.Systems.MentalState;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -46,6 +47,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(AIComp),
                 typeof(BiologyComp),
                 typeof(AbilitiesComp),
+                typeof(MentalStateComp),
             ],
             CompDefs = [
                 EntityCompDefOf.Possessions,
@@ -66,7 +68,8 @@ namespace Project1.Core.Entities.Actors
                 EntityCompDefOf.AI,
                 EntityCompDefOf.Relationships,
                 EntityCompDefOf.Biology,
-                EntityCompDefOf.Abilities
+                EntityCompDefOf.Abilities,
+                EntityCompDefOf.MentalState
             ]
         };
 

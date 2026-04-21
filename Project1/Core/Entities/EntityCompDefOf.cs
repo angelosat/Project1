@@ -11,12 +11,13 @@ using Project1.Core.Legacy.Crafting;
 using Project1.Core.Mood;
 using Project1.Core.Needs;
 using Project1.Core.Resources;
-using Project1.Core.Simulation.Biology;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Abilities;
+using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.MentalState;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Relationships;
 using Project1.Core.Systems.Tools;
@@ -61,6 +62,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Tree = new("Tree", typeof(TreeComponent));
         public static readonly EntityCompDef Relationships = new("Relationships", typeof(RelationshipsComp));
         public static readonly EntityCompDef Biology = new("Biology", typeof(BiologyComp));
+        public static readonly EntityCompDef MentalState = new("MentalState", typeof(MentalStateComp));
         public static readonly EntityCompDef Abilities = new("Abilities", typeof(AbilitiesComp));
         static EntityCompDefOf()
         {

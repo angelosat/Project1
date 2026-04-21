@@ -7,6 +7,7 @@ using Project1.Core.Screens;
 using Project1.Framework.UI;
 using Project1.Framework.Helpers;
 using Project1.Framework.Interfaces;
+using Project1.Framework.UI.Primitives;
 
 namespace Project1.Core.UI
 {

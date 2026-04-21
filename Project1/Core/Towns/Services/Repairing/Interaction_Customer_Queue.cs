@@ -110,7 +110,7 @@ internal sealed class Interaction_RepairCustomer_WaitPriceAnnounce : Interaction
         => i.Actor.Resources.GetPercentage(ResourceDefOf.Patience) <= 0;
 
     internal override void OnTick(Interaction i)
-        => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
+        => i.Actor.Resources.ApplyAccumulatorDelta(ResourceDefOf.Patience, -.01f);
 }
 internal sealed class Interaction_Customer_Queue : InteractionLogic
 {
@@ -141,5 +141,5 @@ internal sealed class Interaction_Customer_Queue : InteractionLogic
         => i.Actor.Resources.GetPercentage(ResourceDefOf.Patience) <= 0;
 
     internal override void OnTick(Interaction i)
-        => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
+        => i.Actor.Resources.ApplyAccumulatorDelta(ResourceDefOf.Patience, -.01f);
 }

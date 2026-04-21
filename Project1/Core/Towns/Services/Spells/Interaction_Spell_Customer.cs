@@ -8,7 +8,7 @@ sealed class Interaction_Spell_Customer : InteractionLogic
     protected override InteractionContext_Healing CreateContextInt() => new();
 
     internal override void OnTick(Interaction i)
-        => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
+        => i.Actor.Resources.ApplyAccumulatorDelta(ResourceDefOf.Patience, -.01f);
     internal override void OnStart(Interaction i)
     {
         if (i.Actor.Net.IsClient)

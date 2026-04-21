@@ -16,12 +16,12 @@ internal class BlockResourcesComp : BlockComp
     }
     public override BlockCompDef CompDef => BlockCompDefOf.Resources;
 
-    readonly Dictionary<ResourceDef, Resource> _resources = [];
+    readonly Dictionary<ResourceDef, ResourceRuntime> _resources = [];
 
-    public IOrderedEnumerable<Resource> OrderedByDeficit
+    public IOrderedEnumerable<ResourceRuntime> OrderedByDeficit
         => this._resources.Values.OrderByDescending(r => r.Deficit);
 
-    public void ApplyDelta(ResourceDef resource, float delta)
+    public void ApplyDelta(ResourceDef resource, int delta)
     {
         this._resources[resource].ApplyDelta(delta);
         this.Map.World.Events.Post(new BlockResourceDeltaAppliedEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, delta));
@@ -33,7 +33,7 @@ internal class BlockResourcesComp : BlockComp
     public float GetOverflow(ResourceDef resource)
         => this._resources[resource].Overflow;
 
-    public bool TryApplyDelta(ResourceDef resource, float delta)
+    public bool TryApplyDelta(ResourceDef resource, int delta)
     {
         if (!this._resources.TryGetValue(resource, out var resourceRuntime))
             return false;
@@ -47,7 +47,7 @@ internal class BlockResourcesComp : BlockComp
 
     public float GetValue(ResourceDef resource)
         => this._resources[resource].Value;
-    public void SetValue(ResourceDef resource, float value)
+    public void SetValue(ResourceDef resource, int value)
     {
         this._resources[resource].Value = value;
         this.Map?.World.Events.Post(new BlockResourceValueSetEvent(this.Parent.Map, this.Parent.OriginGlobal, resource, value));
@@ -59,7 +59,7 @@ internal class BlockResourcesComp : BlockComp
     }
     public float GetMax(ResourceDef resource)
        => this._resources[resource].Max;
-    public void SetMax(ResourceDef resource, float value)
+    public void SetMax(ResourceDef resource, int value)
        => this._resources[resource].Max = value;
 
     public float GetDeficit(ResourceDef resource)
@@ -68,13 +68,13 @@ internal class BlockResourcesComp : BlockComp
     public float GetValueOrDefault(ResourceDef resource, float dflt = 0)
         => this._resources.TryGetValue(resource, out var res) ? res.Value : dflt;
 
-    public void SetOverflowMax(ResourceDef resource, float max)
+    public void SetOverflowMax(ResourceDef resource, int max)
         => this._resources[resource].SetOverflowMax(max);       
 
     public BlockResourcesComp(ResourceDef[] resources)
     {
         foreach (var rDef in resources)
-            this._resources.Add(rDef, new Resource(rDef));
+            this._resources.Add(rDef, new ResourceRuntime(rDef));
     }
    
     internal override IEnumerable<Control> GetInspectorControls()

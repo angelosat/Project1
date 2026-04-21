@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Helpers;
 using Project1.Core.Resources;
 
 namespace Project1.Core.Systems.Abilities;
@@ -12,12 +11,10 @@ internal class AbilitiesComp : EntityComp
 
     IResourceView Resource => field ??= this.Owner.Resources.View(ResourceDefOf.Mana);
     float Regen = 1f / Ticks.PerGameMinute;
-    readonly Accumulator Accumulator = new();
     public override void Tick()
     {
         if (this.Owner.Net.IsClient)
             return;
-        if (this.Accumulator.AddAndTryFlush(this.Regen, out var value))
-            this.Resource.ApplyDelta(value);
+        this.Resource.ApplyAccumulatorDelta(this.Regen);
     }
 }

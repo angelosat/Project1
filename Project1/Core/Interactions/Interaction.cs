@@ -289,7 +289,7 @@ public sealed class Interaction : Inspectable
 
             // "transfer" energy from stamina to strength
             actor.Attributes.ApplyDelta(AttributeDefOf.Strength, energyConsumption);
-            actor.Resources.ApplyDelta(ResourceDefOf.Stamina, -energyConsumption);
+            actor.Resources.ApplyAccumulatorDelta(ResourceDefOf.Stamina, -energyConsumption);
         }
         // i moved the multiplication with the stamina threshold to inside the workspeed stat formula
 

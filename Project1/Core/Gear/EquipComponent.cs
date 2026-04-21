@@ -13,11 +13,11 @@ namespace Project1.Core.Gear
         public override string Name { get; } = "Equippable";
           
         public GearTypeDef Type;
-        public Resource Durability;
+        public ResourceRuntime Durability;
         public EquipComponent()
         {
             this.Type = null;
-            this.Durability = new Resource(ResourceDefOf.Durability);
+            this.Durability = new ResourceRuntime(ResourceDefOf.Durability);
         }
 
         public EquipComponent Initialize(GearTypeDef slot)

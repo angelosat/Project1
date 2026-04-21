@@ -21,15 +21,15 @@ sealed class Durability : ResourceWorker
     //    dur.Percentage = 1;
     //    dur.Value = 1; // HACK
     //}
-    public override Color GetBarColor(Resource resource)
+    public override Color GetBarColor(ResourceRuntime resource)
     {
         return Color.LightGray;
     }
-    public override string GetBarLabel(Resource resource)
+    public override string GetBarLabel(ResourceRuntime resource)
     {
         return $"{resource.Value} / {resource.Max}";
     }
-    public override string GetBarHoverText(Resource resource)
+    public override string GetBarHoverText(ResourceRuntime resource)
     {
         return this.GetLabel(resource);
     }

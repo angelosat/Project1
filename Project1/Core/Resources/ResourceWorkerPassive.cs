@@ -6,7 +6,7 @@ namespace Project1.Core.Resources
     {
         public override string Description => "<placeholder>";
         //public override Color GetBarColor(Resource resource) => Color.LightGray;
-        public override Color GetBarColor(Resource resource) => resource.Def.Color;
-        public override string GetBarLabel(Resource resource) => resource.Def.LabelReadable;
+        public override Color GetBarColor(ResourceRuntime resource) => resource.Def.Color;
+        public override string GetBarLabel(ResourceRuntime resource) => resource.Def.LabelReadable;
     }
 }

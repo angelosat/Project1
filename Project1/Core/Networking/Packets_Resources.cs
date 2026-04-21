@@ -64,7 +64,7 @@ namespace Project1.Core.Networking
             var map = endpoint.World.Get(mapid);
             var cell = r.ReadIntVec3();
             var resDef = r.ReadDef<ResourceDef>();
-            var delta = r.ReadSingle();
+            var delta = r.ReadInt32();
             map
                 .Query(cell).BlockEntity.GetComp<BlockResourcesComp>()
                 .SetValue(resDef, delta);
@@ -80,7 +80,7 @@ namespace Project1.Core.Networking
         {
             endpoint.World
                 .Get(packet.PacketReader.ReadEntityRefId())
-                .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadSingle());
+                .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadInt32());
         }
         static void SendBlockResourceDelta(BlockResourceDeltaAppliedEvent e)
         {
@@ -97,7 +97,7 @@ namespace Project1.Core.Networking
             var map = endpoint.World.Get(mapid);
             var cell = r.ReadIntVec3();
             var resDef = r.ReadDef<ResourceDef>();
-            var delta = r.ReadSingle();
+            var delta = r.ReadInt32();
             map
                 .Query(cell).BlockEntity.GetComp<BlockResourcesComp>()
                 .ApplyDelta(resDef, delta);

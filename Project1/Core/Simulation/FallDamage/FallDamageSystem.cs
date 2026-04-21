@@ -19,7 +19,7 @@ namespace Project1.Core.Simulation.FallDamage
                 return;
             actor
                 .GetResource(ResourceDefOf.Health)
-                .ApplyDelta(force);
+                .ApplyAccumulatorDelta(force);
         }
     }
 }

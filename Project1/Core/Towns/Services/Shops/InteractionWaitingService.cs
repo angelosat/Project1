@@ -29,7 +29,7 @@ internal sealed class InteractionWaitingService : InteractionLogic
     }
 
     internal override void OnTick(Interaction i)
-            => i.Actor.Resources.ApplyDelta(ResourceDefOf.Patience, -.01f);
+            => i.Actor.Resources.ApplyAccumulatorDelta(ResourceDefOf.Patience, -.01f);
 
     internal override bool HasSucceeded(Interaction i)
     {

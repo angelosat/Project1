@@ -13,7 +13,7 @@ namespace Project1.Core.Resources
         private const string _format = "##0";
         public override string Format => _format;
         public override string Description => _description;
-        public override Color GetBarColor(Resource resource)
+        public override Color GetBarColor(ResourceRuntime resource)
         {
             return Color.SeaGreen;
         }

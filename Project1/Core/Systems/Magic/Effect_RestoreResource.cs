@@ -12,7 +12,7 @@ public sealed class Effect_RestoreResource : EntityEffectWorker
     protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;
-        actor.Resources.ApplyDelta(resource, wrapper.Budget.Value);
+        actor.Resources.ApplyDelta(resource, (int)wrapper.Budget.Value);
     }
 
     internal override Color GetTint(Def target)

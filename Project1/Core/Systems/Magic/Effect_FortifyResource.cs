@@ -13,13 +13,13 @@ public sealed class Effect_FortifyResource : EntityEffectWorker
     {
         var resource = (ResourceDef)wrapper.Target;
         var max = actor.Resources.GetMax(resource);
-        actor.Resources.SetMax(resource, max + wrapper.RemainingBudget.Value);
+        actor.Resources.SetMax(resource, max + (int)wrapper.RemainingBudget.Value);
     }
     protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;
         var max = actor.Resources.GetMax(resource);
-        actor.Resources.SetMax(resource, max - wrapper.RemainingBudget.Value);
+        actor.Resources.SetMax(resource, max - (int)wrapper.RemainingBudget.Value);
     }
 
     internal override Color GetTint(Def target)

@@ -23,16 +23,16 @@ namespace Project1.Core.Resources
         public float TickRate = Ticks.PerSecond / 2f;
 
         float SpriteFlashTimer;
-        protected override void OnDepleted(Resource res)
+        protected override void OnDepleted(ResourceRuntime res)
         {
             var entity = res.Owner;
             entity.Kill();
         }
-        protected override void TickExtra(Resource values)
+        protected override void TickExtra(ResourceRuntime values)
         {
             FlashSprite(values.Owner);
         }
-        protected override void updateRec(Resource resource)
+        protected override void updateRec(ResourceRuntime resource)
         {
             if (resource.RechargingDelay.Value > 0)
             {
@@ -52,14 +52,14 @@ namespace Project1.Core.Resources
                 }
             }
         }
-        protected override float GetRegenRate(Resource values)
+        protected override float GetRegenRate(ResourceRuntime values)
         {
             return 0;
             float rate = ((float)Math.Pow(values.Percentage, 2)) / TickRate;
 
             return rate;
         }
-        public override void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values)
+        public override void OnHealthBarCreated(GameObject parent, Nameplate plate, ResourceRuntime values)
         {
             plate.AlwaysShow = true;
             var bar = new Bar()
@@ -79,7 +79,7 @@ namespace Project1.Core.Resources
         {
             base.DrawUI(sb, camera, parent);
         }
-        public override Color GetBarColor(Resource resource)
+        public override Color GetBarColor(ResourceRuntime resource)
         {
             return Color.Orange;
         }

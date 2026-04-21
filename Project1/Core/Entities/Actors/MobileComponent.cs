@@ -209,7 +209,7 @@ namespace Project1.Core.Entities.Actors
             var newwalk = StatDefOf.WalkSpeed.CalculateFor(parent);
             var walkSpeed = newwalk * Acceleration * NormalWalkSpeed * (this.CurrentState.Speed + this.CurrentState.SprintSpeed * resources.GetPercentage(ResourceDefOf.Stamina));
             if (this._currentState == State.Types.Sprinting)
-                resources.ApplyDelta(ResourceDefOf.Stamina, -0.01f);
+                resources.ApplyAccumulatorDelta(ResourceDefOf.Stamina, -0.01f);
 
             //apply stamina
             // TODO: make stamina resource change walkspeed instead of fetching stamina from here

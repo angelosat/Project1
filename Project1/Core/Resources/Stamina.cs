@@ -16,7 +16,7 @@ namespace Project1.Core.Resources
         public override string Format { get; } = "##0.00";
         public override string Description { get; } = "Required for sprinting and hauling heavy objects";
 
-        public override void ApplyDelta(Resource resource, float delta)
+        public override void ApplyDelta(ResourceRuntime resource, int delta)
         {
             if (delta < 0)
                 resource.RechargingDelay.Value = 0;
@@ -26,7 +26,7 @@ namespace Project1.Core.Resources
         public float TickRate = Ticks.PerGameMinute / 2f; // 2 ticks per second
         public float Timer = 0;
         public float RegenerationRate = 1;
-        protected override void updateRec(Resource resource)
+        protected override void updateRec(ResourceRuntime resource)
         {
             if (resource.RechargingDelay.Value < resource.RechargingDelay.Max)
             {
@@ -34,17 +34,17 @@ namespace Project1.Core.Resources
                 return;
             }
         }
-        protected override float GetRegenRate(Resource values)
+        protected override float GetRegenRate(ResourceRuntime values)
         {
             float rate = (1 + (float)Math.Pow(values.Percentage, 2)) / TickRate;
             return rate;
         }
 
-        public override Color GetBarColor(Resource resource)
+        public override Color GetBarColor(ResourceRuntime resource)
         {
             return Color.Yellow;
         }
-        public override Control GetControlBar(Resource res)
+        public override Control GetControlBar(ResourceRuntime res)
         {
             var box = new GroupBox();
             var bar = base.GetControlBar(res);

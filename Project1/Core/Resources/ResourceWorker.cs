@@ -30,16 +30,16 @@ public abstract class ResourceWorker
         this.Thresholds.Sort((a, b) => a.Value.CompareTo(b.Value));
         return this;
     }
-    public float GetThresholdValue(Resource res, int index)
+    public float GetThresholdValue(ResourceRuntime res, int index)
     {
         return 0;
     }
-    protected virtual void OnDepleted(Resource res) { }
-    public string GetLabel(Resource res)
+    protected virtual void OnDepleted(ResourceRuntime res) { }
+    public string GetLabel(ResourceRuntime res)
     {
         return this.GetCurrentThreshold(res)?.Label ?? "";
     }
-    public ResourceThreshold GetCurrentThreshold(Resource res)
+    public ResourceThreshold GetCurrentThreshold(ResourceRuntime res)
     {
         return this.Thresholds.FirstOrDefault(t => res.Percentage <= t.Value);
     }
@@ -47,17 +47,17 @@ public abstract class ResourceWorker
     {
         return this.Thresholds.FirstOrDefault(t => percentage <= t.Value);
     }
-    public abstract Color GetBarColor(Resource resource);
-    public virtual string GetBarLabel(Resource resource)
+    public abstract Color GetBarColor(ResourceRuntime resource);
+    public virtual string GetBarLabel(ResourceRuntime resource)
     {
         return this.GetLabel(resource);
     }
-    public virtual string GetBarHoverText(Resource resource)
+    public virtual string GetBarHoverText(ResourceRuntime resource)
     {
         return $"{((int)resource.ValueWithOverflow).ToString(this.Format)} / {resource.Max.ToString(this.Format)} ({resource.MaxWithOverflow})";
         return $"{((int)resource.Value).ToString(this.Format)} / {resource.Max.ToString(this.Format)}";
     }
-    public virtual Control GetControlBar(Resource resource)
+    public virtual Control GetControlBar(ResourceRuntime resource)
     {
         var bar = new Bar()
         {
@@ -68,13 +68,13 @@ public abstract class ResourceWorker
         };
         return bar;
     }
-    public virtual Control GetControlLabel(Resource resource)
+    public virtual Control GetControlLabel(ResourceRuntime resource)
     {
         return new LabelNew(() => $"{resource.Def.LabelReadable}: {resource.Value} / {resource.Max}");
     }
     public abstract string Description { get; }
 
-    public virtual void ApplyDelta(Resource resource, float delta)
+    public virtual void ApplyDelta(ResourceRuntime resource, int delta)
     {
         resource.Value += delta;
         //resource.SetValue(resource.Value + delta);
@@ -83,21 +83,21 @@ public abstract class ResourceWorker
     }
 
     public readonly float BaseMax = 100;
-    public /*sealed override*/ void Tick(Resource resource)
+    public /*sealed override*/ void Tick(ResourceRuntime resource)
     {
         //var resource = (Resource)wrapper;
-        foreach (var ratemod in resource.Modifiers)
-            this.ApplyDelta(resource, ratemod.Def.GetRateMod(resource.Owner));
-        this.TickExtra(resource);
-        var regen = this.GetRegenRate(resource);
-        this.ApplyDelta(resource, regen);
+        //foreach (var ratemod in resource.Modifiers)
+        //    this.ApplyDelta(resource, ratemod.Def.GetRateMod(resource.Owner));
+        //this.TickExtra(resource);
+        //var regen = this.GetRegenRate(resource);
+        //this.ApplyDelta(resource, regen);
     }
-    protected virtual void updateRec(Resource resource) { }
-    protected virtual void TickExtra(Resource resource) { }
-    protected virtual float GetRegenRate(Resource resource) => resource.Def.BaseRegenRate;
+    protected virtual void updateRec(ResourceRuntime resource) { }
+    protected virtual void TickExtra(ResourceRuntime resource) { }
+    protected virtual float GetRegenRate(ResourceRuntime resource) => resource.Def.BaseRegenRate;
     public virtual string Format => "";
-    public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, Resource values) { }
+    public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, ResourceRuntime values) { }
     public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }
 
-    internal virtual float GetMax(Entity owner) => 100;
+    internal virtual int GetMax(Entity owner) => 100;
 }

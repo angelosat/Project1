@@ -10,12 +10,12 @@ internal class ResourceWorker_Patience : ResourceWorker
     {
     }
 
-    internal override float GetMax(Entity owner)
-        => StatDefOf.MaxPatience.Worker.CalculateStat(owner);
+    internal override int GetMax(Entity owner)
+        => (int)StatDefOf.MaxPatience.Worker.CalculateStat(owner);
 
     public override string Description => "patience resource description";
 
-    public override Color GetBarColor(Resource resource) => Color.Bisque;
+    public override Color GetBarColor(ResourceRuntime resource) => Color.Bisque;
 
-    public override string GetBarLabel(Resource resource) => resource.Def.LabelReadable;
+    public override string GetBarLabel(ResourceRuntime resource) => resource.Def.LabelReadable;
 }

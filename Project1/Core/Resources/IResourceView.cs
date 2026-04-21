@@ -5,12 +5,14 @@ namespace Project1.Core.Resources;
 public interface IResourceView
 {
     public ResourceDef Def { get; }
-    float Value { get; set; }
+    int Value { get; set; }
     float Percentage { get; set; }
-    float Max { get; set; }
+    int Max { get; set; }
     int TicksPerRecoverOne { get; set; }
     ResourceThreshold CurrentThreshold { get; }
-    void ApplyDelta(float delta);
+    void ApplyDelta(int delta);
+    void ApplyAccumulatorRateDelta(float delta);
+    void ApplyAccumulatorDelta(float delta);
     float GetThresholdValue(int index);
 
     IResourceView Write(IDataWriter w);

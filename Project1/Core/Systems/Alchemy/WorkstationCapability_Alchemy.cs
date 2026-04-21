@@ -34,15 +34,15 @@ internal class WorkstationCapability_Alchemy : WorkstationCapabilityWorker
     {
         yield return new(BoneDefOf.Item, ItemDefOf.Ingredient, [MaterialRefinementDefOf.FruitRaw, MaterialRefinementDefOf.Powder, MaterialRefinementDefOf.Paste], [MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh], 1);
     }
-    internal override void PostProcess(Entity craftingProduct, Actor author, AddOrderRequest parameters)
-    {
-        var typedParams = (AddOrderRequest_Alchemy)parameters;
-        var eff = typedParams.Effect;
-        var tar = typedParams.Target;
-        var wrapper = new EntityEffectWrapper(eff, tar, 100, 0); // how determine runtime effect params?
-        var comp = craftingProduct.GetComponent<ConsumableComp>();
-        comp.Add(wrapper);
-    }
+    //internal override void PostProcess(Entity craftingProduct, Actor author, AddOrderRequest parameters)
+    //{
+    //    var typedParams = (AddOrderRequest_Alchemy)parameters;
+    //    var eff = typedParams.Effect;
+    //    var tar = typedParams.Target;
+    //    var wrapper = new EntityEffectWrapper(eff, tar, 100, 0); // how determine runtime effect params?
+    //    var comp = craftingProduct.GetComponent<ConsumableComp>();
+    //    comp.Add(wrapper);
+    //}
     internal override int GetOutputStackSize(Def recipe)
      => ItemDefOf.Consumable.StackCapacity;
 }

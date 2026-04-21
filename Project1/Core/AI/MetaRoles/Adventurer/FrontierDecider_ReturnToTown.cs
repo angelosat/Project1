@@ -12,7 +12,7 @@ internal sealed class FrontierDecider_ReturnToTown : FrontierDecider
         //if (!desire.HasValue)
         //    return (this, default, default);
         var perc = comp.Owner.Needs.GetPercentage(AdventurerNeedsDefOf.Adventuring);
-        var score = (int)(perc * perc * 100);
+        var score = 100 - (int)(perc * perc * 100);
         return (this, null, score);
     }
 }

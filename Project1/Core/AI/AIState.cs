@@ -159,7 +159,7 @@ namespace Project1.Core.AI
         }
         public void Assign(PlanExecutor bhav, PlannerDef source)
         {
-            this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));
+            //this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));
             bhav.Plan.Actor = this.Owner;
             if (bhav.Plan.IsImmediate)
                 this.Push(bhav);
@@ -167,6 +167,7 @@ namespace Project1.Core.AI
                 this.Enqueue(bhav);
             this.CurrentPlanner = bhav.Plan.Continuation == PlanContinuationPolicy.Continue ? source : null;
             bhav.Plan.Source = source;
+            this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));
         }
 
         public bool TryAssign(Plan task, PlannerDef source)

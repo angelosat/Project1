@@ -34,18 +34,19 @@ sealed class Interaction_Crafting : InteractionLogic
         // consume fuel
         if (!order.TryConsumeFuel())
             return;
-
-        var creationReq = order.GetCreationRequest();
         var ingredients = plan.TargetsA.Select(t => t.Entity);
-        var mapping = order.WorkstationCapability.Worker.GetIngredientMapping(order.ProductDef, ingredients);
 
-        foreach (var (bone, item) in mapping)
-        {
-            creationReq.OverrideMaterial(bone, item.Body.Material);
-            map.World.DisposeEntity(item);
-        }
-        var product = creationReq.Create();
-        order.WorkstationCapability.Worker.PostProcess(product, actor, order.Source);
+        //var creationReq = order.GetCreationRequest();
+        //var mapping = order.WorkstationCapability.Worker.GetIngredientMapping(order.ProductDef, ingredients);
+        //foreach (var (bone, item) in mapping)
+        //{
+        //    creationReq.OverrideMaterial(bone, item.Body.Material);
+        //    map.World.DisposeEntity(item);
+        //}
+        //var product = creationReq.Create();
+        //order.WorkstationCapability.Worker.PostProcess(product, actor, order.Source);
+        var product = order.WorkstationCapability.Worker.CreateProduct(actor, order, ingredients);
+
         map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
         //order.CompletedBy(actor);
         actor.Map.Town.Crafting.MarkCompleted(order, actor, product);

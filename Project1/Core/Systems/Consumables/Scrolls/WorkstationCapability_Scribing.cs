@@ -7,6 +7,7 @@ using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Systems.Consumables.Scrolls;
 
@@ -31,10 +32,20 @@ public sealed class WorkstationCapability_Scribing : WorkstationCapabilityWorker
         yield return new CraftingRule(BoneDefOf.Item, ItemDefOf.Ingredient, [MaterialRefinementDefOf.Parchment], [MaterialTypeDefOf.Fiber], 1);
     }
 
-    internal override void PostProcess(Entity product, Actor author, AddOrderRequest parameters)
+    //internal override void PostProcess(Entity product, Actor author, AddOrderRequest parameters)
+    //{
+    //    var typed = (AddOrderRequest_Scribing)parameters;
+    //    var comp = product.Consumable;
+    //    comp.Spell = typed.Spell;
+    //}
+
+    internal override Entity CreateProduct(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
     {
-        var typed = (AddOrderRequest_Scribing)parameters;
-        var comp = product.Consumable;
-        comp.Spell = typed.Spell;
+        var mat = ingredients.First().PrimaryMaterial;
+        var parameters = (AddOrderRequest_Scribing)order.Source;
+        var item = ConsumableSystem.CreateScroll(parameters.Spell, mat);
+        foreach (var i in ingredients)
+            i.Consume(1);
+        return item;
     }
 }

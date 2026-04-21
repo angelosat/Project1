@@ -99,6 +99,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         {
             Actor actor = GenerateInhabitant();
             var chosenPlace = this.World.PlaceAtRandom(actor);//
+            actor.AI.Meta.SetTargetFrontier(chosenPlace);
             net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
             return actor;
         }
@@ -124,9 +125,9 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var inventory = actor.Inventory;
         inventory.Insert(coins);
         inventory.Insert(townscroll);
-        var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
-        need.Value = this.World.Random.Next(0, 100);
-        actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
+        //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
+        //need.Value = this.World.Random.Next(0, 100);
+        //actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
         actor.Skills.Randomize();
         actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 

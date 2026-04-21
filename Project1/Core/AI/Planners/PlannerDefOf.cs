@@ -20,7 +20,7 @@ namespace Project1.Core.AI.Planners
     {
         static public readonly PlannerDef Eating = new("Eating", typeof(PlannerEating));
         static public readonly PlannerDef Hauling = new("Hauling", typeof(Planner_Hauling));
-        static public readonly PlannerDef Crafting = new("Crafting", typeof(PlannerCrafting));
+        static public readonly PlannerDef Crafting = new("Crafting", typeof(Planner_Crafting));
         static public readonly PlannerDef Building = new("Building", typeof(PlannerBuilding));
         static public readonly PlannerDef Deconstructing = new("Deconstructing", typeof(PlannerDeconstruct));
         static public readonly PlannerDef Chopping = new("Chopping", typeof(PlannerChopping));

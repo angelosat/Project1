@@ -48,6 +48,20 @@ public class FrontierManager : IWorldSpaceManager
         //var byTier = this.Frontiers.Values.ToList();
         //byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
         //this.FrontiersByTier = byTier.ToDictionary(f => new Tier(f.Def.Tier), f => f);
+        world.Events.ListenTo<EntityKilledEvent>(HandleEntityKilled);
+
+    }
+
+    private void HandleEntityKilled(EntityKilledEvent e)
+    {
+        if (e.Entity is not Actor actor)
+            return;
+        if (actor.IsSpawned)
+            return;
+        var frontier = this.GetFrontier(actor);
+        var loot = actor.GetSelfAndChildren(includeSelf: false);
+        foreach(var item in loot)
+            frontier.AddTreasure(item);
     }
 
     void GenerateTreasure(Random rand)

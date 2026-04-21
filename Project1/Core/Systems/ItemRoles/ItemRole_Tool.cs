@@ -4,12 +4,10 @@ using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Tools;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleToolWorker : ItemRoleWorker
+sealed class ItemRole_Tool : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
     {

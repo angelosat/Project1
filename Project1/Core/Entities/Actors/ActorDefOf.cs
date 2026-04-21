@@ -11,6 +11,8 @@ using Project1.Core.Gear;
 using Project1.Core.Needs;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Simulation.Biology;
+using Project1.Core.Systems.Abilities;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -42,6 +44,8 @@ namespace Project1.Core.Entities.Actors
                 typeof(GearComponent),
                 typeof(PersonalityComponent),
                 typeof(AIComp),
+                typeof(BiologyComp),
+                typeof(AbilitiesComp),
             ],
             CompDefs = [
                 EntityCompDefOf.Possessions,
@@ -60,7 +64,9 @@ namespace Project1.Core.Entities.Actors
                 EntityCompDefOf.Gear,
                 EntityCompDefOf.Personality,
                 EntityCompDefOf.AI,
-                EntityCompDefOf.Relationships
+                EntityCompDefOf.Relationships,
+                EntityCompDefOf.Biology,
+                EntityCompDefOf.Abilities
             ]
         };
 

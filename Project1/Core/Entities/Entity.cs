@@ -272,6 +272,18 @@ public class Entity : GameObject
                     yield return chch;
         yield return this;
     }
+    public IEnumerable<Entity> GetSelfAndChildren(bool includeSelf)
+    {
+        // moving this to the end because this is usually called when registering entities to the entity registry
+        // so inventory items must be registered first so clients can resolve their entityrefids
+        //yield return this;
+        foreach (var c in this.Components.Values)
+            foreach (var ch in c.GetChildren())
+                foreach (var chch in ch.GetSelfAndChildren(true))
+                    yield return chch; 
+        if(includeSelf)
+            yield return this;
+    }
     public Entity Split(int amount)
     {
         if (amount <= 0 || amount >= _stackSize)

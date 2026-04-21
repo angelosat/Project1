@@ -75,6 +75,9 @@ internal class Planner_SmartEquip : Planner
                 return new Plan(PlanDefOf.Unequip, new InteractionTarget(mostImpactful.item)) { Continuation = PlanContinuationPolicy.Yield };
         }
 
+        if (actor.Hauled is Entity carried)
+            return null;
+
         // evaluate if there's an item to be moved from inventory to the haul/carry slot
         (Entity item, int score) best = default; 
         foreach(var item in actor.Inventory.Contents)

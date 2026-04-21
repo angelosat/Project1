@@ -5,12 +5,14 @@ using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Presentation;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.Systems.Particles;
 
@@ -24,26 +26,45 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
         Registry.MapEventHooksClient.Register<SpellCastEvent>(OnSpellCast);
+        Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnEffectApplied);
+    }
+
+    private void OnEffectApplied(ActorEffectAppliedEvent e)
+    {
+        var actor = e.Actor;
+        if (!actor.IsSpawned)
+            return;
+        if (e.Effect.Def.School is not SpellSchoolDef school)
+            return;
+        EmitSpellParticles(actor, school);
     }
 
     private void OnSpellCast(SpellCastEvent e)
     {
         if (e.Target.Entity is not Entity entity)
             return;
+        var school = e.Spell.School;
+        EmitSpellParticles(entity, school);
+    }
+
+    private static void EmitSpellParticles(Entity entity, SpellSchoolDef school)
+    {
         //var entity = e.Caster;
         var map = entity.Map;
         var emitter = NewEmitter(entity.Global + Vector3.UnitZ);
         emitter.HasPhysics = false;
-        emitter.Radius =  .5f;
+        emitter.Radius = .5f;
         //emitter.Force = .2f;
         //emitter.Acceleration = Vector3.One * .8f;
         emitter.Force = .3f;
         emitter.Acceleration = Vector3.One * .7f;
         emitter.Source = entity.Global + Vector3.UnitZ;
         emitter.SizeBegin = emitter.SizeEnd = 4;
-        emitter.ParticleWeight = -.1f;
+        emitter.ParticleWeight = -.5f;// -.1f;
+        emitter.ColorBegin = emitter.ColorEnd = school.Color;// Color.White;// Teal;
+        emitter.Lifetime = Ticks.PerGameMinute;
         emitter.Emit(100);
-        emitter.ColorBegin = emitter.ColorEnd = e.Spell.School.Color;// Color.White;// Teal;
+
         map.ParticleManager.AddEmitter(emitter);
     }
 

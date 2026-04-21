@@ -4,7 +4,6 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Systems.Ownership;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
@@ -25,22 +24,6 @@ namespace Project1.Core.Simulation;
 
 public class StaticWorld : WorldBase
 {
-    //static class Packets
-    //{
-    //    public static readonly int PacketClockAdvanced;
-    //    static Packets()
-    //    {
-    //        PacketClockAdvanced = Registry.PacketHandlers.Register(ReceiveClockAdvanced);
-    //    }
-
-    //    private static void ReceiveClockAdvanced(NetEndpoint net, Packet pck)
-    //    {
-    //        var r = pck.PacketReader;
-    //        if (net is Server)
-    //            throw new Exception();
-    //        net.World.CurrentTick++;
-    //    }
-    //}
     public override float Gravity => -0.015f;//-0.04f;// -0.05f; //35f;
     public const int Zenith = 14;
 
@@ -51,8 +34,7 @@ public class StaticWorld : WorldBase
     public bool Trees;
     TimeSpan ClockOffset = TimeSpan.FromHours(12);
     public override TimeSpan Clock => this.ClockOffset + TimeSpan.FromMilliseconds((double)this.CurrentTick * Ticks.IngameMillisecondsPerTick);
-    //public MapCollection Maps;
-    //public StaticMap Map => this.Maps.Values.First() as StaticMap;
+
     public StaticMap Map => this.Maps.First() as StaticMap;
     public override PopulationManager Population => this.PopulationManager;
     public IWorldSpaceManager Space;
@@ -70,10 +52,7 @@ public class StaticWorld : WorldBase
     {
         return this.Name;
     }
-    //public override MapBase GetMap(Vector2 mapCoords)
-    //{
-    //    return this.Maps.GetValueOrDefaultMy(mapCoords);
-    //}
+ 
     public Random GetRandom()
     {
         return this.Random;

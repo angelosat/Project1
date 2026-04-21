@@ -15,7 +15,7 @@ namespace Project1.Core.Resources
 {
     public sealed class Resource : IProgressBar, ISaveableNewNew<Resource>, IDefWrapper<ResourceDef>, ISerializableNew<Resource>, INamed
     {
-        public Entity Owner { get; private set; }
+        public Entity Owner;// { get; private set; }
         public ResourceDef ResourceDef;
         public List<ResourceRateModifier> Modifiers = new();
         public int TicksPerRecoverOne, TicksPerDrainOne;

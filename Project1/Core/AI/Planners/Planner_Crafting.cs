@@ -9,7 +9,7 @@ using static Project1.Core.Systems.Crafting.CraftingOrder;
 
 namespace Project1.Core.AI.Planners;
 
-sealed class PlannerCrafting : Planner
+sealed class Planner_Crafting : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
@@ -86,7 +86,7 @@ sealed class PlannerCrafting : Planner
         // so let's try removing this guard and hope ;)
         //if (carried != null && !allOrders.Any(o => o.Matches(carried)))
         //    return null;
-        
+
         foreach (var order in allOrders)
         {
             (bool flowControl, Plan value) = tryOrder(actor, map, carried, manager, order);

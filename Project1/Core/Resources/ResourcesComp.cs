@@ -1,7 +1,5 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Systems.Materials;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -9,7 +7,6 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.Resources;
 
@@ -90,7 +87,9 @@ public sealed class ResourcesComp : EntityComp
     public override void Read(IDataReader reader)
     {
         reader.ReadDefWrappers(this.Resources);
-        this.Resolve();
+        foreach (var r in this.Resources.Values)
+            r.Owner = this.Owner;
+        //this.Resolve();
     }
 
     GroupBox _cachedGui;

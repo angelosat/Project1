@@ -143,6 +143,7 @@ sealed class BehaviorHandlePlans : Behavior
                     var task = planner.Worker.FindPlanNew(parent);
                     if (task is null)
                         continue;
+                    this.Actor.CurrentPlan?.Cancel();
                     task.IsUrgent = true;
                     state.TryAssign(task, planner);
                     break;

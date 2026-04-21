@@ -1,8 +1,10 @@
 # todo 2025
 ## immediate
-- serialize plan.servicerequest
+- move retrievefrominventory logic from smartequip to consumable planner
+- front-back of shop cash registers/counters and workstations
+- HUGE BUG: if smartequip has cause an actor to equip an item while his preexisting plan involved carrying another item, then the preexisting plan has to be aborted 
+- - otherwise the actor will attempt to resume the plan with the wrong carried item
 - head animation for conversations
-- scrollable log snap to recent entry
 - health going negative while losing it offmap
 - make mood signed
 - forsale flag: maybe keep forsale stockpiles that they simply automatically mark each item that lands within them as for sale?
@@ -10,7 +12,6 @@
 - crafting: figure out when to uncommit interrupted crafting commitments. maybe attach the craftingorder or the commitment to every plan returned by plannercrafting
 - and let craftingmanager listen to actorassigneplan events, and uncommit whenever a plan doesnt have the commited order attached
 - offmapactivity meet other npc and gain social need
-- resources tab in actor gui (for health)
 - dev/debug increase/decrease skill levels
 - recalculate path on cell invalidation
 - buffs + buff/blessing town service

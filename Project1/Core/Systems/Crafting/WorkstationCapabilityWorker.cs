@@ -3,9 +3,11 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using Project1.Framework.Helpers;
+using SharpDX.Direct2D1.Effects;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,4 +32,18 @@ public abstract class WorkstationCapabilityWorker
     internal virtual int GetOutputStackSize(Def recipe) => 1;
 
     internal virtual void PostProcess(Entity product, Actor author, AddOrderRequest parameters) { }
+
+    internal virtual Entity CreateProduct(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
+    {
+        var creationReq = order.GetCreationRequest();
+        var mapping = order.WorkstationCapability.Worker.GetIngredientMapping(order.ProductDef, ingredients);
+        foreach (var (bone, item) in mapping)
+        {
+            creationReq.OverrideMaterial(bone, item.Body.Material);
+            actor.Map.World.DisposeEntity(item);
+        }
+        var product = creationReq.Create();
+        this.PostProcess(product, actor, order.Source);
+        return product;
+    }
 }

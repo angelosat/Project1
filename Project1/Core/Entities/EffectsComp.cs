@@ -63,10 +63,11 @@ public sealed class EffectsComp : EntityComp
         if (!effect.IsInstant)
         {
             AddInt(effect);
-            this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
+            //this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
         }
         else
             effect.Finish(this.Owner as Actor);
+        this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
 
     }
 

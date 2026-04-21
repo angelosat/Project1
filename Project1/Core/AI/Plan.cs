@@ -95,7 +95,8 @@ namespace Project1.Core.AI
         internal bool IsEndGoalFeasible() => this.Evaluator();
         public PlanDef Def;
         //public int ID { get; internal set; }
-        public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA}";
+        //public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA}";
+        public string Status => $"{this.Def.Interaction?.LabelReadable} : {this.TargetA} ({this.Source?.LabelReadable})";
         public InteractionTarget GetTarget(TargetIndex targetInd)
         {
             return targetInd switch
@@ -284,7 +285,8 @@ namespace Project1.Core.AI
 
         public override string ToString()
         {
-            return this.Def?.Name ?? base.ToString();
+            //return this.Def?.Name ?? base.ToString();
+            return $"{this.Def.Name} ({this.Source?.LabelReadable}";// ?? base.ToString();
         }
         internal void Cancel()
         {
@@ -377,6 +379,9 @@ namespace Project1.Core.AI
             tag.Save("CraftingOrderId", this.Order);
             tag.Save("TradeId", this.TradeId);
 
+            if(this.Source is not null)
+                tag.Save("Source", this.Source);
+
             return tag;
         }
        
@@ -446,6 +451,9 @@ namespace Project1.Core.AI
 
             if (tag.TryLoadId<TradeId>("TradeId", out var tradeId))
                 this.TradeId = tradeId;
+
+            if (tag.TryLoadDef<PlannerDef>("Source", out var source))
+                this.Source = source;
         }
         internal void SyncToClients(IDataWriter w)
         {
@@ -453,6 +461,7 @@ namespace Project1.Core.AI
             w.Write(this.Spell);
             this.TargetA.Write(w);
             w.Write(this.Order);
+            w.Write(this.Source);
         }
         internal void SyncFromServer(NetEndpoint provider, IDataReader r)
         {
@@ -460,6 +469,7 @@ namespace Project1.Core.AI
             this.Spell = r.ReadDef<SpellDef>();
             this.TargetA = InteractionTarget.Read(provider.World, r);
             this.Order = r.ReadInt32();
+            this.Source = r.ReadDef<PlannerDef>();
             //if (r.ReadBoolean())
             //{
             //    var orderid = r.ReadInt32();

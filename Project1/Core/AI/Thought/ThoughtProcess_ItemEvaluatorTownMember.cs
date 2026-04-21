@@ -62,6 +62,8 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
         var manager = state.ItemPreferences;
         if(manager.DequeueUnevaluated() is Entity item)
         {
+            if (item.Map is null) // item has despawned since being enqueued for evaluation
+                return;
             if (item.OwnerId != EntityRefId.Null)
                 return;
             if (item.IsForSale)

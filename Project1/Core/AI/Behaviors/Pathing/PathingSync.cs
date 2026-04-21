@@ -293,7 +293,7 @@ namespace Project1.Core.Pathing
         {
             if (a.Z == b.Z)
                 return LineHelper.LineOfSight((int)a.X, (int)a.Y, (int)a.Z, (int)b.X, (int)b.Y, (int)b.Z, p => LosPathableFailCondition(map, p), out cells);
-            cells = new List<Vector3>();
+            cells = [];// new List<Vector3>();
             return false;
         }
         public static bool LosPathableFailCondition(MapBase map, Vector3 p)

@@ -522,6 +522,19 @@ namespace Project1.Framework
                 return true;
             }
         }
+        public bool TryLoadVector3(string name, out Vector3 value)
+        {
+            if (!this.TryGetTag(name, out var tag))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = (Vector3)tag.Value;
+                return true;
+            }
+        }
         public bool TryLoadIntVec3(string name, out IntVec3 value)
         {
             if (!this.TryGetTag(name, out var tag))

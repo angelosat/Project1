@@ -158,7 +158,7 @@ public class StaticMap : MapBase, ITooltippable
         this.CachedAmbientColor = this.UpdateAmbientColor();
 
         foreach (var chunk in this.ActiveChunks.Values.ToList())
-            chunk.Update();
+            chunk.Validate();
 
         this.Town.Update();
     }

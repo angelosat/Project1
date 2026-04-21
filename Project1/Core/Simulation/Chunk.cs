@@ -581,7 +581,38 @@ public sealed class Chunk : Inspectable
         this.Light[pos.CellIndex].Block = value;
         this.InvalidateLight(pos.Global);
     }
-    public bool InvalidateLight(IntVec3 global)
+    public void InvalidateLight(IntVec3 global)
+    {
+        var z = global.Z;
+        foreach (var n in global.GetAdjacentLazy())
+        {
+            if (this.Contains(n))
+            {
+                this.InvalidateLightCache(n);
+                this.InvalidateSlice(z);
+            }
+            else
+            {
+                if (this.Map.GetChunk(n) is Chunk nchunk)
+                {
+                    nchunk.InvalidateLightCache(n);
+                    nchunk.InvalidateSlice(z);
+                }
+            }
+        }
+        // invalidate top and bottom cells
+        if (this.Slices.Length != 0)
+        {
+            if (z > 0)
+                this.InvalidateSlice(z - 1);
+            if (z < this.Map.GetMaxHeight() - 1)
+                this.InvalidateSlice(z + 1);
+        }
+    }
+    void InvalidateLightCache(IntVec3Local local)
+        => this.LightCache.Remove(local);
+
+    public bool InvalidateLightOld(IntVec3 global)
     {
         this.LightCache.Clear();
         if (this.Slices.Length != 0)
@@ -595,7 +626,6 @@ public sealed class Chunk : Inspectable
         }
         return true;
     }
-
     public static bool TryGetFinalLight(MapBase map, IntVec3 global, out byte sky, out byte block)
         => TryGetFinalLight(map, global.X, global.Y, global.Z, out sky, out block);
 
@@ -642,7 +672,7 @@ public sealed class Chunk : Inspectable
     }
 
     #region Updating
-    public void Update()
+    public void Validate()
     {
         this.ValidateHeightmap();
         this.ValidateCells();

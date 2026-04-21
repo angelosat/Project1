@@ -257,47 +257,58 @@ public sealed class Client : NetEndpoint
         this.HandleOrderedReliablePackets();
         GameMode.Current?.Update(Instance);
 
-        //if (Instance.Map is MapBase map)
+        //var activeMaps = this.World?.Maps ?? [];
+        //if (activeMaps.Count > 0)
         //{
-        //    var size = map.GetSizeInChunks();
-        //    var maxChunks = size * size;
-        //    if (map.ActiveChunks.Count == maxChunks && !IsSaving)
+        //    foreach (var map in activeMaps)
         //    {
-        //        map.Validate();
-        //        //this.ApplyEntitySnapshots();
-        //        this.Snapshots.ApplyEntitySnapshots(map.World, this.CurrentTick);
-        //        while (this.CurrentTick < this.TickTarget)
+        //        var size = map.GetSizeInChunks();
+        //        var maxChunks = size * size;
+        //        if (map.ActiveChunks.Count == maxChunks && !IsSaving)
         //        {
-        //            // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
-        //            this.HandleBufferedPackets();
-        //            this._tick++;
-        //            this.TickMap(map);
+        //            //map.Validate();
+        //            //this.ApplyEntitySnapshots();
+        //            this.Snapshots.ApplyEntitySnapshots(this.World, this.CurrentTick);
+        //            while (this.CurrentTick + ClientTickDelay < this.TickTarget)
+        //            {
+        //                // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
+        //                this.HandleBufferedPackets();
+        //                this._tick++;
+        //                this.TickMaps();
+        //            }
         //        }
         //    }
         //}
+
         var activeMaps = this.World?.Maps ?? [];
         if (activeMaps.Count > 0)
         {
-            foreach (var map in activeMaps)
+            foreach(var map in activeMaps)
             {
-                var size = map.GetSizeInChunks();
-                var maxChunks = size * size;
-                if (map.ActiveChunks.Count == maxChunks && !IsSaving)
+                map.Validate();
+            }
+            while (this.CurrentTick + ClientTickDelay < this.TickTarget)
+            {
+                this._tick++;
+                this.HandleBufferedPackets();
+                this.HandleBufferedTimestampedNew();
+                this.World.Tick();
+                foreach (var map in activeMaps)
                 {
-                    //map.Validate();
-                    //this.ApplyEntitySnapshots();
-                    this.Snapshots.ApplyEntitySnapshots(this.World, this.CurrentTick);
-                    while (this.CurrentTick + ClientTickDelay < this.TickTarget)
+                    var size = map.GetSizeInChunks();
+                    var maxChunks = size * size;
+                    if (map.ActiveChunks.Count == maxChunks && !IsSaving)
                     {
+                        //this.ApplyEntitySnapshots();
+                        this.Snapshots.ApplyEntitySnapshots(this.World, this.CurrentTick);
                         // moved this here because on speed > 0 the map wasn't ticked and logic wasn't executed between handling consecutive tick packets
-                        this.HandleBufferedPackets();
-                        this._tick++;
-                        this.TickMaps();
+                        map.UpdateParticles();
+                        map.Tick();
+                        //this.TickMaps();
                     }
                 }
             }
         }
-
 
         //if (this.PlayerData is not null && this.Map is not null)
         if (this.PlayerData is not null && this.MainViewport is not null)
@@ -362,6 +373,7 @@ public sealed class Client : NetEndpoint
         }
     }
 
+    [Obsolete]
     private void TickMaps()
     {
         this.HandleBufferedTimestampedNew();
@@ -374,6 +386,7 @@ public sealed class Client : NetEndpoint
             map.Validate();
         }
     }
+    
 
     void ResetStreams()
     {

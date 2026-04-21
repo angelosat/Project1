@@ -189,7 +189,9 @@ namespace Project1.Core.AI
 
         public void Load(SaveTag tag)
         {
-            this.Leash = tag.GetValue<Vector3>("Leash");
+            if (tag.TryLoadVector3("Leach", out var leash))
+                this.Leash = leash;
+            //this.Leash = tag.GetValue<Vector3>("Leash");
             var tagStack = tag["TaskStack"];
             var listStack = tagStack.Value as List<SaveTag>;
             foreach(var t in listStack)
@@ -227,7 +229,8 @@ namespace Project1.Core.AI
         public SaveTag Save(string name)
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(new SaveTag(SaveTag.Types.Vector3, "Leash", this.Leash));
+            if(this.Leash.HasValue)
+                tag.Add(new SaveTag(SaveTag.Types.Vector3, "Leash", this.Leash));
             var tagStack = new SaveTag(SaveTag.Types.List, "TaskStack", SaveTag.Types.Compound);
             foreach (var bhav in this.TaskStack)
             {

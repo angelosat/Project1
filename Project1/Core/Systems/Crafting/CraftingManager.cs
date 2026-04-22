@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Recipes;
 using Project1.Core.Towns;
 using Project1.Framework;
 using System;
@@ -179,7 +180,14 @@ public sealed class CraftingManager : TownComp
         order.CompletedBy(actor);
         var commitment = this.commitments[actor];
         commitment.Product = product;
+        this.World.Events.Post(new ActorFinishedCraftingEvent(actor, order, product));
     }
+
+    private void AwardRecipeMastery(Actor actor, CraftingOrder order, Entity product)
+    {
+        actor.GetComponent<RecipesComp>().Add(product.Profile);
+    }
+
     internal Entity? ProductToMove(Actor actor)
     {
         if (this.commitments.TryGetValue(actor, out var com))

@@ -19,6 +19,7 @@ using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.MentalState;
 using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Recipes;
 using Project1.Core.Systems.Relationships;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
@@ -64,6 +65,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Biology = new("Biology", typeof(BiologyComp));
         public static readonly EntityCompDef MentalState = new("MentalState", typeof(MentalStateComp));
         public static readonly EntityCompDef Abilities = new("Abilities", typeof(AbilitiesComp));
+        public static readonly EntityCompDef Recipes = new("Recipes", typeof(RecipesComp));
         static EntityCompDefOf()
         {
             Def.Register(typeof(EntityCompDefOf));

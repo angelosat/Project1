@@ -12,7 +12,6 @@ internal record struct ItemPrefEval(EntityRefId Item, (ItemRoleKey Key, int Scor
 }
 public record struct ItemEvaluation(EntityRefId Item, (ItemRoleDef Role, int Score)[] Roles) 
 {
-    //public readonly int MaxScore => this.Roles.Length > 0 ? this.Roles.Max(r => r.Score) : throw new System.Exception();
     public readonly int MaxScore => this.Roles.Length > 0 ? this.Roles.Max(r => r.Score) : 0;
     public readonly int SumScore => this.Roles.Length > 0 ? this.Roles.Sum(r => r.Score) : 0;
 }

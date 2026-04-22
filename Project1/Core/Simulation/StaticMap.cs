@@ -14,6 +14,7 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation.FallDamage;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Recipes;
 using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
@@ -108,7 +109,7 @@ public class StaticMap : MapBase, ITooltippable
         this.Comps.AddRange(
             this.Stockpiles,
             this.Hauling,
-            this.EntityTracker
+            this.EntityTracker,
             );
 
         //this.Comps.AddRange(this.Conversations);

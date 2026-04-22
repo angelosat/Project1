@@ -39,7 +39,7 @@ public sealed class AIState : Inspectable
     public Queue<InteractionTarget> MoveOrders = new();
     public Actor Owner; //use this?
     public Path Path;
-    public Behaviors.Pathing.PathingSync PathFinder = new();
+    public PathingSync PathFinder = new();
     public Dictionary<string, object> Properties = [];
     public GameObject Talker;
     public GameObject Target;
@@ -143,10 +143,6 @@ public sealed class AIState : Inspectable
 
     }
 
-    //internal void ResolveReferences()
-    //{
-    //}
-
     internal void OnAttachedToMap()
     {
         this.ItemPreferences.ResolveReferences();
@@ -157,7 +153,6 @@ public sealed class AIState : Inspectable
     }
     public void Assign(PlanExecutor bhav, PlannerDef source)
     {
-        //this.Owner.Map.Events.Post(new ActorPlanAssignedEvent(this.Owner, bhav));
         bhav.Plan.Actor = this.Owner;
         if (bhav.Plan.IsImmediate)
             this.Push(bhav);

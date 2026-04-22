@@ -1130,7 +1130,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         throw new Exception(); //thrown when actor was stuck inside a block
     }
 
-    internal bool IsFootprintWithinBlock(Vector3 target)
+    internal bool IsFootprintWithinCell(Vector3 target)
     {
         return target.ContainsEntityFootprint(this);
     }

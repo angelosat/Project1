@@ -41,9 +41,9 @@ class BehaviorFollowPathNewNew : Behavior
 
         if (acc > 0) //if moving
         {
-            if (parent.IsFootprintWithinBlock(next))
+            if (parent.IsFootprintWithinCell(next))
             {
-                if (IsLastStep(state)) // is last step, so make sure we are at the destination and not falling, before popping path step and stopping movement
+                if (path.IsLastStep) // is last step, so make sure we are at the destination and not falling, before popping path step and stopping movement
                 {
                     parent.MoveToggle(false);
                     return BehaviorState.Running;
@@ -54,9 +54,9 @@ class BehaviorFollowPathNewNew : Behavior
         }
         else // if not moving, and not at goal, start moving
         {
-            if (parent.IsFootprintWithinBlock(next))
+            if (parent.IsFootprintWithinCell(next))
             {
-                if (IsLastStep(state))
+                if (path.IsLastStep)
                 {
                     if (parent.Velocity == Vector3.Zero)
                     {
@@ -75,11 +75,6 @@ class BehaviorFollowPathNewNew : Behavior
         directionNormal.Normalize();
         parent.Direction = new Vector3(directionNormal, 0);
         return BehaviorState.Running;
-    }
-
-    private static bool IsLastStep(AIState state)
-    {
-        return state.Path.IsLastStep;
     }
     
     public override object Clone()

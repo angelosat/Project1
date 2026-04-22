@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.AI.Behaviors.Pathing;
-public partial class PathingSync
+public sealed class PathingSync
 {
     public enum States { Stopped, Working, Finished }
     public States State;
@@ -16,12 +16,12 @@ public partial class PathingSync
     const float CostStraight = 10, CostDiag = 14;
     public int Ticks = 0;
 
-    readonly MyPriorityQueue<float, Node> Open = new();
-    readonly List<Node> Closed = new();
+    readonly MyPriorityQueue<float, PathNode> Open = new();
+    readonly List<PathNode> Closed = new();
     readonly HashSet<IntVec3> Handled = new();
 
     IntVec3 Goal;
-    readonly Dictionary<IntVec3, Node> CachedNodes = new();
+    readonly Dictionary<IntVec3, PathNode> CachedNodes = new();
     public float Range;
 
     public IntVec3 Start, Finish, FinishPrecise;
@@ -29,10 +29,10 @@ public partial class PathingSync
     Path PathInProgress;
     MapBase Map;
     Actor Actor;
-    static void ConformPathToTerrain(MapBase map, Path path)
-    {
-        return;
-    }
+    //static void ConformPathToTerrain(MapBase map, Path path)
+    //{
+    //    return;
+    //}
 
     /// <summary>
     /// Returns the found path and sets the state to stopped
@@ -45,7 +45,7 @@ public partial class PathingSync
         this.State = Pathing.PathingSync.States.Stopped;
         if (this.PathInProgress != null)
         {
-            ConformPathToTerrain(this.Map, this.PathInProgress);
+            //ConformPathToTerrain(this.Map, this.PathInProgress);
             this.PathInProgress.ConformToBlockHeights(this.Map);
         }
         return this.PathInProgress;
@@ -70,8 +70,8 @@ public partial class PathingSync
 
         this.State = States.Working;
         this.PathInProgress = new Path();
-        var startNode = new Node(this.Map, this.Start, this.Finish) { RegionNodeGlobal = map.GetNodeAt(this.Start.Below) };
-        var finishNode = new Node(this.Map, this.Finish, this.Finish) { RegionNodeGlobal = map.GetNodeAt(this.Goal.Below) };
+        var startNode = new PathNode(this.Map, this.Start, this.Finish) { RegionNodeGlobal = map.GetNodeAt(this.Start.Below) };
+        var finishNode = new PathNode(this.Map, this.Finish, this.Finish) { RegionNodeGlobal = map.GetNodeAt(this.Goal.Below) };
         this.CachedNodes.Clear();
         this.Open.Clear();
         this.Closed.Clear();
@@ -103,7 +103,7 @@ public partial class PathingSync
             current.IsQueued = false;
             if (mode.IsFinish(this.Actor, this.Goal, current.Global) && this.Map.IsStandableIn(current.Global))
             {
-                var goalnode = new Node(this.Map, current.Global, this.Finish) { Parent = current.Parent ?? current, CellsToTraverse = current.CellsToTraverse }; // assinging the current node's parent seems to work more correctly, but if the parent is null?
+                var goalnode = new PathNode(this.Map, current.Global, this.Finish) { Parent = current.Parent ?? current, CellsToTraverse = current.CellsToTraverse }; // assinging the current node's parent seems to work more correctly, but if the parent is null?
                 this.PathInProgress.Build(goalnode, this.Start);
                 this.State = States.Finished;
                 return false;
@@ -124,7 +124,7 @@ public partial class PathingSync
                     continue;
                 if (!this.CachedNodes.TryGetValue(nabove, out var nnode))
                 {
-                    nnode = new Node(this.Map, nabove, this.Finish) { RegionNodeGlobal = n };
+                    nnode = new PathNode(this.Map, nabove, this.Finish) { RegionNodeGlobal = n };
                     this.CachedNodes[n.Global.Above] = nnode;
 
                 }
@@ -158,7 +158,7 @@ public partial class PathingSync
         return (dmax - dmin) * CostStraight + dmin * CostDiag;// +dz * 100; // TODO: find correct cost for climbing
     }
     
-    void UpdateNoPathableCheck(MapBase map, Node current, Node next)
+    void UpdateNoPathableCheck(MapBase map, PathNode current, PathNode next)
     {
         var costOld = next.CostFromStart;
         ComputeCostTheta(current, next);
@@ -173,7 +173,7 @@ public partial class PathingSync
 
     const float BlockBaseCost = 100; //TODO: find best cost for making ai prefer pathways
 
-    void ComputeCostTheta(NodeBase current, NodeBase next)
+    void ComputeCostTheta(PathNodeBase current, PathNodeBase next)
     {
         var passedcells = new List<IntVec3>();
         var los = current.Parent != null && LineOfSight(current.Map, current.Parent.Global, next.Global, out passedcells);
@@ -203,7 +203,7 @@ public partial class PathingSync
             }
         }
     }
-    float GetCostTheta(NodeBase current, NodeBase next)
+    float GetCostTheta(PathNodeBase current, PathNodeBase next)
     {
         // get an 1-wide line between the two positions and sum the block pathing costs below the line
         if(current.Global.Z != next.Global.Z)
@@ -226,7 +226,7 @@ public partial class PathingSync
         }
         return cost;
     }
-    float GetCostThetaSingle(NodeBase current, NodeBase next)
+    float GetCostThetaSingle(PathNodeBase current, PathNodeBase next)
     {
         return this.GetCostThetaSingle(current.Global, next.Global);
     }

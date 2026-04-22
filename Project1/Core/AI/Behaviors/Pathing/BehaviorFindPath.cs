@@ -35,14 +35,14 @@ class BehaviorFindPath : Behavior
     public override BehaviorState Tick(Actor parent, AIState state)
     {
         // only execute if there's no current path
-        if (state.Path != null)
+        if (state.Path is not null)
             return BehaviorState.Success;
 
         this.Actor = parent;
 
         switch (state.PathFinder.State)
         {
-            case Pathing.PathingSync.States.Stopped:
+            case PathingSync.States.Stopped:
                 if (!this.Actor.Physics.MidAir) // DONT START PATHING if actor is mid air, because then the starting node will be null
                 {
                     state.PathFinder.Begin(parent, parent.GetCellStandingOn().Above(), this.Target.Global, this.Range);
@@ -50,11 +50,11 @@ class BehaviorFindPath : Behavior
                 }
                 return BehaviorState.Running;
 
-            case Pathing.PathingSync.States.Working:
+            case PathingSync.States.Working:
                 state.PathFinder.WorkMode(this.FinishMode);
                 return BehaviorState.Running;
 
-            case Pathing.PathingSync.States.Finished:
+            case PathingSync.States.Finished:
                 var path = state.PathFinder.GetPath();
                 state.Blackboard[this.PathName] = path;
                 state.Path = path;

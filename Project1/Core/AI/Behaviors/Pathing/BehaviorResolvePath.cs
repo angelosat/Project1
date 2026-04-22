@@ -19,6 +19,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
         public BehaviorResolvePath(InteractionTarget target, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
+                    new BehaviorInverter(new BehaviorEnsureNextCellTraversable()),
                     new BehaviorResolveDoors(),
                     new BehaviorInverter(new BehaviorJumpOnBlock()),
                     new BehaviorInverter(new BehaviorCrouch()),
@@ -41,6 +42,7 @@ namespace Project1.Core.AI.Behaviors.Pathing
         public BehaviorResolvePath(int targetInd, PathEndMode mode)
         {
             this.Children = new List<Behavior>(){
+                    new BehaviorInverter(new BehaviorEnsureNextCellTraversable()),
                     new BehaviorResolveDoors(),
                     new BehaviorInverter(new BehaviorJumpOnBlock()),
                     new BehaviorInverter(new BehaviorCrouch()),
@@ -50,19 +52,20 @@ namespace Project1.Core.AI.Behaviors.Pathing
                         new BehaviorFollowPathNewNew())
             };
         }
-        public BehaviorResolvePath(string target)
-        {
-            this.Children = new List<Behavior>(){
-                    new BehaviorInverter(new BehaviorJumpOnBlock()),
-                    new BehaviorInverter(new BehaviorCrouch()),
-                    new BehaviorInverter(new BehaviorUnstuck()),
-                    new BehaviorSequence(
-                        new BehaviorFindPath(target, "path"),
-                        new BehaviorSetPath("path"),
-                        new BehaviorStartMoving(),
-                        new BehaviorFollowPathNewNew())
-            };
-        }
+        //public BehaviorResolvePath(string target)
+        //{
+        //    this.Children = new List<Behavior>(){
+        //            new BehaviorInverter(new BehaviorValidateNextStep()),
+        //            new BehaviorInverter(new BehaviorJumpOnBlock()),
+        //            new BehaviorInverter(new BehaviorCrouch()),
+        //            new BehaviorInverter(new BehaviorUnstuck()),
+        //            new BehaviorSequence(
+        //                new BehaviorFindPath(target, "path"),
+        //                new BehaviorSetPath("path"),
+        //                new BehaviorStartMoving(),
+        //                new BehaviorFollowPathNewNew())
+        //    };
+        //}
         
         public override BehaviorState Tick(Actor parent, AIState state)
         {

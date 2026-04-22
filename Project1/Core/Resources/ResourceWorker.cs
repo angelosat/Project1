@@ -60,7 +60,7 @@ public abstract class ResourceWorker
     }
     public virtual Control GetControlBar(ResourceRuntime resource)
     {
-        var bar = new Bar()
+        var bar = new BarImmediate()
         {
             Object = resource,
             ColorFunc = () => this.GetBarColor(resource),

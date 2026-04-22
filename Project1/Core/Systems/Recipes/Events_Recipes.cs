@@ -3,4 +3,4 @@ using Project1.Framework.Events;
 
 namespace Project1.Core.Systems.Recipes;
 
-internal record ActorRecipeMasteryEvent(Actor Actor, RecipeKnowledge Knowledge) : IEventPayload;
+internal record struct ActorRecipeMasteryEvent(Actor Actor, RecipeKnowledge Knowledge) : IEventPayload;

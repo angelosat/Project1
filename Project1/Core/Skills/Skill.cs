@@ -110,7 +110,7 @@ public partial class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<Sk
     }
     public Control GetListControlGui()
     {
-        var label = new Bar(this.LvlProgress)
+        var label = new BarImmediate(this.LvlProgress)
         {
             Width = 200,
             TextFunc = () => $"{this.SkillDef.LabelReadable}: {this.Level}",

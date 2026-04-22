@@ -116,7 +116,7 @@ namespace Project1.Core.Attributes
 
         public Control GetListControlGui()
         {
-            return new Bar(this.Progress, 200, () => $"{this.AttributeDef.LabelReadable}: {this.Level}")
+            return new BarImmediate(this.Progress, 200, () => $"{this.AttributeDef.LabelReadable}: {this.Level}")
             {
                 TooltipFunc = t => t.AddControls(this.Progress.GetControl())
             };

@@ -57,6 +57,8 @@ public sealed class CraftingManager : TownComp
     public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
     public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._workstationsByPosition.Values;
 
+    List<ICraftingPlugin> Plugins = [new RecipeMasterySystem()];
+
     public CraftingManager(Town town) : base(town)
     {
         var workstationDefs = Def.Get<WorkstationDef>();
@@ -180,7 +182,9 @@ public sealed class CraftingManager : TownComp
         order.CompletedBy(actor);
         var commitment = this.commitments[actor];
         commitment.Product = product;
-        this.World.Events.Post(new ActorFinishedCraftingEvent(actor, order, product));
+        //this.World.Events.Post(new ActorFinishedCraftingEvent(actor, order, product));
+        foreach (var plugin in this.Plugins)
+            plugin.Handle(actor, order, product);
     }
 
     private void AwardRecipeMastery(Actor actor, CraftingOrder order, Entity product)

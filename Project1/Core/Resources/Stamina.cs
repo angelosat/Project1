@@ -49,7 +49,7 @@ namespace Project1.Core.Resources
         {
             var box = new GroupBox();
             var bar = base.GetControlBar(res);
-            var bar_StaminaRec = new Bar() { Object = res.RechargingDelay, Location = bar.BottomLeft, Height = 2 };
+            var bar_StaminaRec = new BarImmediate() { Object = res.RechargingDelay, Location = bar.BottomLeft, Height = 2 };
             box.AddControls(bar, bar_StaminaRec);
             return box;
         }

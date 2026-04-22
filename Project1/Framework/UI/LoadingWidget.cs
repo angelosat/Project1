@@ -23,7 +23,7 @@ namespace Project1.Core.UI
     {
         readonly Label LblLoading, LblInfo;
         readonly Panel PanelBar;
-        readonly Bar ProgressBar;
+        readonly BarImmediate ProgressBar;
         readonly ProgressFloat MapLoadProgress;
         public Action Callback = () => { };
 
@@ -31,7 +31,7 @@ namespace Project1.Core.UI
         {
             this.MapLoadProgress = new ProgressFloat();
             this.PanelBar = new Panel() { AutoSize = true };
-            this.ProgressBar = new Bar(this.MapLoadProgress) { Width = barWidth };
+            this.ProgressBar = new BarImmediate(this.MapLoadProgress) { Width = barWidth };
             this.PanelBar.Controls.Add(this.ProgressBar);
             this.PanelBar.LocationFunc = () => new Vector2((float)Math.Floor( this.LblInfo.BottomCenter.X), (float)Math.Floor(this.LblInfo.BottomCenter.Y));
             this.PanelBar.Anchor = new Vector2(.5f, 0);
@@ -53,7 +53,7 @@ namespace Project1.Core.UI
             this.LblLoading.Anchor = Vector2.UnitX * 0.5f;
             this.LblInfo = new Label(initialMessage);
             this.PanelBar = new Panel() { AutoSize = true };
-            this.ProgressBar = new Bar(this.MapLoadProgress) { Width = barWidth };
+            this.ProgressBar = new BarImmediate(this.MapLoadProgress) { Width = barWidth };
             this.PanelBar.Controls.Add(this.ProgressBar);
             this.PanelBar.Location = new Vector2(0, this.LblInfo.Bottom);
             this.LblInfo.Location = new Vector2(this.PanelBar.Location.X + this.PanelBar.Width / 2, this.PanelBar.Location.Y);

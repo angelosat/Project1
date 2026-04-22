@@ -3,12 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core;
 using Project1.Core.Entities;
 using Project1.Core.UI;
-using Project1.Framework.Interfaces;
 using System;
 
 namespace Project1.Framework.UI.Primitives
 {
-    public class Bar : ButtonBaseNew
+    public class BarNew : ButtonBase
     {
         public bool Invert;
         public override Texture2D BackgroundTexture
@@ -17,55 +16,61 @@ namespace Project1.Framework.UI.Primitives
             set { }
         }
 
-        public IProgressBar Object { get; set; }
-
-        public float Percentage => (Object != null) ? this.Object.Percentage : 0;
+        public float Percentage => Value / Max;
 
         float LastPercentage = 0;
         string LastText = "";
+        private readonly Func<float> MaxFunc;
+        private Func<float> ValueFunc;
+
+        internal string Format { set => this.TextFunc = () => string.Format(value, this.Value, this.Max); }
+
+        float Max => MaxFunc();
+        float Value => ValueFunc();
 
         public override void OnPaint(SpriteBatch sb)
         {
             var percentage = Invert ? (1 - this.Percentage) : this.Percentage;
-            var fill = (int)Math.Round(this.Width * percentage);
+            var fill = (int)System.Math.Round(this.Width * percentage);
             sb.Draw(this.BackgroundTexture, Vector2.Zero, new Rectangle(0, 0, fill, this.Height), Color);//Color.White);
-            var txt = (this.TextFunc != null ? this.TextFunc() : "");
+            var txt = this.TextFunc?.Invoke() ?? "";
+            //txt = string.Format(txt, this.Value, this.Max);
             UIManager.DrawStringOutlined(sb, Name + txt, Dimensions * 0.5f, new Vector2(0.5f));
-            //UIManager.DrawStringOutlined(sb, Name + txt, this.Dimensions * 0.5f - Vector2.UnitY, new Vector2(0.5f));
         }
 
-        public Bar()
+        public BarNew()
         {
             this.Height = UIManager.DefaultProgressBarStrip.Bounds.Height;
             this.Width = 100;
             this.BackgroundColor = Color.Black * 0.5f;
         }
-        public Bar(IProgressBar progress)
+        public BarNew(Func<float> maxGetter, Func<float> valueGetter)
             : this()
         {
-            this.Object = progress;
+            this.MaxFunc = maxGetter;
+            this.ValueFunc = valueGetter;
         }
-        public Bar(IProgressBar progress, int width, Func<string> textFunc)
-            : this(progress)
+        public BarNew(Func<float> maxGetter, Func<float> valueGetter, int width, Func<string> textFunc)
+            : this(maxGetter, valueGetter)
         {
             this.Width = width;
             this.TextFunc = textFunc;
         }
-        //public override void Update()
-        //{
-        //    if (System.Math.Round(this.LastPercentage * this.Width) != System.Math.Round(Percentage * this.Width))
-        //        this.Invalidate();
+        public override void Update()
+        {
+            if (System.Math.Round(this.LastPercentage * this.Width) != System.Math.Round(Percentage * this.Width))
+                this.Invalidate();
 
-        //    var nextText = this.TextFunc?.Invoke() ?? this.Text;
-        //    if (nextText != this.LastText)
-        //    {
-        //        this.Text = nextText;
-        //        this.Invalidate();
-        //    }
-        //    this.LastText = this.Text;
-        //    base.Update();
-        //    this.LastPercentage = this.Percentage;
-        //}
+            var nextText = this.TextFunc?.Invoke() ?? this.Text;
+            if (nextText != this.LastText)
+            {
+                this.Text = nextText;
+                this.Invalidate();
+            }
+            this.LastText = this.Text;
+            base.Update();
+            this.LastPercentage = this.Percentage;
+        }
 
         static public void Draw(SpriteBatch sb, Camera camera, GameObject parent, string text, float percentage)
         {
@@ -77,12 +82,10 @@ namespace Project1.Framework.UI.Primitives
             UIManager.DrawStringOutlined(sb, text, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
         }
         static public void Draw(SpriteBatch sb, Camera camera, Vector3 global, string text, float percentage, float scale)
-            => Draw(sb, camera, global, text, percentage, scale, Color.Orange);
-        static public void Draw(SpriteBatch sb, Camera camera, Vector3 global, string text, float percentage, float scale, Color color)
         {
             text = camera.Zoom > 2 ? text : "";
             var scrLoc = camera.GetScreenPositionFloat(global);
-            InteractionBar.Draw(sb, scrLoc, InteractionBar.DefaultWidth, percentage, scale, color);
+            InteractionBar.Draw(sb, scrLoc, InteractionBar.DefaultWidth, percentage, scale);
             UIManager.DrawStringOutlined(sb, text, scrLoc, Color.Black, Color.White, 1, Alignment.Horizontal.Center, Alignment.Vertical.Center, 0.5f);
         }
     }

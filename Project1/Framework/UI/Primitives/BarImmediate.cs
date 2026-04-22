@@ -8,7 +8,7 @@ using System;
 
 namespace Project1.Framework.UI.Primitives
 {
-    public class Bar : ButtonBaseNew
+    public class BarImmediate : ButtonBase
     {
         public bool Invert;
         public override Texture2D BackgroundTexture
@@ -20,7 +20,7 @@ namespace Project1.Framework.UI.Primitives
         public IProgressBar Object { get; set; }
 
         public float Percentage => (Object != null) ? this.Object.Percentage : 0;
-
+        
         float LastPercentage = 0;
         string LastText = "";
 
@@ -34,38 +34,38 @@ namespace Project1.Framework.UI.Primitives
             //UIManager.DrawStringOutlined(sb, Name + txt, this.Dimensions * 0.5f - Vector2.UnitY, new Vector2(0.5f));
         }
 
-        public Bar()
+        public BarImmediate()
         {
             this.Height = UIManager.DefaultProgressBarStrip.Bounds.Height;
             this.Width = 100;
             this.BackgroundColor = Color.Black * 0.5f;
         }
-        public Bar(IProgressBar progress)
+        public BarImmediate(IProgressBar progress)
             : this()
         {
             this.Object = progress;
         }
-        public Bar(IProgressBar progress, int width, Func<string> textFunc)
+        public BarImmediate(IProgressBar progress, int width, Func<string> textFunc)
             : this(progress)
         {
             this.Width = width;
             this.TextFunc = textFunc;
         }
-        //public override void Update()
-        //{
-        //    if (System.Math.Round(this.LastPercentage * this.Width) != System.Math.Round(Percentage * this.Width))
-        //        this.Invalidate();
-
-        //    var nextText = this.TextFunc?.Invoke() ?? this.Text;
-        //    if (nextText != this.LastText)
-        //    {
-        //        this.Text = nextText;
-        //        this.Invalidate();
-        //    }
-        //    this.LastText = this.Text;
-        //    base.Update();
-        //    this.LastPercentage = this.Percentage;
-        //}
+        public override void Update()
+        {
+            if (System.Math.Round(this.LastPercentage * this.Width) != System.Math.Round(Percentage * this.Width))
+                this.Invalidate();
+            
+            var nextText = this.TextFunc?.Invoke() ?? this.Text;
+            if(nextText != this.LastText)
+            {
+                this.Text = nextText;
+                this.Invalidate();
+            }
+            this.LastText = this.Text;
+            base.Update();
+            this.LastPercentage = this.Percentage;
+        }
 
         static public void Draw(SpriteBatch sb, Camera camera, GameObject parent, string text, float percentage)
         {

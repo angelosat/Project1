@@ -84,7 +84,7 @@ namespace Project1.Core.Mood
         internal override void GetInterface(GameObject actor, Control box)
         {
             var panelMoodValue = new PanelLabeled("Mood");
-            var bar = new Bar(this)
+            var bar = new BarImmediate(this)
             {
                 ColorFunc = () => Color.Lerp(Color.Red, Color.Lime, this.Mood / 100f),
                 HoverFunc = () => this.Mood.ToString(),
@@ -130,7 +130,7 @@ namespace Project1.Core.Mood
         public void NewGui(GroupBox box)
         {
             var panelMoodValue = new PanelLabeled("Mood");
-            var bar = new Bar(this);
+            var bar = new BarImmediate(this);
             bar.ColorFunc = () => Color.Lerp(Color.Red, Color.Lime, this.Mood / 100f);
             bar.HoverFunc = () => this.Mood.ToString();
             bar.NameFunc = () => this.Percentage.ToString("##0%");

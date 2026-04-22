@@ -113,9 +113,9 @@ namespace Project1.Core.Needs
         public void ApplyAccumulatorDelta(float delta)
             => this.AccumulatorNew.Add(delta);
         
-        public Bar ToBar(GameObject parent)
+        public BarImmediate ToBar(GameObject parent)
         {
-            var bar = new Bar()
+            var bar = new BarImmediate()
             {
                 ColorFunc = () => Color.Lerp(Color.Red, Color.Lime, this.Value / 100f),
                 Object = this,

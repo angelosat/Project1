@@ -78,8 +78,8 @@ public class StaticWorld : WorldBase
         this.PopulationManager = new PopulationManager(this);
         this.Ownership = new(this);
         this.Comps.AddRange(
-            this.Ownership,
-            new RecipeMasterySystem(this)
+            this.Ownership
+            //new RecipeMasterySystem(this)
             );
         this.Space = new FrontierManager(this);
     }

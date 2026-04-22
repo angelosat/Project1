@@ -63,7 +63,7 @@ namespace Project1.Core.Resources
         public override void OnHealthBarCreated(GameObject parent, Nameplate plate, ResourceRuntime values)
         {
             plate.AlwaysShow = true;
-            var bar = new Bar()
+            var bar = new BarImmediate()
             {
                 Location = plate.Controls.Last().BottomLeft,
                 Width = 50,

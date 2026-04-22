@@ -20,7 +20,7 @@ namespace Project1.Core.UI
         DateTime TimeStamp;
         GameObject Owner;
         static Dictionary<GameObject, List<SpeechBubble>> List = new Dictionary<GameObject, List<SpeechBubble>>();
-        Bar AttentionCountdown;
+        BarImmediate AttentionCountdown;
 
         public override bool Show()
         {
@@ -61,7 +61,7 @@ namespace Project1.Core.UI
         {
             if (timer == null)
                 return;
-            this.AttentionCountdown = new Bar(timer) { Location = this.Graphic.Controls.BottomLeft, Height = 3 };
+            this.AttentionCountdown = new BarImmediate(timer) { Location = this.Graphic.Controls.BottomLeft, Height = 3 };
             this.Graphic.Controls.Add(this.AttentionCountdown);
         }
 

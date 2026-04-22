@@ -80,7 +80,7 @@ namespace Project1.Core.Blocks
                 if (ToolManager.Instance.ActiveTool != null)
                     if (ToolManager.Instance.ActiveTool.Target != null)
                         if (ToolManager.Instance.ActiveTool.Target.Type == TargetType.Cell && (IntVec3)ToolManager.Instance.ActiveTool.Target.Global == global)
-                            Bar.Draw(sb, cam, global.Above, "", this.BuildProgress.Percentage, cam.Zoom * .2f);
+                            BarImmediate.Draw(sb, cam, global.Above, "", this.BuildProgress.Percentage, cam.Zoom * .2f);
             }
 
             protected override void AddSaveData(SaveTag tag)

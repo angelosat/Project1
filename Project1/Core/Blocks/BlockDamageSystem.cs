@@ -52,7 +52,7 @@ namespace Project1.Core.Blocks
                 return;
             foreach (var (pos, token) in this._blockTokens)
                 if (token.Lifetime < BlockTokenDrawThreshold)
-                    Bar.Draw(sb, camera, pos.ToGlobal(this.Chunk), "Block HitPoints", token.HealthPercentage, camera.Zoom * .2f);
+                    BarImmediate.Draw(sb, camera, pos.ToGlobal(this.Chunk), "Block HitPoints", token.HealthPercentage, camera.Zoom * .2f);
         }
     }
 }

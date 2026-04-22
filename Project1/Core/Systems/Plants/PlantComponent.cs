@@ -250,7 +250,7 @@ public sealed class PlantComponent : EntityComp<PlantComponent.Spec>
 
     public override void OnTooltipCreated(GameObject parent, Control tooltip)
     {
-        tooltip.Controls.Add(new Bar()
+        tooltip.Controls.Add(new BarImmediate()
         {
             Width = 200,
             Name = "Growth: ",
@@ -264,11 +264,11 @@ public sealed class PlantComponent : EntityComp<PlantComponent.Spec>
     {
         var guisunlight = Label.ParseWrap("Sunlight: ", new Func<string>(() => $"{this.Owner.Map.Sunlight:##0%}"));
         var guigrowth = Label.ParseWrap("Growth rate: ", new Func<string>(() => $"{this.GrowthRate:##0%}"));
-        var bargrowth = new Bar(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
+        var bargrowth = new BarImmediate(this.GrowthBody) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthBody.Percentage.ToString("##0%") };
         var boxBars = new GroupBox().AddControls(bargrowth);
 
         if (this.Species.ProducesFruit)
-            boxBars.AddControlsTopRight(1, new Bar(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
+            boxBars.AddControlsTopRight(1, new BarImmediate(this.GrowthFruit) { Color = Color.MediumAquamarine, Name = "Fruit: ", TextFunc = () => this.GrowthFruit.Percentage.ToString("##0%") });
 
         yield return boxBars;
         yield return guisunlight;

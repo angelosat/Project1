@@ -121,9 +121,9 @@ namespace Project1.Framework.Helpers
         {
             return $"{this.Percentage.ToString("P0", CultureInfo.InvariantCulture)}";
         }
-        public Bar GetGui(string text = "Progress")
+        public BarImmediate GetGui(string text = "Progress")
         {
-            return new Bar(this)
+            return new BarImmediate(this)
             {
                 TextFunc = () => text,
                 HoverFunc = () => $"{this.Value:0.00} / {this.Max:0}"

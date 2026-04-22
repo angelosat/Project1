@@ -188,7 +188,7 @@ public sealed class Interaction : Inspectable
     public void DrawUI(SpriteBatch sb, Camera camera)
     {
         //var actor = this.Actor;
-        Bar.Draw(
+        BarImmediate.Draw(
             sb, 
             camera, 
             this.Actor.Global, 

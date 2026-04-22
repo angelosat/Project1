@@ -92,7 +92,7 @@ namespace Project1.Core.Systems.Plants
         //}
         public override void OnTooltipCreated(GameObject parent, Control tooltip)
         {
-            tooltip.Controls.Add(new Bar()
+            tooltip.Controls.Add(new BarImmediate()
             {
                 Width = 200,
                 Name = "Growth: ",

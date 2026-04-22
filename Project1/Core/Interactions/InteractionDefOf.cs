@@ -138,7 +138,8 @@ internal static class InteractionDefOf
         Controller = InteractionControllers.Internal,// new InteractionProgressTool(),
         Skill = SkillDefOf.Crafting,
         ToolUse = ToolUseDefOf.Carpentry,
-        Range = InteractionRange.InteractionSpot
+        Range = InteractionRange.InteractionSpot,
+        SkillIncrease = SkillIncreaseType.OnFinish
     };
     public static readonly InteractionDef CraftUnfinishedBegin = new("CraftingUnfinished", typeof(InteractionCommitUnfinishedLogic))
     {
@@ -154,7 +155,9 @@ internal static class InteractionDefOf
         Controller = InteractionControllers.External,// new InteractionProgressTool(),
         Skill = SkillDefOf.Crafting,
         ToolUse = ToolUseDefOf.Carpentry,
-        Range = InteractionRange.InteractionSpot
+        Range = InteractionRange.InteractionSpot,
+        SkillIncrease = SkillIncreaseType.OnWorkApplied
+        
     };
     public static readonly InteractionDef Repair = new("Repairing", typeof(InteractionRepairLogic))
     {

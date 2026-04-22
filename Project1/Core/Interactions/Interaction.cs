@@ -283,7 +283,7 @@ public sealed class Interaction : Inspectable
         this.SetNextSwingSpeed(speed);
         if (skill is not null)
         {
-            if (this.SkillAwardType == SkillAwardTypes.OnSwing)
+            if (this.Def.SkillIncrease == SkillIncreaseType.OnWorkApplied)
                 actor.Skills.Increase(skill, amount);
 
             var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level);
@@ -297,7 +297,7 @@ public sealed class Interaction : Inspectable
         if (!this.Progress.IsFinished)
             return;
 
-        if (skill is not null && this.SkillAwardType == SkillAwardTypes.OnFinish)
+        if (skill is not null && this.Def.SkillIncrease == SkillIncreaseType.OnFinish)
         {
             //throw new NotImplementedException();
             actor.Skills.Increase(skill, (int)this.TotalWorkApplied);
@@ -402,7 +402,8 @@ public sealed class Interaction : Inspectable
 
     float TotalWorkApplied;
 
-    enum SkillAwardTypes { OnSwing, OnFinish }
 
-    SkillAwardTypes SkillAwardType;
+    //public SkillAwardMomentType SkillAwardMoment;
 }
+public enum SkillIncreaseType { OnWorkApplied, OnFinish }
+

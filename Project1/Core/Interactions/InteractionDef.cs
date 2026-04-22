@@ -26,6 +26,7 @@ namespace Project1.Core.Interactions
         public ToolUseDef ToolUse;
         public InteractionRange Range = InteractionRange.Touching;
         public Color ProgressBarColor = Color.Orange;
+        public SkillIncreaseType SkillIncrease;
         public InteractionDef(string name, Type workerType) : base(name)
         {
             this.InteractionClass = typeof(Interaction);

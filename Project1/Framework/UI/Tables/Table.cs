@@ -18,7 +18,16 @@ namespace Project1.Framework.UI
         public int RowWidth;// => this.Columns.Sum(c => c.Width);
         //public int RowHeight => Label.DefaultHeight + Spacing;
         public int RowHeight;// => Label.DefaultHeight;
-      
+
+        public Table<TObject> SetWidth(string column, int width)
+        {
+            this.Columns.First(c => c.Label == column).Width = width;
+            return this;
+        }
+        public int GetWidth(string column)
+            => this.Columns.First(c => c.Label == column).Width;
+        //public Column this[string label] => this.Columns.First(c=>c.Label == label);
+
         public int GetHeightFromRowCount(int rowCount)
         {
             return rowCount * (this.RowHeight + Spacing) - Spacing;
@@ -55,13 +64,15 @@ namespace Project1.Framework.UI
             this.AddItems(e.NewItems?.Cast<TObject>());
             this.RemoveItems(e.OldItems?.Cast<TObject>());
         }
+        public bool Contains(TObject item)
+            => this.Controls.Any(c => c.Tag.Equals(item));
         public void AddItem(TObject item) => this.AddItems([item]);
         public void AddItems(IEnumerable<TObject> items)
         {
             if (items is null)
                 return;
             var currentY = this.Controls.Any() ? this.BottomLeft.Y + Spacing : 0;
-            var newControls = items.Select(item =>
+            var newControls = items.Where(item=>!this.Contains(item)).Select(item =>
             //this.AddItem(i);
             {
                 var row = new GroupBox() { BackgroundColor = RowColor , MouseThrough = false };

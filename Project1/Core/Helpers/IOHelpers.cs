@@ -15,6 +15,14 @@ internal static class IOHelpers
     public static EntityRefId ReadEntityRefId(this IDataReader r) => new(r.ReadInt32());
     public static MapId ReadMapId(this IDataReader r) => new(r.ReadInt32());
     public static T ReadId<T>(this IDataReader r) where T : IStructIdInt<T> => T.Create(r.ReadInt32());
+    public static List<T> ReadListId<T>(this IDataReader r) where T : IStructIdInt<T>
+    {
+        var length = r.ReadInt32();
+        var list = new List<T>(length);
+        for (int i = 0; i < length; i++)
+            list.Add(T.Create(r.ReadInt32()));
+        return list;
+    }
     public static List<EntityRefId> ReadListEntityRefId(this IDataReader r)
     {
         var count = r.ReadInt32();

@@ -1,13 +1,14 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Entities;
 using Project1.Framework.UI;
+using Project1.Core.Systems.Recipes;
+using Project1.Framework.Helpers;
 
 namespace Project1.Core.UI
 {
-    internal class SkillsUINew : SelectionBoundControl// GroupBox, ISelectionBound
+    internal class Skills_Gui : SelectionBoundControl// GroupBox, ISelectionBound
     {
         readonly ListBoxNoScroll GuiList;
-        public SkillsUINew()
+        public Skills_Gui()
         {
             this.GuiList = new();
         }
@@ -22,7 +23,8 @@ namespace Project1.Core.UI
             this.ClearControls();
             this.GuiList.Clear();
             GuiList.AddItems(actor.Skills.All);
-            this.AddControls(this.GuiList);
+            //this.AddControls(this.GuiList);
+            this.AddControlsVertically(this.GuiList, new RecipesComp_Gui(actor.GetComponent<RecipesComp>()).Layout(200, 200).ToPanelLabeled("Recipe masteries"));
         }
     }
 }

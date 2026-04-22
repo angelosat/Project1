@@ -14,6 +14,7 @@ using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Abilities;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.MentalState;
+using Project1.Core.Systems.Recipes;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -48,6 +49,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(BiologyComp),
                 typeof(AbilitiesComp),
                 typeof(MentalStateComp),
+                typeof(RecipesComp),
             ],
             CompDefs = [
                 EntityCompDefOf.Possessions,
@@ -69,7 +71,8 @@ namespace Project1.Core.Entities.Actors
                 EntityCompDefOf.Relationships,
                 EntityCompDefOf.Biology,
                 EntityCompDefOf.Abilities,
-                EntityCompDefOf.MentalState
+                EntityCompDefOf.MentalState,
+                EntityCompDefOf.Recipes
             ]
         };
 

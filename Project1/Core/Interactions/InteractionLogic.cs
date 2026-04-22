@@ -1,10 +1,12 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Skills;
 using System;
 
 namespace Project1.Core.Interactions
 {
     public class InteractionLogic
     {
+        //public virtual SkillDef? Skill(InteractionContext ctx) => null;
 
         public virtual bool CanPerform(InteractionContext ctx) { return true; }
         public virtual bool CanFinish(InteractionContext ctx) => this.CanPerform(ctx);

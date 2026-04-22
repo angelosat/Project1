@@ -109,7 +109,7 @@ public class StaticMap : MapBase, ITooltippable
         this.Comps.AddRange(
             this.Stockpiles,
             this.Hauling,
-            this.EntityTracker,
+            this.EntityTracker
             );
 
         //this.Comps.AddRange(this.Conversations);

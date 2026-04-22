@@ -1,11 +1,8 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Crafting;
-using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Materials;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +15,7 @@ internal class WorkstationCapability_Alchemy : WorkstationCapabilityWorker
 
     public override bool CreatesUnfinished => false;
 
-    public override SkillDef CraftingSkill => SkillDefOf.Alchemy;
+    public override SkillDef CraftingSkill => AlchemyDefOf.Skill;// SkillDefOf.Alchemy;
 
     public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
     {
@@ -34,15 +31,6 @@ internal class WorkstationCapability_Alchemy : WorkstationCapabilityWorker
     {
         yield return new(BoneDefOf.Item, ItemDefOf.Ingredient, [MaterialRefinementDefOf.FruitRaw, MaterialRefinementDefOf.Powder, MaterialRefinementDefOf.Paste], [MaterialTypeDefOf.Fruit, MaterialTypeDefOf.Flesh], 1);
     }
-    //internal override void PostProcess(Entity craftingProduct, Actor author, AddOrderRequest parameters)
-    //{
-    //    var typedParams = (AddOrderRequest_Alchemy)parameters;
-    //    var eff = typedParams.Effect;
-    //    var tar = typedParams.Target;
-    //    var wrapper = new EntityEffectWrapper(eff, tar, 100, 0); // how determine runtime effect params?
-    //    var comp = craftingProduct.GetComponent<ConsumableComp>();
-    //    comp.Add(wrapper);
-    //}
     internal override int GetOutputStackSize(Def recipe)
      => ItemDefOf.Consumable.StackCapacity;
 }

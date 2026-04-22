@@ -274,8 +274,8 @@ public sealed class Interaction : Inspectable
             this.Fail();
             return;
         }
-        var skill = this.Def.Skill;
-
+        //var skill = this.Def.Skill;
+        var skill = this.Context.Skill;
         this.AddProgress(amount);
         DegradeTool(tool);
         this.TotalWorkApplied += amount;

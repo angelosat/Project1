@@ -8,6 +8,7 @@ using Project1.Core.Attributes;
 using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.Systems.Materials;
 using Project1.Core.AI.Personality;
+using Project1.Core.Systems.Alchemy;
 
 namespace Project1.Core.Entities.Actors;
 
@@ -41,7 +42,8 @@ public class ActorDnaDefOf
             SkillDefOf.Crafting,
             SkillDefOf.Plantcutting,
             SkillDefOf.Social,
-            SkillDefOf.Exploration
+            SkillDefOf.Exploration,
+            AlchemyDefOf.Skill
             ],
         Gear = [
             GearTypeDefOf.Mainhand,

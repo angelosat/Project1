@@ -1,4 +1,5 @@
 ﻿using Project1.Core.AI;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Towns.Duties;
 using Project1.Framework.Helpers;
 using System;
@@ -14,4 +15,6 @@ public sealed class WorkstationCapabilityDef(string name, Type workerType, DutyD
     public DutyDef OperatorDuty = operatorDuty;
 
     public WorkstationCapabilityWorker Worker => field ??= ActivatorSafe<WorkstationCapabilityWorker>.CreateInstance(workerType);
+
+    
 }

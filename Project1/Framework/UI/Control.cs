@@ -1745,9 +1745,10 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
             if (child.AnchorNew.HasFlag(Anchors.Bottom)) child.Location.Y = availableHeight - child.Height - this.Padding;
         }
     }
-    public void Layout(int availableWidth, int availableHeight)
+    public Control Layout(int availableWidth, int availableHeight)
     {
         this.OnLayout(availableWidth, availableHeight);
+        return this;
     }
 
     public virtual void ClearControls()

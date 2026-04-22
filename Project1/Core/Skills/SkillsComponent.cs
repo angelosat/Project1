@@ -104,7 +104,14 @@ namespace Project1.Core.Skills
         }
         public override void Read(IDataReader r)
         {
-            r.ReadDefWrappers(this.SkillsNew);
+            //r.ReadDefWrappers(this.SkillsNew);
+            var skillsLoaded = r.ReadList<Skill>();//.Where(s => s.Def is not null);
+            this.SkillsNew = skillsLoaded.Where(s=>s.Def is not null).ToDictionary(s => s.Def);
+            //foreach(var skill in skillsLoaded)
+            //{
+            //    if (this.SkillsNew.ContainsKey(skill.Def))
+            //        this.SkillsNew[skill.Def] = skill;
+            //}
             this.Resolve();
         }
         

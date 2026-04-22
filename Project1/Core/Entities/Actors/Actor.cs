@@ -267,7 +267,7 @@ public sealed class Actor : Entity
     public override IEnumerable<(string label, Type type)> GetInspectorTabs()
     {
         yield return ("Log", typeof(NpcLogUINewNew));
-        yield return ("Skills", typeof(SkillsUINew));
+        yield return ("Skills", typeof(Skills_Gui));
         yield return ("Needs", typeof(NeedsMoodsUINew));
         yield return ("Gear", typeof(InventoryUI));
         yield return ("Stats", typeof(StatsGuiNew));

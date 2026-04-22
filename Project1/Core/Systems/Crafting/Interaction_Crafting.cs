@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
 using Project1.Core.Interactions;
+using Project1.Core.Skills;
 using Project1.Framework;
 using System.Linq;
 
@@ -13,12 +14,19 @@ sealed class Interaction_Crafting : InteractionLogic
         BlockWorkstationComp _comp;
         public BlockWorkstationComp Comp => this._comp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
         public override float ProgressBarPercentage => this.Actor.Work.Task.ProgressPercentage;
+        internal CraftingOrder Order => field ??= this.Actor.Map.Town.Crafting.Get(this.Actor.CurrentPlan.Order);
+        public override SkillDef Skill => field ??= this.Order.WorkstationCapability.Worker.CraftingSkill;
     }
     protected override InteractionContext CreateContextInt() => new Context();
     public override bool CanFinish(InteractionContext ctx) => CanFinish((Context)ctx);
     static bool CanFinish(Context ctx) => CanPerform(ctx);
     public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
     static bool CanPerform(Context ctx) => ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentPlan.TargetsA);
+    Context ContextTyped(InteractionContext ctx) => (Context)ctx;
+    //internal override void OnProgressAdded(Interaction i, int delta)
+    //{
+    //    this.ContextTyped(i.Context).Order.WorkstationCapability.Worker.OnWorkApplied(i.Actor, delta);
+    //}
     
     internal override void OnFinish(Interaction i)
     {

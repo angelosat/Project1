@@ -2,10 +2,13 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Legacy.Storage;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework.Events;
+using Project1.Framework.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Systems.Crafting;
 
@@ -21,4 +24,16 @@ internal record struct PlayerModifiedStockpileFiltersEvent(Stockpile Stockpile, 
 internal record struct PlayerModifiedStockpileSettingsEvent(Stockpile Stockpile, bool ForSale, StoragePriority Priority) : IEventPayload;
 internal record struct PlayerIssuedCraftOrderEventNew(BlockWorkstationComp Workstation, AddOrderRequest Request) : IEventPayload;
 internal record struct PlayerCancellingUnfinishedItemEvent(Entity Item) : IEventPayload;
-internal record struct ActorFinishedCraftingEvent(Actor Actor, CraftingOrder Order, Entity Product) : IEventPayload;
+internal record struct ActorFinishedCraftingEvent(EntityRefId Actor, CraftingOrderId Order, EntityRefId Product) : IEventPayload, ISerializableNewNew<ActorFinishedCraftingEvent>
+{
+    public static ActorFinishedCraftingEvent Create(IDataReader r)
+        => new(r.ReadId<EntityRefId>(), r.ReadId<CraftingOrderId>(), r.ReadId<EntityRefId>());
+    
+    public readonly IDataWriter Write(IDataWriter w)
+    {
+        w.Write(this.Actor);
+        w.Write(this.Order);
+        w.Write(this.Product);
+        return w;
+    }
+}

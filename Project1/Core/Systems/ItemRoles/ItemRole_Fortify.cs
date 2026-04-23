@@ -24,7 +24,7 @@ sealed class ItemRole_Fortify : ItemRoleWorker
             return -1;
         if (effect.Target != resource)
             return -1;
-        return (int)effect.Magnitude;
+        return (int)effect.MagnitudeFinal;
     }
 
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
@@ -35,7 +35,7 @@ sealed class ItemRole_Fortify : ItemRoleWorker
         var comp = item.GetComponent<ConsumableComp>();
         if (!(comp.Effect.Def == EffectDefOf.FortifyResource && comp.Effect.Target == def))
             throw new System.Exception();
-        return (int)comp.Effect.Magnitude;
+        return (int)comp.Effect.MagnitudeFinal;
     }
 
 }

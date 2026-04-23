@@ -50,7 +50,8 @@ namespace Project1.Framework.UI
         public override void OnPaint(SpriteBatch sb)
         {
             var pos = new Vector2((int)this.Halign * .5f, .5f);
-            var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 1 : (this.Halign == Alignment.Horizontal.Right ? -1 : 0);
+            //var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 1 : (this.Halign == Alignment.Horizontal.Right ? -1 : 0);
+            var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 2 : (this.Halign == Alignment.Horizontal.Right ? -2 : 0);
             UIManager.DrawStringOutlined(
                 sb,
                 this.Text,

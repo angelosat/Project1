@@ -131,7 +131,7 @@ namespace Project1.Framework.UI
 
             var textsize = this.Font.MeasureString(txt);
             textsize -= Vector2.One; //monogame hack
-            var maxw = (int)textsize.X + 2;
+            var maxw = (int)textsize.X + 4;// 2;
             var oldw = this.Width;
 
             if (this.AutoSize)

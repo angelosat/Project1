@@ -24,7 +24,11 @@ static class Packets_Crafting
         _pPlayerModifiedOrder, 
         _pOrderUpdated, 
         _pPlayerModifiedOrderFilters, 
-        _pPlayerSetWorkstationIO;
+        _pPlayerSetWorkstationIO,
+        _pActorFinishedCrafting = Registry.PacketHandlers.Register(ReceiveActorFinishedCrafting);
+
+ 
+
     static Packets_Crafting()
     {
         _pPlayerSetWorkstationIO = Registry.PacketHandlers.Register(OnPlayerSetWorkstationIO);
@@ -40,6 +44,17 @@ static class Packets_Crafting
         Registry.PlayerInputEventHooks.Register<PlayerSetWorkstationZoneEvent>(HandlePlayerSetWorkstationZoneEvent);
         Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
         Registry.PlayerInputEventHooks.Register<PlayerCancellingUnfinishedItemEvent>(HandlePlayerCancellingUnfinishedItem);
+        Registry.WorldEventHooksServer.Register<ActorFinishedCraftingEvent>(HandleActorFinishedCrafting);
+    }
+
+    private static void HandleActorFinishedCrafting(ActorFinishedCraftingEvent e)
+    {
+        Server.Instance.BeginPacket(_pActorFinishedCrafting).Write(e);
+    }
+
+    private static void ReceiveActorFinishedCrafting(NetEndpoint endpoint, Packet packet)
+    {
+        endpoint.World.Events.Post(ActorFinishedCraftingEvent.Create(packet.PacketReader));
     }
 
     private static void HandlePlayerCancellingUnfinishedItem(PlayerCancellingUnfinishedItemEvent e)

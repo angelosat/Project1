@@ -65,7 +65,8 @@ public static class PlanDefOf
     static public readonly PlanDef Construct = new("Constructing", typeof(TaskBehaviorGoConstruct), InteractionDefOf.Construct);
     static public readonly PlanDef Till = new("Tilling", typeof(TaskBehaviorTilling), InteractionDefOf.Till);
     static public readonly PlanDef Harvesting = new("Harvesting", typeof(BehaviorHarvesting), InteractionDefOf.Harvest);
-    static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
+    //static public readonly PlanDef Crafting = new("Crafting", typeof(TaskBehaviorGoCraft), InteractionDefOf.Craft);
+    static public readonly PlanDef Crafting = new("Crafting", InteractionDefOf.Craft);
     static public readonly PlanDef CraftingUnfinishedAdvance = new("CraftingUnfinished", typeof(BehaviorCraftUnfinishedAdvance), InteractionDefOf.CraftUnfinished);
     static public readonly PlanDef CraftingUnfinishedBegin = new("CraftingUnfinishedBegi", typeof(BehaviorGoCraftUnfinishedBegin), InteractionDefOf.CraftUnfinishedBegin);
     static public readonly PlanDef Repairing = new("Repairing", typeof(TaskBehaviorRepairing), InteractionDefOf.Repair);

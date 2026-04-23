@@ -12,8 +12,7 @@ sealed class Interaction_Crafting : InteractionLogic
 {
     public sealed class Context : InteractionContext
     {
-        BlockWorkstationComp _comp;
-        public BlockWorkstationComp Comp => this._comp ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
+        public BlockWorkstationComp Comp => field ??= this.Target.Map.GetBlockEntity(this.Target.Global).Comps.GetComp<BlockWorkstationComp>();
         public override float ProgressBarPercentage => this.Actor.Work.Task.ProgressPercentage;
         internal CraftingOrder Order => field ??= this.Actor.Map.Town.Crafting.Get(this.Actor.CurrentPlan.Order);
         public override SkillDef Skill => field ??= this.Order.WorkstationCapability.Worker.CraftingSkill;
@@ -45,19 +44,9 @@ sealed class Interaction_Crafting : InteractionLogic
             return;
         var ingredients = plan.TargetsA.Select(t => t.Entity);
 
-        //var creationReq = order.GetCreationRequest();
-        //var mapping = order.WorkstationCapability.Worker.GetIngredientMapping(order.ProductDef, ingredients);
-        //foreach (var (bone, item) in mapping)
-        //{
-        //    creationReq.OverrideMaterial(bone, item.Body.Material);
-        //    map.World.DisposeEntity(item);
-        //}
-        //var product = creationReq.Create();
-        //order.WorkstationCapability.Worker.PostProcess(product, actor, order.Source);
-
-
         //var product = order.WorkstationCapability.Worker.CreateProduct(actor, order, ingredients);
         var product = order.CreateProduct(actor, ingredients);
+        //var product = map.Town.Crafting.CreateProductFromOrder(actor, order, ingredients);
 
         map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
         //order.CompletedBy(actor);

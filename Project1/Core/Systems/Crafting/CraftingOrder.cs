@@ -512,7 +512,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     {
         //var actorSkill = actor.Skills.GetLevel(this.WorkstationCapability.Worker.CraftingSkill);
         //var actorMastery = actor.Recipes.Get(this.ProductDef);
-        var quality = actor.Map.Town.Crafting.GetCrafingQuality(actor, this);
+        var quality = CraftingManager.GetCrafingQuality(actor, this);
         var product = this.WorkstationCapability.Worker.CreateProduct(actor, this, ingredients, quality);
         return product;
     }

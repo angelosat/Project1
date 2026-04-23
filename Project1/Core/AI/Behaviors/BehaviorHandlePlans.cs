@@ -112,6 +112,7 @@ sealed class BehaviorHandlePlans : Behavior
 
     public override BehaviorState Tick(Actor parent, AIState state)
     {
+       
         if (parent.Velocity.Z != 0)
             return BehaviorState.Running;
 
@@ -153,6 +154,7 @@ sealed class BehaviorHandlePlans : Behavior
         if (state.Behavior is not null)
         {
             var currentBhav = state.Behavior;
+
             var (result, source) = currentBhav.TickNew(parent, state);
 
             if (parent.Resources.View(ResourceDefOf.Stamina).Value == 0)

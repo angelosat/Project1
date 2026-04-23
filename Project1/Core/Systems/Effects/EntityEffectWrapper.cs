@@ -19,13 +19,14 @@ public class EntityEffectWrapper
     public readonly int TicksPerUnit;
     public readonly int Duration;
     public readonly float Magnitude;
+    public float MagnitudeFinal => this.Magnitude * this.QualityMultiplier;
     public float? RemainingBudget { get; private set; }
 
     internal bool IsExpired { get; private set; }
     public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
 
     public bool IsInstant => this.Def.BaseDuration == 0;
-    public float Multiplier;
+    public float QualityMultiplier;
     public SimulationTick RemainingDuration(SimulationTick now) => this.StartTick + (ulong)this.Duration - now;
     public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
     EntityEffectWrapper(EffectDef def, Def target)
@@ -42,7 +43,7 @@ public class EntityEffectWrapper
         this.TicksPerUnit = ticksPerUnit;
         this.Duration = duration;
         this.Magnitude = budget.Value;
-        this.Multiplier = multiplier;
+        this.QualityMultiplier = multiplier;
     }
 
     public static EntityEffectWrapper CopyFrom(EntityEffectWrapper source)
@@ -77,7 +78,7 @@ public class EntityEffectWrapper
         w.Write(this.TicksPerUnit);
         w.Write(this.StartTick);
         w.Write(this.Duration);
-        w.Write(this.Multiplier);
+        w.Write(this.QualityMultiplier);
     }
     public static EntityEffectWrapper Create(IDataReader r)
     {
@@ -129,5 +130,5 @@ public class EntityEffectWrapper
     }
 
     public override string ToString()
-        => EffectsUtils.GetString(this.Def, this.Target, this.Multiplier);
+        => EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);
 }

@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Systems.ItemRoles;
+using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +16,8 @@ public record struct ItemEvaluation(EntityRefId Item, (ItemRoleDef Role, int Sco
     public readonly int MaxScore => this.Roles.Length > 0 ? this.Roles.Max(r => r.Score) : 0;
     public readonly int SumScore => this.Roles.Length > 0 ? this.Roles.Sum(r => r.Score) : 0;
 }
-public sealed class Knowledge
+
+public sealed class Knowledge : Inspectable
 {
     readonly Dictionary<Entity, ItemEvaluation> KnowledgeItems = [];
     public void Register(Entity item, ItemEvaluation evaluation)

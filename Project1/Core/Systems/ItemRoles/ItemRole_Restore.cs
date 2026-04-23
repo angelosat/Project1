@@ -24,7 +24,7 @@ sealed class ItemRole_Restore : ItemRoleWorker
             return -1;
         if (effect.Target != resource)
             return -1;
-        return (int)effect.Magnitude;
+        return (int)effect.MagnitudeFinal;
     }
 
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
@@ -35,8 +35,8 @@ sealed class ItemRole_Restore : ItemRoleWorker
         if (!(effect.Def == EffectDefOf.RestoreResource && effect.Target == def))
             throw new System.Exception();
 
-        var deficit = (int)actor.Resources.GetDeficit(def);
+        var deficit = actor.Resources.GetDeficit(def);
         //return deficit;
-        return deficit > effect.Magnitude ? deficit : -1;
+        return deficit > effect.MagnitudeFinal ? deficit : -1;
     }
 }

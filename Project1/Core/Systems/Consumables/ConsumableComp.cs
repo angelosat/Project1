@@ -49,7 +49,7 @@ public sealed class ConsumableComp : EntityComp
         var quality = this.Owner.QualityComp.Tier;
         var mod = quality.Multiplier;
         foreach (var fx in this.EffectsNew)
-            fx.Multiplier = mod;
+            fx.QualityMultiplier = mod;
     }
 
     public void Add(EntityEffectWrapper effect)

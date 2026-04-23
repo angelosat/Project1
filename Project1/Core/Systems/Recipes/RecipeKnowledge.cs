@@ -9,7 +9,7 @@ sealed class RecipeKnowledge(Def recipe) : IProgressBar
 {
     internal ChangeNotifier Update = new();
     internal Def Recipe { get; init; } = recipe;
-    int k = 2;
+    int k = 1;
     internal int Level => (int)Math.Floor(Math.Sqrt(this.TimesCrafted / k));
     int CurrentThreshold => (this.Level * this.Level) * k;
     int NextThreshold => ((this.Level + 1) * (this.Level + 1)) * k;

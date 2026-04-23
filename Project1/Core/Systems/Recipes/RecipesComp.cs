@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ internal sealed class RecipesComp : EntityComp
     public RecipesComp()
     {
         this._knowledge.Add(MaterialRefinementDefOf.Ingots, new(MaterialRefinementDefOf.Ingots) { TimesCrafted = 5 });
+        this._knowledge.Add(ConsumableDefOf.Potion, new(ConsumableDefOf.Potion) { TimesCrafted = 5000 });
     }
 
     internal void Add(Def profile)

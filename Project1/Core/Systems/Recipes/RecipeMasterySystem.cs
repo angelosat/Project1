@@ -30,7 +30,7 @@ internal class RecipeMasterySystem : WorldComp, ICraftingPlugin
 
     public RecipeMasterySystem(WorldBase world) : base(world)
     {
-        world.Events.ListenTo<ActorFinishedCraftingEvent>(HandleActorFinishedCrafting);
+        //world.Events.ListenTo<ActorFinishedCraftingEvent>(HandleActorFinishedCrafting);
     }
 
     public int GetQualityBonus(Actor actor, CraftingOrder order)
@@ -43,10 +43,10 @@ internal class RecipeMasterySystem : WorldComp, ICraftingPlugin
 
     private void HandleActorFinishedCrafting(ActorFinishedCraftingEvent e)
     {
-        throw new System.Exception();
-        var actor = e.Actor;
-        var order = e.Order;
-        var product = e.Product;
-        actor.GetComponent<RecipesComp>().Add(product.Profile);
+        //throw new System.Exception();
+        //var actor = e.Actor;
+        //var order = e.Order;
+        //var product = e.Product;
+        //actor.GetComponent<RecipesComp>().Add(product.Profile);
     }
 }

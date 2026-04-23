@@ -10,7 +10,6 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
@@ -54,12 +53,15 @@ public sealed class CraftingManager : TownComp
     readonly HashSet<Entity> _unfinishedItems = [];
     readonly Dictionary<Actor, HashSet<Entity>> _unfinishedByActor = [];
 
+    readonly Dictionary<CraftingOrder, Actor> commitersByOrder = [];
+    readonly Dictionary<Actor, CraftingCommitment> commitmentsByActor = [];
+
     public IReadOnlySet<Entity> UnfinishedItems => this._unfinishedItems;
     public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
     public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
     public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._workstationsByPosition.Values;
 
-    List<ICraftingPlugin> Plugins = [new RecipeMasterySystem(), new CraftingPlugin_Skill()];
+    static readonly List<ICraftingPlugin> Plugins = [new RecipeMasterySystem(), new CraftingPlugin_Skill()];
 
     public CraftingManager(Town town) : base(town)
     {
@@ -143,29 +145,28 @@ public sealed class CraftingManager : TownComp
                 this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
             }
     }
-    Dictionary<CraftingOrder, Actor> commitmentsByOrder = [];
-    Dictionary<Actor, CraftingCommitment> commitments = [];
+
     internal void Commit(CraftingOrder order, Actor actor)
     {
-        if(this.commitments.TryGetValue(actor, out var existing))
+        if(this.commitmentsByActor.TryGetValue(actor, out var existing))
         {
             if (existing.Order != order)
                 throw new Exception();
             return;
         }    
-        this.commitments[actor] = new(actor, order);
-        this.commitmentsByOrder[order] = actor;
+        this.commitmentsByActor[actor] = new(actor, order);
+        this.commitersByOrder[order] = actor;
     }
     internal void Uncommit(Actor actor)
     {
-        if (!this.commitments.TryGetValue(actor, out var commitment))
+        if (!this.commitmentsByActor.TryGetValue(actor, out var commitment))
             return;
-        this.commitments.Remove(actor);
-        this.commitmentsByOrder.Remove(commitment.Order);
+        this.commitmentsByActor.Remove(actor);
+        this.commitersByOrder.Remove(commitment.Order);
     }
     internal bool TryGetCommitedOrder(Actor actor, out CraftingOrder order)
     {
-        if (!this.commitments.TryGetValue(actor, out var commitment))
+        if (!this.commitmentsByActor.TryGetValue(actor, out var commitment))
         {
             order = null;
             return false;
@@ -175,17 +176,17 @@ public sealed class CraftingManager : TownComp
     }
     internal bool CanCommit(Actor actor, CraftingOrder order)
     {
-        if (this.commitmentsByOrder.TryGetValue(order, out var worker))
+        if (this.commitersByOrder.TryGetValue(order, out var worker))
             return worker == actor;
         return true;
     }
     internal void MarkCompleted(CraftingOrder order, Actor actor, Entity product)
     {
         order.CompletedBy(actor);
-        var commitment = this.commitments[actor];
+        var commitment = this.commitmentsByActor[actor];
         commitment.Product = product;
-        //this.World.Events.Post(new ActorFinishedCraftingEvent(actor, order, product));
-        foreach (var plugin in this.Plugins)
+        this.World.Events.Post(new ActorFinishedCraftingEvent(actor.RefId, order.Id, product.RefId));
+        foreach (var plugin in Plugins)
             plugin.Handle(actor, order, product);
     }
 
@@ -196,7 +197,7 @@ public sealed class CraftingManager : TownComp
 
     internal Entity? ProductToMove(Actor actor)
     {
-        if (this.commitments.TryGetValue(actor, out var com))
+        if (this.commitmentsByActor.TryGetValue(actor, out var com))
             return com.Product;
         return null;
     }
@@ -265,6 +266,9 @@ public sealed class CraftingManager : TownComp
         {
             this._ordersById.Remove(order.Id);
             order.Dispose();
+
+            if (this.commitersByOrder.Remove(order, out var actor))
+                this.commitmentsByActor.Remove(actor);
         }
         return true;
     }
@@ -323,10 +327,10 @@ public sealed class CraftingManager : TownComp
     }
 
     static List<QualityDef> qualityTiers => field ??= Def.Get<QualityDef>().Where(d=>d.Threshold.HasValue).ToList();
-    internal QualityDef GetCrafingQuality(Actor actor, CraftingOrder order)
+    internal static QualityDef GetCrafingQuality(Actor actor, CraftingOrder order)
     //=> this.Plugins.Sum(p => p.GetQualityBonus(actor, order));
     {
-        var q = this.Plugins.Sum(p => p.GetQualityBonus(actor, order));
+        var q = Plugins.Sum(p => p.GetQualityBonus(actor, order));
         var roll = RandomHelper.NextGaussian(q, 10);
         //var maxweight = qualityTiers.Sum(d => d.ProbabilityTableWeight);
         var table = qualityTiers.Select(d => (d.Threshold, d)).ToArray();
@@ -351,4 +355,11 @@ public sealed class CraftingManager : TownComp
 
     internal CraftingOrder Get(CraftingOrderId id)
         => this._ordersById[id];
+
+    //internal Entity CreateProductFromOrder(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
+    //{
+    //    var quality = this.GetCrafingQuality(actor, order);
+    //    var product = order.WorkstationCapability.Worker.CreateProduct(actor, order, ingredients, quality);
+    //    return product;
+    //}
 }

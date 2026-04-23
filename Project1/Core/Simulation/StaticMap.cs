@@ -11,10 +11,8 @@ using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Map;
 using Project1.Core.Networking;
-using Project1.Core.Simulation.FallDamage;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Systems.Plants;
-using Project1.Core.Systems.Recipes;
 using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
@@ -119,6 +117,7 @@ public class StaticMap : MapBase, ITooltippable
         this.SimulationSystems.Add(new EntityLifecycleSystem(this));
         this.SimulationSystems.Add(new BehaviorSystem(this));
         this.SimulationSystems.Add(new FallDamageSystem(this));
+        this.SimulationSystems.Add(new SupportSystem(this));
         this.SimulationSystems.Add(new LootSystem(this));
         this.SimulationSystems.Add(new PlantLifeCycleSystem(this));
 

@@ -3,16 +3,19 @@ using Project1.Core.Assets;
 using Project1.Core.Blocks;
 using Project1.Core.Blocks.Comps;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics.Particles;
+using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Presentation;
+using Project1.Core.Systems.Quality;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
-using System;
 
 namespace Project1.Core.Systems.Particles;
 
@@ -27,6 +30,17 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
         Registry.MapEventHooksClient.Register<SpellCastEvent>(OnSpellCast);
         Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnEffectApplied);
+        Registry.WorldEventHooksClient.Register<ActorFinishedCraftingEvent>(OnActorFinishedCrafting);
+    }
+
+    private void OnActorFinishedCrafting(ActorFinishedCraftingEvent e)
+    {
+        var resolver = Client.Instance.World;
+        var actor = resolver.Get<Actor>(e.Actor);
+        if (!actor.IsSpawned)
+            return;
+        var item = resolver.Get(e.Product);
+        EmitSpellParticles(item, item.GetComponent<QualityComp>().Tier.Color);
     }
 
     private void OnEffectApplied(ActorEffectAppliedEvent e)
@@ -36,7 +50,7 @@ internal sealed class PresentationParticles : IPresentationWorker
             return;
         if (e.Effect.Def.School is not SpellSchoolDef school)
             return;
-        EmitSpellParticles(actor, school);
+        EmitSpellParticles(actor, school.Color);
     }
 
     private void OnSpellCast(SpellCastEvent e)
@@ -44,10 +58,10 @@ internal sealed class PresentationParticles : IPresentationWorker
         if (e.Target.Entity is not Entity entity)
             return;
         var school = e.Spell.School;
-        EmitSpellParticles(entity, school);
+        EmitSpellParticles(entity, school.Color);
     }
 
-    private static void EmitSpellParticles(Entity entity, SpellSchoolDef school)
+    private static void EmitSpellParticles(Entity entity, Color color)
     {
         //var entity = e.Caster;
         var map = entity.Map;
@@ -61,7 +75,7 @@ internal sealed class PresentationParticles : IPresentationWorker
         emitter.Source = entity.Global + Vector3.UnitZ;
         emitter.SizeBegin = emitter.SizeEnd = 4;
         emitter.ParticleWeight = -.5f;// -.1f;
-        emitter.ColorBegin = emitter.ColorEnd = school.Color;// Color.White;// Teal;
+        emitter.ColorBegin = emitter.ColorEnd = color;// Color.White;// Teal;
         emitter.Lifetime = Ticks.PerGameMinute;
         emitter.Emit(100);
 

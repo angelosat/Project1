@@ -17,7 +17,7 @@ namespace Project1.Core.UI
         public InventoryContentsGui()
         {
             this.TableContents = new Table<Entity>()
-                    .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
+                    .AddColumn("name", 128, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
                     .AddColumn("preference", 96, o => this.Actor.ItemPreferences.GetListControl(o))
                     .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
                     .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));

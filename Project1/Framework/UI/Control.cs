@@ -225,13 +225,23 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         foreach (var c in this.Controls)
             c.OnAttached();
     }
-    internal virtual void OnDetached()
+    internal void Detach()
     {
         if (!this.TopLevelControl.IsOpen)
             return;
         this.DetachedAction?.Invoke();
+        this.OnDetached();
         foreach (var c in this.Controls)
-            c.OnDetached();
+            c.Detach();
+    }
+
+    protected virtual void OnDetached()
+    {
+        //if (!this.TopLevelControl.IsOpen)
+        //    return;
+        //this.DetachedAction?.Invoke();
+        //foreach (var c in this.Controls)
+        //    c.OnDetached();
     }
     internal Control InvalidateOn<T>(T obs) where T : IUpdatable
     {

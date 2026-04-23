@@ -7,7 +7,7 @@ namespace Project1.Core.UI
 {
     class InventoryUI : SelectionBoundControl// GroupBox, ISelectionBound
     {
-        GroupBox BoxSlots;
+        //GroupBox BoxSlots;
         GuiCharacterCustomization colorsui;
 
         protected internal override void OnBind(ISelectable selectable)
@@ -22,12 +22,13 @@ namespace Project1.Core.UI
             var gearPanel = gearGui.ToPanelLabeled("Gear");
 
             var panelSlots = new Panel(PanelWithVerticalTabs.DefaultSize);
-            this.BoxSlots = new(panelSlots.ClientSize.Width, panelSlots.ClientSize.Height);
             var invgui = new InventoryContentsGui();
+            //this.BoxSlots = new(panelSlots.ClientSize.Width, panelSlots.ClientSize.Height);
+            var BoxSlots = ScrollableBoxNewNewNew.FromWidth(invgui, invgui.RowWidth, panelSlots.ClientSize.Height);
             invgui.Build(actor);
-            this.BoxSlots.AddControls(invgui);
+            //BoxSlots.AddControls(invgui);
 
-            panelSlots.AddControls(this.BoxSlots);
+            panelSlots.AddControls(BoxSlots);
             var customizationClient = new GroupBox();
             colorsui = new GuiCharacterCustomization();
 
@@ -42,7 +43,8 @@ namespace Project1.Core.UI
             boxbtns.AddControlsVertically(btncolors, btnprefs);
             this.AddControlsVertically(
                 gearPanel,
-                panelSlots,
+                //panelSlots,
+                BoxSlots.ToPanel(),
                 boxbtns);
             colorsui.SetTag(actor);
         }

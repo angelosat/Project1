@@ -2,74 +2,60 @@
 using Project1.Core.Entities.Actors;
 using System.Collections.Generic;
 
-namespace Project1.Core.AI.Behaviors.Pathing
+namespace Project1.Core.AI.Behaviors.Pathing;
+
+class BehaviorResolvePath : BehaviorQueue
 {
-    class BehaviorResolvePath : BehaviorQueue
+    public BehaviorResolvePath(TargetIndex targetInd)
+        : this((int)targetInd, PathEndMode.Touching)
     {
-        public BehaviorResolvePath(TargetIndex targetInd)
-            : this((int)targetInd, PathEndMode.Touching)
-        {
 
-        }
+    }
 
-        public BehaviorResolvePath(InteractionTarget target)
-            : this(target, PathEndMode.Touching)
-        {
-        }
-        public BehaviorResolvePath(InteractionTarget target, PathEndMode mode)
-        {
-            this.Children = new List<Behavior>(){
-                    new BehaviorInverter(new BehaviorEnsureNextCellTraversable()),
-                    new BehaviorResolveDoors(),
-                    new BehaviorInverter(new BehaviorJumpOnBlock()),
-                    new BehaviorInverter(new BehaviorCrouch()),
-                    new BehaviorInverter(new BehaviorUnstuck()),
-                    new BehaviorQueue(
-                        new BehaviorInverter(new BehaviorFindPath(target, mode, "path")), // TODO: completely fail behavior if no path found
-                        new BehaviorFollowPathNewNew()) // TODO: if path is invalidated while following, return to the find path behavior to find a new path
-            };
-        }
-        public BehaviorResolvePath(TargetIndex targetInd, PathEndMode mode)
-            :this((int)targetInd, mode)
-        {
+    public BehaviorResolvePath(InteractionTarget target)
+        : this(target, PathEndMode.Touching)
+    {
+    }
+    public BehaviorResolvePath(InteractionTarget target, PathEndMode mode)
+    {
+        this.Children = new List<Behavior>(){
+                new BehaviorInverter(new BehaviorEnsureNextCellTraversable()),
+                new BehaviorResolveDoors(),
+                new BehaviorInverter(new BehaviorJumpOnBlock()),
+                new BehaviorInverter(new BehaviorCrouch()),
+                new BehaviorInverter(new BehaviorUnstuck()),
+                new BehaviorQueue(
+                    new BehaviorInverter(new BehaviorFindPath(target, mode, "path")), // TODO: completely fail behavior if no path found
+                    new BehaviorFollowPathNewNew()) // TODO: if path is invalidated while following, return to the find path behavior to find a new path
+        };
+    }
+    public BehaviorResolvePath(TargetIndex targetInd, PathEndMode mode)
+        :this((int)targetInd, mode)
+    {
 
-        }
-        public BehaviorResolvePath(PathEndMode mode)
-            : this((int)TargetIndex.A, mode)
-        {
+    }
+    public BehaviorResolvePath(PathEndMode mode)
+        : this((int)TargetIndex.A, mode)
+    {
 
-        }
-        public BehaviorResolvePath(int targetInd, PathEndMode mode)
-        {
-            this.Children = new List<Behavior>(){
-                    new BehaviorInverter(new BehaviorEnsureNextCellTraversable()),
-                    new BehaviorResolveDoors(),
-                    new BehaviorInverter(new BehaviorJumpOnBlock()),
-                    new BehaviorInverter(new BehaviorCrouch()),
-                    new BehaviorInverter(new BehaviorUnstuck()),
-                    new BehaviorQueue(
-                        new BehaviorInverter(new BehaviorFindPath(targetInd, mode, "path")),
-                        new BehaviorFollowPathNewNew())
-            };
-        }
-        //public BehaviorResolvePath(string target)
-        //{
-        //    this.Children = new List<Behavior>(){
-        //            new BehaviorInverter(new BehaviorValidateNextStep()),
-        //            new BehaviorInverter(new BehaviorJumpOnBlock()),
-        //            new BehaviorInverter(new BehaviorCrouch()),
-        //            new BehaviorInverter(new BehaviorUnstuck()),
-        //            new BehaviorSequence(
-        //                new BehaviorFindPath(target, "path"),
-        //                new BehaviorSetPath("path"),
-        //                new BehaviorStartMoving(),
-        //                new BehaviorFollowPathNewNew())
-        //    };
-        //}
-        
-        public override BehaviorState Tick(Actor parent, AIState state)
-        {
-            return base.Tick(parent, state);
-        }
+    }
+    public BehaviorResolvePath(int targetInd, PathEndMode mode)
+    {
+        this.Children = new List<Behavior>(){
+                new BehaviorInverter(new BehaviorEnsureNextCellTraversable()),
+                new BehaviorResolveDoors(),
+                new BehaviorInverter(new BehaviorJumpOnBlock()),
+                new BehaviorInverter(new BehaviorCrouch()),
+                new BehaviorInverter(new BehaviorUnstuck()),
+                new BehaviorQueue(
+                    new BehaviorInverter(new BehaviorFindPath(targetInd, mode, "path")),
+                    new BehaviorFollowPathNewNew())
+        };
+    }
+   
+    
+    public override BehaviorState Tick(Actor parent, AIState state)
+    {
+        return base.Tick(parent, state);
     }
 }

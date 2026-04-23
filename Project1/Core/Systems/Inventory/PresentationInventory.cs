@@ -18,7 +18,7 @@ internal sealed class PresentationInventory : IPresentationWorker
         var item = e.Item;
         var floating = new FloatingTextEx(parent)
            .AddSegment("Received ", Color.Lime)
-           .AddSegment(item.Name, item.GetInfo().GetQualityColor());
+           .AddSegment(item.Name, item.QualityColor);
         floating.Show();
     }
     private static void OnItemLost(InventoryItemRemovedEvent e)
@@ -26,7 +26,7 @@ internal sealed class PresentationInventory : IPresentationWorker
         var parent = e.Actor;
         var item = e.Item;
         var floating = new FloatingTextEx(parent)
-            .AddSegment(item.Name, item.GetInfo().GetQualityColor());
+            .AddSegment(item.Name, item.QualityColor);
         floating.Show();
     }
 }

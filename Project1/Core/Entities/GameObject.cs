@@ -56,7 +56,6 @@ public interface ITransformAnchor
 public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
 {
     public static readonly Dictionary<int, GameObject> Templates = [];
-    public override string LabelReadable => this.Name;
     public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
     public bool IsRegistered => this.RefId > 0;
     static int GetNextTemplateID()
@@ -80,7 +79,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         return Templates[templateID].Clone();
     }
     public Color GetSlotColor()
-    { return this.GetInfo().GetQualityColor(); }
+        => this.GetNameplateColor();
+    //{ return this.GetInfo().GetQualityColor(); }
     public string GetCornerText()
     { return this.StackSize.ToString(); }
     public void DrawUI(SpriteBatch sb, Vector2 pos)
@@ -124,13 +124,16 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     #region Common Properties
     public virtual string Name
     {
-        get => $"{this.GetInfo().ParentName}{(this.StackSize > 1 ? $" (x{this.StackSize})" : "")}";
+        //get => $"{this.GetInfo().ParentName}";//{(this.StackSize > 1 ? $" (x{this.StackSize})" : "")}";
+        get => $"{this.GetInfo().ParentName}{(this.StackSize > 1 ? $" ({this.StackSize})" : "")}";
         set
         {
             var info = GetInfo();
             info.ParentName = value;
         }
     }
+    public override string LabelReadable => this.Name;
+
 
     public EntityRefId OwnerId { get; private set; } = EntityRefId.Null;
     public bool HasOwner => this.OwnerId != EntityRefId.Null;
@@ -219,6 +222,18 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     public void OnNameplateCreated(Nameplate plate)
     {
+        plate.Controls.Add(new Label()
+        {
+            Font = UIManager.FontBold,
+            TextFunc = () => this.Name,
+            //TextColorFunc = parent.GetNameplateColor,
+            //TintFunc = parent.GetNameplateColor, // we dont want tintfunc, we want to change textcolorfunc directly because the default textcolor is UIManager.DefaultTextColor = Color.LightGray
+            TextColor = Color.White, // so i'll just set the text color to white, to get the full tint color
+            TintFunc = this.GetNameplateColor, // but tintfunc is applied on every draw call for ui controls, while textcolorfunc is applied only on validation for labels
+            MouseThrough = true,
+            //TextBackgroundFunc = () => this.HasFocus() ? this.Quality.Color * .5f : Color.Black * .5f
+        });
+
         foreach (var comp in Components.Values)
         {
             comp.OnNameplateCreated(this, plate);
@@ -232,7 +247,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     public virtual Color GetNameplateColor()
     {
-        return this.DefComponent.Quality.Color;
+        return this.GetComponent<QualityComp>()?.Tier.Color ?? Color.White;
     }
     public GameObject Owner
     {
@@ -349,6 +364,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         return this.Map.GetNearbyObjectsNew(this.Global, range, filter).Except(new GameObject[] { this });
     }
+
+    public QualityDef? Quality => this.QualityComp?.Tier;
+    public Color QualityColor => this.QualityComp?.Tier.Color ?? Color.White;
+
     DefComponent _info;
     public DefComponent GetInfo()
     {
@@ -519,6 +538,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         //tooltip.Controls.Add(new LabelNew(() => this.LabelReadable));
 
         //tooltip.Controls.Add(new Label(this.Quality.LabelReadable) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
+
+        var qualityColor = this.QualityColor;// this.GetNameplateColor();
+        tooltip.Color = qualityColor;
+        var namelabel = new Label(Vector2.Zero, this.Name, qualityColor, Color.Black, UIManager.FontBold) { TextColorFunc = () => qualityColor, TextFunc = () => this.Name };
+        tooltip.AddControlsBottomLeft(namelabel);
 
         foreach (var comp in Components.Values)
         {
@@ -1220,12 +1244,12 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         if (this.Def.BaseValue == 0)
             return 0;
-        var quality = this.DefComponent.Quality;
+        var qualityMultiplier = this.GetComponent<QualityComp>()?.Tier.Multiplier ?? 1;
         var bones = this.Body.GetAllBones();
         var value = 0;
         foreach (var b in bones)
             value += b.Material?.ValueBase ?? 0;
-        return (int)(value * this.Def.BaseValue * quality.Multiplier);
+        return (int)(value * this.Def.BaseValue * qualityMultiplier);
     }
     public int GetValueTotal()
     {

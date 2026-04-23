@@ -138,14 +138,14 @@ public class ControlCollection(Control owner) : Collection<Control>
         ctrl.OnRemoved();
         base.RemoveItem(index);
         this.Parent.OnControlRemoved(ctrl);
-        ctrl.OnDetached();
+        ctrl.Detach();
     }
     protected override void ClearItems()
     {
         foreach (var c in this)
         {
             c.OnRemoved();
-            c.OnDetached();
+            c.Detach();
         }
         base.ClearItems();
     }

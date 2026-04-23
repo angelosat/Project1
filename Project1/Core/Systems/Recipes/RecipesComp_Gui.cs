@@ -19,7 +19,7 @@ sealed class RecipesComp_Gui : GroupBox
         this.Table.AddItems(comp.All);
         comp.Updated += Comp_Updated;
     }
-    internal override void OnDetached()
+    protected override void OnDetached()
     {
         this.Comp.Updated -= Comp_Updated;
     }

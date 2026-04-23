@@ -793,7 +793,8 @@ namespace Project1.Framework.UI
                 if (control.Layer == LayerDialog)
                 {
                     this.Layers[LayerDialog].Remove(this.DialogBlock);
-                    control.OnDetached();
+                    //control.OnDetached();
+                    control.Detach();
                     int index = this.Layers[LayerDialog].Count - 1;
                     if (index < 0)
                         return true;

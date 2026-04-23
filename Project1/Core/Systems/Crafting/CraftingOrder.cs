@@ -514,6 +514,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         //var actorMastery = actor.Recipes.Get(this.ProductDef);
         var quality = CraftingManager.GetCrafingQuality(actor, this);
         var product = this.WorkstationCapability.Worker.CreateProduct(actor, this, ingredients, quality);
+        product.Author = actor;
         return product;
     }
 }

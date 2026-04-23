@@ -440,11 +440,14 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     public Control GetListControl(Entity entity)
     {
         var p = this.GetPreference(entity);
-        return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
+        //return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
+        return new Label(p.target ?? p.role) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
     }
-    public Def GetPreference(Entity item)
+    public (ItemRoleDef? role, Def? target) GetPreference(Entity item)
     {
-        return this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item).Role?.Def; 
+        //return this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item).Role?.Def; 
+        var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item);
+        return (pref.Role, pref.Role?.Def);
         // if itempreferences are struct, then the default returned will have role == null
     }
     public Entity GetPreference(Def context)

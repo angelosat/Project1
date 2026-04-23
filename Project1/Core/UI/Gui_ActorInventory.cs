@@ -9,12 +9,11 @@ using Project1.Framework.UI;
 
 namespace Project1.Core.UI
 {
-    internal class InventoryContentsGui : Table<Entity>
+    internal class Gui_ActorInventory : Table<Entity>
     {
-        //readonly Table<Entity> TableContents;
         Actor Actor;
         ContainerList Container;
-        public InventoryContentsGui()
+        public Gui_ActorInventory()
         {
             this
                     .AddColumn("name", 164, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
@@ -49,12 +48,6 @@ namespace Project1.Core.UI
             this.Container.ItemAdded -= Container_ItemAdded;
             this.Container.ItemRemoved -= Container_ItemRemoved;
         }
-        //protected override void OnHidden()
-        //{
-        //    this.Container.ItemAdded -= Container_ItemAdded;
-        //    this.Container.ItemRemoved -= Container_ItemRemoved;
-        //    base.OnHidden();
-        //}
 
         private void Container_ItemAdded(Entity obj) => this.AddItem(obj);
         private void Container_ItemRemoved(Entity obj) => this.RemoveItem(obj);

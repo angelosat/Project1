@@ -51,7 +51,8 @@ namespace Project1.Core.Systems.Crafting
         };
         static public readonly WorkstationCapabilityDef Alchemy = new("Alchemy", typeof(WorkstationCapability_Alchemy), DutyDefOf.Alchemist)
         {
-            OrderType = typeof(AddOrderRequest),
+            OrderType = typeof(AddOrderRequest_Alchemy),
+            //OrderType = typeof(AddOrderRequest),
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting
         };

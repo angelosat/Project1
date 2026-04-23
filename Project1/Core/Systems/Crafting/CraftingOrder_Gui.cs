@@ -3,7 +3,7 @@ using Project1.Framework.UI;
 
 namespace Project1.Core.Systems.Crafting;
 
-internal sealed class Gui_CraftingOrderControl : GroupBox
+internal sealed class CraftingOrder_Gui : GroupBox
 {
     readonly CraftingOrder Order;
     readonly Label LabelAmount;
@@ -13,7 +13,7 @@ internal sealed class Gui_CraftingOrderControl : GroupBox
     readonly Button btnDetails;
     readonly IconButton btnClose;
 
-    public Gui_CraftingOrderControl(CraftingOrder order)
+    public CraftingOrder_Gui(CraftingOrder order)
     {
         order.Workstation.Map.Events.ListenTo<CraftOrderUpdatedEvent>(onCraftOrderModified);
 
@@ -24,7 +24,8 @@ internal sealed class Gui_CraftingOrderControl : GroupBox
         this.BackgroundColor = UIManager.DefaultListItemBackgroundColor;
         this.MouseThrough = false;
 
-        var orderName = new Label(order.LabelReadable);// { Location = btnUp.TopRight };
+        //var orderName = new Label(order.LabelReadable);// { Location = btnUp.TopRight };
+        var orderName = new Label(order.Source.GetLabel());// { Location = btnUp.TopRight };
         this.ModeCBox = new ComboBoxNewNew<CraftingOrder.CraftMode>(CraftingOrder.AllModes, 100, c => c.ToString(), ChangeFinishMode, () => this._modePredicted)
         {
             AnchorNew = Anchors.Bottom | Anchors.Left

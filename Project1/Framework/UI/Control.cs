@@ -1780,6 +1780,6 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     {
         var box = new GroupBox();
         this.GetTooltipInfo(box);
-        yield return box;
+        return box.Controls.Count > 0 ? [box] : [];
     }
 }

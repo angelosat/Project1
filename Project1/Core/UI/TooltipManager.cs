@@ -56,11 +56,6 @@ public class TooltipManager
 
     void Build()
     {
-        //this.Tooltip = new(this.Object);
-        //this.Tooltip.AutoSize = true;
-        //this.Object.GetTooltipInfo(this.Tooltip);
-        //foreach (var comp in Game1.Instance.GameComponents)
-        //    comp.OnTooltipCreated(this.Object, this.Tooltip);
         this.Tooltip = Build(this.Object);
 
         if (this.Tooltip.Controls.Count > 0)
@@ -73,11 +68,12 @@ public class TooltipManager
     }
     static Tooltip Build(ITooltippable item)
     {
-        var tooltip = new Tooltip(item);
-        tooltip.AutoSize = true;
+        var tooltip = new Tooltip(item)
+        {
+            AutoSize = true
+        };
         if (!string.IsNullOrEmpty(item.LabelReadable))
             tooltip.Controls.Add(new Label(item.LabelReadable));
-        //item.GetTooltipInfo(tooltip);
         foreach (var ctrl in item.GetTooltipControls())
             tooltip.AddControlsBottomLeft(ctrl);
         foreach (var comp in Game1.Instance.GameComponents)

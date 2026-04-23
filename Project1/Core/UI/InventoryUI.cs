@@ -22,7 +22,7 @@ namespace Project1.Core.UI
             var gearPanel = gearGui.ToPanelLabeled("Gear");
 
             var panelSlots = new Panel(PanelWithVerticalTabs.DefaultSize);
-            var invgui = new InventoryContentsGui();
+            var invgui = new Gui_ActorInventory();
             //this.BoxSlots = new(panelSlots.ClientSize.Width, panelSlots.ClientSize.Height);
             var BoxSlots = ScrollableBoxNewNewNew.FromWidth(invgui, invgui.RowWidth, panelSlots.ClientSize.Height);
             invgui.Build(actor);

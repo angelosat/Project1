@@ -431,7 +431,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
 
     public Control GetListControlGui()
     {
-        return new Gui_CraftingOrderControl(this);
+        return new CraftingOrder_Gui(this);
     }
     public void ChangePriority(int priorityDelta)
     {

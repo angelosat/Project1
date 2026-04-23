@@ -2,6 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Interactions;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Recipes;
 using Project1.Framework;
 using System.Linq;
 
@@ -53,7 +54,10 @@ sealed class Interaction_Crafting : InteractionLogic
         //}
         //var product = creationReq.Create();
         //order.WorkstationCapability.Worker.PostProcess(product, actor, order.Source);
-        var product = order.WorkstationCapability.Worker.CreateProduct(actor, order, ingredients);
+
+
+        //var product = order.WorkstationCapability.Worker.CreateProduct(actor, order, ingredients);
+        var product = order.CreateProduct(actor, ingredients);
 
         map.Spawn(product, workstation.Global.Above(), Vector3.Zero);
         //order.CompletedBy(actor);

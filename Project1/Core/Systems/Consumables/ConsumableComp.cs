@@ -4,6 +4,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
+using Project1.Core.Systems.Quality;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -24,7 +25,7 @@ public sealed class ConsumableComp : EntityComp
 
     public EntityEffectWrapper Effect => this.EffectsNew.FirstOrDefault();
     public bool HasEffectTarget(Def target) => this.EffectsNew.Any(f => f.Target == target);
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
         foreach (var effect in this.EffectsNew)
             tooltip.Controls.Add(
@@ -43,6 +44,13 @@ public sealed class ConsumableComp : EntityComp
             this.EffectsNew.Add(new EntityEffectWrapper(f.Def,  f.Target, f.Budget, f.TicksPerUnit/*, f.Magnitude*/));
         this.Spell = comp.Spell;
     }
+    internal override void Validate()
+    {
+        var quality = this.Owner.QualityComp.Tier;
+        var mod = quality.Multiplier;
+        foreach (var fx in this.EffectsNew)
+            fx.Multiplier = mod;
+    }
 
     public void Add(EntityEffectWrapper effect)
         => this.EffectsNew.Add(effect);
@@ -54,9 +62,9 @@ public sealed class ConsumableComp : EntityComp
         this.Owner.Body.Sprite = profile.Sprite;
     }
 
-    public override void GetInventoryTooltip(GameObject parent, Control tooltip)
+    public override void GetInventoryTooltip(Control tooltip)
     {
-        this.OnTooltipCreated(parent, tooltip);
+        this.OnTooltipCreated(tooltip);
     }
 
     public override void Write(IDataWriter w)

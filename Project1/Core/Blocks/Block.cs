@@ -822,6 +822,9 @@ namespace Project1.Core.Blocks
         protected virtual IEnumerable<IntVec3> GetInteractionSpotsLocal() { yield break; }
         protected virtual IEnumerable<IntVec3> GetInteractionSpotsLocal(MapBase map, IntVec3 global) { yield break; }
         protected virtual bool HasInteractionSpots => false;
+
+        public Color? TooltipColor => null;
+
         internal IEnumerable<IntVec3> GetInteractionSpotsLocal(MapBase map, IntVec3 global, int orientation)
         {
             // main entry

@@ -20,8 +20,6 @@ namespace Project1.Core.Entities;
 
 public class Entity : GameObject
 {
-  
-
     bool _initialized;
    
     public MobileComponent Mobile => field ??= this.GetComponent<MobileComponent>();
@@ -105,12 +103,7 @@ public class Entity : GameObject
         mat.Apply(this);
         return this;
     }
-    //internal Entity SetMaterials(Dictionary<string, MaterialDef> materials)
-    //{
-    //    foreach (var c in this.Components.Values)
-    //        c.ApplyMaterials(this, materials);
-    //    return this;
-    //}
+   
     internal Entity SetQuality(QualityDef quality)
     {
         if (this.Def.QualityLevels)
@@ -118,8 +111,6 @@ public class Entity : GameObject
                 c.ApplyQuality(this, quality);
         return this;
     }
-
-    
 
     public GameObject Randomize(RandomThreaded random)
     {
@@ -174,7 +165,6 @@ public class Entity : GameObject
         this.IsDead = true;
         foreach (var comp in this.Components.Values)
             comp.OnKill();
-        //this.Map.Events.Post(new EntityKilledEvent(this));
     }
 
     public BoundingBox GetBoundingBoxNext()
@@ -255,11 +245,8 @@ public class Entity : GameObject
         this.Container = null;
         this.Slot?.Assign(null, out var _);
         this.Slot = null;
-        //this.Map?.Despawn(this);
-        //this.Map = null;
         this.Transform.Detach();
         this.Owner = null;
-        //this.Transform.Anchor = null;
     }
     public IEnumerable<Entity> GetSelfAndChildren()
     {
@@ -302,8 +289,9 @@ public class Entity : GameObject
             c.OnAttachedToWorld();
     }
 
-    //public override IEnumerable<(string label, Type type)> GetInspectorTabs()
-    //{
-    //    yield return ("Shops", typeof(Gui_ItemForSale));
-    //}
+    internal void Validate()
+    {
+        foreach (var c in this.Components.Values)
+            c.Validate();
+    }
 }

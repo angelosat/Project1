@@ -88,7 +88,7 @@ class StatsComp : EntityComp, IGuiNew
         return gui;
     }
 
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
         foreach (var (source, list) in this.ContributionsByStat)
             foreach (var stat in list)

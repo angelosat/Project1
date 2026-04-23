@@ -14,6 +14,8 @@ namespace Project1.Core.Towns;
 
 public class WorldInhabitantView : Inspectable, ITooltippable
 {
+    public Color? TooltipColor => null;
+
     static readonly int PacketSyncAwardTownRating;
     static WorldInhabitantView()
     {

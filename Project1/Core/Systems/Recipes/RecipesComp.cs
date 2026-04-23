@@ -29,4 +29,7 @@ internal sealed class RecipesComp : EntityComp
         this.Updated?.Invoke(([entry], []));
         this.World.Events.Post(new ActorRecipeMasteryEvent(this.Owner as Actor, entry));
     }
+
+    public int Get(Def recipe)
+        => this._knowledge.TryGetValue(recipe, out var entry) ? entry.Level : 0;
 }

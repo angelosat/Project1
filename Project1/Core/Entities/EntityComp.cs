@@ -13,6 +13,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities;
 
@@ -62,8 +63,8 @@ public abstract class EntityComp : Inspectable
     public virtual IEnumerable<Entity> GetChildren() { yield break; }
     public virtual void GetChildren(List<GameObjectSlot> list) { }
     public virtual void GetContainers(List<Container> list) { }
-    public virtual void OnTooltipCreated(GameObject parent, Control tooltip) { }
-    public virtual void GetInventoryTooltip(GameObject parent, Control tooltip) { this.OnTooltipCreated(parent, tooltip); }
+    public virtual void OnTooltipCreated(Control tooltip) { }
+    public virtual void GetInventoryTooltip(Control tooltip) { this.OnTooltipCreated(tooltip); }
     internal virtual ContextAction GetContextRB(GameObject parent, GameObject player) => null;
     internal virtual ContextAction GetContextActivate(GameObject parent, GameObject player) => null;
     public virtual void GetClientActions(GameObject parent, List<ContextAction> actions) { }
@@ -107,6 +108,15 @@ public abstract class EntityComp : Inspectable
 
     internal virtual void OnAttachedToWorld() { }
 
+    internal virtual IEnumerable<Control> GetTooltipControls() { yield break; }
+
+    internal virtual void Validate() { }
+
+    //{
+    //    var box = new GroupBox();
+    //    this.OnTooltipCreated(box);
+    //    yield return box;
+    //}
     public abstract class Spec
     {
         public abstract Type CompClass { get; }

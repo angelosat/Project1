@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Tools;
+using Project1.Core.Systems.Quality;
+
 
 namespace Project1.Core.Entities.Stats.Resolvers;
 
@@ -19,7 +20,7 @@ sealed class StatToolSwingSpeed : StatResolver
 
         var baseline = (float)MaterialDefOf.LightWood.Density;
         var total = material.Density / baseline;
-        total /= obj.Quality.Multiplier;
+        total /= obj.QualityComp.Tier.Multiplier;
         return total;
     }
 }

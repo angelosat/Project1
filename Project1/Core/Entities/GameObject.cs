@@ -26,6 +26,7 @@ using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Ownership;
 using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
 using Project1.Core.UI;
@@ -91,7 +92,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
     public ItemDef Def;
-    public QualityDef Quality { get { return this.DefComponent.Quality; } set { this.DefComponent.Quality = value; } }
+    //public QualityDef Quality { get { return this.DefComponent.Quality; } set { this.DefComponent.Quality = value; } }
+    //public QualityDef Quality { get => this.QualityComp.Tier; set => this.QualityComp.Tier = value; }
     public GameObjectSlot ToSlotLink(int amount = 1)
     {
         return new GameObjectSlot() { Link = this };
@@ -515,11 +517,14 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         // TODO: LOL fix, i need the object name to be on top
         //foreach (var comp in Components.Except(new KeyValuePair<string, EntityComp>[] { new KeyValuePair<string, EntityComp>("Info", GetInfo()) }))
         //tooltip.Controls.Add(new LabelNew(() => this.LabelReadable));
+
+        //tooltip.Controls.Add(new Label(this.Quality.LabelReadable) { Fill = Color.Gold, Location = tooltip.Controls.BottomLeft, TextColorFunc = () => Color.Gold });
+
         foreach (var comp in Components.Values)
         {
             //if(comp.GetType() != typeof(DefComponent))
             //if(!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
-                comp.OnTooltipCreated(this, tooltip);
+                comp.OnTooltipCreated(tooltip);
         }
 
         var value = this.GetValueScore();
@@ -530,11 +535,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     public void GetInventoryTooltip(Control tooltip)
     {
-        GetInfo().OnTooltipCreated(this, tooltip);
+        GetInfo().OnTooltipCreated(tooltip);
         foreach(var comp in this.Components.Values)
         {
             if (!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
-                comp.GetInventoryTooltip(this, tooltip);
+                comp.GetInventoryTooltip(tooltip);
         }
 
         var value = this.GetValueScore();
@@ -1195,7 +1200,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             return this.Physics.Weight * this.StackSize;
         }
     }
- 
+
+    public Color? TooltipColor => this.QualityComp?.Tier.Color;
+
     internal List<StatNewModifier> GetStatModifiers(StatDef statNewDef)
     {
         this.TryGetComponent<StatsComp>(out var stats);
@@ -1316,6 +1323,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         var box = new GroupBox();
         //box.AddControls(new LabelNew(() => this.LabelReadable));
         this.GetTooltipInfo(box);
+        foreach (var comp in this.Components.Values)
+            foreach (Control ctrl in comp.GetTooltipControls())
+                box.AddControlsBottomLeft(ctrl);
         yield return box;
     }
 }

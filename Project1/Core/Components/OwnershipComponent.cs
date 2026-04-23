@@ -51,11 +51,11 @@ namespace Project1.Core.Components
             tag.TryGetTagValue<int>("Owner", v => this.OwnerRef = v);
         }
 
-        public override void OnTooltipCreated(GameObject parent, Control tooltip)
+        public override void OnTooltipCreated(Control tooltip)
         {
-            if (parent.Net == null)
+            if (this.Owner.Net == null)
                 return;
-            var owner = parent.World.Get(this.OwnerRef);
+            var owner = this.Owner.World.Get(this.OwnerRef);
             tooltip.AddControlsBottomLeft(Label.ParseWrap("Owner: ", this.ItemOwner));
         }
 

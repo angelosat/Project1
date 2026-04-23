@@ -552,6 +552,7 @@ public class Server : NetEndpoint
         var entity = template.Clone(1) as Entity;
         entity.SetStackSize(entity.StackMax);
         entity.Randomize(Random);
+        entity.Validate();
         //target.Map = Instance.Map;
         //this.Map.World.Register(entity, immediate: true);
         var map = target.Map;

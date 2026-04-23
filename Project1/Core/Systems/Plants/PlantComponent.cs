@@ -248,7 +248,7 @@ public sealed class PlantComponent : EntityComp<PlantComponent.Spec>
         this.GrowthFruit.Value = plantcomp.GrowthFruit.Value;
     }
 
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
         tooltip.Controls.Add(new BarImmediate()
         {

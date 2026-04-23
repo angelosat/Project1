@@ -36,6 +36,7 @@ namespace Project1.Core.Simulation;
 public class StaticMap : MapBase, ITooltippable
 {
     public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
+    public Color? TooltipColor => null;
 
 
     public MapSize Size;

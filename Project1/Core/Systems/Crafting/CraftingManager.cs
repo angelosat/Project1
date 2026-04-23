@@ -7,8 +7,10 @@ using Project1.Core.Simulation;
 using Project1.Core.Systems.Recipes;
 using Project1.Core.Towns;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
@@ -57,7 +59,7 @@ public sealed class CraftingManager : TownComp
     public IEnumerable<IGrouping<BlockEntity, List<CraftingOrder>>> OrdersByWorkstation => AllWorkstations.GroupBy(i => i.Parent, i => i.Orders);
     public IEnumerable<BlockWorkstationComp> AllWorkstationModules => this._workstationsByPosition.Values;
 
-    List<ICraftingPlugin> Plugins = [new RecipeMasterySystem()];
+    List<ICraftingPlugin> Plugins = [new RecipeMasterySystem(), new CraftingPlugin_Skill()];
 
     public CraftingManager(Town town) : base(town)
     {
@@ -320,10 +322,23 @@ public sealed class CraftingManager : TownComp
         return order;
     }
 
-    //internal CraftingOrder GetOrder(int id)
-    //{
-    //    return this._ordersById[id];
-    //}
+    static List<QualityDef> qualityTiers => field ??= Def.Get<QualityDef>().Where(d=>d.Threshold.HasValue).ToList();
+    internal QualityDef GetCrafingQuality(Actor actor, CraftingOrder order)
+    //=> this.Plugins.Sum(p => p.GetQualityBonus(actor, order));
+    {
+        var q = this.Plugins.Sum(p => p.GetQualityBonus(actor, order));
+        var roll = RandomHelper.NextGaussian(q, 10);
+        //var maxweight = qualityTiers.Sum(d => d.ProbabilityTableWeight);
+        var table = qualityTiers.Select(d => (d.Threshold, d)).ToArray();
+        for (int i = 0; i < table.Length; i++)
+        {
+            var o = table[i];
+            if (roll <= o.Threshold)
+                return o.d;
+        }
+        return table[^1].d;
+    }
+
     internal bool TryGetOrder(int orderId, out CraftingOrder order)
         => this._ordersById.TryGetValue(orderId, out order);
     internal float GetProgressFor(Actor actor)

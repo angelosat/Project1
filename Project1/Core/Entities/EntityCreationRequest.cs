@@ -11,6 +11,7 @@ public class EntityCreationRequest(Def context, Def stage, MaterialDef defaultMa
     public MaterialDef DefaultMaterial = defaultMaterial;
     public readonly Dictionary<BoneDef, MaterialDef> MaterialBindings = [];
     public readonly int StackSize = stackSize;
+    public QualityDef Quality;
 
     public EntityCreationRequest OverrideMaterial(BoneDef bone, MaterialDef material)
     {

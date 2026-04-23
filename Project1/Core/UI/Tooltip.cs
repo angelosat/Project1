@@ -14,6 +14,8 @@ internal sealed class TooltipNew : SelectionBoundControl
         var box = new GroupBox();
         foreach (var ctrl in tooltipabble.GetTooltipControls())
             box.AddControlsBottomLeft(ctrl);
+        if (tooltipabble.TooltipColor.HasValue)
+            this.Color = tooltipabble.TooltipColor.Value;
         this.AddControls(box);
     }
 }

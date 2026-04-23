@@ -21,6 +21,8 @@ namespace Project1.Core.Simulation;
 
 public class Cell : Inspectable, ISlottable
 {
+    public Color? TooltipColor => null;
+
     public const int HitPointsMax = 4;
 
     public string Name => this.Block.LabelReadable;

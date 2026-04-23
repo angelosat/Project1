@@ -6,13 +6,14 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
-using Project1.Core.UI;
+using Project1.Core.Systems.Recipes;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 
 namespace Project1.Core.Systems.Crafting;
 
@@ -507,4 +508,12 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         return new CraftingOrder(product, domain).Read(r);
     }
 
+    internal Entity CreateProduct(Actor actor, IEnumerable<Entity> ingredients)
+    {
+        //var actorSkill = actor.Skills.GetLevel(this.WorkstationCapability.Worker.CraftingSkill);
+        //var actorMastery = actor.Recipes.Get(this.ProductDef);
+        var quality = actor.Map.Town.Crafting.GetCrafingQuality(actor, this);
+        var product = this.WorkstationCapability.Worker.CreateProduct(actor, this, ingredients, quality);
+        return product;
+    }
 }

@@ -77,9 +77,13 @@ public class TooltipManager
         tooltip.AutoSize = true;
         if (!string.IsNullOrEmpty(item.LabelReadable))
             tooltip.Controls.Add(new Label(item.LabelReadable));
-        item.GetTooltipInfo(tooltip);
+        //item.GetTooltipInfo(tooltip);
+        foreach (var ctrl in item.GetTooltipControls())
+            tooltip.AddControlsBottomLeft(ctrl);
         foreach (var comp in Game1.Instance.GameComponents)
             comp.OnTooltipCreated(item, tooltip);
+        if (item.TooltipColor.HasValue)
+            tooltip.Color = item.TooltipColor.Value;
         return tooltip;
     }
 

@@ -39,11 +39,11 @@ public sealed class WorkstationCapability_Scribing : WorkstationCapabilityWorker
     //    comp.Spell = typed.Spell;
     //}
 
-    internal override Entity CreateProduct(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
+    internal override Entity CreateProduct(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients, QualityDef quality)
     {
         var mat = ingredients.First().PrimaryMaterial;
         var parameters = (AddOrderRequest_Scribing)order.Source;
-        var item = ConsumableSystem.CreateScroll(parameters.Spell, mat);
+        var item = ConsumableSystem.CreateScroll(parameters.Spell, mat, quality);
         foreach (var i in ingredients)
             i.Consume(1);
         return item;

@@ -488,7 +488,7 @@ public class SpriteComp : EntityComp
         return parent.GetComponent<SpriteComp>().Body;
     }
 
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
         foreach (var b in this.Body.GetAllBones())
         {

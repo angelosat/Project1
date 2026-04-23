@@ -19,6 +19,8 @@ namespace Project1.Framework.UI;
 
 public abstract class Control : Element, IDisposable, ITooltippable, IInputEventHandler, IBounded, IBoundedCollection
 {
+    public Color? TooltipColor => null;
+
     /// <summary>
     /// Gets the location of the control relative to the parent window.
     /// </summary>

@@ -25,7 +25,7 @@ public class EntityEffectWrapper
     public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
 
     public bool IsInstant => this.Def.BaseDuration == 0;
-
+    public float Multiplier;
     public SimulationTick RemainingDuration(SimulationTick now) => this.StartTick + (ulong)this.Duration - now;
     public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
     EntityEffectWrapper(EffectDef def, Def target)
@@ -33,8 +33,8 @@ public class EntityEffectWrapper
         this.Def = def;
         this.Target = target;
     }
- 
-    public EntityEffectWrapper(EffectDef def, Def target, float? budget, int ticksPerUnit, int duration = 0) 
+
+    public EntityEffectWrapper(EffectDef def, Def target, float? budget, int ticksPerUnit, int duration = 0, float multiplier = 1) 
         : this(def, target)
     {
         this.Budget = budget;
@@ -42,6 +42,7 @@ public class EntityEffectWrapper
         this.TicksPerUnit = ticksPerUnit;
         this.Duration = duration;
         this.Magnitude = budget.Value;
+        this.Multiplier = multiplier;
     }
 
     public static EntityEffectWrapper CopyFrom(EntityEffectWrapper source)
@@ -76,6 +77,7 @@ public class EntityEffectWrapper
         w.Write(this.TicksPerUnit);
         w.Write(this.StartTick);
         w.Write(this.Duration);
+        w.Write(this.Multiplier);
     }
     public static EntityEffectWrapper Create(IDataReader r)
     {
@@ -86,9 +88,10 @@ public class EntityEffectWrapper
         var rate = r.ReadInt32();
         var starttick = (SimulationTick)r.ReadUInt64();
         var duration = r.ReadInt32();
-        var fx = new EntityEffectWrapper(def, target, value, rate, duration)
+        var multiplier = r.ReadSingle();
+        var fx = new EntityEffectWrapper(def, target, value, rate, duration, multiplier)
         {
-            StartTick = starttick
+            StartTick = starttick,
         };
         return fx;
     }
@@ -126,5 +129,5 @@ public class EntityEffectWrapper
     }
 
     public override string ToString()
-        => EffectsUtils.GetString(this.Def, this.Target);
+        => EffectsUtils.GetString(this.Def, this.Target, this.Multiplier);
 }

@@ -13,6 +13,7 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
+using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
@@ -57,7 +58,7 @@ static class ItemDefOf
         Category = ItemCategoryDefOf.FoodRaw,
         ReplaceName = true,
         Comps = [typeof(ConsumableComp)],
-        CompDefs = [EntityCompDefOf.Consumable],
+        CompDefs = [EntityCompDefOf.Consumable, QualitiesDefOf.Comp],
         Body = new Bone(BoneDefOf.Item, ItemContent.BerriesFull),
         ProfileType = typeof(PlantSpeciesDef)
     };
@@ -66,8 +67,8 @@ static class ItemDefOf
         StackCapacity = 32,
         IsSingleUnit = true,
         ReplaceName = true,
-        Comps = [typeof(ConsumableComp)],
-        CompDefs = [EntityCompDefOf.Consumable],
+        Comps = [typeof(ConsumableComp), typeof(QualityComp)],
+        CompDefs = [EntityCompDefOf.Consumable, QualitiesDefOf.Comp],
         Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         //DefaultSprite = Sprite.Default
     };
@@ -143,7 +144,7 @@ static class ItemDefOf
         StorageFilterVariations = Def.Get<ToolProfileDef>(),
         VariationGetter = e => e.Def,
         Comps = [typeof(ToolComp), typeof(OwnershipComponent), typeof(ResourcesComp), typeof(StatsComp)],
-        CompDefs = [EntityCompDefOf.Tool, EntityCompDefOf.Ownership, EntityCompDefOf.Resources, EntityCompDefOf.Stats],
+        CompDefs = [EntityCompDefOf.Tool, EntityCompDefOf.Ownership, EntityCompDefOf.Resources, EntityCompDefOf.Stats, QualitiesDefOf.Comp],
         Body = new Bone(BoneDefOf.ToolHandle, ItemContent.LogsGrayscale, Vector2.Zero, 0.001f) { DrawMaterialColor = true, OriginGroundOffset = new Vector2(0, -16) }
                         .AddJoint(Vector2.Zero, new Bone(BoneDefOf.ToolHead, ItemContent.LogsGrayscale) { DrawMaterialColor = true })
     }

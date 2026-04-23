@@ -13,15 +13,16 @@ with.
     -->
     <!--<FontName>Nyala</FontName>-->
     <!--<FontName>Mercutio NBP Basic</FontName>-->
-    <FontName>Balthasar Regular NBP</FontName>
+	  <FontName>Pixeloid Sans</FontName>
+	  <!--<FontName>Balthasar Regular NBP</FontName>--> <!--12 size-->
     <!--<FontName>Miranda NBP</FontName>-->
     
     <!--
     Size is a float value, measured in points. Modify this value to change
     the size of the font.
     -->
-    <Size>12</Size>
-
+	  <!--<Size>12</Size>-->
+	  <Size>7</Size>
     <!--
     Spacing is a float value, measured in pixels. Modify this value to change
     the amount of spacing in between characters.

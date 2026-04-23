@@ -130,7 +130,7 @@ public sealed class ResourcesComp : EntityComp
         resource.AddModifier(resourceRateModifier);
     }
     
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
         foreach (var r in this.Resources.Values)
             tooltip.AddControlsBottomLeft(r.GetControlLabel());

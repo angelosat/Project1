@@ -25,7 +25,7 @@ namespace Project1.Core.Gear
             this.Type = slot;
             return this;
         }
-        public override void OnTooltipCreated(GameObject parent, Control tooltip)
+        public override void OnTooltipCreated(Control tooltip)
         {
             tooltip.Controls.Add(new Label(this.Durability.ToString())
             {

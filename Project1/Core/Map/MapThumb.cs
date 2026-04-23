@@ -41,6 +41,8 @@ namespace Project1.Core.Map
 
         public string LabelReadable => this.Map.LabelReadable;
 
+        public Color? TooltipColor => null;
+
         public Color GetNameplateColor()
         {
             return Color.White;

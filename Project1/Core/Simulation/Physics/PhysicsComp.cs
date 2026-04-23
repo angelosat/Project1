@@ -464,7 +464,7 @@ public class PhysicsComp : EntityComp
     }
     
 
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
         if (this.Size == ObjectSize.Immovable)
         {
@@ -474,7 +474,7 @@ public class PhysicsComp : EntityComp
         tooltip.AddControlsBottomLeft(
             new GroupBox().AddControlsHorizontally(
                 new Label("Weight: ") { TextColor = Color.LightGray },
-                new Label(() => $"{this.Weight * parent.StackSize} kg ({this.Weight} kg x{parent.StackSize})") { TextColor = Color.LightGray })
+                new Label(() => $"{this.Weight * this.Owner.StackSize} kg ({this.Weight} kg x{this.Owner.StackSize})") { TextColor = Color.LightGray })
             );
     }
   

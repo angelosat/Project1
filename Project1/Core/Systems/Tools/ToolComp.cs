@@ -6,6 +6,7 @@ using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Quality;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
@@ -53,7 +54,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         var aa = 20f; // what is this?
         var density = Math.Max(aa, material.Density); // in case for some reason the material is air
         var total = aa / density;
-        total *= tool.Quality.Multiplier;
+        total *= tool.QualityComp.Tier.Multiplier;
         total = StatDefOf.ToolSpeed.Worker.CalculateStat(this.Owner);
         return total;
     }
@@ -61,7 +62,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     {
         var tool = this.Owner;
         var material = tool.GetMaterial(BoneDefOf.ToolHead);
-        return material.Density * tool.Quality.Multiplier;
+        return material.Density * tool.QualityComp.Tier.Multiplier;
     }
     public ToolComp()
     {
@@ -99,11 +100,11 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         return text.TrimEnd('\n');
     }
 
-    public override void OnTooltipCreated(GameObject parent, Control tooltip)
+    public override void OnTooltipCreated(Control tooltip)
     {
-        tooltip.AddControlsBottomLeft(this.GetUI(parent));
+        tooltip.AddControlsBottomLeft(this.GetUI());
     }
-    GroupBox GetUI(GameObject parent)
+    GroupBox GetUI()
     {
         var box = new GroupBox();
         box.AddControlsBottomLeft(new Label(this.ToolUse));

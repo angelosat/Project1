@@ -90,7 +90,7 @@ namespace Project1.Core.Systems.Plants
         //{
         //    info.AddInfo(new Bar(this.GrowthNew) { Color = Color.MediumAquamarine, Name = "Growth: ", TextFunc = () => this.GrowthNew.Percentage.ToString("##0%") });
         //}
-        public override void OnTooltipCreated(GameObject parent, Control tooltip)
+        public override void OnTooltipCreated(Control tooltip)
         {
             tooltip.Controls.Add(new BarImmediate()
             {

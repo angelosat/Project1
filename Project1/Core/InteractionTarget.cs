@@ -29,8 +29,10 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
         switch (this.Type)
         {
             case TargetType.Entity:
-                if (this.Object != null)
-                    this.Object.GetTooltipInfo(tooltip);
+                if (this.Object is not null)
+                    //this.Object.GetTooltipInfo(tooltip);
+                    foreach (var ctrl in this.Object.GetTooltipControls())
+                        tooltip.AddControlsBottomLeft(ctrl);
                 break;
 
             case TargetType.Cell:
@@ -852,6 +854,8 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
     public bool IsForbidden => this.Type == TargetType.Entity && this.Object.IsForbidden;
 
     public bool HasObject { get { return this.Object != null; } }
+
+    public Color? TooltipColor => this.Entity?.TooltipColor;
 
     public T GetEntity<T>() where T : GameObject
     {

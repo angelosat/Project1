@@ -6,6 +6,7 @@ using Project1.Core.Legacy;
 using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -24,11 +25,13 @@ namespace Project1.Core.Blocks
         }
         public abstract BlockCompDef CompDef { get; }
         public int RuntimeIndex;
-        protected event Action Updated;
+        internal event Action Updated;
         protected void NotifyUpdated() => this.Updated?.Invoke();
+        internal ChangeNotifier Notifier = new();
 
         public BlockEntity Parent;
         public MapBase Map => this.Parent.Map;
+        public WorldBase World => this.Map.World;
         public IntVec3 Global => this.Parent.OriginGlobal;
         public override string LabelReadable => this.CompDef.LabelReadable;
         public ObservableCollection<string> Errors => this.Parent.Errors;

@@ -4,6 +4,7 @@
 - recipe / spell mastery / crafting order filter by actor
 - move retrievefrominventory logic from smartequip to consumable planner
 - front-back of shop cash registers/counters and workstations
+- customer queues
 - HUGE BUG: if smartequip has cause an actor to equip an item while his preexisting plan involved carrying another item, then the preexisting plan has to be aborted 
 - - otherwise the actor will attempt to resume the plan with the wrong carried item
 - head animation for conversations

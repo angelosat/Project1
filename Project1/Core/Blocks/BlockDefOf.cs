@@ -140,7 +140,12 @@ static class BlockDefOf
         BlockEntityCompSpecs = [new BlockInventoryComp.Spec()],
         ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Furniture, [MaterialRefinementDefOf.Planks])
     };
-    static public readonly BlockDef ShopShelf = new("ShopShelf", typeof(BlockShopShelf));
+    static public readonly BlockDef ShopShelf = new("ShopShelf", typeof(BlockShopShelf))
+    {
+        ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk]),
+        BlockEntityCompSpecs = [
+            new BlockShelfComp.Spec()]
+    };
     static public readonly BlockDef Workbench = new("Workbench", typeof(BlockWorkstation))
     {
         Profile = WorkstationDefOf.Workbench,

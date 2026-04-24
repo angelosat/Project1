@@ -18,12 +18,13 @@ using System.Linq;
 
 namespace Project1.Core.Towns.Services.Shops;
 
-internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop Transaction) : IEventPayload { }
+internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop Transaction) : IEventPayload;
 
-internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload { }
-internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload { }
-internal record struct ItemToggledForSaleEvent(Entity Item, bool ForSale) : IEventPayload { }
-internal record struct PlayerItemToggledForSaleEvent(IReadOnlyCollection<Entity> Items) : IEventPayload { }
+internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload;
+internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload;
+internal record struct PlayerItemToggledForSaleEvent(IReadOnlyCollection<Entity> Items) : IEventPayload;
+internal record struct ItemToggledForSaleEvent(Entity Item, bool ForSale) : IEventPayload;
+
 internal class PriceTag : ISaveableNewNew<PriceTag>, ISerializableNew<PriceTag>
 {
     public EntityRefId Item;
@@ -203,12 +204,16 @@ public sealed class TownComp_Shops : TownComp
     }
 
     internal readonly ChangeNotifier Notifier = new();
+
     Dictionary<EntityRefId, PriceTag> _itemsForSale = [];
+    readonly Dictionary<Def, HashSet<EntityRefId>> _itemsForSaleByProfile = [];
+
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsRequests = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsBySeller = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByBuyer = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
     readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
+
     readonly List<ServiceRequest_Shop> _transactionsAll = [];
     internal event Action<(IEnumerable<Entity> added, IEnumerable<Entity> removed)> ItemsForSaleToggled;
     internal IEnumerable<(Entity entity, PriceTag price)> GetPriceList()
@@ -216,6 +221,8 @@ public sealed class TownComp_Shops : TownComp
         foreach (var pricetag in this._itemsForSale)
             yield return (this.World.Get(pricetag.Key), pricetag.Value);
     }
+    internal int CountForSale(Def d)
+       => this._itemsForSaleByProfile.TryGetValue(d, out var set) ? set.Count : 0;
 
     internal void ToggleForSale(Entity item)
     {
@@ -224,12 +231,21 @@ public sealed class TownComp_Shops : TownComp
         {
             forsale = true;
             this._itemsForSale.Add(item.RefId, new(item.RefId, item.GetValueTotal()));
+            if (!this._itemsForSaleByProfile.TryGetValue(item.Profile, out var set))
+                this._itemsForSaleByProfile[item.Profile] = set = [];
+            set.Add(item.RefId);
             this.ItemsForSaleToggled?.Invoke(([item], []));
         }
         else
         {
+            var set = this._itemsForSaleByProfile[item.Profile];
+            set.Remove(item.RefId);
+            if (set.Count == 0)
+                this._itemsForSaleByProfile.Remove(item.Profile);
+
             if (this._transactionsByItem.TryGetValue(item.RefId, out var req))
                 req.MarkFailed();
+
             this.ItemsForSaleToggled?.Invoke(([], [item]));
         }
         this.Notifier.Notify();
@@ -434,7 +450,4 @@ public sealed class TownComp_Shops : TownComp
         }
         return false;
     }
-
-   
-
 }

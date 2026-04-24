@@ -23,8 +23,14 @@ namespace Project1.Core.UI
             this.ClearControls();
             this.GuiList.Clear();
             GuiList.AddItems(actor.Skills.All);
+            var recipegui = new RecipesComp_Gui(actor.GetComponent<RecipesComp>());
+
+            recipegui.Layout(200, 200);
+            var scrollable = ScrollableBoxNewNewNew.FromWidth(recipegui, 200, 200);
             //this.AddControls(this.GuiList);
-            this.AddControlsVertically(this.GuiList, new RecipesComp_Gui(actor.GetComponent<RecipesComp>()).Layout(200, 200).ToPanelLabeled("Recipe masteries"));
+            this.AddControlsVertically(
+                this.GuiList, 
+                scrollable.ToPanelLabeled("Recipe masteries"));
         }
     }
 }

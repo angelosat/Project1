@@ -32,7 +32,7 @@ internal class PacketsConstruction
         var client = endpoint as Client;
         var r = packet.PacketReader;
         var map = client.World.Get((MapId)r.ReadInt32());
-        var comp = map.GetBlockEntityComp<BlockConstructionComp>(r.ReadIntVec3());
+        var comp = map.GetBlockComp<BlockConstructionComp>(r.ReadIntVec3());
         map.Events.Post(new ConstructionFinishedEvent(comp));
     }
     public static void SendReady(ConstructionReadyEvent e)
@@ -46,7 +46,7 @@ internal class PacketsConstruction
         var client = endpoint as Client;
         var r = packet.PacketReader;
         var map = client.World.Get((MapId)r.ReadInt32());
-        var comp = map.GetBlockEntityComp<BlockConstructionComp>(r.ReadIntVec3());
+        var comp = map.GetBlockComp<BlockConstructionComp>(r.ReadIntVec3());
         map.Events.Post(new ConstructionReadyEvent(comp));
     }
 
@@ -62,7 +62,7 @@ internal class PacketsConstruction
         var client = endpoint as Client;
         var r = packet.PacketReader;
         var map = client.World.Get((MapId)r.ReadInt32());
-        var comp = map.GetBlockEntityComp<BlockConstructionComp>(r.ReadIntVec3());
+        var comp = map.GetBlockComp<BlockConstructionComp>(r.ReadIntVec3());
         comp.Read(r);
     }
 }

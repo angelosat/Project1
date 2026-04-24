@@ -1,10 +1,7 @@
 ﻿using Project1.Core.Blocks;
-using Project1.Core.Components;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
-using Project1.Core.Networking;
-using Project1.Core.Simulation;
 using Project1.Core.Systems.Ownership;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
@@ -17,69 +14,33 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Towns.Services.Shops;
-
-internal record struct TransactionStartedEvent(MapBase Map, ServiceRequest_Shop Transaction) : IEventPayload;
-
-internal record struct PlayerDeleteShopEvent(Workplace Workplace) : IEventPayload;
-internal record struct PlayerCreateShopEvent(MapId MapId) : IEventPayload;
-internal record struct PlayerItemToggledForSaleEvent(IReadOnlyCollection<Entity> Items) : IEventPayload;
-internal record struct ItemToggledForSaleEvent(Entity Item, bool ForSale) : IEventPayload;
-
-internal class PriceTag : ISaveableNewNew<PriceTag>, ISerializableNew<PriceTag>
-{
-    public EntityRefId Item;
-    public int Price;
-
-    public PriceTag(EntityRefId item, int price)
-    {
-        Item = item;
-        Price = price;
-    }
-
-    private PriceTag()
-    {
-        
-    }
-    public SaveTag Save(string name = "")
-    {
-        var tag = new SaveTag(SaveTag.Types.Compound, name);
-        tag.Save("Item", this.Item);
-        tag.Save("Price", this.Price);
-        return tag;
-    }
-    public static PriceTag Create(SaveTag tag)
-    {
-        var itemid = tag.LoadEntityRefId("Item");
-        var price = tag.LoadInt("Price");
-        return new(itemid, price);
-    }
-    public void Write(IDataWriter w)
-    {
-        w.Write(this.Item);
-        w.Write(this.Price);
-    }
-
-    public PriceTag Read(IDataReader r)
-    {
-        this.Item = r.ReadEntityRefId();
-        this.Price = r.ReadInt32();
-        return this;
-    }
-
-    public static PriceTag Create(IDataReader r)
-        => new PriceTag().Read(r);
-}
 public sealed class TownComp_Shops : TownComp
 {
+    internal readonly ChangeNotifier Notifier = new();
 
+    Dictionary<EntityRefId, PriceTag> _itemsForSale = [];
+    readonly Dictionary<Def, HashSet<EntityRefId>> _itemsForSaleByProfile = [];
+
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsRequests = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsBySeller = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByBuyer = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
+    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
+
+    readonly List<ServiceRequest_Shop> _transactionsAll = [];
+    internal event Action<(IEnumerable<Entity> added, IEnumerable<Entity> removed)> ItemsForSaleToggled;
     readonly ObservableHashSet<Workplace> Shopss = new();
+
+    readonly Dictionary<IntVec3, BlockShelfComp> Shelves = [];
+    public IEnumerable<IntVec3> EmptyShelves
+        => this.Shelves.Keys.Where(sh => this.Map.IsCellEmpty(sh.Above));
+
 
     readonly Dictionary<TownServiceDef, TownServiceWorker> _servicesByDef = [];
     readonly Dictionary<Type, TownServiceWorker> _servicesByType = [];
-    readonly HashSet<IntVec3> ServicePoints = [];
-    public IReadOnlySet<IntVec3> GetServicePoints()
-        => this.ServicePoints;
-    public bool HasServicePoints => this.ServicePoints.Count > 0;
+    //readonly HashSet<IntVec3> ServicePoints = [];
+
+
     internal int CurrentShopID = 1;
 
     Dictionary<int, Workplace> Shops = [];
@@ -91,19 +52,46 @@ public sealed class TownComp_Shops : TownComp
 
     public TownComp_Shops(Town town) : base(town)
     {
-        town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
+        //town.Map.Events.ListenTo<BlocksChangedEvent>(HandleBlocksChanged);
         town.Map.Events.ListenTo<StockpileUpdatedEvent>(HandleStockpileUpdated);
         town.Map.Events.ListenTo<EntityDespawnedEvent>(HandleEntityDespawned);
         town.Map.World.Events.ListenTo<EntityDisposedEvent>(HandleEntityDisposed);
         town.Map.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
+        town.Map.Events.ListenTo<BlockEntityAddedEvent>(HandleBlockEntityAdded);
+        town.Map.Events.ListenTo<BlockEntityRemovedEvent>(HandleBlockEntityRemoved);
     }
 
+    private void HandleBlockEntityAdded(BlockEntityAddedEvent e)
+    {
+        if (!e.Entity.TryGetComp<BlockShelfComp>(out var comp))
+            return;
+        this.Register(comp);
+    }
+
+    private void Register(BlockShelfComp comp)
+    {
+        this.Shelves.Add(comp.Parent.OriginGlobal, comp); // or cellsoccupied?
+    }
+
+    private void HandleBlockEntityRemoved(BlockEntityRemovedEvent e)
+    {
+        if (!e.Entity.TryGetComp<BlockShelfComp>(out var comp))
+            return;
+        this.UnRegister(comp);
+    }
+    private void UnRegister(BlockShelfComp comp)
+    {
+        this.Shelves.Remove(comp.Parent.OriginGlobal); // or cellsoccupied?
+    }
     private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
     {
         if (this._itemsForSale.ContainsKey(e.Item.RefId))
             this.ToggleForSale(e.Item);
     }
 
+    // todo: cache comps to avoid lookups
+    internal bool CanShelfAccept(IntVec3 shelf, Entity product)
+        => this.Shelves[shelf].Accepts(product);
     private void HandleEntityDisposed(EntityDisposedEvent e)
     {
         if (this._itemsForSale.ContainsKey(e.Entity.RefId))
@@ -125,16 +113,16 @@ public sealed class TownComp_Shops : TownComp
                 this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryEnqueue(item);
     }
 
-    private void HandleBlocksChanged(BlocksChangedEvent e)
-    {
-        foreach(var pos in e.Changes)
-        {
-            if (pos.Block == BlockDefOf.ShopCounter.Block)
-                this.ServicePoints.Add(pos.Global);
-            else
-                this.ServicePoints.Remove(pos.Global);
-        }
-    }
+    //private void HandleBlocksChanged(BlocksChangedEvent e)
+    //{
+    //    foreach(var pos in e.Changes)
+    //    {
+    //        if (pos.Block == BlockDefOf.ShopCounter.Block)
+    //            this.ServicePoints.Add(pos.Global);
+    //        else
+    //            this.ServicePoints.Remove(pos.Global);
+    //    }
+    //}
 
     public T GetService<T>() where T : TownServiceWorker => (T)this._servicesByType[typeof(T)];
     public override string Name => "Shops";
@@ -203,19 +191,7 @@ public sealed class TownComp_Shops : TownComp
         return list;
     }
 
-    internal readonly ChangeNotifier Notifier = new();
 
-    Dictionary<EntityRefId, PriceTag> _itemsForSale = [];
-    readonly Dictionary<Def, HashSet<EntityRefId>> _itemsForSaleByProfile = [];
-
-    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsRequests = [];
-    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsBySeller = [];
-    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByBuyer = [];
-    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsActive = [];
-    readonly Dictionary<EntityRefId, ServiceRequest_Shop> _transactionsByItem = [];
-
-    readonly List<ServiceRequest_Shop> _transactionsAll = [];
-    internal event Action<(IEnumerable<Entity> added, IEnumerable<Entity> removed)> ItemsForSaleToggled;
     internal IEnumerable<(Entity entity, PriceTag price)> GetPriceList()
     {
         foreach (var pricetag in this._itemsForSale)
@@ -383,11 +359,11 @@ public sealed class TownComp_Shops : TownComp
         foreach (var wp in this.Shopss)
             wp.ResolveReferences();
 
-        foreach(var cell in this.Map.GetAllCellsWithIndex())
-        {
-            if (cell.cell.Block == BlockDefOf.ShopCounter.Block)
-                this.ServicePoints.Add(cell.id.Local.ToGlobal(cell.chunk));
-        }
+        //foreach(var cell in this.Map.GetAllCellsWithIndex())
+        //{
+        //    if (cell.cell.Block == BlockDefOf.ShopCounter.Block)
+        //        this.ServicePoints.Add(cell.id.Local.ToGlobal(cell.chunk));
+        //}
 
         foreach (var req in this.Town.ServiceRequests.GetAllRequests<ServiceRequest_Shop>())
             this.AddInt(req);
@@ -433,21 +409,55 @@ public sealed class TownComp_Shops : TownComp
     internal IEnumerable<Entity> GetItemsMarkedForSale()
         //=> this._itemsForSale.Keys.Select(id => this.World.Get(id));
         => this.World.Get(this._itemsForSale.Keys);
+    internal IEnumerable<(Entity item, IEnumerable<IntVec3> shelves)> GetRestockingOptions()
+    {
+        foreach(var item in this.GetItemsMarkedForSale())
+            yield return (item, this.GetShelvesForItem(item));
+    }
+    internal IEnumerable<Entity> GetItemsForShelf(IntVec3 shelf)
+        => this.GetItemsMarkedForSale().Where(this.Shelves[shelf].Accepts);
+    internal IEnumerable<IntVec3> GetShelvesForItem(Entity item)
+    {
+        foreach (var (pos, comp) in this.Shelves)
+            if (comp.Accepts(item))
+                yield return pos;
+    }
+    internal bool IsItemAtCorrectShelf(Entity item)
+        => this.Shelves.TryGetValue(item.Cell.Below, out var shelf) && shelf.Accepts(item);
+    internal IEnumerable<Entity> GetItemsNeedingRestock()
+    {
+        foreach(var item in this.GetItemsMarkedForSale())
+        {
+            if (this.IsItemAtCorrectShelf(item))
+                continue;
+            yield return item;
+        }
+    }
 
     internal override bool IsClaimedBySystem(Entity item)
     {
-        if (item.IsForSale)
+        if (item.IsForSale && this.IsItemAtCorrectShelf(item))
             return true;
-        foreach(var t in this._transactionsAll)
-        {
-            if (t.Item != item.RefId)
-                continue;
-            if (item.Map != this.Map)
-                continue;
-            if (item.Cell != t.Counter.Value.Above)
-                continue;
+        if (this._transactionsByItem.ContainsKey(item.RefId))
             return true;
-        }
+        //foreach(var t in this._transactionsAll)
+        //{
+        //    if (t.Item != item.RefId)
+        //        continue;
+        //    if (item.Map != this.Map)
+        //        continue;
+        //    if (item.Cell != t.Counter.Value.Above)
+        //        continue;
+        //    return true;
+        //}
         return false;
     }
+
+    internal override void Scan(BlockEntity entity)
+    {
+        if (entity.TryGetComp<BlockShelfComp>(out var shelf))
+            this.Register(shelf);
+    }
+
+   
 }

@@ -23,9 +23,8 @@ using System.Collections.Generic;
 sealed class BlockShelfComp_Gui : SelectionBoundControl
 {
     readonly ComboBoxFinal<QualityDef> ComboQuality;
-    //ComboBoxFinal<Def> ComboProfile;
     readonly Table<Def> TableSale;
-    static readonly List<Def> ValidProfiles = [];// [Def.Get<ToolProfileDef>(), Def.Get<ConsumableDef>()];
+    static readonly List<Def> ValidProfiles = [];
     static IEnumerable<QualityDef> AllQualities => field ??= Def.Get<QualityDef>();
     BlockShelfComp? Comp;
     static BlockShelfComp_Gui()
@@ -42,14 +41,16 @@ sealed class BlockShelfComp_Gui : SelectionBoundControl
         this.TableSale = new Table<Def>()
             .AddColumn("def", 92, d => new LabelNew(d), 1)
             .AddColumn("count", 32, d => new LabelNew(() => $"{this.Comp?.Map.Town.Shops.CountForSale(d) ?? 0}"))
-            .AddColumn("ticked", CheckBoxFinalNew.DefaultBounds.Width, d => new CheckBoxFinalNew(() => { }, () => false));
+            .AddColumn("ticked", CheckBoxFinalNew.DefaultBounds.Width, 
+                d => new CheckBoxFinalNew(() => Ingame.Instance.Events.Post(new PlayerToggleShelfProfileFilterEvent(this.Comp!, d)), 
+                () => this.Comp!.Filter == d));
         this.TableSale.AddItems(ValidProfiles);
 
         this.ComboQuality = new(
             AllQualities, 
             100, 
             q => q.LabelReadable, 
-            q => Ingame.Instance.Events.Post(new PlayerToggleShelfQualityFilterEvent(this.Comp, q)), 
+            q => Ingame.Instance.Events.Post(new PlayerToggleShelfQualityFilterEvent(this.Comp!, q)), 
             () => this.Comp!.MinQuality);
 
     }
@@ -93,16 +94,16 @@ namespace Project1.Core.Towns.Services.Shops
         }
         public override BlockCompDef CompDef => BlockCompDefOf.Shelf;
 
+        // not used yet
         ZoneId InputStockpile = ZoneId.Null;
 
-        //internal Entity GetDisplayedItem() => this.Parent.Map.GetEntitiesAt(this.Parent.OriginGlobal.Above).FirstOrDefault();
         internal void SetInput(ZoneId stockpileId)
         {
             this.InputStockpile = stockpileId;
         }
         internal Def? Filter;
         internal QualityDef MinQuality = QualityDefOf.Common;
-        internal bool Accepts(Entity item) => item.Profile == this.Filter && item.Quality == this.MinQuality;
+        internal bool Accepts(Entity item) => item.Profile == this.Filter && (item.Quality is null || item.Quality.Rank >= this.MinQuality.Rank);
 
         internal override IEnumerable<(string label, Type type)> GetSelectionTabs()
         {
@@ -112,7 +113,11 @@ namespace Project1.Core.Towns.Services.Shops
         internal void SetQuality(QualityDef q)
         {
             this.MinQuality = q;
-            //this.Map.Events.Post(new BlockEntityCompUpdatedEvent(this));
+            this.Notifier.Notify();
+        }
+        internal void SetProfile(Def p)
+        {
+            this.Filter = this.Filter != p ? p : null;
             this.Notifier.Notify();
         }
 
@@ -128,19 +133,47 @@ namespace Project1.Core.Towns.Services.Shops
             return this;
         }
     }
-
+    internal record struct PlayerToggleShelfProfileFilterEvent(BlockShelfComp Comp, Def Profile) : IEventPayload;
     internal record struct PlayerToggleShelfQualityFilterEvent(BlockShelfComp Comp, QualityDef Quality) : IEventPayload;
 
     [EnsureStaticCtorCall]
     internal static class Packets_Shelf
     {
-        static readonly PacketId _pPlayerQualityToggle = Registry.PacketHandlers.Register(ReceivePlayerQualityToggle);
+        static readonly PacketId 
+            _pPlayerQualityToggle = Registry.PacketHandlers.Register(ReceivePlayerQualityToggle),
+            _pPlayerProfileToggle = Registry.PacketHandlers.Register(ReceivePlayerProfileToggle);
 
         static Packets_Shelf()
         {
             Registry.PlayerInputEventHooks.Register<PlayerToggleShelfQualityFilterEvent>(HandlePlayerToggleShelfQualityFilter);
+            Registry.PlayerInputEventHooks.Register<PlayerToggleShelfProfileFilterEvent>(HandlePlayerToggleShelfProfileFilter);
+        }
+        private static void HandlePlayerToggleShelfProfileFilter(PlayerToggleShelfProfileFilterEvent e)
+        {
+            var net = e.Comp.World.Net;
+            if (net.IsServer)
+                e.Comp.SetProfile(e.Profile);
+            SendProfile(e, net);
         }
 
+        private static void SendProfile(PlayerToggleShelfProfileFilterEvent e, NetEndpoint net)
+        {
+            net.BeginPacketImmediate(_pPlayerProfileToggle)
+                            .Write(e.Comp.Map.ID)
+                            .Write(e.Comp.Parent.OriginGlobal)
+                            .Write(e.Profile);
+        }
+
+        private static void ReceivePlayerProfileToggle(NetEndpoint endpoint, Packet packet)
+        {
+            var r = packet.PacketReader;
+            var map = endpoint.World.Get(r.ReadId<MapId>());
+            var comp = map.GetBlockComp<BlockShelfComp>(r.ReadIntVec3());
+            var p = r.ReadDef();
+            comp.SetProfile(p);
+            if (endpoint.IsServer)
+                SendProfile(new(comp, p), endpoint);
+        }
         private static void HandlePlayerToggleShelfQualityFilter(PlayerToggleShelfQualityFilterEvent e)
         {
             var net = e.Comp.World.Net;
@@ -161,7 +194,7 @@ namespace Project1.Core.Towns.Services.Shops
         {
             var r = packet.PacketReader;
             var map = endpoint.World.Get(r.ReadId<MapId>());
-            var comp = map.GetBlockEntityComp<BlockShelfComp>(r.ReadIntVec3());
+            var comp = map.GetBlockComp<BlockShelfComp>(r.ReadIntVec3());
             var q = r.ReadDef<QualityDef>();
             comp.SetQuality(q);
             if (endpoint.IsServer)

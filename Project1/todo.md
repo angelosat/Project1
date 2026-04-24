@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- clarify auxiliary/additional targets to reserve in plans
 - lean more into crafting commitments in crafting manager
 - recipe / spell mastery / crafting order filter by actor
 - move retrievefrominventory logic from smartequip to consumable planner

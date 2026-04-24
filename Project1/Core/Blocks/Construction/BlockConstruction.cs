@@ -25,7 +25,7 @@ namespace Project1.Core.Blocks
         }
         public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
         {
-            var block = chunk.Map.GetBlockEntityComp<BlockConstructionComp>(global).Block;
+            var block = chunk.Map.GetBlockComp<BlockConstructionComp>(global).Block;
             block = BlockDefOf.Construction.Block;
             AtlasDepthNormals.Node.Token token;
                 token = block.GetToken((int)camera.Rotation, chunk.Map.GetCell(global));

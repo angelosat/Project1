@@ -11,8 +11,10 @@ namespace Project1.Core.Entities
         public readonly Color Color;
         public readonly float Multiplier;
         public readonly int? Threshold;
-        public QualityDef(string name, Color color, float multiplier, int probabilityWeight, int? threshold, int masterySensitivity = 0) : base(name)
+        public readonly int Rank;
+        public QualityDef(string name, int rank, Color color, float multiplier, int probabilityWeight, int? threshold, int masterySensitivity = 0) : base(name)
         {
+            this.Rank = rank;
             this.Color = color;
             this.Multiplier = multiplier;
             this.ProbabilityTableWeight = probabilityWeight;

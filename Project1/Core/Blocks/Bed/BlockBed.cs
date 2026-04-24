@@ -138,7 +138,7 @@ namespace Project1.Core
             var part = origin == global ? Part.Top : Part.Bottom;
             var token = this.Parts[(int)part][(orientation + (int)camera.Rotation) % 4];
 
-            var comp = chunk.Map.GetBlockEntityComp<BlockBedComp>(origin);
+            var comp = chunk.Map.GetBlockComp<BlockBedComp>(origin);
             var col = comp.GetColorFromType();
 
             return canvas.NonOpaque.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, col /*Color.White*/, sunlight, blocklight, depth, this, global);

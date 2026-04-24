@@ -381,7 +381,7 @@ public abstract class MapBase : Inspectable
         return entity;
     }
 
-    public T GetBlockEntityComp<T>(IntVec3 global) where T: BlockComp
+    public T GetBlockComp<T>(IntVec3 global) where T: BlockComp
     {
         return this.GetBlockEntity(global).GetComp<T>();
     }
@@ -707,11 +707,13 @@ public abstract class MapBase : Inspectable
         }
     }
     
-    internal virtual IEnumerable<Entity> GetEntitiesAt(IntVec3 pos)
+
+    internal virtual IReadOnlySet<Entity> GetEntitiesAt(IntVec3 pos)
         => this.EntityTracker.GetEntitiesAt(pos);
     //internal virtual IReadOnlySet<Entity> GetEntitiesAtNew(IntVec3 pos)
     //   => this.EntityTracker.GetEntitiesAt(pos);
-    public bool IsCellEmpty(IntVec3 cell) => !this.GetEntitiesAt(cell).Any();
+    public bool IsCellEmpty(IntVec3 cell)// => !this.GetEntitiesAt(cell).Any();
+        => this.GetEntitiesAt(cell).Count == 0;
     public abstract bool IsInBounds(Vector3 global);
     public abstract void SetSkyLight(IntVec3 global, byte value);
     public abstract void SetBlockLight(IntVec3 global, byte value);

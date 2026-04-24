@@ -217,7 +217,7 @@ public sealed class TownComp_Quests : TownComp
    
     internal bool IsQuestAvailable(IntVec3 board, QuestId id)
     {
-        var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
+        var cash = this.Map.GetBlockComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
         var reward = this.AllQuestsInt[id].Reward;
         if (cash < reward)
             return false;
@@ -225,7 +225,7 @@ public sealed class TownComp_Quests : TownComp
     }
     internal IEnumerable<QuestRuntime> GetAvailableQuests(IntVec3 board)
     {
-        var cash = this.Map.GetBlockEntityComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
+        var cash = this.Map.GetBlockComp<BlockResourcesComp>(board).GetValue(ResourceDefOf.Cash);
         return this.AllQuests.Where(q => q.Reward <= cash);
     }
     internal bool TryCreateQuest(MaterialRefinementDef refdef, MaterialDef matdef)

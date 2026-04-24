@@ -38,7 +38,7 @@ internal static class Packets_TownServices
     {
         var r = packet.PacketReader;
         var map = endpoint.World.Get(r.ReadMapId());
-        var comp = map.GetBlockEntityComp<BlockShopComp>(r.ReadIntVec3());
+        var comp = map.GetBlockComp<BlockShopComp>(r.ReadIntVec3());
         var service = r.ReadDef<TownServiceDef>();
         comp.SetService(service);
         if (endpoint is Server server)

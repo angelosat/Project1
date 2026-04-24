@@ -54,7 +54,7 @@ class BehaviorResolveDoors : Behavior
             if (this.OpenedDoors.Contains(door))
                 continue;
             var (open, locked) = BlockDoor.GetState(cellOrigin.BlockData);
-            var doorComp = map.GetBlockEntityComp<BlockDoorComp>(cellVec);
+            var doorComp = map.GetBlockComp<BlockDoorComp>(cellVec);
             this.OpenedDoors.Add(door);
             this.CellsToComps.Add(door, doorComp);
             doorComp.OnActorEntered(parent);

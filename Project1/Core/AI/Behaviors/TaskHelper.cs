@@ -63,7 +63,7 @@ namespace Project1.Core.AI.Behaviors
             {
                 var task = bhav.Actor.CurrentPlan;
                 var t = task.GetTarget(targetInd);
-                if (t.Object.IsDisposed)
+                if (t.Object.IsDisposedOld)
                     return true;
                 if (t.IsForbidden)
                     return true;
@@ -91,7 +91,7 @@ namespace Project1.Core.AI.Behaviors
                 var task = bhav.Actor.CurrentPlan;
                 foreach (var t in task.PlacedObjects)
                 {
-                    if (t.Object.IsDisposed)
+                    if (t.Object.IsDisposedOld)
                         return true;
                     if (t.Object.IsForbidden)
                         return true;

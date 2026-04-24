@@ -450,7 +450,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public override string ToString()
     {
-        return $"{this.Net?.ToString()} [{this.RefId}] {this.Def} {this.Profile} {this.Name}";
+        //return $"{this.Net?.ToString()} [{this.RefId}] {this.Def} {this.Profile} {this.Name}";
+        return $"{this.Net?.ToString()} [{this.RefId}] {this.Name}";
     }
 
     #region Children
@@ -868,7 +869,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         }
     }
 
-    public bool IsDisposed => this.RefId > 0 && this.Net is null;
+    public bool IsDisposedOld => this.RefId > 0 && this.Net is null;
+    public bool IsDisposed { get; private set; }
 
     [Obsolete("use world.disposeandsync")]
     internal void SyncDispose()
@@ -877,6 +879,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
     internal void OnDispose()
     {
+        this.IsDisposed = true;
         foreach (var c in this.Components.Values)
             c.OnDispose();
     }

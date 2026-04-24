@@ -2,7 +2,6 @@
 using Project1.Core.Blocks;
 using Project1.Core.Interactions;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Recipes;
 using Project1.Framework;
 using System.Linq;
 
@@ -22,11 +21,6 @@ sealed class Interaction_Crafting : InteractionLogic
     static bool CanFinish(Context ctx) => CanPerform(ctx);
     public override bool CanPerform(InteractionContext ctx) => CanPerform((Context)ctx);
     static bool CanPerform(Context ctx) => ctx.Comp.IngredientsInPlace(ctx.Actor.CurrentPlan.TargetsA);
-    Context ContextTyped(InteractionContext ctx) => (Context)ctx;
-    //internal override void OnProgressAdded(Interaction i, int delta)
-    //{
-    //    this.ContextTyped(i.Context).Order.WorkstationCapability.Worker.OnWorkApplied(i.Actor, delta);
-    //}
     
     internal override void OnFinish(Interaction i)
     {

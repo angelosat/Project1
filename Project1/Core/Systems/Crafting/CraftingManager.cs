@@ -1,4 +1,5 @@
 ﻿using Project1.Core.AI;
+using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
@@ -55,6 +56,9 @@ public sealed class CraftingManager : TownComp
 
     readonly Dictionary<CraftingOrder, Actor> commitersByOrder = [];
     readonly Dictionary<Actor, CraftingCommitment> commitmentsByActor = [];
+    readonly Dictionary<EntityRefId, CraftingCommitment> commitmentsByIngredients = [];
+
+    readonly Dictionary<EntityRefId, CraftingOrder> ordersByUnfinishedItem = [];
 
     public IReadOnlySet<Entity> UnfinishedItems => this._unfinishedItems;
     public IEnumerable<BlockWorkstationComp> AllWorkstations => this._byType.SelectMany(d => d.Value);
@@ -79,7 +83,7 @@ public sealed class CraftingManager : TownComp
         this.ScanOrders();
         this.Town.Map.Events.ListenTo<ActorPlanAssignedEvent>(OnActorPlanAssigned);
         this.Town.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-        this.Town.Map.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
+        this.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
     }
 
     private void OnEntityDisposed(EntityDisposedEvent e)
@@ -89,10 +93,10 @@ public sealed class CraftingManager : TownComp
             return;
         this._unfinishedItems.Remove(entity);
         var comp = entity.GetComponent<UnfinishedItemComp>();
-        //var order = this._ordersById[comp.OrderId];
-        if(this.TryGetOrder(comp.OrderId, out var order))
+        //if(this.TryGetOrder(comp.OrderId, out var order))
+        //    order.UnfinishedItem = null;
+        if(this.ordersByUnfinishedItem.Remove(entity.RefId, out var order))
             order.UnfinishedItem = null;
-        //var actor = comp.Author;
         var actor = entity.Author;
         if (!this._unfinishedByActor.TryGetValue(actor, out var list))
             return;
@@ -103,15 +107,26 @@ public sealed class CraftingManager : TownComp
 
     private void OnEntitySpawned(EntitySpawnedEvent e)
     {
-        var entity = e.Entity;
+        //var entity = e.Entity;
+        //if (entity.Def != ItemDefOf.UnfinishedItem)
+        //    return;
+        //this._unfinishedItems.Add(entity);
+        ////var actor = entity.GetComponent<UnfinishedItemComp>().Author;
+        //var actor = entity.Author;
+        //if (!this._unfinishedByActor.TryGetValue(actor, out var list))
+        //    this._unfinishedByActor[actor] = list = [];
+        //list.Add(entity);
+    }
+    internal void BindUnfinishedItem(Actor actor, CraftingOrder order, Entity entity)
+    {
         if (entity.Def != ItemDefOf.UnfinishedItem)
-            return;
+            throw new Exception();
         this._unfinishedItems.Add(entity);
-        //var actor = entity.GetComponent<UnfinishedItemComp>().Author;
-        var actor = entity.Author;
         if (!this._unfinishedByActor.TryGetValue(actor, out var list))
             this._unfinishedByActor[actor] = list = [];
         list.Add(entity);
+        order.UnfinishedItem = entity;
+        this.ordersByUnfinishedItem.Add(entity.RefId, order);
     }
 
     private void OnActorPlanAssigned(ActorPlanAssignedEvent e)
@@ -145,7 +160,20 @@ public sealed class CraftingManager : TownComp
                 this.NextOrderId = Math.Max(this.NextOrderId, order.Id + 1);
             }
     }
+    internal void Commit(CraftingOrder order, Actor actor, List<CraftingOrder.OrderFeasibilityResult.Allocation> allocations)
+    {
+        var ingredientsPerBone = allocations.Select(a => (a.Bone, a.Entity));
+    }
+    internal override bool IsClaimedBySystem(Entity item)
+        => this.commitmentsByIngredients.ContainsKey(item.RefId);
+    internal void BindIngredient(Actor actor, CraftingOrder order, Entity targetStack, BoneDef bone)
+    {
+        var commitment = this.commitmentsByActor[actor];
+        commitment.Bind(bone, targetStack);
+        this.commitmentsByIngredients.Add(targetStack.RefId, commitment);
+    }
 
+    // Creates a new commitment with no ingredients bound
     internal void Commit(CraftingOrder order, Actor actor)
     {
         if(this.commitmentsByActor.TryGetValue(actor, out var existing))
@@ -163,6 +191,8 @@ public sealed class CraftingManager : TownComp
             return;
         this.commitmentsByActor.Remove(actor);
         this.commitersByOrder.Remove(commitment.Order);
+        foreach (var itemId in commitment.Ingredients.Values)
+            this.commitmentsByIngredients.Remove(itemId);
     }
     internal bool TryGetCommitedOrder(Actor actor, out CraftingOrder order)
     {
@@ -345,16 +375,22 @@ public sealed class CraftingManager : TownComp
 
     internal bool TryGetOrder(int orderId, out CraftingOrder order)
         => this._ordersById.TryGetValue(orderId, out order);
-    internal float GetProgressFor(Actor actor)
-    {
-        throw new NotImplementedException();
-    }
+    //internal float GetProgressFor(Actor actor)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-    internal bool CanContinueItem(Actor actor, UnfinishedItemComp comp)
-        => this.TryGetOrder(comp.OrderId, out var order) && order.Pending;
+    //internal bool CanContinueItem(Actor actor, UnfinishedItemComp comp)
+    //    => this.TryGetOrder(comp.OrderId, out var order) && order.Pending;
 
     internal CraftingOrder Get(CraftingOrderId id)
         => this._ordersById[id];
+
+   
+
+
+
+
 
     //internal Entity CreateProductFromOrder(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
     //{

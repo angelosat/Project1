@@ -13,6 +13,7 @@ using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -112,7 +113,7 @@ internal static class ToolSystem
     static MaterialRefinementDef GetCorrectRefinementForBoneMaterial(BoneDef bone, MaterialDef material)
     {
         var rule = GetRuleFor(bone);
-        var refTypes = rule.Types;
+        var refTypes = rule.Profiles.Cast<MaterialRefinementDef>();
         foreach (var t in refTypes)
             if (t.MaterialType == material.Type)
                 return t;

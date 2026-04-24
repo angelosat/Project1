@@ -55,7 +55,7 @@ namespace Project1.Core.Legacy.Crafting
         public Reaction.Product.ProductMaterialPair Product;
         private bool _initialized;
 
-        public int OrderId { get; private set; }
+        //public int OrderId { get; private set; }
         public override EntityCompDef CompDef => EntityCompDefOf.UnfinishedItem;
         public override string Name => "UnfinishedItem";
         public IReadOnlyDictionary<BoneDef, MaterialDef> MaterialBindings => this._materialBindings;
@@ -71,7 +71,7 @@ namespace Project1.Core.Legacy.Crafting
             this._initialized = true;
             //this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, bindings);
             this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, bindings);
-            this.OrderId = order.Id;
+            //this.OrderId = order.Id;
         }
         internal override IEnumerable<Control> GetInspectorControls()
         {
@@ -101,28 +101,32 @@ namespace Project1.Core.Legacy.Crafting
         }
         internal override void SaveExtra(SaveTag tag)
         {
-            this.Product.Save(tag, "Product");
-            this.OrderId.Save(tag, "Order");
-            this.Contents.Save(tag, "Contents");
+            //this.Product.Save(tag, "Product");
+            //this.OrderId.Save(tag, "Order");
+            //this.Contents.Save(tag, "Contents");
         }
         internal override void LoadExtra(SaveTag tag)
         {
-            this.Product = new(tag["Product"]);
-            this.OrderId = (int)tag["Order"].Value;
-            this.Contents.Load(tag["Contents"]);
+            //this.Product = new(tag["Product"]);
+            //this.OrderId = (int)tag["Order"].Value;
+            //this.Contents.Load(tag["Contents"]);
         }
         public override void Write(IDataWriter w)
         {
-            w.Write(this.OrderId);
+            //w.Write(this.OrderId);
+            w.Write([.. this.MaterialBindings.Keys]);
             w.Write([..this.MaterialBindings.Values]);
         }
 
         public override void Read(IDataReader r)
         {
-            this.OrderId = r.ReadInt32();
+            var bones = r.ReadListDef<BoneDef>();
+            var materials = r.ReadListDef<MaterialDef>();
+            this._materialBindings = bones.Zip(materials).ToDictionary();
+            //this.OrderId = r.ReadInt32();
             //this._materialBindings = CraftingSystem.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
-            var order = this.Owner.Map.Town.Crafting.Get(this.OrderId);
-            this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
+            //var order = this.Owner.Map.Town.Crafting.Get(this.OrderId);
+            //this._materialBindings = order.WorkstationCapability.Worker.MapBonesToMaterials(this.Owner.Profile, r.ReadListDef<MaterialDef>());
         }
 
         public new class Spec : Spec<UnfinishedItemComp> { }

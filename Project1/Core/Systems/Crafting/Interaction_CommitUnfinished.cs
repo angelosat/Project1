@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
+using Project1.Core.Interactions;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using System.Linq;
 
-namespace Project1.Core.Interactions;
+namespace Project1.Core.Systems.Crafting;
 
-class InteractionCommitUnfinishedLogic : InteractionLogic
+class Interaction_CommitUnfinished : InteractionLogic
 {
     class Context : InteractionContext
     {
@@ -39,9 +40,10 @@ class InteractionCommitUnfinishedLogic : InteractionLogic
         foreach (var ingredient in ingredients.Values)
             map.World.DisposeEntity(ingredient);
 
+
         item.Author = actor;
         map.Spawn(item, workstationCell.Global.Above(), Vector3.Zero);
+
+        map.Town.Crafting.BindUnfinishedItem(actor, order, item);
     }
-    
-   
 }

@@ -4,6 +4,8 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
 using Project1.Core.Systems.Crafting;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using static Project1.Core.Systems.Crafting.CraftingOrder;
 
@@ -13,9 +15,6 @@ sealed class Planner_Crafting : Planner
 {
     protected override Plan TryPlan(Actor actor)
     {
-        //if (!actor.HasDuty(DutyDefOf.Craftsman))
-        //    return null;
-
         var map = actor.Map;
         var carried = actor.Hauled;
         var manager = map.Town.Crafting;
@@ -28,51 +27,6 @@ sealed class Planner_Crafting : Planner
             else
                 manager.Uncommit(actor);
         }
-
-        // Gather all pending, reachable orders
-        //var allOrders = manager.GetAllOrdersUnsorted()
-        //    .Where(o => o.Pending && actor.CanReachAndReserve(o.Workstation.Parent));
-
-        //if(carried?.TryGetComponent<UnfinishedItemComp>(out var comp) ?? false)
-        //{
-        //    // check if order is enabled?
-        //    var workstation = comp.Order.Workstation.Parent;
-        //    if(actor.CanReachAndReserve(workstation) && map.IsCellEmpty(workstation.OriginGlobal.Above))
-        //    {
-        //        return new Plan(PlanDefOf.GoPlace, new TargetArgs(map, workstation.OriginGlobal.Above))
-        //        {
-        //            TargetB = new TargetArgs(workstation)
-        //        };
-        //    }
-        //}
-
-
-        //var unfinishedItems = manager.GetUnfinishedItems(actor);
-        //if(unfinishedItems.Contains(carried)) // implies carried is not null
-        //{
-        //    // TODO haul carried unfinished item to valid workstation
-        //    // QUESTION what does a valid workstation mean for an unfinished item?
-        //    return null; // if no available workstation exists
-        //}
-        //var unfinishedItemsOnWorkstations = manager.GetUnfinishedItemsOnWorkstations(actor);
-        //foreach(var (item, workstation) in unfinishedItemsOnWorkstations)
-        //{
-        //    if (!(actor.CanReachAndReserve(item) && actor.CanReachAndReserve(workstation.Parent)))
-        //        continue;
-        //    var plan = new Plan(PlanDefOf.CraftingUnfinishedAdvance, new TargetArgs(map, workstation.Parent.OriginGlobal))
-        //    {
-        //        TargetB = new TargetArgs(workstation.Parent)
-        //    };
-        //    return plan;
-        //}
-        //var haulableUnfinishedItems = unfinishedItems.Except(unfinishedItemsOnWorkstations.Select(e => e.item));
-        //foreach(var item in haulableUnfinishedItems)
-        //{
-        //    if (!actor.CanReachAndReserve(item))
-        //        continue;
-        //    return new Plan(PlanDefOf.GoHaul, item);
-        //}
-
 
         // Gather all pending, reachable orders
         // Exclude unreachable/unreservable workstations early instead of performing the check for each workstation order
@@ -114,9 +68,8 @@ sealed class Planner_Crafting : Planner
             }
         }
 
-        //if (order.CurrentWorker != EntityRefId.Null && order.CurrentWorker != actor.RefId)
-        //    return (flowControl: false, value: null);
-        if(!manager.CanCommit(actor, order))
+        // Check if another actor is currently commited to this order
+        if (!manager.CanCommit(actor, order))
             return (flowControl: false, value: null);
 
         if (TryUnfinishedItem(actor, order) is Plan unfinishedPlan)
@@ -140,38 +93,25 @@ sealed class Planner_Crafting : Planner
         if (excludedSlots.Count == workstationSlots.Count)
             return (flowControl: false, value: null);
 
-        //IEnumerable<Entity> itemPool =
-        //    order.Workstation.Input != ZoneId.Null ?
-        //    map.Town.ZoneManager.GetZone<Stockpile>(order.Workstation.Input).Items :
-        //    map.Stockpiles.Items;
-
-        //var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(i => i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
         var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(actor.CanReachAndReserve);
-        //var candidateIngredients = map.GetEntities<Entity>().Where(i=>i.Def == ItemDefOf.Ingredient && actor.CanReachAndReserve(i));
 
         if (carried is not null)
             candidateIngredients = candidateIngredients.Prepend(carried);
         var candidates = candidateIngredients.ToList();
-
-        // Build candidate pool (carried first if exists)
-        //var candidates = carried != null
-        //    ? new List<Entity> { carried }.Concat(map.GetEntities<Entity>().Where(actor.CanReachAndReserve)).ToList()
-        //    : map.GetEntities<Entity>().Where(actor.CanReachAndReserve).ToList();
-
 
         // Evaluate feasibility with exclusions
         var feasibility = order.IsFeasibleNew(candidates, excludedSlots, carried);
 
         if (feasibility.State == CraftingOrderState.NotEnoughItems)
             return (flowControl: false, value: null);
+
         manager.Commit(order, actor);
+
         // All slots already satisfied
         if (feasibility.State == CraftingOrderState.ReadyToCraft &&
             carried == null &&
             actor.CanReachAndReserve(order.Workstation.Parent))
-        //feasibility.ArmedSlots.All(i => actor.CanReachAndReserve(i.Entity)))
         {
-            //var withUnfinishedItem = CraftingSystem.CreatesUnfinished(order);
             var withUnfinishedItem = order.WorkstationCapability.Worker.CreatesUnfinished;
             var plandef = withUnfinishedItem ? PlanDefOf.CraftingUnfinishedBegin : PlanDefOf.Crafting;
             var plan = new Plan(plandef, new InteractionTarget(map, order.Workstation.Parent.OriginGlobal))
@@ -191,9 +131,10 @@ sealed class Planner_Crafting : Planner
         {
             var carriedAlloc = feasibility.Allocations
                 .FirstOrDefault(a => a.Entity == carried);
-
             if (carriedAlloc.Entity is not null)
             {
+                manager.BindIngredient(actor, order, carried, carriedAlloc.Bone);
+
                 if (carried.StackSize >= carriedAlloc.Quantity)
                 {
                     // Fully satisfies → deposit now
@@ -221,7 +162,7 @@ sealed class Planner_Crafting : Planner
         }
 
         // Otherwise, pick up next needed item
-        if (carried != null)
+        if (carried is not null)
         {
             var correctAlloc = feasibility.Allocations.FirstOrDefault(a => carried.CanAbsorb(a.Entity));
             if (correctAlloc.Entity != null)
@@ -243,11 +184,15 @@ sealed class Planner_Crafting : Planner
         //}
 
         // Consolidate allocations if they're from the same stack
-        Entity targetStack = feasibility.Allocations.First().Entity;
+        var targetAlloc = feasibility.Allocations.First();
+        var targetStack = targetAlloc.Entity;
         int totalQuantity = 0;
         foreach (var alloc in feasibility.Allocations)
             if (alloc.Entity == targetStack)
                 totalQuantity += alloc.Quantity;
+
+        // commit this stack to the commitment's ingredients
+
         return (flowControl: true, value: new Plan(PlanDefOf.GoHaul, new InteractionTarget(targetStack))
         {
             AmountA = totalQuantity,
@@ -273,7 +218,7 @@ sealed class Planner_Crafting : Planner
             return null;
         //var comp = unfinishedItem.GetComponent<UnfinishedItemComp>();
         //if (comp.Author != actor)
-        if(unfinishedItem.Author != actor)
+        if (unfinishedItem.Author != actor)
             return null;
         if (!actor.CanReachAndReserve(unfinishedItem))
             return null;
@@ -288,7 +233,7 @@ sealed class Planner_Crafting : Planner
                 Order = order.Id
             };
         }
-        if(actor.Hauled is Entity carried && carried == order.UnfinishedItem)
+        if (actor.Hauled is Entity carried && carried == order.UnfinishedItem)
         {
             if (actor.CanReachAndReserve(workstation) && map.IsCellEmpty(workstation.OriginGlobal.Above))
             {
@@ -300,7 +245,7 @@ sealed class Planner_Crafting : Planner
             else
                 return null;
         }
-        if(actor.CanReachAndReserve(unfinishedItem))
+        if (actor.CanReachAndReserve(unfinishedItem))
         {
             return new Plan(PlanDefOf.GoHaul, unfinishedItem);
         }

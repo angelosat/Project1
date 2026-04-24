@@ -170,6 +170,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         var pool = new Dictionary<(MaterialDef, Def), MaterialPoolEntry>();
         foreach (var e in candidates)
         {
+            if (e.Profile is null)
+                continue; // ignore items with null profile, for now
             if (!pool.TryGetValue((e.PrimaryMaterial, e.Profile), out var entry))
             {
                 entry = new MaterialPoolEntry();
@@ -214,7 +216,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
                 {
                     Entity = preferredEntity,
                     Slot = slotCell,
-                    Quantity = Math.Min(rule.Quantity, preferredEntity.StackSize)
+                    Quantity = Math.Min(rule.Quantity, preferredEntity.StackSize),
+                    Bone = rule.Bone
                 });
                 continue;
             }
@@ -232,7 +235,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
 
             //// 3c. Consume from pool
             //var matEntry = pool[matchedMaterial];
-            var matchedMaterialForm = GetAcceptableMaterialForms(rule.Bone)
+            var acceptable = GetAcceptableMaterialForms(rule.Bone);
+            var matchedMaterialForm = acceptable
                 .FirstOrDefault(mf => pool.TryGetValue(mf, out var entry) && entry.Available >= rule.Quantity);
 
             if (matchedMaterialForm == default)
@@ -252,7 +256,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
             {
                 Entity = nextEntity,
                 Slot = slotCell,
-                Quantity = allocatedQuantity
+                Quantity = allocatedQuantity,
+                Bone = rule.Bone
             });
         }
 
@@ -324,7 +329,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
             {
                 Entity = nextEntity,
                 Slot = slotCell,
-                Quantity = allocatedQuantity
+                Quantity = allocatedQuantity,
+                Bone = rule.Bone
             });
         }
 
@@ -406,6 +412,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
             public Entity Entity;
             public IntVec3 Slot;
             public int Quantity;
+            public BoneDef Bone;
         }
 
         public List<Allocation> Allocations = new();

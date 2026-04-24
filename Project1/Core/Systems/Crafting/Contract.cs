@@ -1,8 +1,10 @@
-﻿using Project1.Core.Blocks;
+﻿using Project1.Core.Animations;
+using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using System.Collections.Generic;
+using System.Linq;
 
 #nullable enable
 
@@ -18,4 +20,8 @@ internal sealed class CraftingCommitment(Actor actor, CraftingOrder order)
     internal readonly CraftingOrder Order = order;
     internal Entity? Product;
     internal readonly SimulationTick TickCommitted = actor.World.CurrentTick;
+    internal readonly Dictionary<BoneDef, EntityRefId> Ingredients = order.GetSlotMapping().ToDictionary(b => b, b => EntityRefId.Null);
+
+    internal void Bind(BoneDef bone, Entity targetStack)
+        => this.Ingredients[bone] = targetStack.RefId;
 }

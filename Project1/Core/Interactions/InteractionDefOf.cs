@@ -141,7 +141,7 @@ internal static class InteractionDefOf
         Range = InteractionRange.InteractionSpot,
         SkillIncrease = SkillIncreaseType.OnFinish
     };
-    public static readonly InteractionDef CraftUnfinishedBegin = new("CraftingUnfinished", typeof(InteractionCommitUnfinishedLogic))
+    public static readonly InteractionDef CraftUnfinishedBegin = new("CraftingUnfinished", typeof(Interaction_CommitUnfinished))
     {
         Animation = AnimationDefOf.Tool,
         Controller = InteractionControllers.FirstContact,// new InteractionProgressTool(),
@@ -149,7 +149,7 @@ internal static class InteractionDefOf
         ToolUse = ToolUseDefOf.Carpentry,
         Range = InteractionRange.InteractionSpot
     };
-    public static readonly InteractionDef CraftUnfinished = new("CraftingUnfinishedAdvance", typeof(InteractionAdvanceUnfinishedLogic))
+    public static readonly InteractionDef CraftUnfinished = new("CraftingUnfinishedAdvance", typeof(Interaction_AdvanceUnfinished))
     {
         Animation = AnimationDefOf.Tool,
         Controller = InteractionControllers.External,// new InteractionProgressTool(),

@@ -2,6 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +31,10 @@ public sealed class WorkstationCapability_ToolMaking : WorkstationCapabilityWork
 
     public override IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
     {
-        if (recipe is ToolProfileDef tool)
-        {
+        //if (recipe is ToolProfileDef tool)
+        //{
             foreach (var rule in ToolSystem.GetRules())
-                yield return new(rule.Bone, ItemDefOf.Ingredient, [rule.Refinement], [.. rule.Types.Select(mr => mr.MaterialType)], 1);
-        }
+                yield return new(rule.Bone, ItemDefOf.Ingredient, rule.Profiles, [.. rule.Profiles.Select(mr => ((MaterialRefinementDef)mr).MaterialType)], 1);
+        //}
     }
 }

@@ -18,7 +18,6 @@ namespace Project1.Core.AI;
 
 public sealed class AIState : Inspectable
 {
-    public static AIConversationManager ConversationManager = new();
     public ProgressFloat Attention = new();
     public float AttentionDecay = 1;
     public float AttentionDecayDefault = 1;
@@ -26,7 +25,6 @@ public sealed class AIState : Inspectable
     public Dictionary<string, object> Blackboard = new();
     public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
     public Actor ConversationPartner, TradingPartner;
-    public AIConversationManager.Conversation CurrentConversation;
     public PlannerDef CurrentPlanner;
     public Plan ForcedTask;
     public AILog Log;

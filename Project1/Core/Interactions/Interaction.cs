@@ -109,7 +109,8 @@ public sealed class Interaction : Inspectable
             if (this.Def.Logic.HasFailed(this))
             {
                 this.Def.Logic.OnFailure(this);
-                this.Finish();
+                this.Abort();
+                //this.Finish();
                 return;
             }
         }
@@ -122,7 +123,8 @@ public sealed class Interaction : Inspectable
             }
             return;
         }
-        this.Def.Controller?.Tick(this);
+        //if(this.Actor.Net.IsServer) // test
+            this.Def.Controller?.Tick(this);
     }
     public void TickOld()
     {

@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- influence system for visitors to help with town tasks
 - clarify auxiliary/additional targets to reserve in plans
 - lean more into crafting commitments in crafting manager
 - recipe / spell mastery / crafting order filter by actor

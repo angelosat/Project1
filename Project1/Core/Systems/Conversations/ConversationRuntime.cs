@@ -9,7 +9,7 @@ namespace Project1.Core.Systems.Conversations;
 sealed class ConversationRuntime(SimulationTick tick, EntityRefId initiator, EntityRefId target) 
     : ISaveableNewNew<ConversationRuntime>
 {
-    enum States { Requested, Accepted, Running, Finished }
+    enum States { Requested, /*Accepted, */Running, Finished }
     internal EntityRefId Initiator = initiator, Target = target;
     States State;
     internal EntityRefId CurrentTalker { get; private set; } = initiator;
@@ -24,13 +24,10 @@ sealed class ConversationRuntime(SimulationTick tick, EntityRefId initiator, Ent
 
     internal bool IsRequested => this.State == States.Requested;
     internal bool IsFinished => this.State == States.Finished;
+    internal bool IsRunning => this.State == States.Running;
 
     public ConvoIntentRuntime NextIntent { get; internal set; }
-    //public ConversationRuntime(Actor initiator, Actor target) : this(initiator.World.CurrentTick, initiator.RefId, target.RefId)
-    //{
-    //    this.InitiatorRelationshipAtStart = initiator.Relationships.Get(target);
-    //    this.TargetRelationshipAtStart = target.Relationships.Get(initiator);
-    //}
+
     internal void MarkAccepted()
     {
         Debug.Assert(this.State == States.Requested);

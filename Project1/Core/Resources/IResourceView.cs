@@ -10,6 +10,8 @@ public interface IResourceView
     int Max { get; set; }
     int TicksPerRecoverOne { get; set; }
     ResourceThreshold CurrentThreshold { get; }
+    bool IsDepleted => this.Percentage <= 0;
+
     void ApplyDelta(int delta);
     void ApplyAccumulatorRateDelta(float delta);
     void ApplyAccumulatorDelta(float delta);

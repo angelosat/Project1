@@ -59,7 +59,6 @@ public sealed class ConversationSystem : TownComp
     {
         foreach(var convo in this.ActiveConversationsByInitiator.Values.ToArray())
         {
-
             if (!convo.IsFinished)
                 continue;
             RemoveInt(convo);
@@ -67,6 +66,7 @@ public sealed class ConversationSystem : TownComp
             this._availableActors.Add(convo.Target);
 
             Finish(convo);
+
 
             $"{this.World.Net} convo between {convo.Initiator} and {convo.Target} finished and removed".ToConsole();
         }
@@ -94,6 +94,7 @@ public sealed class ConversationSystem : TownComp
         this.AddInt(conversation);
         this._availableActors.Remove(initiator.RefId);
         this._availableActors.Remove(target.RefId);
+        $"conversation initiated by {initiator.DebugName}".ToConsole();
         return true;
     }
 

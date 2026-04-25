@@ -74,6 +74,8 @@
             public float GetProgressBarPercentage(Interaction i) => i.Context.GetPercentage(i);
             public void Tick(Interaction i)
             {
+                if (i.Actor.Net.IsClient)
+                    return;
                 var logic = i.Def.Logic;
                 logic.OnTick(i);
             }

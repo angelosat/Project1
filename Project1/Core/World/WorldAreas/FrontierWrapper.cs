@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Tools;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace Project1.Core.World.WorldAreas;
 public class FrontierWrapper
 {
     public readonly FrontierDef Def;
-    List<Entity> Treasures = [];
+    readonly internal List<Entity> Treasures = [];
     public FrontierWrapper(FrontierDef def)
     {
         this.Def = def;
@@ -18,6 +19,7 @@ public class FrontierWrapper
 
     internal void AddTreasure(Entity entity)
     {
+        entity.Detach();
         this.Treasures.Add(entity);
     }
     internal bool TryFindTreasure(Random rand, Actor actor, out Entity treasure)

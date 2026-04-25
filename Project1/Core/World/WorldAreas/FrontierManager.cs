@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Tools;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
@@ -23,6 +24,9 @@ public class FrontierManager : IWorldSpaceManager
     public StaticWorld World { get; }
     static readonly List<OffmapActivity> _offmapActivities = [];
     static internal List<FrontierDecider> Deciders = [];
+    readonly Dictionary<Actor, SimulationTick> IncapacitatedActors = [];
+    readonly static ulong IncapacitationDuration = (ulong)Ticks.FromMinutes(10);
+    readonly List<Actor> toKill = [];
     static FrontierManager()
     {
         foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
@@ -44,12 +48,42 @@ public class FrontierManager : IWorldSpaceManager
         this.World = world;
         foreach (var areadef in _cachedDefs)
             this.Frontiers.Add(areadef, new FrontierWrapper(areadef));
-        this.GenerateTreasure(new Random());
-        //var byTier = this.Frontiers.Values.ToList();
-        //byTier.Sort((a, b) => a.Def.Tier.CompareTo(b.Def.Tier));
-        //this.FrontiersByTier = byTier.ToDictionary(f => new Tier(f.Def.Tier), f => f);
-        world.Events.ListenTo<EntityKilledEvent>(HandleEntityKilled);
+        //this.GenerateTreasure(new Random());
+        //world.Events.ListenTo<EntityKilledEvent>(HandleEntityKilled);
+        world.Events.ListenTo<ActorIncapacitatedEvent>(HandleActorIncapacitated);
+    }
 
+
+    private void HandleActorIncapacitated(ActorIncapacitatedEvent e)
+    {
+        this.IncapacitatedActors.Add(e.Actor, this.World.CurrentTick);
+    }
+
+    void TickIncapacitated()
+    {
+        var now = this.World.CurrentTick;
+        foreach(var (actor, tick) in this.IncapacitatedActors)
+        {
+            if(now - tick >= IncapacitationDuration)
+            {
+                this.toKill.Add(actor);
+            }
+        }
+        foreach(var actor in toKill)
+        {
+            Kill(actor);
+        }
+        this.toKill.Clear();
+    }
+
+    private void Kill(Actor actor)
+    {
+        var frontier = this.GetFrontier(actor);
+        var loot = actor.GetSelfAndChildren(includeSelf: false).ToArray();
+        foreach (var item in loot)
+            frontier.AddTreasure(item);
+        this.IncapacitatedActors.Remove(actor);
+        this.ActorPositions.Remove(actor);
     }
 
     private void HandleEntityKilled(EntityKilledEvent e)
@@ -64,13 +98,19 @@ public class FrontierManager : IWorldSpaceManager
             frontier.AddTreasure(item);
     }
 
-    void GenerateTreasure(Random rand)
+    void GenerateTreasure()
     {
+        if (this.World.Net.IsClient)
+            return;
+        var targetloot = 10;
         foreach(var f in this.Frontiers.Values)
         {
-            for (int i = 0; i < 10; i++)
+            while(f.Treasures.Count < targetloot)
+            //for (int i = 0; i < 10; i++)
             {
-                f.AddTreasure(ToolSystem.CreateRandom(rand, f.Def.Tier));
+                var item = ToolSystem.CreateRandom(this.World.Random, f.Def.Tier);
+                this.World.Register(item);
+                f.AddTreasure(item);
             }
         }
     }
@@ -115,6 +155,8 @@ public class FrontierManager : IWorldSpaceManager
                 this.EventSchedulers[actor].Tick(this.World.CurrentTick);
             actor.TickOffMap();
         }
+        this.TickIncapacitated();
+        this.GenerateTreasure();
     }
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
@@ -178,6 +220,8 @@ public class FrontierManager : IWorldSpaceManager
     //}
     void TriggerOffmapEvent(Actor actor)
     {
+        if (actor.Biology.IsIncapacitated)
+            return;
         var activity = _offmapActivities.SelectRandom(this.World.Random);
         var front = this.GetFrontier(actor);
         activity.Tick(front, actor);

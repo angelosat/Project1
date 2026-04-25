@@ -27,7 +27,7 @@ sealed class Planner_Refueling : Planner
             return null;
 
         var deficit = target.GetDeficit(ResourceDefOf.Fuel);
-        var itemsInStockpiles = map.Stockpiles.AllItems.Where(CraftingSystem.IsFuel);
+        var itemsInStockpiles = map.Hauling.AllItems.Where(CraftingSystem.IsFuel);
 
         if (actor.Hauled is Entity carried)
         {

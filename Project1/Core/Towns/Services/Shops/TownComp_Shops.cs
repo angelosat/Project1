@@ -403,7 +403,7 @@ public sealed class TownComp_Shops : TownComp
     }
 
     internal IEnumerable<Entity> GetStockpileItemsForSale()
-        => this.Town.Map.Stockpiles.Stockpiles
+        => this.Town.Map.Hauling.Stockpiles
         .Where(s => s.ForSale)
         .SelectMany(s => s.Items);
     internal IEnumerable<Entity> GetItemsMarkedForSale()

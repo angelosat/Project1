@@ -26,7 +26,7 @@ sealed class Planner_Restocking : Planner
             return null;
 
         var deficit = target.GetDeficit(ResourceDefOf.Cash);
-        var candidateCoinsInStockpiles = map.Stockpiles.AllItems.Where(i => i.Def == ItemDefOf.Coins);
+        var candidateCoinsInStockpiles = map.Hauling.AllItems.Where(i => i.Def == ItemDefOf.Coins);
 
         if (actor.Hauled is Entity carried)
         {

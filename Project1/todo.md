@@ -1,5 +1,7 @@
 # todo 2025
 ## immediate
+- stockpile inventory gui
+- change entity materials from per-bone to a materialcomp, which defines whether the item has material at all, etc
 - influence system for visitors to help with town tasks
 - clarify auxiliary/additional targets to reserve in plans
 - lean more into crafting commitments in crafting manager
@@ -21,7 +23,8 @@
 - recalculate path on cell invalidation
 - buffs + buff/blessing town service
 - restaurant town service
-- make conversation requests expire
+- bank town service (adventurers deposit their leftover coins before going out for adventure)
+- make conversation requests expire (currently by patience)
 - 
 - create primary raw material processing workstations
 - separate pathing behavior from interaction behavior. probably dont need behaviorexecuteplan anymore, just assume that all behaviors are a path to an interaction

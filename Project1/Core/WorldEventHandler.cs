@@ -1,6 +1,7 @@
-﻿using Project1.Framework.Events;
+﻿using Project1.Core.Systems.Thoughts;
+using Project1.Framework.Events;
 
-namespace Project1.Core.Systems.Thoughts
+namespace Project1.Core
 {
     abstract class WorldEventHandler<T> : IWorldEventHandler where T : IEventPayload
     {

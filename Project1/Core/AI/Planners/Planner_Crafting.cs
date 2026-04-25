@@ -93,7 +93,7 @@ sealed class Planner_Crafting : Planner
         if (excludedSlots.Count == workstationSlots.Count)
             return (flowControl: false, value: null);
 
-        var candidateIngredients = map.Stockpiles.GetItems(order.Workstation.Input).Where(actor.CanReachAndReserve);
+        var candidateIngredients = map.Hauling.GetItems(order.Workstation.Input).Where(actor.CanReachAndReserve);
 
         if (carried is not null)
             candidateIngredients = candidateIngredients.Prepend(carried);
@@ -273,11 +273,11 @@ sealed class Planner_Crafting : Planner
         if (actor.Inventory.Contents.FirstOrDefault(isRepairable) is Entity repairableInvItem)
             return new Plan(PlanDefOf.RetrieveFromInventory, repairableInvItem);
 
-        if (map.Stockpiles.GetItems(order.Workstation.Input).FirstOrDefault(isRepairable) is Entity repairableStockpileItem)
+        if (map.Hauling.GetItems(order.Workstation.Input).FirstOrDefault(isRepairable) is Entity repairableStockpileItem)
             return new Plan(PlanDefOf.GoHaul, repairableStockpileItem);
 
         return null;
 
-        static bool isRepairable(Entity e) => e.Resources?.ViewOld(ResourceDefOf.Durability) is IResourceView durability && durability.Percentage < 1;
+        static bool isRepairable(Entity e) => e.Resources?.View(ResourceDefOf.Durability) is IResourceView durability && durability.Percentage < 1;
     }
 }

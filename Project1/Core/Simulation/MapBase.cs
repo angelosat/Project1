@@ -97,7 +97,7 @@ public abstract class MapBase : Inspectable
     public GameObject PlayerCharacter;
     public ParticleManager ParticleManager;
     public RegionManager Regions;
-    public StockpileManager Stockpiles;
+    //public StockpileManager Stockpiles;
     public HaulingManager Hauling;
     //public ConversationSystem Conversations;
     protected EntityTrackerPerCell EntityTracker;

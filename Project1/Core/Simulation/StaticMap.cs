@@ -98,7 +98,7 @@ public class StaticMap : MapBase, ITooltippable
         this.Thumbnails = new Texture2D[3];
         this.Town = new Town(this);
         this.Regions = new RegionManager(this);
-        this.Stockpiles = new(this);
+        //this.Stockpiles = new(this);
         this.Hauling = new(this);
         this.EntityTracker = new(this);
         //this.Conversations = new(this);
@@ -106,7 +106,7 @@ public class StaticMap : MapBase, ITooltippable
         this.ParticleManager = new Graphics.Particles.ParticleManager(this);
 
         this.Comps.AddRange(
-            this.Stockpiles,
+            //this.Stockpiles,
             this.Hauling,
             this.EntityTracker
             );

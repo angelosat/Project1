@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Crafting;
 
-public class WorkstationCapabilityRepairing/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
+
+public sealed class WorkstationCapability_Repairing/*(WorkstationCapabilityDef def)*/ : WorkstationCapabilityWorker/*(def)*/
 {
     public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.Repairing;
     public override bool CreatesUnfinished => false;

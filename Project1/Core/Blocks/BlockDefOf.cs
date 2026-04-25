@@ -198,6 +198,14 @@ static class BlockDefOf
            ],
         ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
     };
+    static public readonly BlockDef PlantProcessing = new("PlantProcessing", typeof(BlockWorkstation))
+    {
+        BlockEntityCompSpecs = [
+           new BlockBuildingComp.Spec(),
+            new BlockWorkstationComp.Spec(WorkstationDefOf.PlantProcessing)
+           ],
+        ConstructionProfile = new ConstructionProfile(ConstructionCategoryDefOf.Production, [MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Chunk])
+    };
     static BlockDefOf()
     {
         Def.Register(typeof(BlockDefOf));

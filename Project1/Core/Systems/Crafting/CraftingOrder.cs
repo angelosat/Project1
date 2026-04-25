@@ -6,7 +6,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Recipes;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -46,7 +45,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     public CraftingOrderId Id { get; private set; }
     public SkillDef Skill { get; init; }
     public MaterialRefinementDef Refinement { get; init; }
-    public Def ProductDef { get; internal set; }
+    public Def? ProductDef { get; internal set; }
     public WorkstationCapabilityDef WorkstationCapability { get; internal set;}
     public BlockWorkstationComp Workstation { get; internal set; }
     //public string LabelReadable
@@ -469,7 +468,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         tag.Save("Id", this.Id);
         ((int)this.Mode).Save(tag, "Mode");
         this.Amount.Save(tag, "Amount");
-        this.ProductDef.Save(tag, "Product");
+        if (this.ProductDef is not null)
+            this.ProductDef.Save(tag, "Product");
         this.WorkstationCapability.Save(tag, "Domain");
         tag.Save("Source", this.Source);
         return tag;
@@ -477,12 +477,14 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
 
     public static CraftingOrder Create(SaveTag tag)
     {
-        var product = tag.LoadDef<Def>("Product");
+        //var product = tag.LoadDef<Def>("Product");
         //if (product is null)
         //    product = ConsumableDefOf.Scroll;
         var domain = tag.LoadDef<WorkstationCapabilityDef>("Domain");
-        var order = new CraftingOrder(product, domain);
+        var order = new CraftingOrder(null, domain);
         if (tag.TryLoadInt("Id", out var id)) order.Id = id;
+        if (tag.TryLoadDef<Def>("Product", out var product)) order.ProductDef = product;
+
         if (tag.TryLoadInt("Mode", out var mode)) order.Mode = (CraftMode)mode;
         if (tag.TryLoadInt("Amount", out var amount)) order.Amount = amount;
         if (tag.TryLoadNew<AddOrderRequest>("Source", out var source))
@@ -492,6 +494,8 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
 
     public CraftingOrder Read(IDataReader r)
     {
+        if (r.ReadBoolean())
+            this.ProductDef = r.ReadDef();
         this.Id = r.ReadInt32();
         this.Mode = (CraftMode)r.ReadInt32();
         this.Amount = r.ReadInt32();
@@ -501,8 +505,12 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
 
     public void Write(IDataWriter w)
     {
-        w.Write(this.ProductDef);
         w.Write(this.WorkstationCapability);
+
+        var hasProduct = this.ProductDef is not null;
+        w.Write(hasProduct);
+        if(hasProduct)
+            w.Write(this.ProductDef);
         w.Write(this.Id);
         w.Write((int)this.Mode);
         w.Write(this.Amount);
@@ -510,18 +518,17 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     }
     public static CraftingOrder Create(IDataReader r)
     {
-        var product = r.ReadDef();
+        //if(r.ReadBoolean())
+        //var product = r.ReadDef();
         var domain = r.ReadDef<WorkstationCapabilityDef>();
-        return new CraftingOrder(product, domain).Read(r);
+        return new CraftingOrder(null, domain).Read(r);
     }
 
     internal Entity CreateProduct(Actor actor, IEnumerable<Entity> ingredients)
     {
-        //var actorSkill = actor.Skills.GetLevel(this.WorkstationCapability.Worker.CraftingSkill);
-        //var actorMastery = actor.Recipes.Get(this.ProductDef);
-        var quality = CraftingManager.GetCrafingQuality(actor, this);
-        var product = this.WorkstationCapability.Worker.CreateProduct(actor, this, ingredients, quality);
-        product.Author = actor;
+        //var quality = CraftingManager.GetCrafingQuality(actor, this);
+        var product = this.WorkstationCapability.Worker.CreateProduct(actor, this, ingredients);//, quality);
+        //product.Author = actor;
         return product;
     }
 }

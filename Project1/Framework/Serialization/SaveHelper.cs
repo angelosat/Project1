@@ -965,6 +965,16 @@ static class SaveHelper
         target = Def.Get<T>((string)deftag.Value);
         return true;
     }
+    public static bool TryLoadDef(this SaveTag tag, string name, out Def target)
+    {
+        if (!tag.TryGetTag(name, out var deftag))
+        {
+            target = default;
+            return false;
+        }
+        target = Def.Get((string)deftag.Value);
+        return true;
+    }
     public static SaveTag Save(this IEnumerable<string> strings, string name)
     {
         var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.String);

@@ -75,12 +75,28 @@ public abstract class Def : Inspectable
         }
         return def;
     }
+    static public Def Get(string defName)
+    {
+        if (TryGetDef(defName) is not Def def)
+        {
+            return null;
+        }
+        return def;
+    }
     static public T TryGetDef<T>(string defName) where T : Def
     {
         //if (defName == null || string.IsNullOrEmpty(defName) || string.IsNullOrWhiteSpace(defName))
         //    throw new Exception();
         if (Database.TryGetValue(defName, out var result))
             return result as T;
+        return null;
+    }
+    static public Def TryGetDef(string defName)
+    {
+        //if (defName == null || string.IsNullOrEmpty(defName) || string.IsNullOrWhiteSpace(defName))
+        //    throw new Exception();
+        if (Database.TryGetValue(defName, out var result))
+            return result;
         return null;
     }
     public override string ToString() => this.Name;

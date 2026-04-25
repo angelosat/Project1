@@ -159,7 +159,7 @@ internal static class InteractionDefOf
         SkillIncrease = SkillIncreaseType.OnWorkApplied
         
     };
-    public static readonly InteractionDef Repair = new("Repairing", typeof(InteractionRepairLogic))
+    public static readonly InteractionDef Repair = new("Repairing", typeof(Interaction_Repair))
     {
         Animation = AnimationDefOf.Tool,
         Controller = InteractionControllers.External,// new InteractionProgressToolExternal(),

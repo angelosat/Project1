@@ -2,7 +2,7 @@
 
 namespace Project1.Core.Interactions;
 
-sealed internal class InteractionRepairLogic : InteractionLogic
+sealed internal class Interaction_Repair : InteractionLogic
 {
     sealed class Context : InteractionContext
     {

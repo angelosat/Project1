@@ -9,6 +9,7 @@ namespace Project1.Core.Systems.Plants
         public override string Name { get; } = "Seed";
 
         public int Level = 1;
+        public PlantSpeciesDef Species;
 
         public SeedComponent()
         {

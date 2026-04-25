@@ -45,4 +45,9 @@ public abstract class WorkstationCapabilityWorker
         this.PostProcess(product, actor, order.Source);
         return product;
     }
+    internal virtual Entity CreateProduct(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
+    {
+        var quality = order.ProductDef is not null ? CraftingManager.GetCrafingQuality(actor, order) : null;
+        return this.CreateProduct(actor, order, ingredients, quality);
+    }
 }

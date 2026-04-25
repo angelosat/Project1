@@ -2,6 +2,7 @@
 using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Consumables.Scrolls;
+using Project1.Core.Systems.Cooking;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Duties;
@@ -32,7 +33,7 @@ namespace Project1.Core.Systems.Crafting
             Output = typeof(ToolProfileDef),
             Plan = PlanDefOf.Crafting
         };
-        static public readonly WorkstationCapabilityDef Repairing = new("Repairing", typeof(WorkstationCapabilityRepairing), DutyDefOf.Craftsman)
+        static public readonly WorkstationCapabilityDef Repairing = new("Repairing", typeof(WorkstationCapability_Repairing), DutyDefOf.Craftsman)
         {
             OrderType = typeof(AddOrderRequest),
             Plan = PlanDefOf.Repairing
@@ -53,6 +54,12 @@ namespace Project1.Core.Systems.Crafting
         {
             OrderType = typeof(AddOrderRequest_Alchemy),
             //OrderType = typeof(AddOrderRequest),
+            Output = typeof(ConsumableDef),
+            Plan = PlanDefOf.Crafting
+        };
+        static public readonly WorkstationCapabilityDef PlantProcessing = new("PlantProcessing", typeof(WorkstationCapability_PlantProcessing), DutyDefOf.Cook)
+        {
+            OrderType = typeof(AddOrderRequest_ExtractSeeds),
             Output = typeof(ConsumableDef),
             Plan = PlanDefOf.Crafting
         };

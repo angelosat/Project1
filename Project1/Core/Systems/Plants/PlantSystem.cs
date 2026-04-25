@@ -2,12 +2,20 @@
 using Project1.Core.Graphics;
 using Project1.Core.Systems.Materials;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Systems.Plants;
 
 public sealed class PlantSystem
 {
-    static Entity CreateSeeds(PlantSpeciesDef species)
+    static Dictionary<MaterialDef, PlantSpeciesDef> _matsToSpecies = [];
+    static PlantSystem()
+    {
+        _matsToSpecies = Def.Get<PlantSpeciesDef>().Where(s=>s.FruitMaterial is not null).ToDictionary(s => s.FruitMaterial);
+    }
+
+    static public Entity CreateSeeds(PlantSpeciesDef species)
     {
         var seeds = ItemDefOf.Seeds.Create();
         seeds.Initialize();
@@ -15,9 +23,20 @@ public sealed class PlantSystem
         seeds.Profile = species;
         seeds.Name = $"{species.LabelReadable} {species.SeedsName}";
         seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);
+        seeds.GetComponent<SeedComponent>().Species = species;
         return seeds;
     }
-
+    static public Entity CreateSeeds(MaterialDef material)
+    {
+        var seeds = ItemDefOf.Seeds.Create();
+        seeds.Initialize();
+        var species = _matsToSpecies[material];
+        seeds.Profile = species;
+        seeds.Name = $"{species.LabelReadable} {species.SeedsName}";
+        seeds.Body.Sprite = Sprite.Load(species.TextureSeeds);
+        seeds.GetComponent<SeedComponent>().Species = species;
+        return seeds;
+    }
     static Entity CreatePlant(PlantSpeciesDef species)
     {
         var entity = species.PlantEntity.Create();

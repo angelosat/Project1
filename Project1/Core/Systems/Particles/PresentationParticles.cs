@@ -40,7 +40,9 @@ internal sealed class PresentationParticles : IPresentationWorker
         if (!actor.IsSpawned)
             return;
         var item = resolver.Get(e.Product);
-        EmitSpellParticles(item, item.GetComponent<QualityComp>().Tier.Color);
+        if (!item.TryGetComponent<QualityComp>(out var quality))
+            return;
+        EmitSpellParticles(item, quality.Tier.Color);
     }
 
     private void OnEffectApplied(ActorEffectAppliedEvent e)

@@ -80,7 +80,8 @@ public class AddOrderRequest : ISaveableNewNew<AddOrderRequest>, ISerializableNe
     {
         var tag = new SaveTag(SaveTag.Types.Compound, name);
         tag.Save("Capability", this.WorkstationCapability);
-        tag.Save("Product", this.ProductDef);
+        if(this.ProductDef is not null)
+            tag.Save("Product", this.ProductDef);
         this.SaveExtra(tag);
         return tag;
     }
@@ -90,7 +91,8 @@ public class AddOrderRequest : ISaveableNewNew<AddOrderRequest>, ISerializableNe
         var capability = tag.LoadDef<WorkstationCapabilityDef>("Capability");
         var req = ActivatorSafe<AddOrderRequest>.CreateInstance(capability.OrderType);
         req.WorkstationCapability = capability;
-        req.ProductDef = tag.LoadDef("Product");
+        //req.ProductDef = tag.LoadDef("Product");
+        if (tag.TryLoadDef("Product", out var product)) req.ProductDef = product;
         req.LoadExtra(tag);
         return req;
     }

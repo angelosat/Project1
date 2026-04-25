@@ -25,7 +25,20 @@ public sealed class EventHooks
             tokens.Add(unsub);
         });
     }
+    public void Register(Type payloadType, Action<IEventPayload> callback)
+    {
+        if (payloadType == typeof(IEventPayload))
+            throw new Exception();
+        var key = (payloadType, callback.Method);
+        if (!_registered.Add(key))
+            return;
 
+        _attach.Add((bus, tokens) =>
+        {
+            var unsub = bus.ListenTo(callback);
+            tokens.Add(unsub);
+        });
+    }
     private readonly Dictionary<EventBus, List<Action>> _active = [];
 
     public void HookTo(EventBus bus)

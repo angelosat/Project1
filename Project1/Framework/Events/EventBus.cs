@@ -38,6 +38,8 @@ public sealed class EventBus
     /// <returns>Returns an unsubscribe token.</returns>
     public Action ListenTo<TPayload>(Action<TPayload> handler) where TPayload : IEventPayload
     {
+        if (typeof(TPayload) == typeof(IEventPayload))
+            throw new Exception();
         var id = Registry.GameEvents.Register<TPayload>();
         if (!_eventBus.TryGetValue(id, out var list))
             _eventBus[id] = list = [];

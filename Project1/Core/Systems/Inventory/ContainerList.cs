@@ -96,7 +96,7 @@ namespace Project1.Core.Systems.Inventory
             item.Detach();
             item.Container = this;
             item.Owner = this.Parent;
-            (this.Parent as Actor).Log.Write($"Stored {item} in inventory");
+            //(this.Parent as Actor).Log.Write($"Stored {item} in inventory");
             this.ItemAdded?.Invoke(item);
         }
         internal void AddInternal(Entity item)

@@ -15,35 +15,52 @@ public class ListCollapsible<T> : GroupBox
     {
 
     }
-    public void Build(List<ICollapsibleNode<T>> rootNodes)
+    Dictionary<ICollapsibleNode<T>, ListBoxCollapsibleNode> _map = [];
+    public void Build(IEnumerable<ICollapsibleNode<T>> rootNodes)
     {
         this.ClearControls();
-        foreach(var node in rootNodes)
-        {
-                foreach (var entry in node.Children)
-                    BuildRecursive(entry);
-        }
+        foreach (var node in rootNodes)
+            BuildRecursive(node);
     }
     ListBoxCollapsibleNode BuildRecursive(ICollapsibleNode<T> node)
     {
-        var entryNode = new ListBoxCollapsibleNode(node.GetControl());
-        //entryNode.Control = 
-        Build(entryNode);
+        var nodeControl = new ListBoxCollapsibleNode(node.GetControl());
+        node.ChildAdded += Node_ChildAdded;
+        this.Build(nodeControl);
         foreach (var child in node.Children)
         {
             if (child.Children.Any())
             {
                 var childNode = BuildRecursive(child);
-                childNode.Parent = entryNode;
-                entryNode.Children.Add(childNode);
-                entryNode.AddLeaf(childNode.Control);
+                childNode.Parent = nodeControl;
+                nodeControl.Children.Add(childNode);
+                nodeControl.AddLeaf(childNode.Control);
             }
             else
-                entryNode.AddLeaf(child.GetControl());// new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
+                nodeControl.AddLeaf(child.GetControl());// new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
         }
-        this.AddControlsBottomLeft(entryNode.Control);
-        return entryNode;
+        this.AddControlsBottomLeft(nodeControl.Control);
+        this._map.Add(node, nodeControl);
+        return nodeControl;
     }
+
+    private void Node_ChildAdded(ICollapsibleNode<T> node)
+    {
+        var nodeControl = node.GetControl();// new ListBoxCollapsibleNode();
+        var parent = node.Parent;
+        var parentControl = this._map[parent];
+        if (node.Children.Any())
+        {
+            //var childNode = BuildRecursive(node);
+            //childNode.Parent = nodeControl;
+            //nodeControl.Children.Add(childNode);
+            //nodeControl.AddLeaf(childNode.Control);
+            parentControl.AddNode(new(nodeControl));
+        }
+        else
+            parentControl.AddLeaf(nodeControl);// new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
+    }
+
     public void Build(List<IngredientGroup> groups)
     {
         this.ClearControls();

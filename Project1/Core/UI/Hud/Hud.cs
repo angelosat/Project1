@@ -3,7 +3,6 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Towns.UI;
 using Project1.Core.UI.Hud.Chat;
 using Project1.Framework;
@@ -112,8 +111,9 @@ public class Hud : GroupBox
 
         this.ZLevelDrawBar.AnchorToCenterRight();
 
-        this.StockpileTracker = net.MainViewport.Map.Hauling.Tracker.GetControl();
-        
+        //this.StockpileTracker = net.MainViewport.Map.Hauling.Tracker.GetControl();
+        this.StockpileTracker = net.MainViewport.Map.Hauling.TrackerManager.GetControl();
+
         this.Controls.Add(
             this.ZLevelDrawBar,
             camWidget, uiSpeed,

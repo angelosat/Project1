@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Project1.Core.Systems.Crafting;
+using Project1.Core.Towns.Stockpiles;
 using Project1.Core.UI;
 using Project1.Framework.UI;
 
@@ -46,27 +47,6 @@ namespace Project1.Core.UI
             foreach (var group in groups)
                 foreach (var entry in group.Entries)
                     BuildRecursive(entry);
-            //this.ClearControls();
-            //foreach (var group in groups)
-            //{
-            //    var groupNode = new ListBoxCollapsibleNode(group.Label);
-            //    foreach (var entry in group.Entries)
-            //    {
-            //        var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal(entry.Toggle, entry.IsAllowed));
-            //        entryNode.Control = Build(entryNode);
-            //        foreach (var child in entry.Children)
-            //        {
-            //            var chk = new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed);
-            //            entryNode.AddLeaf(chk);
-            //        }
-            //        entryNode.ChildrenGroupBox.AlignTopToBottom();
-            //        entryNode.Parent = groupNode;
-            //        groupNode.Children.Add(entryNode);
-            //        groupNode.AddLeaf(entryNode.Control);
-            //    }
-            //    groupNode.Control = Build(groupNode);
-            //    this.AddControlsBottomLeft(groupNode.Control);
-            //}
         }
         ListBoxCollapsibleNode BuildRecursive(IngredientGroupEntry entry)
         {
@@ -87,26 +67,6 @@ namespace Project1.Core.UI
             }
             this.AddControlsBottomLeft(entryNode.Control);
             return entryNode;
-
-            //ListBoxCollapsibleNode entryNode = new ListBoxCollapsibleNode(entry.Label), new CheckBoxFinal(entry.Toggle, entry.IsAllowed));
-            //entryNode.Control = Build(entryNode);
-            
-            //foreach (var child in entry.Children)
-            //{
-            //    if (child.Children.Count > 0)
-            //    {
-            //        var childEntry = BuildRecursive(child);
-            //        childEntry.Parent = entryNode;
-            //    }
-            //    else
-            //        entryNode.AddLeaf(new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
-
-            //}
-            //entryNode.ChildrenGroupBox.AlignTopToBottom();
-            //entryNode.Parent = groupNode;
-            //groupNode.Children.Add(entryNode);
-            //groupNode.AddLeaf(entryNode.Control);
-            //return entryNode;
         }
         void expand(ListBoxCollapsibleNode node)
         {

@@ -3,6 +3,7 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Towns.Stockpiles;
 using Project1.Core.Towns.UI;
 using Project1.Core.UI.Hud.Chat;
 using Project1.Framework;
@@ -36,6 +37,7 @@ public class Hud : GroupBox
     readonly IngameMenu IngameMenu;
     readonly ScrollbarVNew ZLevelDrawBar;
     readonly IconButton BtnPlayers;
+    Control StockpileTracker;
     public void AddButton(IconButton btn)
     {
         btn.Location = this.Box_Buttons.Controls.TopRight;
@@ -109,6 +111,8 @@ public class Hud : GroupBox
              v => Ingame.MainViewportMap.Camera.DrawLevel = MapBase.MaxHeight - v);
 
         this.ZLevelDrawBar.AnchorToCenterRight();
+
+        this.StockpileTracker = net.MainViewport.Map.Hauling.Tracker.GetControl();
         
         this.Controls.Add(
             this.ZLevelDrawBar,
@@ -116,6 +120,7 @@ public class Hud : GroupBox
             this.Chat
             , this.Time
             , this.UnitFrames
+            , this.StockpileTracker
             );
     }
 

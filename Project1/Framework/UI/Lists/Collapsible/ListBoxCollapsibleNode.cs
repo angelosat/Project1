@@ -23,6 +23,10 @@ namespace Project1.Core.UI
 
         public string Name;
         public bool Expanded;
+        public ListBoxCollapsibleNode(Control control)
+        {
+            this.Control = control;
+        }
         public ListBoxCollapsibleNode(IListCollapsibleDataSource node, Action<int[], int[]> callback)
         {
             throw new NotImplementedException();

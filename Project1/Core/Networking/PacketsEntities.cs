@@ -8,20 +8,20 @@ namespace Project1.Core.Networking
     [EnsureStaticCtorCall]
     internal class PacketsEntities
     {
-        static readonly PacketId _pRegister, _pDispose, _pStackIncrease, _pStackDecrease, _pSpawn, _pDespawn, _pCompUpdated;
+        static readonly PacketId _pRegister, _pDispose, /*_pStackIncrease, */_pStackDecrease, _pSpawn, _pDespawn, _pCompUpdated;
         static PacketsEntities()
         {
             _pRegister = Registry.PacketHandlers.Register(OnRegister);
             _pDispose = Registry.PacketHandlers.Register(OnDispose);
-            _pStackIncrease = Registry.PacketHandlers.Register(OnStackIncrease);
-            _pStackDecrease = Registry.PacketHandlers.Register(OnStackDecrease);
+            //_pStackIncrease = Registry.PacketHandlers.Register(OnStackIncrease);
+            _pStackDecrease = Registry.PacketHandlers.Register(ReceiveEntityStackChanged);
             _pSpawn = Registry.PacketHandlers.Register(OnSpawn);
             _pDespawn = Registry.PacketHandlers.Register(OnDespawn);
             _pCompUpdated = Registry.PacketHandlers.Register(OnCompUpdated);
 
             Registry.WorldEventHooksServer.Register<EntityRegisteredEvent>(SendEntityRegistered);
-            Registry.WorldEventHooksServer.Register<EntityStackIncreased>(SendEntityStackIncreased);
-            Registry.WorldEventHooksServer.Register<EntityStackDecreased>(SendEntityStackDecreased);
+            //Registry.WorldEventHooksServer.Register<EntityStackIncreased>(SendEntityStackIncreased);
+            Registry.WorldEventHooksServer.Register<EntityStackChangedEvent>(SendEntityStackChanged);
             Registry.WorldEventHooksServer.Register<EntityDisposedEvent>(SendEntityDisposed);
             Registry.WorldEventHooksServer.Register<EntityCompUpdatedEvent>(SendEntityCompUpdated);
 
@@ -89,33 +89,36 @@ namespace Project1.Core.Networking
             map.Spawn(entity, global, vel);
         }
 
-        private static void SendEntityStackIncreased(EntityStackIncreased increased)
-        {
-            Server.Instance.BeginPacket(_pStackIncrease)
-                .Write(increased.Entity.RefId)
-                .Write(increased.Amount);
-        }
-        private static void OnStackIncrease(NetEndpoint endpoint, Packet packet)
-        {
-            var client = endpoint as Client;
-            var r = packet.PacketReader;
-            var entity = client.World.Get(r.ReadEntityRefId());
-            var amount = r.ReadInt32();
-            entity.Add(amount);
-        }
-        private static void SendEntityStackDecreased(EntityStackDecreased decreased)
+        //private static void SendEntityStackIncreased(EntityStackIncreased increased)
+        //{
+        //    Server.Instance.BeginPacket(_pStackIncrease)
+        //        .Write(increased.Entity.RefId)
+        //        .Write(increased.Amount);
+        //}
+        //private static void OnStackIncrease(NetEndpoint endpoint, Packet packet)
+        //{
+        //    var client = endpoint as Client;
+        //    var r = packet.PacketReader;
+        //    var entity = client.World.Get(r.ReadEntityRefId());
+        //    var amount = r.ReadInt32();
+        //    entity.Add(amount);
+        //}
+        private static void SendEntityStackChanged(EntityStackChangedEvent decreased)
         {
             Server.Instance.BeginPacket(_pStackDecrease)
                 .Write(decreased.Entity.RefId)
                 .Write(decreased.Amount);
         }
-        private static void OnStackDecrease(NetEndpoint endpoint, Packet packet)
+        private static void ReceiveEntityStackChanged(NetEndpoint endpoint, Packet packet)
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
             var entity = client.World.Get(r.ReadEntityRefId());
             var amount = r.ReadInt32();
-            entity.Consume(amount);
+            if (amount < 0)
+                entity.Consume(amount);
+            else
+                entity.Add(amount);
         }
         private static void SendEntityRegistered(EntityRegisteredEvent e)
         {

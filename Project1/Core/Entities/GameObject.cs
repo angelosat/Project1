@@ -295,7 +295,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (this.IsEmpty)
             this.World?.DisposeEntity(this.RefId);
         else
-            this.World?.Events.Post(new EntityStackDecreased(this as Entity, amount));
+            this.World?.Events.Post(new EntityStackChangedEvent(this as Entity, amount));
     }
     
     public void Add(int amount)
@@ -303,7 +303,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (amount <= 0)
             return;
         this.StackSize += amount;
-        this.World?.Events.Post(new EntityStackIncreased(this as Entity, amount));
+        this.World?.Events.Post(new EntityStackChangedEvent(this as Entity, amount));
     }
     protected int _stackSize = 1;
     public int StackSize

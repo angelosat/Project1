@@ -5,20 +5,22 @@ namespace Project1.Framework.UI
 {
     public class PanelLabeledNew : Panel
     {
-        public Label Label;
+        public LabelNew Label;
         public GroupBox Client;
         public PanelLabeledNew(string label)
         {
             this.Name = label;
             this.AutoSize = true;
-            this.Label = new Label(label) { TextColorFunc = () => Color.Goldenrod, Font = UIManager.FontBold };
+            //this.Label = new Label(label) { TextColorFunc = () => Color.Goldenrod, Font = UIManager.FontBold };
+            this.Label = new LabelNew(label) { TextColorFunc = () => Color.Goldenrod, Font = UIManager.FontBold };
             this.Client = new GroupBox() { AutoSize = true, Location = this.Label.BottomLeft };
             this.AddControls(this.Label, this.Client);
         }
         public PanelLabeledNew(Func<string> label)
         {
             this.AutoSize = true;
-            this.Label = new Label(label) { TextColorFunc = () => Color.Goldenrod, Font = UIManager.FontBold };
+            //this.Label = new Label(label) { TextColorFunc = () => Color.Goldenrod, Font = UIManager.FontBold };
+            this.Label = new LabelNew(label) { TextColorFunc = () => Color.Goldenrod, Font = UIManager.FontBold };
             this.Client = new GroupBox() { AutoSize = true, Location = this.Label.BottomLeft };
             this.AddControls(this.Label, this.Client);
         }

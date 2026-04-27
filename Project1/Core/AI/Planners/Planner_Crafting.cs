@@ -4,6 +4,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
 using Project1.Core.Systems.Crafting;
+using Project1.Core.Systems.Recipes;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -56,6 +57,9 @@ sealed class Planner_Crafting : Planner
 
     private static (bool flowControl, Plan value) tryOrder(Actor actor, Simulation.MapBase map, Entity carried, CraftingManager manager, CraftingOrder order)
     {
+        if (order.ProductDef is Def recipe && actor.Recipes.Get(recipe) < order.MinMastery)
+            return (false, null);
+
         if (manager.ProductToMove(actor) is Entity toMove)
         {
             // haul it explicitly to the output stockpile of the order? or let other planners claim it?

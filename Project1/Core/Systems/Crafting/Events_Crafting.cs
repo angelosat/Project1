@@ -23,6 +23,19 @@ internal record struct PlayerModifiedStockpileFiltersEvent(Stockpile Stockpile, 
 internal record struct PlayerModifiedStockpileSettingsEvent(Stockpile Stockpile, bool ForSale, StoragePriority Priority) : IEventPayload;
 internal record struct PlayerIssuedCraftOrderEventNew(BlockWorkstationComp Workstation, AddOrderRequest Request) : IEventPayload;
 internal record struct PlayerCancellingUnfinishedItemEvent(Entity Item) : IEventPayload;
+internal record struct PlayerSetOrderMinMasteryEvent(MapId Map, CraftingOrderId Order, int MinMastery) : IEventPayload, ISerializableNewNew<PlayerSetOrderMinMasteryEvent>
+{
+    public static PlayerSetOrderMinMasteryEvent Create(IDataReader r)
+        => new(r.ReadId<MapId>(), r.ReadId<CraftingOrderId>(), r.ReadInt32());
+
+    public readonly IDataWriter Write(IDataWriter w)
+    {
+        w.Write(this.Map);
+        w.Write(this.Order);
+        w.Write(this.MinMastery);
+        return w;
+    }
+}
 internal record struct ActorFinishedCraftingEvent(EntityRefId Actor, CraftingOrderId Order, EntityRefId Product) : IEventPayload, ISerializableNewNew<ActorFinishedCraftingEvent>
 {
     public static ActorFinishedCraftingEvent Create(IDataReader r)

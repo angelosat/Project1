@@ -11,6 +11,7 @@ using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
 using System;
+using System.Runtime.InteropServices;
 
 namespace Project1.Core.Systems.Crafting;
 
@@ -22,9 +23,11 @@ static class Packets_Crafting
         _pPlayerCreatedOrderNew,
         _pPlayerDeletedOrder, 
         _pPlayerModifiedOrder, 
-        _pOrderUpdated, 
+        _pOrderCompleted, 
+        //_pOrderUpdated = Registry.PacketHandlers.Register(ReceiveOrderUpdated),
         _pPlayerModifiedOrderFilters, 
         _pPlayerSetWorkstationIO,
+        _pPlayerSetMinMastery = Registry.PacketHandlers.Register(ReceiveSetMinMastery),
         _pActorFinishedCrafting = Registry.PacketHandlers.Register(ReceiveActorFinishedCrafting);
 
  
@@ -37,7 +40,7 @@ static class Packets_Crafting
         _pPlayerDeletedOrder = Registry.PacketHandlers.Register(OnPlayerDeletedOrder);
         _pPlayerModifiedOrder = Registry.PacketHandlers.Register(OnPlayerModifiedOrder);
         _pPlayerModifiedOrderFilters = Registry.PacketHandlers.Register(OnPlayerModifiedOrderFilters);
-        _pOrderUpdated = Registry.PacketHandlers.Register(OnCraftOrderUpdated);
+        _pOrderCompleted = Registry.PacketHandlers.Register(OnCraftOrderCompleted);
         _pPlayerCancellingUnfinished = Registry.PacketHandlers.Register(OnPlayerCancellingUnfinished);
         Registry.PlayerInputEventHooks.Register<PlayerIssuedCraftOrderEventNew>(HandlePlayerIssuedCraftOrderNew);
         Registry.PlayerInputEventHooks.Register<PlayerModifiedOrderFiltersEvent>(HandlePlayerModifiedOrderFilters);
@@ -45,8 +48,46 @@ static class Packets_Crafting
         Registry.MapEventHooksServer.Register<CraftOrderCompletedEvent>(HandleCraftOrderCompletedEvent);
         Registry.PlayerInputEventHooks.Register<PlayerCancellingUnfinishedItemEvent>(HandlePlayerCancellingUnfinishedItem);
         Registry.WorldEventHooksServer.Register<ActorFinishedCraftingEvent>(HandleActorFinishedCrafting);
+        //Registry.MapEventHooksServer.Register<CraftOrderUpdatedEvent>(HandleCraftOrderUpdated);
+        Registry.PlayerInputEventHooks.Register<PlayerSetOrderMinMasteryEvent>(HandlePlayerSetOrderMinMastery);
     }
 
+    private static void HandlePlayerSetOrderMinMastery(PlayerSetOrderMinMasteryEvent e)
+    {
+        if(Ingame.Net.IsServer)
+            Ingame.Net.World.Get(e.Map).Town.Crafting.Get(e.Order).MinMastery = e.MinMastery;
+        Ingame.Net.BeginPacketImmediate(_pPlayerSetMinMastery)
+            .Write(e);
+    }
+    private static void ReceiveSetMinMastery(NetEndpoint endpoint, Packet packet)
+    {
+        var e = PlayerSetOrderMinMasteryEvent.Create(packet.PacketReader);
+        var map = endpoint.World.Get(e.Map);
+        var order = map.Town.Crafting.Get(e.Order);
+        var minMastery = e.MinMastery;
+        order.MinMastery = minMastery;
+
+        (endpoint as Server)?
+            .BeginPacketImmediate(_pPlayerSetMinMastery)
+            .Write(e);
+    }
+
+    //private static void HandleCraftOrderUpdated(CraftOrderUpdatedEvent e)
+    //{
+    //    var server = e.Order.Workstation.Map.Net as Server;
+    //    var w = server.BeginPacket(_pOrderUpdated)
+    //        .Write(e.Order.Workstation.Map.ID)
+    //        .Write(e.Order.Id);
+    //    e.Order.Sync(w);
+    //}
+    //private static void ReceiveOrderUpdated(NetEndpoint endpoint, Packet packet)
+    //{
+    //    var client = endpoint as Client;
+    //    var r = packet.PacketReader;
+    //    var map = endpoint.World.Get(r.ReadId<MapId>());
+    //    var order = map.Town.Crafting.Get(r.ReadId<CraftingOrderId>());
+    //    order.Sync(r);
+    //}
     private static void HandleActorFinishedCrafting(ActorFinishedCraftingEvent e)
     {
         Server.Instance.BeginPacket(_pActorFinishedCrafting).Write(e);
@@ -164,12 +205,12 @@ static class Packets_Crafting
 
     private static void HandleCraftOrderCompletedEvent(CraftOrderCompletedEvent e)
     {
-        e.Order.Workstation.Map.Net.BeginPacket(_pOrderUpdated)
+        e.Order.Workstation.Map.Net.BeginPacket(_pOrderCompleted)
             .Write(e.Order.Workstation.Map.ID)
             .Write(e.Order.Id)
             .Write(e.Actor.RefId);
     }
-    private static void OnCraftOrderUpdated(NetEndpoint endpoint, Packet packet)
+    private static void OnCraftOrderCompleted(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
         var mapid = r.ReadMapId();

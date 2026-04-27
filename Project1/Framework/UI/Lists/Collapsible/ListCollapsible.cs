@@ -98,11 +98,11 @@ public class ListCollapsible<T> : GroupBox
         }
         this.ResetLayoutFrom(node);
     }
-    public ListCollapsible<T> AddNode(ListBoxCollapsibleNode node)
-    {
-        this.ARoot.AddNodeOld(node);
-        return this;
-    }
+    //public ListCollapsible<T> AddNode(ListBoxCollapsibleNode node)
+    //{
+    //    this.ARoot.AddNodeOld(node);
+    //    return this;
+    //}
     void Build(ListBoxCollapsibleNode nodeWrapper)
     {
         var node = this._mapByWrapper[nodeWrapper];

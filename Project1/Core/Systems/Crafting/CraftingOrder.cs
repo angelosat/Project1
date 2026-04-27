@@ -7,6 +7,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -52,10 +53,20 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     public string LabelReadable => this.Source.GetLabel();
     public AddOrderRequest Source;
     public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
-    public Dictionary<BoneDef, IngredientRequirement> FiltersNew = [];
+    //public Dictionary<BoneDef, IngredientRequirement> FiltersNew = [];
     public Dictionary<BoneDef, CraftingRule> Rules = [];
     readonly Dictionary<BoneDef, MaterialDef[]> AcceptableMaterials = [];
+    public int MinMastery
+    {
+        get => field;
+        set
+        {
+            field = value;
+            this.Notifier.Notify();
+        }
+    }
     internal Entity UnfinishedItem;
+    internal ChangeNotifier Notifier = new();
     internal void Dispose() => this.IsDisposed = true;
 
     public bool IsAllowed(BoneDef bone, MaterialDef mat) => !this.Filters[bone].Contains(mat);
@@ -492,9 +503,12 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         if (r.ReadBoolean())
             this.ProductDef = r.ReadDef();
         this.Id = r.ReadInt32();
-        this.Mode = (CraftMode)r.ReadInt32();
-        this.Amount = r.ReadInt32();
         this.Source = r.Read<AddOrderRequest>();
+
+        //this.Mode = (CraftMode)r.ReadInt32();
+        //this.Amount = r.ReadInt32();
+        //this.MinMastery = r.ReadInt32();
+        this.Sync(r);
         return this;
     }
 
@@ -507,9 +521,24 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         if(hasProduct)
             w.Write(this.ProductDef);
         w.Write(this.Id);
+        w.Write(this.Source);
+
+        //w.Write((int)this.Mode);
+        //w.Write(this.Amount);
+        //w.Write(this.MinMastery);
+        this.Sync(w);
+    }
+    internal void Sync(IDataWriter w)
+    {
         w.Write((int)this.Mode);
         w.Write(this.Amount);
-        w.Write(this.Source);
+        w.Write(this.MinMastery);
+    }
+    internal void Sync(IDataReader r)
+    {
+        this.Mode = (CraftMode)r.ReadInt32();
+        this.Amount = r.ReadInt32();
+        this.MinMastery = r.ReadInt32();
     }
     public static CraftingOrder Create(IDataReader r)
     {

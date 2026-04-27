@@ -120,8 +120,9 @@ public class Hud : GroupBox
             this.Chat
             , this.Time
             , this.UnitFrames
-            , this.StockpileTracker
+            //, this.StockpileTracker
             );
+        this.Controls.Add(this.StockpileTracker);
     }
 
     private void TogglePlayerList(NetEndpoint net)

@@ -1432,6 +1432,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     {
         if (!manager.Contains(this))
         {
+            this._windowManager = manager;
             manager.Add(this);
             return true;
         }

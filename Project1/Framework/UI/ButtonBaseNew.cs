@@ -127,6 +127,11 @@ namespace Project1.Framework.UI
                 if (this.Parent is not null)
                     this.Parent.OnControlResized(this);
         }
+        internal override void OnAttached()
+        {
+            this.Invalidate(true);
+            base.OnAttached();
+        }
         //public override void OnPaint(SpriteBatch sb)
         //{
         //    string txt = this.TextFunc?.Invoke() ?? this.Text;

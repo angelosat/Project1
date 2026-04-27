@@ -34,14 +34,18 @@ public sealed class HaulingManager : MapComponent
         "Ingredients", typeof(MaterialRefinementDef), [
             item => (MaterialRefinementDef)item.Profile,
             //item => item.PrimaryMaterial.Type,
-            item => item.PrimaryMaterial]), (
-        "Consumables", typeof(ConsumableDef), [
-            item => (ConsumableDef)item.Profile,
-            item => item.Consumable.Effect.Def]),(
-        "Tools", typeof(ToolProfileDef), [
-            item => (ToolProfileDef)item.Profile,
-            item => item.Quality])
-        );
+            item => item.PrimaryMaterial]));
+    //, (
+    //    "Consumables", typeof(ConsumableDef), [
+    //        item => (ConsumableDef)item.Profile,
+    //        item => item.Consumable.Effect.Def]),(
+    //    "Tools", typeof(ToolProfileDef), [
+    //        item => (ToolProfileDef)item.Profile,
+    //        item => item.Quality])
+    //    );
+
+
+
     //StockpileTrackerRoot Tracker = new StockpileTrackerRoot();
     //internal Dictionary<Type, StockpileTracker> Trackers = new(){{
     //    typeof(MaterialRefinementDef), new(

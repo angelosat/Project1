@@ -1,141 +1,102 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.UI;
-using Project1.Framework.Interfaces;
+using Project1.Framework;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.UI
+namespace Project1.Core.UI;
+
+public class ListBoxCollapsibleNode
 {
-    public class ListBoxCollapsibleNode
+    public List<Control> Leafs = new();
+    public Control Control;
+    public List<Control> LeafControls = new();
+    public List<Control> ChildControls = new();
+    public ListBoxCollapsibleNode Parent;
+    public List<ListBoxCollapsibleNode> Children = new();
+    public Func<Control> ControlGetter;
+    public PictureBox Arrow;
+    public GroupBox ChildrenGroupBox = new() { BackgroundColor = Color.Red * .2f };
+    public static readonly int IndentWidth = UIManager.ArrowRight.Rectangle.Width;
+
+    public string Name;
+    public bool Expanded;
+
+    public ListBoxCollapsibleNode(Control control)
     {
-        public List<Control> Leafs = new();
-        public List<ILabeled> CustomLeafs = new();
-        public Control Control;
-        public List<Control> LeafControls = new();
-        public List<Control> ChildControls = new();
-        public ListBoxCollapsibleNode Parent;
-        public List<ListBoxCollapsibleNode> Children = new();
-        public Func<Control> ControlGetter;
-        public PictureBox Arrow;
-        public GroupBox ChildrenGroupBox = new() { BackgroundColor = Color.Red * .2f };
-        public static readonly int IndentWidth = UIManager.ArrowRight.Rectangle.Width;
+        this.Control = control;
+    }
 
-        public string Name;
-        public bool Expanded;
-        public ListBoxCollapsibleNode(Control control)
-        {
-            this.Control = control;
-        }
-        public ListBoxCollapsibleNode(IListCollapsibleDataSource node, Action<int[], int[]> callback)
-        {
-            throw new NotImplementedException();
-        }
-        public ListBoxCollapsibleNode(IListCollapsibleDataSource node)
-        {
-            this.Name = node.LabelReadable;
-            this.ControlGetter = () => node.GetListControlGui();
+    public ListBoxCollapsibleNode(IListCollapsibleDataSource node)
+    {
+        this.Name = node.LabelReadable;
+        this.ControlGetter = () => node.GetListControlGui();
 
-            foreach (var child in node.ListBranches)
-                this.AddNode(new ListBoxCollapsibleNode(child));
-            foreach (var leaf in node.ListLeafs)
-                this.AddLeaf(leaf.GetListControlGui());
-        }
-        public ListBoxCollapsibleNode(string name)
-        {
-            this.Name = name;
-            this.ChildrenGroupBox.Name = name;
-        }
-        public ListBoxCollapsibleNode(string name, Func<ListBoxCollapsibleNode, Control> controlGetter) : this(name)
-        {
-            this.ControlGetter = () => controlGetter(this);
-        }
-        public ListBoxCollapsibleNode(string name, Func<Control> controlGetter) : this(name)
-        {
-            this.ControlGetter = controlGetter;
-        }
-        public ListBoxCollapsibleNode(string name, Control control) : this(name)
-        {
-            this.Control = control;
-        }
-        public ListBoxCollapsibleNode AddNode(ListBoxCollapsibleNode node)
-        {
-            this.Children.Add(node);
-            node.Parent = this;
-            return this;
-        }
-        public void RemoveNode(ListBoxCollapsibleNode node)
-        {
-            this.Children.Remove(node);
-        }
-        public ListBoxCollapsibleNode AddLeaf(ILabeled leaf)
-        {
-            this.CustomLeafs.Add(leaf);
-            return this;
-        }
-        public void RemoveLeaf(Control leaf)
-        {
-            this.LeafControls.Remove(leaf);
-        }
-        public ListBoxCollapsibleNode AddLeaf(Control leaf)
-        {
-            this.LeafControls.Add(leaf);
-            this.ChildrenGroupBox.AddControlsBottomLeft(leaf);
-            leaf.Validate(true);
-            return this;
-        }
-        public ListBoxCollapsibleNode Clear()
-        {
-            this.Children.Clear();
-            return this;
-        }
+        foreach (var child in node.ListBranches)
+            this.AddNode(new ListBoxCollapsibleNode(child));
+        foreach (var leaf in node.ListLeafs)
+            this.AddLeaf(leaf.GetListControlGui());
+    }
+    public ListBoxCollapsibleNode(string name)
+    {
+        this.Name = name;
+        this.ChildrenGroupBox.Name = name;
+    }
+    public ListBoxCollapsibleNode(string name, Func<ListBoxCollapsibleNode, Control> controlGetter) : this(name)
+    {
+        this.ControlGetter = () => controlGetter(this);
+    }
 
-        public void Build<C>(Action<ILabeled, C> onControlInit, Action<ILabeled[]> onLeafSelect) where C : ButtonBase, new()
-        {
-            foreach (var item in this.CustomLeafs)
-            {
-                var checkbox = new C();
-                checkbox.Tag = item;
-                var label = new Label(item.LabelReadable);
-                var box = new GroupBox();
-                box.AddControlsHorizontally(checkbox, label);
-                onControlInit(item, checkbox);
-                checkbox.LeftClickAction = () => onLeafSelect(new ILabeled[] { item });
-                this.LeafControls.Add(box);
-            }
-        }
-        public int GetDepth()
-        {
-            var depth = 0;
-            var parent = this.Parent;
-            while (parent is not null)
-            {
-                depth++;
-                parent = parent.Parent;
-            }
-            return depth;
-        }
-        public override string ToString()
-        {
-            return this.Name;
-        }
+    public ListBoxCollapsibleNode(string name, Control control) : this(name)
+    {
+        this.Control = control;
+    }
 
-        internal void FindLeafIndex(ButtonBase c, ref int i)
-        {
-            foreach (var leaf in this.Leafs)
-            {
-                if (leaf == c)
-                    return;
-                i++;
-            }
-            foreach (var child in this.Children)
-                child.FindLeafIndex(c, ref i);
-        }
+    public ListBoxCollapsibleNode AddNode(ListBoxCollapsibleNode node)
+    {
+        this.Children.Add(node);
+        node.Parent = this;
+        return this;
+    }
+    public void RemoveNode(ListBoxCollapsibleNode node)
+    {
+        this.Children.Remove(node);
+    }
+ 
+   
+    public ListBoxCollapsibleNode AddLeaf(ListBoxCollapsibleNode leaf)
+    {
+        this.Children.Add(leaf);
+        this.ChildrenGroupBox.AddControlsBottomLeft(leaf.Control);
+        leaf.Control.Validate(true);
+        return this;
+    }
+    [Obsolete]
+    public ListBoxCollapsibleNode AddLeaf(Control leaf)
+    {
+        throw new Exception();
+    }
+    public ListBoxCollapsibleNode RemoveChild(ListBoxCollapsibleNode child)
+    {
+        this.Children.Remove(child);
+        this.ChildrenGroupBox.RemoveControls(child.Control);
+        return this;
+    }
+    public ListBoxCollapsibleNode Clear()
+    {
+        this.Children.Clear();
+        return this;
+    }
 
-        internal ButtonBase GetLeaf(int i)
+    internal void FindLeafIndex(ButtonBase c, ref int i)
+    {
+        foreach (var leaf in this.Leafs)
         {
-            throw new NotImplementedException();
+            if (leaf == c)
+                return;
+            i++;
         }
+        foreach (var child in this.Children)
+            child.FindLeafIndex(c, ref i);
     }
 }
-

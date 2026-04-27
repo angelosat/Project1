@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.UI;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,16 @@ namespace Project1.Core.Towns.Stockpiles;
 class StockpileNode : ICollapsibleNode<Def>
 {
     public Def Key;
-    public int Quantity;
+    public int Quantity
+    {
+        get => field;
+        set
+        {
+            field = value;
+            this.QuantityChanged.Notify();
+        }
+    }
+    ChangeNotifier QuantityChanged = new();
     public StockpileNode Parent;
     Dictionary<Def, StockpileNode> _children = [];
     internal IReadOnlyDictionary<Def, StockpileNode> Children => this._children;
@@ -36,7 +46,11 @@ class StockpileNode : ICollapsibleNode<Def>
     }
     internal void RemoveNode(Def def)
     {
-        this._children.Remove(def, out var node);
+        if (!this._children.Remove(def, out var node))
+        {
+            throw new InvalidOperationException($"Attempted to remove non-existent child: {def}");
+        }
+        //this._children.Remove(def, out var node);
         this.ChildRemoved?.Invoke(node);
     }
     internal void AddItem(Entity item)
@@ -50,7 +64,7 @@ class StockpileNode : ICollapsibleNode<Def>
     }
 
     public Control GetControl()
-        => new LabelNew(() => $"{this.Label} {this.Quantity}");
+        => new LabelNew(() => $"{this.Label} {this.Quantity}").InvalidateOn(this.QuantityChanged);
 
     public IReadOnlyList<Entity> Items => _items;
 
@@ -156,24 +170,24 @@ class StockpileTracker
         }
     }
 
-    internal Control GetControl()
-    {
-        var list = new ListCollapsible<Def>();
-        list.Build([this._root]);
-        return list;
-    }
+    //internal Control GetControl()
+    //{
+    //    var list = new ListCollapsible<Def>();
+    //    list.Build([this._root]);
+    //    return list;
+    //}
 
-    public void UpdateStack(Entity item, int oldQty, int newQty)
-    {
-        int delta = newQty - oldQty;
+    //public void UpdateStack(Entity item, int oldQty, int newQty)
+    //{
+    //    int delta = newQty - oldQty;
 
-        var node = _itemToLeaf[item];
-        while (node != null)
-        {
-            node.Quantity += delta;
-            node = node.Parent;
-        }
-    }
+    //    var node = _itemToLeaf[item];
+    //    while (node != null)
+    //    {
+    //        node.Quantity += delta;
+    //        node = node.Parent;
+    //    }
+    //}
 
   
 }

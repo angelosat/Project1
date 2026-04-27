@@ -48,10 +48,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     public Def? ProductDef { get; internal set; }
     public WorkstationCapabilityDef WorkstationCapability { get; internal set;}
     public BlockWorkstationComp Workstation { get; internal set; }
-    //public string LabelReadable
-    //    => this.ProductDef is Def def ?
-    //    $"{this.WorkstationCapability.LabelReadable}: {def.LabelReadable}" :
-    //    $"{this.WorkstationCapability.LabelReadable}";
+
     public string LabelReadable => this.Source.GetLabel();
     public AddOrderRequest Source;
     public Dictionary<BoneDef, HashSet<MaterialDef>> Filters = [];
@@ -68,9 +65,7 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         var filters = this.Filters[bone];
         if(material is not null)
         {
-            if (filters.Contains(material))
-                filters.Remove(material);
-            else
+            if (!filters.Remove(material))
                 filters.Add(material);
         }
         else

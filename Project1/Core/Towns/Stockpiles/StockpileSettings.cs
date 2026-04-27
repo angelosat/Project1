@@ -9,7 +9,7 @@ namespace Project1.Core.Towns.Stockpiles
     {
         public readonly HashSet<(Def Profile, MaterialDef Material)> FiltersNew = [];
         public readonly HashSet<ItemDef> FiltersBase = [];
-        public void Toggle(ItemDef item, Def profile, MaterialDef material)
+        public void  Toggle(ItemDef item, Def profile, MaterialDef material)
         {
             if (profile is null && material is null)
             {

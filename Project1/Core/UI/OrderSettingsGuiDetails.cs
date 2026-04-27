@@ -5,13 +5,13 @@ namespace Project1.Core.UI;
 
 internal class OrderSettingsGuiDetails : GroupBox
 {
-    readonly ListCollapsibleNewNew ListCollapsible;
+    readonly ListCollapsible<Def> ListCollapsible;
     readonly CraftingOrder Order;
     public OrderSettingsGuiDetails(CraftingOrder order)
     {
         this.Order = order;
-        var entries = IngredientGroupBuilder.Build(order);
-        this.ListCollapsible = new ListCollapsibleNewNew();
+        var entries = IngredientGroupBuilder.BuildNew(order);
+        this.ListCollapsible = new();
         this.ListCollapsible.Build(entries);
         order.Workstation.Map.Events.ListenTo<CraftOrderUpdatedEvent>(OnOrderUpdated);
         var panel = new Panel() { AutoSize = false }.SetClientDimensions(200, 200);

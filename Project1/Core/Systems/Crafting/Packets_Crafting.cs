@@ -141,7 +141,7 @@ static class Packets_Crafting
     }
     static void SendPlayerModifiedOrderFilters(NetEndpoint net, CraftingOrder order, BoneDef bone, MaterialTypeDef form, MaterialDef material)
     {
-        net.BeginPacket(_pPlayerModifiedOrderFilters)
+        net.BeginPacketImmediate(_pPlayerModifiedOrderFilters)
             .Write(order.Workstation.Map.ID)
             .Write(order.Id)
             .Write(bone)

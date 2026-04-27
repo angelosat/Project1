@@ -7,7 +7,8 @@ namespace Project1.Core.Towns.Stockpiles;
 internal sealed class StockpileFiltersGui : SelectionBoundControl
 {
     Action _unsub;
-    ListCollapsibleNewNew ListCollapsible;
+    //ListCollapsibleNewNew ListCollapsible;
+    ListCollapsible<Def> ListCollapsible;
 
     protected internal override void OnBind(ISelectable selectable)
     {
@@ -19,9 +20,9 @@ internal sealed class StockpileFiltersGui : SelectionBoundControl
         this.ClearControls();
         if (selectable is not Stockpile stockpile)
             return;
-        var entries = IngredientGroupBuilder.Build(stockpile);
-        this.ListCollapsible = new ListCollapsibleNewNew();
-        this.ListCollapsible.BuildNew(entries);
+        var entries = IngredientGroupBuilder.BuildNew(stockpile);
+        this.ListCollapsible = new();
+        this.ListCollapsible.Build(entries);
         selectable.Map.Events.ListenTo<StockpileUpdatedEvent>(OnStockpileUpdatedEvent);
 
         var box = new ScrollableBoxNewNewNew(this.ListCollapsible, 200, 400, ScrollModes.Vertical);

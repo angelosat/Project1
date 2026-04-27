@@ -8,7 +8,6 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Systems.Crafting;
 

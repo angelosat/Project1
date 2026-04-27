@@ -1,174 +1,181 @@
-﻿using Project1.Core.Blocks;
-using Project1.Core.Entities;
-using Project1.Core.Simulation;
-using Project1.Core.Systems.Consumables;
-using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Tools;
-using Project1.Core.Towns.Storage;
-using Project1.Core.Towns.Zones;
+﻿using Project1.Core.Entities;
+using Project1.Core.UI;
 using Project1.Framework;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Towns.Stockpiles;
 
-public sealed class HaulingManager : MapComponent
+class StockpileNode : ICollapsibleNode<Def>
 {
-    readonly List<Stockpile> _allStockpiles = [];
-    readonly Dictionary<ZoneId, Stockpile> _allStockpilesById = [];
-    public IReadOnlyList<Stockpile> Stockpiles => this._allStockpiles;
+    public Def Key;
+    public int Quantity;
+    public StockpileNode Parent;
+    Dictionary<Def, StockpileNode> _children = [];
+    internal IReadOnlyDictionary<Def, StockpileNode> Children => this._children;
+    public event Action<ICollapsibleNode<Def>> ChildAdded;
+    public event Action<ICollapsibleNode<Def>> ChildRemoved;
+    public event Action<ICollapsibleNode<Def>> Updated;
+    private List<Entity> _items;
+    public bool IsLeaf => this._children.Count == 0;
+    public string Label { get => this.Key?.LabelReadable ?? field; set => field = value; }
 
-    public IEnumerable<Entity> AllItems => this._allStockpiles.SelectMany(s => s.Items);
-
-    public IEnumerable<Entity> GetItems(ZoneId stockpileId) => stockpileId != ZoneId.Null ? this._allStockpilesById[stockpileId].Items : this.AllItems;
-
-    readonly Dictionary<IntVec3, BlockInventoryHaulingTarget> BlockEntities = [];
-    readonly Dictionary<ZoneId, StockpileHaulingTarget> StockpileTargets = [];
-
-    readonly HashSet<IHaulingTarget> _allTargets = [];
-    public IReadOnlySet<IHaulingTarget> AllTargets => this._allTargets;
-    public IEnumerable<Entity> InventoryItems => this.BlockEntities.Values.SelectMany(comp => comp.Items);
-
-    internal StockpileTrackerManager TrackerManager = new((
-        "Ingredients", typeof(MaterialRefinementDef), [
-            item => (MaterialRefinementDef)item.Profile,
-            //item => item.PrimaryMaterial.Type,
-            item => item.PrimaryMaterial]), (
-        "Consumables", typeof(ConsumableDef), [
-            item => (ConsumableDef)item.Profile,
-            item => item.Consumable.Effect.Def]),(
-        "Tools", typeof(ToolProfileDef), [
-            item => (ToolProfileDef)item.Profile,
-            item => item.Quality])
-        );
-    //StockpileTrackerRoot Tracker = new StockpileTrackerRoot();
-    //internal Dictionary<Type, StockpileTracker> Trackers = new(){{
-    //    typeof(MaterialRefinementDef), new(
-    //        item => item.PrimaryMaterial.Type,
-    //        item => item.PrimaryMaterial)},
-    //    {typeof(ConsumableDef), new(
-    //        item=>item.Consumable.Effect.Def) },
-    //    {typeof(ToolProfileDef), new(
-    //        item=>item.Quality) } };
-
-
-    //internal StockpileTracker Tracker = new StockpileTracker(
-    //    item => (MaterialRefinementDef)item.Profile,
-    //    item => item.PrimaryMaterial.Type,
-    //    item => item.PrimaryMaterial);
-    public HaulingManager(MapBase map) : base(map)
+    internal StockpileNode GetOrCreate(Def key, out bool created)
     {
-        map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
-        map.Events.ListenTo<ZoneDeletedEvent>(OnZoneDeleted);
-
-        map.Events.ListenTo<EntityEnteredZoneEvent>(OnEntityEnteredZone);
-        map.Events.ListenTo<EntityExitedZoneEvent>(OnEntityExitedZone);
-
-        map.Events.ListenTo<BlockEntityAddedEvent>(OnBlockEntityAdded);
-        map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
-
-        map.World.Events.ListenTo<EntityStackChangedEvent>(HandleEntityStackChanged);
-    }
-
-    private void HandleEntityStackChanged(EntityStackChangedEvent e)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)
-    {
-        if (this.BlockEntities.TryGetValue(e.Entity.OriginGlobal, out var comp))
-            this._allTargets.Remove(comp);
-        this.BlockEntities.Remove(e.Entity.OriginGlobal);
-    }
-
-    private void OnBlockEntityAdded(BlockEntityAddedEvent e)
-    {
-        this.TryRegister(e.Entity);
-    }
-
-    private bool TryRegister(BlockEntity be)
-    {
-        if (!be.TryGetComp<BlockInventoryComp>(out var comp))
-            return false;
-        var tar = new BlockInventoryHaulingTarget(comp);
-        this.BlockEntities.Add(be.OriginGlobal, tar);
-        this._allTargets.Add(tar);
-        return true;
-    }
-    private void TryRegister(Stockpile s)
-    {
-        this._allStockpiles.Add(s);
-        this._allStockpilesById[s.ID] = s;
-        var tar = new StockpileHaulingTarget(s);
-        this._allTargets.Add(tar);
-    }
-    private void OnEntityExitedZone(EntityExitedZoneEvent e)
-    {
-        if (e.Zone is Stockpile stockpile)
-            this.UnRegister(e.Entity, stockpile);
-    }
-    private void OnEntityEnteredZone(EntityEnteredZoneEvent e)
-    {
-        if (e.Zone is Stockpile stockpile)
-            if (stockpile.Accepts(e.Entity))
-                this.Register(e.Entity, stockpile);
-    }
-
-    private void Register(Entity item, Stockpile stockpile)
-    {
-        stockpile.AcceptedItems.Add(item);
-        //this.Tracker.Add(item);
-        this.TrackerManager.Add(item);
-    }
-    private void UnRegister(Entity item, Stockpile stockpile)
-    {
-        if (stockpile.AcceptedItems.Remove(item))
-            this.TrackerManager.Remove(item);
-
-    }
-    protected internal override void ResolveReferences()
-    {
-        var zonemanager = this.Map.Town.ZoneManager;
-        var stockpiles = zonemanager.GetZones<Stockpile>();
-        foreach (var s in stockpiles)
+        created = false;
+        if (!this._children.TryGetValue(key, out var node))
         {
-            TryRegister(s);
+            node = new StockpileNode { Key = key, Parent = this };
+            this._children[key] = node;
+            this.ChildAdded?.Invoke(node);
+            created = true;
+        }
+        return node;
+    }
+    internal void RemoveNode(Def def)
+    {
+        this._children.Remove(def, out var node);
+        this.ChildRemoved?.Invoke(node);
+    }
+    internal void AddItem(Entity item)
+    {
+        // lazy allocation: only leaves actually use this
+        (this._items ??= []).Add(item);
+    }
+    internal void RemoveItem(Entity item)
+    {
+        this._items?.Remove(item);
+    }
+
+    public Control GetControl()
+        => new LabelNew(() => $"{this.Label} {this.Quantity}");
+
+    public IReadOnlyList<Entity> Items => _items;
+
+    ICollapsibleNode<Def> ICollapsibleNode<Def>.Parent => Parent;
+
+    IEnumerable<ICollapsibleNode<Def>> ICollapsibleNode<Def>.Children => this._children.Values;
+}
+delegate Def GroupSelector(Entity item);
+
+sealed class StockpileTrackerManager
+{
+    public StockpileTrackerManager(params (string label, Type defType, GroupSelector[] selectors)[] args)
+    {
+        foreach (var arg in args)
+        {
+            this.Trackers.Add(arg.defType, new(arg.label, arg.selectors));
+        }
+    }
+    internal Dictionary<Type, StockpileTracker> Trackers = [];
+    internal Control GetControl()
+    {
+        var list = new ListCollapsible<Def>();
+        var nodes = this.Trackers.Values;
+        list.Build(nodes.Select(n => n.Root));
+        return list;
+    }
+    internal void Add(Entity item)
+    {
+        this.Trackers[item.Profile.GetType()].Add(item);
+    }
+    internal void Remove(Entity item)
+    {
+        this.Trackers[item.Profile.GetType()].Remove(item);
+    }
+}
+
+class StockpileTracker
+{
+    private readonly List<GroupSelector> _levels;
+    private readonly StockpileNode _root = new();
+    internal StockpileNode Root => this._root;
+    readonly Dictionary<Entity, StockpileNode> _itemToLeaf = [];
+
+    event Action<(IEnumerable<StockpileNode> added, IEnumerable<StockpileNode> removed)> NodesUpdated;
+    event Action<StockpileNode> NodeAdded;
+
+    public StockpileTracker(string label, params GroupSelector[] levels)
+    {
+        this._root.Label = label;
+        this._levels = [.. levels];
+    }
+
+    public void Add(Entity item)
+    {
+        int qty = item.StackSize;
+
+        var node = _root;
+        node.Quantity += qty;
+
+        foreach (var level in _levels)
+        {
+            var key = level(item);
+            node = node.GetOrCreate(key, out var created);
+            if (created)
+                this.NodesUpdated?.Invoke(([node], []));
+            node.Quantity += qty;
         }
 
+        node.AddItem(item); // only matters at leaf
+        this._itemToLeaf[item] = node;
+    }
+    public void Remove(Entity item)
+    {
+        if (!_itemToLeaf.TryGetValue(item, out var leaf))
+            return;
+
+        int qty = item.StackSize;
+
+        // remove from leaf storage
+        leaf.RemoveItem(item);
+        this._itemToLeaf.Remove(item);
+
+        var node = leaf;
+
+        while (node != null)
+        {
+            node.Quantity -= qty;
+
+            var parent = node.Parent;
+
+            // stop at root (never remove root)
+            if (parent == null)
+                break;
+
+            // prune if empty
+            if (node.Quantity == 0 && node.Children.Count == 0)
+            {
+                parent.RemoveNode(node.Key);
+                this.NodesUpdated?.Invoke(([], [node]));
+            }
+
+            node = parent;
+        }
     }
 
-    internal override void Scan(BlockEntity be)
+    internal Control GetControl()
     {
-        this.TryRegister(be);
+        var list = new ListCollapsible<Def>();
+        list.Build([this._root]);
+        return list;
     }
-    internal override void Scan(Entity entity)
-    {
-        var zonemanager = this.Map.Town.ZoneManager;
 
-        if (!zonemanager.CellsToZones.TryGetValue(entity.Cell.Below, out var zone))
-            return;
-        if (zone is Stockpile sp && sp.Accepts(entity))
-            this.Register(entity, sp);
-    }
-    private void OnZoneDeleted(ZoneDeletedEvent e)
+    public void UpdateStack(Entity item, int oldQty, int newQty)
     {
-        if (e.Zone is not Stockpile stockpile)
-            return;
-        this._allStockpiles.Remove(stockpile);
-        this._allStockpilesById.Remove(stockpile.ID);
-        this.StockpileTargets.Remove(stockpile.ID);
+        int delta = newQty - oldQty;
+
+        var node = _itemToLeaf[item];
+        while (node != null)
+        {
+            node.Quantity += delta;
+            node = node.Parent;
+        }
     }
-    private void OnZoneCreated(ZoneCreatedEvent e)
-    {
-        if (e.Zone is not Stockpile stockpile)
-            return;
-        this._allStockpiles.Add(stockpile);
-        this._allStockpilesById[stockpile.ID] = stockpile;
-        this.StockpileTargets.Add(stockpile.ID, new(stockpile));
-    }
-    public override void Tick() { }
+
+  
 }
 
 //public class StockpileManager : MapComponent

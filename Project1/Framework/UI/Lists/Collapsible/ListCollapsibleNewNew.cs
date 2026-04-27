@@ -217,4 +217,3 @@ namespace Project1.Core.UI
         }
     }
 }
-

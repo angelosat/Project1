@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Core.Systems.Crafting;
-using Project1.Core.Towns.Stockpiles;
+using Project1.Framework;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +25,7 @@ public class ListCollapsible<T> : GroupBox
     {
         var nodeControl = new ListBoxCollapsibleNode(node.GetControl());
         node.ChildAdded += Node_ChildAdded;
+        node.ChildRemoved += Node_ChildRemoved;
         this.Build(nodeControl);
         foreach (var child in node.Children)
         {
@@ -37,83 +37,53 @@ public class ListCollapsible<T> : GroupBox
                 nodeControl.AddLeaf(childNode.Control);
             }
             else
-                nodeControl.AddLeaf(child.GetControl());// new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
+                nodeControl.AddLeaf(child.GetControl());
         }
         this.AddControlsBottomLeft(nodeControl.Control);
         this._map.Add(node, nodeControl);
         return nodeControl;
     }
 
+    private void Node_ChildRemoved(ICollapsibleNode<T> node)
+    {
+        var nodeControl = this._map[node];
+        var parent = node.Parent;
+        var parentControl = this._map[parent];
+        if (node.Children.Any())
+            parentControl.RemoveNode(nodeControl);
+        this.ResetLayoutFrom(parentControl);
+
+    }
+
     private void Node_ChildAdded(ICollapsibleNode<T> node)
     {
-        var nodeControl = node.GetControl();// new ListBoxCollapsibleNode();
+        var nodeControl = node.GetControl();
         var parent = node.Parent;
         var parentControl = this._map[parent];
         if (node.Children.Any())
         {
-            //var childNode = BuildRecursive(node);
-            //childNode.Parent = nodeControl;
-            //nodeControl.Children.Add(childNode);
-            //nodeControl.AddLeaf(childNode.Control);
-            parentControl.AddNode(new(nodeControl));
+            var nodeControNode = new ListBoxCollapsibleNode(nodeControl);
+            parentControl.AddNode(nodeControNode);// new(nodeControl));
+            this._map.Add(node, nodeControNode);
         }
         else
-            parentControl.AddLeaf(nodeControl);// new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
+            parentControl.AddLeaf(nodeControl);
+      
+        this.ResetLayoutFrom(parentControl);
     }
 
-    public void Build(List<IngredientGroup> groups)
+    private void ResetLayoutFrom(ListBoxCollapsibleNode parentControl)
     {
-        this.ClearControls();
-        foreach (var group in groups)
+        var currentParent = parentControl;
+        while (currentParent is not null)
         {
-            var groupNode = new ListBoxCollapsibleNode(group.Label);
-            foreach (var entry in group.Entries)
-            {
-                //var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxNew() { TickedFunc = entry.IsAllowed, LeftClickAction = entry.Toggle });
-                var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal(entry.Toggle, entry.IsAllowed));
-                entryNode.Control = Build(entryNode);
-                foreach (var child in entry.Children)
-                {
-                    //var chk = new CheckBoxNew(child.Label) { TickedFunc = child.IsAllowed, LeftClickAction = child.Toggle };
-                    var chk = new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed);
-                    entryNode.AddLeaf(chk);
-                }
-                entryNode.ChildrenGroupBox.AlignTopToBottom();
-                entryNode.Parent = groupNode;
-                groupNode.Children.Add(entryNode);
-                groupNode.AddLeaf(entryNode.Control);
-            }
-            groupNode.Control = Build(groupNode);
-            this.AddControlsBottomLeft(groupNode.Control);
+            currentParent.ChildrenGroupBox.AlignTopToBottom(this.Spacing);
+            currentParent = currentParent.Parent;
         }
+        this.AlignTopToBottom(this.Spacing);
     }
-    public void BuildNew(List<IngredientGroup> groups)
-    {
-        foreach (var group in groups)
-            foreach (var entry in group.Entries)
-                BuildRecursive(entry);
-    }
-    ListBoxCollapsibleNode BuildRecursive(IngredientGroupEntry entry)
-    {
-        var entryNode = new ListBoxCollapsibleNode(entry.Label, new CheckBoxFinal(entry.Toggle, entry.IsAllowed));
-        //entryNode.Control = 
-        Build(entryNode);
-        foreach (var child in entry.Children)
-        {
-            if (child.Children.Count > 0)
-            {
-                var childNode = BuildRecursive(child);
-                childNode.Parent = entryNode;
-                entryNode.Children.Add(childNode);
-                entryNode.AddLeaf(childNode.Control);
-            }
-            else
-                entryNode.AddLeaf(new CheckBoxFinal(child.Label, child.Toggle, child.IsAllowed));
-        }
-        this.AddControlsBottomLeft(entryNode.Control);
-        return entryNode;
-    }
-    void expand(ListBoxCollapsibleNode node)
+
+    void Expand(ListBoxCollapsibleNode node)
     {
         if (!node.Expanded)
         {
@@ -128,14 +98,15 @@ public class ListCollapsible<T> : GroupBox
             node.Arrow.SetTexture(UIManager.ArrowRight);
             node.Control.RemoveControls(node.ChildrenGroupBox);
         }
+        this.ResetLayoutFrom(node);
 
-        var parent = node;
-        while (parent is not null)
-        {
-            parent.ChildrenGroupBox.AlignTopToBottom(this.Spacing);
-            parent = parent.Parent;
-        }
-        this.AlignTopToBottom(this.Spacing);
+        //var parent = node;
+        //while (parent is not null)
+        //{
+        //    parent.ChildrenGroupBox.AlignTopToBottom(this.Spacing);
+        //    parent = parent.Parent;
+        //}
+        //this.AlignTopToBottom(this.Spacing);
 
     }
     public ListCollapsible<T> AddNode(ListBoxCollapsibleNode node)
@@ -147,7 +118,7 @@ public class ListCollapsible<T> : GroupBox
     {
         var nodeContainer = new GroupBox() { Name = node.Name, BackgroundColor = UIManager.DefaultListItemBackgroundColor };
         var nodeItem = new GroupBox() { Name = $"{node.Name} content" };
-        node.Arrow = new PictureBox(UIManager.ArrowRight) { LeftDownAction = () => expand(node) };// { LeftClickAction = expand };
+        node.Arrow = new PictureBox(UIManager.ArrowRight) { LeftDownAction = () => Expand(node) };// { LeftClickAction = expand };
         var label = new Label(node.Name) { Active = true };
         var control = node.Control;
         if (control is not null)
@@ -159,7 +130,7 @@ public class ListCollapsible<T> : GroupBox
         nodeContainer.AddControls(nodeItem);
         node.Parent?.ChildControls.Add(nodeContainer);
         node.Parent?.ChildrenGroupBox.Controls.Insert(0, nodeContainer);
-        label.LeftClickAction = () => expand(node);
+        label.LeftClickAction = () => Expand(node);
         node.Control = nodeContainer;
         return nodeContainer;
     }

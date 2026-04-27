@@ -64,10 +64,18 @@ namespace Project1.Core.UI
             node.Parent = this;
             return this;
         }
+        public void RemoveNode(ListBoxCollapsibleNode node)
+        {
+            this.Children.Remove(node);
+        }
         public ListBoxCollapsibleNode AddLeaf(ILabeled leaf)
         {
             this.CustomLeafs.Add(leaf);
             return this;
+        }
+        public void RemoveLeaf(Control leaf)
+        {
+            this.LeafControls.Remove(leaf);
         }
         public ListBoxCollapsibleNode AddLeaf(Control leaf)
         {

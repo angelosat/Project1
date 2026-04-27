@@ -122,7 +122,8 @@ namespace Project1.Framework.UI
 
             var lineCount = string.IsNullOrEmpty(this.Text) ? 1 : this.Text.Split('\n').Length;
             var oldh = this.Height;
-            this.Height = (int)textsize.Y;// + 2 * lineCount; WARNING commented this out because measurestring returns height = 17 while font linespacing = 15
+            //this.Height = (int)textsize.Y;// + 2 * lineCount; WARNING commented this out because measurestring returns height = 17 while font linespacing = 15
+            this.Height = UIManager.DefaultLabelHeight * lineCount;
             if (this.Height != oldh || this.Width != oldw)
                 if (this.Parent is not null)
                     this.Parent.OnControlResized(this);

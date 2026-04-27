@@ -95,7 +95,7 @@ namespace Project1.Core.UI
         }
         public ListCollapsibleNewNew AddNode(ListBoxCollapsibleNode node)
         {
-            this.ARoot.AddNode(node);
+            this.ARoot.AddNodeOld(node);
             return this;
         }
         Control Build(ListBoxCollapsibleNode node)

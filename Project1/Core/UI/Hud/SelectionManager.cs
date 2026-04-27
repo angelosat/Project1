@@ -191,7 +191,7 @@ public sealed class SelectionManager
     }
     SelectionManager()
     {
-        this.PanelInfo = Panel.FromClientSize(302, Label.DefaultHeight * 6);// 100); (302 = fit 3 x 100px widt bars, width 1 px spacing between them
+        this.PanelInfo = Panel.FromClientSize(302, UIManager.DefaultLabelHeight * 6);// 100); (302 = fit 3 x 100px widt bars, width 1 px spacing between them
         this.BoxTabs = new GroupBox();
         //{
         //    AutoSize = false,

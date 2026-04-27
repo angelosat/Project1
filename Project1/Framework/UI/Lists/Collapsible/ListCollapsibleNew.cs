@@ -21,12 +21,12 @@ namespace Project1.Core.UI
         public ListCollapsibleNew(IListCollapsibleDataSource dataSource)
         {
             var node = new ListBoxCollapsibleNode(dataSource);
-            this.ARoot.AddNode(node);
+            this.ARoot.AddNodeOld(node);
             this.Build();
         }
         public ListCollapsibleNew AddNode(ListBoxCollapsibleNode node)
         {
-            this.ARoot.AddNode(node);
+            this.ARoot.AddNodeOld(node);
             return this;
         }
         public ListCollapsibleNew Build()

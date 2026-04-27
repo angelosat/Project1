@@ -11,7 +11,8 @@ namespace Project1.Framework.UI
     public class LabelNew : ButtonBaseNew
     {
 
-        public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
+        //public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
+        //public static int DefaultHeight = UIManager.Font.LineSpacing + 4; // 2 margin and 2 outline
 
         Alignment.Horizontal _Halign;
         public Alignment.Horizontal Halign
@@ -19,14 +20,15 @@ namespace Project1.Framework.UI
             get => this._Halign;
             set => this._Halign = value;
         }
-        public Alignment.Vertical Valign;
+        public Alignment.Vertical Valign;// = Alignment.Vertical.Center;
         public Color TextBackground = Color.Transparent;
         public Func<Color> TextBackgroundFunc = () => Color.Transparent;
 
         public override string ToString()
-        {
-            return "Label: " + this.Text ?? this.Name;
-        }
+            => $"{nameof(LabelNew)}: {this.TextFunc()}";
+        //{
+        //    return "LabelNew: " + this.Text ?? this.Name;
+        //}
 
         public override int Width
         {
@@ -42,6 +44,7 @@ namespace Project1.Framework.UI
         public override void Draw(SpriteBatch sb, Rectangle viewport)
         {
             var c = this.TextBackgroundFunc();
+            //c = Color.Lime * .5f;
             this.BoundsScreen.DrawHighlight(sb, c);
             base.Draw(sb, viewport);
         }
@@ -49,14 +52,22 @@ namespace Project1.Framework.UI
         public Color ActiveColor = Color.Lime;
         public override void OnPaint(SpriteBatch sb)
         {
-            var pos = new Vector2((int)this.Halign * .5f, .5f);
+            //var pos = new Vector2((float)this.Halign * .5f, (float)this.Valign * .5f);
+            var pos = new Vector2((float)this.Halign * .5f, .5f);
             var outlineOffset = this.Halign == Alignment.Horizontal.Left ? 2 : (this.Halign == Alignment.Horizontal.Right ? -2 : 0);
+            //var hOffset = this.Halign == Alignment.Horizontal.Left ? 2 : (this.Halign == Alignment.Horizontal.Right ? -2 : 0);
+            //var vOffset = this.Valign == Alignment.Vertical.Top ? 2 : (this.Valign == Alignment.Vertical.Bottom ? -2 : 0);
+            //var outlineOffset = new Vector2(hOffset, vOffset);
+            //var finalpos = pos * this.Dimensions + outlineOffset;5
+            var finalpos = pos * this.Dimensions +  new Vector2(outlineOffset, 0);
             if (this.TextFunc is not null)
                 this.Text = this.TextFunc();
+            //if (UIManager.Font.LineSpacing + 4 != UIManager.DefaultLabelHeight)
+            //    throw new Exception();
             UIManager.DrawStringOutlined(
                 sb,
                 this.Text,
-                pos * this.Dimensions + new Vector2(outlineOffset, 0) + ((this.Active && this.Pressed) ? Vector2.UnitY : Vector2.Zero),
+                finalpos + ((this.Active && this.Pressed) ? Vector2.UnitY : Vector2.Zero),
                 pos,
                 ((this.IsPushed || this.MouseHover) && this.Active) ? this.ActiveColor : this.TextColor,
                 this.TextOutline,
@@ -67,7 +78,7 @@ namespace Project1.Framework.UI
         protected override void OnTextChanged()
         {
             base.OnTextChanged();
-            this.Height = System.Math.Max(this.Height, Label.DefaultHeight);
+            this.Height = System.Math.Max(this.Height, UIManager.DefaultLabelHeight);
 
             switch (this.Halign)
             {
@@ -102,7 +113,7 @@ namespace Project1.Framework.UI
         {
             this.Text = "";
             this.Width = width;
-            this.Height = Label.DefaultHeight;
+            this.Height = UIManager.DefaultLabelHeight;
             this.Active = false;
         }
         public LabelNew() : this(Vector2.Zero, "") { }

@@ -83,7 +83,7 @@ namespace Project1.Core.UI
             var Panel_Buttons = new Panel(Panel_Input.BottomLeft);
             Panel_Buttons.AutoSize = true;
 
-            var txt_Input = new TextBox(Vector2.Zero, new Vector2(GUIWidth, Label.DefaultHeight))
+            var txt_Input = new TextBox(Vector2.Zero, new Vector2(GUIWidth, UIManager.DefaultLabelHeight))
             {
                 MaxLength = maxlength,
                 Text = initialText,

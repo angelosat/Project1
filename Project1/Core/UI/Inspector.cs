@@ -149,7 +149,7 @@ namespace Project1.Core.UI
             var list = new ListBoxNoScroll<Def>(d => new Label(d.Name, () => Refresh(d)));
             list.AddItems(Def.Database.Values.OrderBy(d => d.Name));
             var search = new SearchBarNew<Def>(Width, id => id.Name).BindTo(list).ToPanelLabeled("Search");
-            var scrollablebox = new ScrollableBoxNewNewNew(list, Width, MaxHeight - search.Height, ScrollModes.Vertical) { SmallStep = Label.DefaultHeight + list.Spacing };
+            var scrollablebox = new ScrollableBoxNewNewNew(list, Width, MaxHeight - search.Height, ScrollModes.Vertical) { SmallStep = UIManager.DefaultLabelHeight + list.Spacing };
             var box = new GroupBox().AddControlsVertically(search, scrollablebox.ToPanel());
             DefDirectory = box;
         }
@@ -158,7 +158,7 @@ namespace Project1.Core.UI
             var net = Client.Instance;
             var list = new ListBoxReadOnlyObservable<Entity, Label>(net.World.EntitiesObservable, o => new Label(o.DebugName, () => Refresh(o)));
             var search = new SearchBarNew<Entity>(Width, o => o.Name).BindTo(list).ToPanelLabeled("Search");
-            var scrollablebox = new ScrollableBoxNewNewNew(list, Width, MaxHeight - search.Height, ScrollModes.Vertical) { SmallStep = Label.DefaultHeight + list.Spacing };
+            var scrollablebox = new ScrollableBoxNewNewNew(list, Width, MaxHeight - search.Height, ScrollModes.Vertical) { SmallStep = UIManager.DefaultLabelHeight + list.Spacing };
             var box = new GroupBox().AddControlsVertically(search, scrollablebox.ToPanel());
             ObjectsDirectory = box;
         }

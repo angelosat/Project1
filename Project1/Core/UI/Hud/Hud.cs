@@ -123,6 +123,8 @@ public class Hud : GroupBox
             //, this.StockpileTracker
             );
         this.Controls.Add(this.StockpileTracker);
+
+        //this.Controls.Add(new LabelNew(() => "TESTpppggg") { BackgroundColorFunc=()=>Color.Red }.AnchorToScreenCenter());
     }
 
     private void TogglePlayerList(NetEndpoint net)

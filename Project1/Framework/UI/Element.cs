@@ -16,7 +16,15 @@ namespace Project1.Framework.UI
 
         public Vector2 MouseOffset;
         public virtual int Width { get; set; }
-        public virtual int Height { get; set; }
+        public virtual int Height { 
+            get;
+            set;
+            //{
+            //    if (value == 10)
+            //        "ASDGAMW".ToConsole();
+            //    field = value;
+            //}
+        }
         public virtual Vector2 Dimensions
         {
             get => new Vector2(Width, Height);

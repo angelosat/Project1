@@ -23,7 +23,7 @@ internal sealed class InventoryListGui : SelectionBoundControl
                 .AddColumn("weight", 48, o => new Label(() => o.TotalWeight.ToString("0.# kg")));
 
         this.Controls.Add(this.TableContents
-            .ToScrollableBox(this.TableContents.RowWidth, 16 * (LabelNew.DefaultHeight + 1), ScrollModes.Vertical)
+            .ToScrollableBox(this.TableContents.RowWidth, 16 * (UIManager.DefaultLabelHeight + 1), ScrollModes.Vertical)
             .ToPanelLabeled("Inventory"));
     }
     

@@ -23,7 +23,7 @@ internal class Gui_PriceList : GroupBox
         this.Table.AddItems(shops.GetPriceList().Select(p=>p.entity));
         shops.ItemsForSaleToggled += Shops_ItemsForSaleToggled;
 
-        var scrollbox = ScrollableBoxNewNewNew.FromWidth(this.Table, this.Table.RowWidth, Label.DefaultHeight * 16);
+        var scrollbox = ScrollableBoxNewNewNew.FromWidth(this.Table, this.Table.RowWidth, UIManager.DefaultLabelHeight * 16);
         this.Controls.Add(scrollbox.ToPanelLabeled("Price list"));
     }
 

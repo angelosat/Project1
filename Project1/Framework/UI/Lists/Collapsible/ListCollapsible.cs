@@ -34,8 +34,11 @@ public class ListCollapsible<T> : GroupBox
         {
             var childNode = BuildRecursive(child);
             childNode.Parent = nodeWrapper;
-            nodeWrapper.AddLeaf(childNode);
+            nodeWrapper.AddNode(childNode);
         }
+        if (node.Children.Any())
+            nodeWrapper.ShowArrow();
+        nodeWrapper.Control.Validate(true);
         this.AddControlsBottomLeft(nodeWrapper.Control);
         return nodeWrapper;
     }
@@ -60,7 +63,8 @@ public class ListCollapsible<T> : GroupBox
         this.Build(nodeWrapper);
         var parent = node.Parent;
         var parentWrapper = this._map[parent];
-        parentWrapper.AddLeaf(nodeWrapper);
+        parentWrapper.AddNode(nodeWrapper);
+        parentWrapper.ShowArrow();
         this.ResetLayoutFrom(parentWrapper);
     }
 
@@ -69,6 +73,7 @@ public class ListCollapsible<T> : GroupBox
         var currentParent = parentControl;
         while (currentParent is not null)
         {
+            currentParent.Control.AlignTopToBottom(this.Spacing);
             currentParent.ChildrenGroupBox.AlignTopToBottom(this.Spacing);
             currentParent = currentParent.Parent;
         }
@@ -82,6 +87,7 @@ public class ListCollapsible<T> : GroupBox
             node.Expanded = true;
             node.Arrow.SetTexture(UIManager.ArrowDown);
             node.ChildrenGroupBox.Location = new Vector2(ListBoxCollapsibleNode.IndentWidth, node.Control.Height + Spacing);
+            node.ChildrenGroupBox.AlignTopToBottom(Spacing);
             node.Control.AddControls(node.ChildrenGroupBox);
         }
         else
@@ -94,31 +100,38 @@ public class ListCollapsible<T> : GroupBox
     }
     public ListCollapsible<T> AddNode(ListBoxCollapsibleNode node)
     {
-        this.ARoot.AddNode(node);
+        this.ARoot.AddNodeOld(node);
         return this;
     }
-    Control Build(ListBoxCollapsibleNode nodeWrapper)
+    void Build(ListBoxCollapsibleNode nodeWrapper)
     {
         var node = this._mapByWrapper[nodeWrapper];
-        var nodeContainer = new GroupBox() { Name = nodeWrapper.Name, BackgroundColor = UIManager.DefaultListItemBackgroundColor };
-        var nodeItem = new GroupBox() { Name = $"{nodeWrapper.Name} content" };
-        nodeWrapper.Arrow = new PictureBox(UIManager.ArrowRight) { LeftDownAction = () => Expand(nodeWrapper) };// { LeftClickAction = expand };
-        var label = new Label(nodeWrapper.Name) { Active = true };
-        var control = nodeWrapper.Control;
-            nodeItem.AddControls(nodeWrapper.Arrow);
-        if (control is not null)
-            nodeItem.AddControlsHorizontally(control, label);
-        else
-            nodeItem.AddControlsHorizontally(label);
-        nodeItem.CenterControlsAlignmentVertically();
+        var nodeItem = nodeWrapper.Control;
+        nodeWrapper.Arrow.LeftClickAction = () => Expand(nodeWrapper);
+        nodeItem.AlignHorizontally();
         nodeItem.Validate(true);
-        nodeContainer.AddControls(nodeItem);
-        nodeWrapper.Parent?.ChildControls.Add(nodeContainer);
-        nodeWrapper.Parent?.ChildrenGroupBox.Controls.Insert(0, nodeContainer);
-        label.LeftClickAction = () => Expand(nodeWrapper);
-        nodeWrapper.Control = nodeContainer;
-        return nodeContainer;
     }
+    //Control Build(ListBoxCollapsibleNode nodeWrapper)
+    //{
+    //    var node = this._mapByWrapper[nodeWrapper];
+    //    var nodeContainer = new GroupBox() { Name = nodeWrapper.Name, BackgroundColor = UIManager.DefaultListItemBackgroundColor };
+    //    var nodeItem = new GroupBox() { Name = $"{nodeWrapper.Name} content" };
+    //    //nodeWrapper.Arrow = new PictureBox(UIManager.ArrowRight) { LeftDownAction = () => Expand(nodeWrapper) };// { LeftClickAction = expand };
+    //    nodeWrapper.Arrow.LeftClickAction = () => Expand(nodeWrapper);
+    //    var control = nodeWrapper.Control;
+    //    if (control is not null)
+    //        nodeItem.AddControlsHorizontally(control);
+    //    //nodeItem.CenterControlsAlignmentVertically();
+    //    nodeItem.AlignHorizontally();
+    //    nodeItem.Validate(true);
+    //    nodeContainer.AddControls(nodeItem);
+    //    //nodeWrapper.Parent?.ChildControls.Add(nodeContainer);
+    //    //nodeWrapper.Parent?.ChildrenGroupBox.Controls.Insert(0, nodeContainer);
+    //    //nodeWrapper.Parent?.ChildrenGroupBox = nodeContainer;
+    //    //label.LeftClickAction = () => Expand(nodeWrapper);
+    //    nodeWrapper.Control = nodeItem;// nodeContainer;
+    //    return nodeContainer;
+    //}
     //public ListCollapsible<T> Build()
     //{
     //    this.ClearControls();

@@ -9,7 +9,7 @@ namespace Project1.Framework.UI
         public static int TextureHeight = 16;
         readonly PictureBox Thumb, Btn_Right, Btn_Left;
         readonly GroupBox Area;
-        readonly float Step = 3 * Label.DefaultHeight;
+        readonly float Step = 3 * UIManager.DefaultLabelHeight;
         int ThumbOffset;
         bool ThumbMoving;
 

@@ -175,7 +175,7 @@ public class ScrollableBoxNewNewNew : GroupBox
         readonly GroupBox Area;
         private int ThumbClickOrigin;
         bool ThumbMoving;
-        public int SmallStep = Label.DefaultHeight;// 1;
+        public int SmallStep = UIManager.DefaultLabelHeight;// 1;
         GroupBox Container, Client;
         public override int Height
         {
@@ -294,7 +294,7 @@ public class ScrollableBoxNewNewNew : GroupBox
         readonly GroupBox Area;
         private int ThumbClickOrigin;
         bool ThumbMoving;
-        public int SmallStep = Label.DefaultHeight;// 1;
+        public int SmallStep = UIManager.DefaultLabelHeight;// 1;
         readonly GroupBox Container, Client;
         
         public ScrollbarH(GroupBox client, GroupBox container)

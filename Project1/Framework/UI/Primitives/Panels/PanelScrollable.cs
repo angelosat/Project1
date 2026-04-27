@@ -6,7 +6,7 @@
         public PanelScrollable(int width, int height, ScrollModes mode = ScrollModes.Both)
             : base(0, 0, width, height)
         {
-            this.Client = new(width - 2 * this.Padding, System.Math.Min(UIManager.Height, height - 2 * this.Padding - Label.DefaultHeight), mode);
+            this.Client = new(width - 2 * this.Padding, System.Math.Min(UIManager.Height, height - 2 * this.Padding - UIManager.DefaultLabelHeight), mode);
             this.AddControls(this.Client);
         }
         public PanelScrollable(Control content, ScrollModes mode = ScrollModes.Both)

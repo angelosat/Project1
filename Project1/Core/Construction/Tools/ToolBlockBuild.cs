@@ -181,7 +181,7 @@ public abstract class ToolBlockBuild : ToolManagement, INamed
         if (!this.Enabled)
             return;
         var txt = string.Join(" x ", this.GetDimensionSize());
-        UIManager.DrawStringOutlined(sb, txt, UIManager.Mouse - new Vector2(0, Label.DefaultHeight), Vector2.Zero);
+        UIManager.DrawStringOutlined(sb, txt, UIManager.Mouse - new Vector2(0, UIManager.DefaultLabelHeight), Vector2.Zero);
     }
     public virtual IEnumerable<string> GetDimensionSize()
     {

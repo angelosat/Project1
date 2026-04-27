@@ -12,5 +12,5 @@ public interface ICollapsibleNode<T>
     Control GetControl();
     event Action<ICollapsibleNode<T>> ChildAdded;
     event Action<ICollapsibleNode<T>> ChildRemoved;
-    event Action<ICollapsibleNode<T>> Updated;
+    //event Action<ICollapsibleNode<T>> Updated;
 }

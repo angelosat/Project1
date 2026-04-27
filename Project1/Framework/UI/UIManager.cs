@@ -80,6 +80,9 @@ namespace Project1.Framework.UI
         public static SpriteFont FontBold = Game1.Instance.Content.Load<SpriteFont>("BoldFont");
         public static SpriteFont Symbols = Game1.Instance.Content.Load<SpriteFont>("Symbols");
 
+        public static int DefaultLabelHeight = UIManager.Font.LineSpacing + 4;//2;
+
+
         public static readonly Color TintPrimaryDefault = Color.SteelBlue;
         public static readonly Color TintSecondaryDefault = Color.DarkSlateGray;
         public static Color TintPrimary = TintPrimaryDefault;

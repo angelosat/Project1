@@ -10,7 +10,7 @@ namespace Project1.Framework.UI
 {
     public class Label : ButtonBase
     {
-        public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
+        //public static int DefaultHeight = UIManager.Font.LineSpacing + 4;//2;
         //public static int DefaultHeight = 15;
 
         Alignment.Horizontal _Halign;
@@ -19,7 +19,7 @@ namespace Project1.Framework.UI
             get => this._Halign;
             set => this._Halign = value;
         }
-        public Alignment.Vertical Valign;
+        public Alignment.Vertical Valign;// = Alignment.Vertical.Center;
         public Color TextBackground = Color.Transparent;
         public Func<Color> TextBackgroundFunc = () => Color.Transparent;
 
@@ -66,7 +66,7 @@ namespace Project1.Framework.UI
         protected override void OnTextChanged()
         {
             base.OnTextChanged();
-            this.Height = System.Math.Max(this.Height, Label.DefaultHeight);
+            this.Height = System.Math.Max(this.Height, UIManager.DefaultLabelHeight);
 
             switch (this.Halign)
             {
@@ -101,7 +101,7 @@ namespace Project1.Framework.UI
         {
             this.Text = "";
             this.Width = width;
-            this.Height = Label.DefaultHeight;
+            this.Height = UIManager.DefaultLabelHeight;
             this.Active = false;
         }
         public Label() : this(Vector2.Zero, "") { }

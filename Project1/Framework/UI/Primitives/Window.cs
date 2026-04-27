@@ -119,7 +119,7 @@ public class Window : Control
             Name = "Window client area", 
             MouseThrough = true,
             Size = ClientSize,
-            Location = new Vector2(0, Label.DefaultHeight),
+            Location = new Vector2(0, UIManager.DefaultLabelHeight),
             //BackgroundColor = Color.Black * .5f, 
         };
         this.CloseButton = IconButton.CreateCloseButton();

@@ -16,7 +16,7 @@ namespace Project1.Core.Input
                 this.Height = 64;
                 this.Color = UIManager.TintPrimary;
                 var label = new Label(() => $"Rebind key for: [{this.ActionLabel}]") { AutoSize = true };
-                var boxLabels = new GroupBox(this.Width - 2 * this.Padding, Label.DefaultHeight * 2);
+                var boxLabels = new GroupBox(this.Width - 2 * this.Padding, UIManager.DefaultLabelHeight * 2);
                 boxLabels.AddControlsVertically(0, Alignment.Horizontal.Center,
                     label, 
                     new Label("ESC to unbind")

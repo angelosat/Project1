@@ -23,11 +23,10 @@ class StockpileNode : ICollapsibleNode<Def>
     }
     ChangeNotifier QuantityChanged = new();
     public StockpileNode Parent;
-    Dictionary<Def, StockpileNode> _children = [];
+    readonly Dictionary<Def, StockpileNode> _children = [];
     internal IReadOnlyDictionary<Def, StockpileNode> Children => this._children;
     public event Action<ICollapsibleNode<Def>> ChildAdded;
     public event Action<ICollapsibleNode<Def>> ChildRemoved;
-    public event Action<ICollapsibleNode<Def>> Updated;
     private List<Entity> _items;
     public bool IsLeaf => this._children.Count == 0;
     public string Label { get => this.Key?.LabelReadable ?? field; set => field = value; }

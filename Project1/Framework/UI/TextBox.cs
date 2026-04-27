@@ -73,14 +73,14 @@ namespace Project1.Framework.UI
             : this()
         {
             this.Width = width;
-            this.Height = DefaultHeight;
+            this.Height = UIManager.DefaultLabelHeight;
         }
         public TextBox(string initialText, int width)
             : this()
         {
             this.Text = initialText;
             this.Width = width;
-            this.Height = DefaultHeight;
+            this.Height = UIManager.DefaultLabelHeight;
             this.CursorPosition = this.Text.Length;
         }
         static readonly int CursorTimerMax = (int)(Ticks.PerSecond / 2f);

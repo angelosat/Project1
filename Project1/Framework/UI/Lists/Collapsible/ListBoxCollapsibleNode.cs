@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -16,15 +15,20 @@ public class ListBoxCollapsibleNode
     public List<ListBoxCollapsibleNode> Children = new();
     public Func<Control> ControlGetter;
     public PictureBox Arrow;
-    public GroupBox ChildrenGroupBox = new() { BackgroundColor = Color.Red * .2f };
+    public GroupBox ChildrenGroupBox = new() { Name = "children", BackgroundColor = Color.Red * .2f };
     public static readonly int IndentWidth = UIManager.ArrowRight.Rectangle.Width;
+    GroupBox Header = new() { Name = "header" };
 
     public string Name;
     public bool Expanded;
 
     public ListBoxCollapsibleNode(Control control)
     {
-        this.Control = control;
+        //this.Control = control;
+        this.Header.Controls.Add(control);
+        this.Control = new GroupBox() { Name = "container" };
+        this.Control.Controls.Add(this.Header);
+        this.Arrow = new PictureBox(UIManager.ArrowRight);// { LeftDownAction = () => Expand(nodeWrapper) };// { LeftClickAction = expand };
     }
 
     public ListBoxCollapsibleNode(IListCollapsibleDataSource node)
@@ -33,7 +37,7 @@ public class ListBoxCollapsibleNode
         this.ControlGetter = () => node.GetListControlGui();
 
         foreach (var child in node.ListBranches)
-            this.AddNode(new ListBoxCollapsibleNode(child));
+            this.AddNodeOld(new ListBoxCollapsibleNode(child));
         foreach (var leaf in node.ListLeafs)
             this.AddLeaf(leaf.GetListControlGui());
     }
@@ -49,23 +53,44 @@ public class ListBoxCollapsibleNode
 
     public ListBoxCollapsibleNode(string name, Control control) : this(name)
     {
-        this.Control = control;
+        throw new Exception();
+        //this.Control = control;
     }
 
-    public ListBoxCollapsibleNode AddNode(ListBoxCollapsibleNode node)
+    [Obsolete]
+    public ListBoxCollapsibleNode AddNodeOld(ListBoxCollapsibleNode node)
     {
         this.Children.Add(node);
         node.Parent = this;
         return this;
     }
+
+    internal void ShowArrow()
+    {
+        if (this.Header.Controls.Contains(this.Arrow))
+            return;
+        this.Header.Controls.Insert(0, this.Arrow);
+        //this.Header.CenterControlsAlignmentVertically();
+        this.Header.AlignHorizontally();
+
+    }
+    internal void HideArrow()
+    {
+        this.Header.Controls.Remove(this.Arrow);
+        //this.Header.CenterControlsAlignmentVertically();
+        this.Header.AlignHorizontally();
+    }
+
     public void RemoveNode(ListBoxCollapsibleNode node)
     {
         this.Children.Remove(node);
     }
  
    
-    public ListBoxCollapsibleNode AddLeaf(ListBoxCollapsibleNode leaf)
+    public ListBoxCollapsibleNode AddNode(ListBoxCollapsibleNode leaf)
     {
+        //if (this.Children.Count == 0)
+        //    this.ChildControls.Add(this.Arrow);
         this.Children.Add(leaf);
         this.ChildrenGroupBox.AddControlsBottomLeft(leaf.Control);
         leaf.Control.Validate(true);
@@ -99,4 +124,6 @@ public class ListBoxCollapsibleNode
         foreach (var child in this.Children)
             child.FindLeafIndex(c, ref i);
     }
+
+    
 }

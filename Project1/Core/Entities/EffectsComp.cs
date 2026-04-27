@@ -21,7 +21,7 @@ sealed class Gui_Effects : SelectionBoundControl
         this.Table = new Table<EntityEffectWrapper>()
             .AddColumn("name", 128, e => new LabelNew(e.Def.LabelReadable))
             .AddColumn("remaining", 128, e => new Label(() => e.RemainingTimespan(this.Comp.Owner.World.CurrentTick).ToString()));
-        var scrollbox = ScrollableBoxNewNewNew.FromWidth(this.Table, this.Table.RowWidth, Label.DefaultHeight * 16);
+        var scrollbox = ScrollableBoxNewNewNew.FromWidth(this.Table, this.Table.RowWidth, UIManager.DefaultLabelHeight * 16);
         this.Controls.Add(scrollbox.ToPanelLabeled("Active Effects"));
         //this.AddControls(this.Table);
     }

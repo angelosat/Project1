@@ -25,7 +25,7 @@ namespace Project1.Core.UI
                 return new Label(obj.Name, () => ScreenManager.CurrentScreen.ToolManager.ActiveTool = new ObjectSpawnToolFromTemplate(obj, id));
             });
             list.AddItems(items.Keys);
-            var box = new ScrollableBoxNewNewNew(list, 200, 400, ScrollModes.Vertical) { SmallStep = Label.DefaultHeight + list.Spacing };
+            var box = new ScrollableBoxNewNewNew(list, 200, 400, ScrollModes.Vertical) { SmallStep = UIManager.DefaultLabelHeight + list.Spacing };
             this.Client.AddControlsBottomLeft(new SearchBarNew<int>(200, id => items[id].Name).BindTo(list).ToPanelLabeled("Search"));
             this.Client.AddControlsBottomLeft(box.ToPanelLabeled("Templates"));
         }

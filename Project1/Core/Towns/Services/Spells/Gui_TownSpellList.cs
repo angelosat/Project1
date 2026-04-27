@@ -21,7 +21,7 @@ sealed class Gui_TownSpellList : GroupBox
                     .AddColumn("tick", 32, a => new CheckBoxFinalNew(() => ToggleSpell(a.spell), () => a.tag.Enabled).InvalidateOn(a.tag.Notifier));
         this.Table.AddItems(shops.GetPriceList());
 
-        var scrollbox = ScrollableBoxNewNewNew.FromWidth(this.Table, this.Table.RowWidth, Label.DefaultHeight * 16);
+        var scrollbox = ScrollableBoxNewNewNew.FromWidth(this.Table, this.Table.RowWidth, UIManager.DefaultLabelHeight * 16);
         this.Controls.Add(scrollbox.ToPanelLabeled("Price list"));
 
         string getHoverText(SpellDef spell)

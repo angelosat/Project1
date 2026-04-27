@@ -3,6 +3,6 @@
     public struct Alignment
     {
         public enum Horizontal { Left, Center, Right }
-        public enum Vertical { Top, Bottom, Center }
+        public enum Vertical { Top, Center, Bottom }
     }
 }

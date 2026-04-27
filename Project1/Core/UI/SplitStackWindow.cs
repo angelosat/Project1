@@ -28,7 +28,7 @@ namespace Project1.Core.UI
             this.Title = "Split";
 
             float w = Math.Max(70, TitleLocation.X + UIManager.Font.MeasureString(this.Title).X);
-            this.Txt_Amount = new TextBox(Vector2.Zero, new Vector2(w, Label.DefaultHeight))
+            this.Txt_Amount = new TextBox(Vector2.Zero, new Vector2(w, UIManager.DefaultLabelHeight))
             {
                 Text = "1"
             };

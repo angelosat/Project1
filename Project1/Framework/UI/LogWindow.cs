@@ -34,7 +34,7 @@ namespace Project1.Core.UI
             this.Panel_Text.Controls.Add(this.Box_Text);
 
             this.Panel_Input = new Panel() { Location = this.Panel_Text.BottomLeft, Color = Color.Black };
-            this.Panel_Input.ClientSize = new Rectangle(0, 0, this.Panel_Text.ClientSize.Width, Label.DefaultHeight);
+            this.Panel_Input.ClientSize = new Rectangle(0, 0, this.Panel_Text.ClientSize.Width, UIManager.DefaultLabelHeight);
             this.Panel_Input.BackgroundStyle = BackgroundStyle.TickBox;
 
             this.TextBox = new TextBox()

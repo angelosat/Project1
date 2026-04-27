@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core;
 using Project1.Core.Entities;
 using Project1.Framework.Graphics;
+using Project1.Framework.Helpers;
 using System;
 
 namespace Project1.Framework.UI;
@@ -59,7 +60,7 @@ public class PictureBoxNew : ButtonBaseNew
             }
         }
     }
-
+  
     public override void Validate(bool cascade = false)
     {
         if (this.DrawAction == null)
@@ -86,6 +87,8 @@ public class PictureBoxNew : ButtonBaseNew
         sb.Draw(this.Sprite, Vector2.Zero, this.SourceRect, Color.White);
     }
 
+    
+    
     public override void Update()
     {
         //this.Animate(this);
@@ -176,13 +179,20 @@ public class PictureBoxNew : ButtonBaseNew
 
     public override void Draw(SpriteBatch sb)
     {
+        this.BoundsScreen.DrawHighlight(sb, Color.Beige);
+
         sb.Draw(this.Sprite, this.BoundsScreen, Color.White);
 
         base.Draw(sb);
         if (this.Active && this.MouseHover)
             sb.Draw(this.Texture, this.BoundsScreen, this.SourceRect, new Color(1, 1, 1, 0.5f), this.Rotation, this.PictureOrigin, SpriteEffects.None, 0);
     }
+    public override void Draw(SpriteBatch sb, Rectangle viewport)
+    {
+        this.BoundsScreen.DrawHighlight(sb, Color.Beige);
 
+        base.Draw(sb, viewport);
+    }
     internal void SetTexture(Atlas.Node.Token token)
     {
         this.SourceRect = token.Rectangle;
@@ -360,13 +370,20 @@ public class PictureBox : ButtonBase
 
     public override void Draw(SpriteBatch sb)
     {
+        //this.BoundsScreen.DrawHighlight(sb, Color.Beige);
+
         sb.Draw(this.Sprite, this.BoundsScreen, Color.White);
 
         base.Draw(sb);
         if (this.Active && this.MouseHover)
             sb.Draw(this.Texture, this.BoundsScreen, this.SourceRect, new Color(1, 1, 1, 0.5f), this.Rotation, this.PictureOrigin, SpriteEffects.None, 0);
     }
+    public override void Draw(SpriteBatch sb, Rectangle viewport)
+    {
+        //this.BoundsScreen.DrawHighlight(sb, Color.Beige);
 
+        base.Draw(sb, viewport);
+    }
     internal void SetTexture(Atlas.Node.Token token)
     {
         this.SourceRect = token.Rectangle;

@@ -33,7 +33,7 @@ namespace Project1.Core.Screens
             Console = new ConsoleBoxAsync(Panel_Chat.ClientSize);
             Panel_Chat.Controls.Add(Console);
 
-            Txt_Input = new TextBox(Vector2.Zero, new Vector2(Panel_Chat.ClientSize.Width, TextBox.DefaultHeight))
+            Txt_Input = new TextBox(Vector2.Zero, new Vector2(Panel_Chat.ClientSize.Width, UIManager.DefaultLabelHeight))
             {
                 TextEnterFunc = (e) =>
                 {

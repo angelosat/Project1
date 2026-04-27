@@ -105,19 +105,6 @@ namespace Project1.Framework.UI
             }
             return this;
         }
-        internal void CenterControlsAlignmentVertically()
-        {
-            var maxh = this.Controls.Max(c => c.Height);
-            var x = 0;
-            foreach (var c in this.Controls)
-            {
-                c.Location = new(x, (maxh - c.Height) / 2);
-                x += c.Width;
-            }
-            //var maxh = this.Controls.Max(c => c.Height);
-            //foreach (var c in this.Controls)
-            //    c.Location.Y = (maxh - c.Height) / 2;
-        }
 
         public override void OnLayout(int availableWidth, int availableHeight)
         {

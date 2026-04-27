@@ -354,7 +354,7 @@ namespace Project1.Core.Legacy.Storage.New
                     }
                 });
                 foreach (var child in cat.Branches)
-                    node.AddNode(createNode(child));
+                    node.AddNodeOld(createNode(child));
                 foreach (var leaf in cat.Leaves)
                     node.AddLeaf(new CheckBoxNew(leaf.LabelReadable)
                     {

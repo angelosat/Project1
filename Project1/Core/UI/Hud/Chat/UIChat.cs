@@ -40,7 +40,7 @@ namespace Project1.Core.UI.Hud.Chat
                 AutoSize = true,
                 Location = this.Panel_Text.BottomLeft,
                 Color = Color.Black,
-                ClientSize = new Rectangle(0, 0, this.Panel_Text.ClientSize.Width, Label.DefaultHeight)
+                ClientSize = new Rectangle(0, 0, this.Panel_Text.ClientSize.Width, UIManager.DefaultLabelHeight)
             };
             this.TextBox = new TextBox
             {

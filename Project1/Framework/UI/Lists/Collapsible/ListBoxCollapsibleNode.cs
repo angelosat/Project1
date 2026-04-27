@@ -24,11 +24,10 @@ public class ListBoxCollapsibleNode
 
     public ListBoxCollapsibleNode(Control control)
     {
-        //this.Control = control;
         this.Header.Controls.Add(control);
         this.Control = new GroupBox() { Name = "container" };
         this.Control.Controls.Add(this.Header);
-        this.Arrow = new PictureBox(UIManager.ArrowRight);// { LeftDownAction = () => Expand(nodeWrapper) };// { LeftClickAction = expand };
+        this.Arrow = new PictureBox(UIManager.ArrowRight);
     }
 
     public ListBoxCollapsibleNode(IListCollapsibleDataSource node)
@@ -54,7 +53,6 @@ public class ListBoxCollapsibleNode
     public ListBoxCollapsibleNode(string name, Control control) : this(name)
     {
         throw new Exception();
-        //this.Control = control;
     }
 
     [Obsolete]
@@ -70,14 +68,12 @@ public class ListBoxCollapsibleNode
         if (this.Header.Controls.Contains(this.Arrow))
             return;
         this.Header.Controls.Insert(0, this.Arrow);
-        //this.Header.CenterControlsAlignmentVertically();
         this.Header.AlignHorizontally();
 
     }
     internal void HideArrow()
     {
         this.Header.Controls.Remove(this.Arrow);
-        //this.Header.CenterControlsAlignmentVertically();
         this.Header.AlignHorizontally();
     }
 
@@ -89,8 +85,6 @@ public class ListBoxCollapsibleNode
    
     public ListBoxCollapsibleNode AddNode(ListBoxCollapsibleNode leaf)
     {
-        //if (this.Children.Count == 0)
-        //    this.ChildControls.Add(this.Arrow);
         this.Children.Add(leaf);
         this.ChildrenGroupBox.AddControlsBottomLeft(leaf.Control);
         leaf.Control.Validate(true);

@@ -11,7 +11,6 @@ using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Stockpiles;
 using Project1.Framework;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Project1.Core.Systems.Crafting;
 
@@ -24,13 +23,13 @@ static class Packets_Crafting
         _pPlayerDeletedOrder, 
         _pPlayerModifiedOrder, 
         _pOrderCompleted, 
-        //_pOrderUpdated = Registry.PacketHandlers.Register(ReceiveOrderUpdated),
+        _pOrderUpdated = Registry.PacketHandlers.Register(ReceiveOrderUpdated),
         _pPlayerModifiedOrderFilters, 
         _pPlayerSetWorkstationIO,
         _pPlayerSetMinMastery = Registry.PacketHandlers.Register(ReceiveSetMinMastery),
         _pActorFinishedCrafting = Registry.PacketHandlers.Register(ReceiveActorFinishedCrafting);
 
- 
+   
 
     static Packets_Crafting()
     {
@@ -50,6 +49,23 @@ static class Packets_Crafting
         Registry.WorldEventHooksServer.Register<ActorFinishedCraftingEvent>(HandleActorFinishedCrafting);
         //Registry.MapEventHooksServer.Register<CraftOrderUpdatedEvent>(HandleCraftOrderUpdated);
         Registry.PlayerInputEventHooks.Register<PlayerSetOrderMinMasteryEvent>(HandlePlayerSetOrderMinMastery);
+
+        Registry.MapEventHooksServer.Register<CraftingOrderUpdatedNew>(HandleActorCommitedToCraftingOrder);
+    }
+
+    private static void HandleActorCommitedToCraftingOrder(CraftingOrderUpdatedNew e)
+    {
+        var w = Server.Instance.BeginPacket(_pOrderUpdated)
+            .Write(e);
+        Server.Instance.World.Get(e.Map).Town.Crafting.Get(e.Order).Sync(w);
+    }
+    private static void ReceiveOrderUpdated(NetEndpoint endpoint, Packet packet)
+    {
+        var client = endpoint as Client;
+        var e = CraftingOrderUpdatedNew.Create(packet.PacketReader);
+        //var actor = client.World.Get<Actor>(e.Actor);
+        var order = client.World.Get(e.Map).Town.Crafting.Get(e.Order);
+        order.Sync(packet.PacketReader);
     }
 
     private static void HandlePlayerSetOrderMinMastery(PlayerSetOrderMinMasteryEvent e)

@@ -116,7 +116,7 @@ namespace Project1.Core.Networking
             var entity = client.World.Get(r.ReadEntityRefId());
             var amount = r.ReadInt32();
             if (amount < 0)
-                entity.Consume(amount);
+                entity.Consume(-amount);
             else
                 entity.Add(amount);
         }

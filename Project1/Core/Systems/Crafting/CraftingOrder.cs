@@ -10,6 +10,7 @@ using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using SharpDX.Direct2D1.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +37,23 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
     public bool Enabled;
     public bool IsDisposed { get; private set; }
     public bool Pending => !this.IsDisposed && (this.Mode == CraftMode.Infinite || this.Mode == CraftMode.FixedAmount && this.Amount > 0);
-    public IEnumerable<BoneDef> GetSlotMapping() => this.WorkstationCapability.Worker.GetBoneLayout();
+    public IEnumerable<BoneDef> GetBoneLayout() => this.WorkstationCapability.Worker.GetBoneLayout();
 
     public HashSet<int> AllowedActors = [];
 
     public int SkillFilter;
 
-    public EntityRefId CurrentWorker;
+    public EntityRefId CurrentWorker
+    {
+        get => field;
+        set
+        {
+            field = value;
+            this.Notifier.Notify();
+            this.Workstation?.Map.Events.Post(new CraftingOrderUpdatedNew(this.Workstation.Map.ID, this.Id));
+
+        }
+    }
     public CraftingOrderId Id { get; private set; }
     public SkillDef Skill { get; init; }
     public MaterialRefinementDef Refinement { get; init; }
@@ -533,12 +544,14 @@ public sealed class CraftingOrder : IListable, ISaveableNewNew<CraftingOrder>, I
         w.Write((int)this.Mode);
         w.Write(this.Amount);
         w.Write(this.MinMastery);
+        w.Write(this.CurrentWorker);
     }
     internal void Sync(IDataReader r)
     {
         this.Mode = (CraftMode)r.ReadInt32();
         this.Amount = r.ReadInt32();
         this.MinMastery = r.ReadInt32();
+        this.CurrentWorker = r.ReadId<EntityRefId>();
     }
     public static CraftingOrder Create(IDataReader r)
     {

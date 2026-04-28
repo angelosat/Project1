@@ -6,7 +6,6 @@ using Project1.Core.Resources;
 using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Recipes;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using static Project1.Core.Systems.Crafting.CraftingOrder;
 

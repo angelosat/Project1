@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.Zones;
@@ -41,8 +42,11 @@ public sealed class HaulingManager : MapComponent
             item => item.Quality]),(
         "Tools", typeof(ToolProfileDef), [
             item => (ToolProfileDef) item.Profile,
-            item => item.Quality])
-        );
+            item => item.Quality]),
+        ("Plants", typeof(PlantSpeciesDef), [item => (PlantSpeciesDef)item.Profile, item => item.Def]),
+        ("Misc", typeof(Def), [])
+        )
+        ;
 
 
     public HaulingManager(MapBase map) : base(map)
@@ -61,7 +65,7 @@ public sealed class HaulingManager : MapComponent
 
     private void HandleEntityStackChanged(EntityStackChangedEvent e)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 
     private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)

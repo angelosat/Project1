@@ -92,11 +92,11 @@ sealed class StockpileTrackerManager
     }
     internal void Add(Entity item)
     {
-        this.Trackers[item.Profile.GetType()].Add(item);
+        this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Add(item);
     }
     internal void Remove(Entity item)
     {
-        this.Trackers[item.Profile.GetType()].Remove(item);
+        this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Remove(item);
     }
 }
 

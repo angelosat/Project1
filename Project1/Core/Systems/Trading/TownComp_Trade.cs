@@ -2,7 +2,6 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.Systems.Crafting;
 using Project1.Core.Towns;
 using Project1.Framework;
 using System;

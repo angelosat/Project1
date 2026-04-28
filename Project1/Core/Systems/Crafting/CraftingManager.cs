@@ -3,42 +3,20 @@ using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Recipes;
 using Project1.Core.Towns;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
+using SharpDX.Direct2D1.Effects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
-
-//public interface IStructId
-//{
-//    int Value { get; }
-//}
-public interface IStructIdInt<T>
-{
-    int Value { get; }
-    static abstract T Create(int value);
-}
-public readonly record struct CraftingOrderId(int Value) : IStructIdInt<CraftingOrderId>
-{
-    public static readonly CraftingOrderId Null = new(0);
-
-    public static CraftingOrderId Create(int value) => new(value);
-
-    public static implicit operator CraftingOrderId(int v) => new(v);
-    public static implicit operator int(CraftingOrderId v) => (int)v.Value;
-}
-//public readonly record struct CraftingOrderId(int Value)
-//{
-//    public static readonly CraftingOrderId Null = new(0);
-//    public static implicit operator CraftingOrderId(int v) => new(v);
-//    public static implicit operator int(CraftingOrderId v) => (int)v.Value;
-//}
 public sealed class CraftingManager : TownComp
 {
     private CraftingOrderId NextOrderId = 1;
@@ -54,7 +32,7 @@ public sealed class CraftingManager : TownComp
     readonly HashSet<Entity> _unfinishedItems = [];
     readonly Dictionary<Actor, HashSet<Entity>> _unfinishedByActor = [];
 
-    readonly Dictionary<CraftingOrder, Actor> commitersByOrder = [];
+    readonly Dictionary<CraftingOrderId, Actor> commitersByOrder = [];
     readonly Dictionary<Actor, CraftingCommitment> commitmentsByActor = [];
     readonly Dictionary<EntityRefId, CraftingCommitment> commitmentsByIngredients = [];
 
@@ -178,12 +156,13 @@ public sealed class CraftingManager : TownComp
     {
         if(this.commitmentsByActor.TryGetValue(actor, out var existing))
         {
-            if (existing.Order != order)
+            if (existing.Order != order.Id)
                 throw new Exception();
             return;
         }    
-        this.commitmentsByActor[actor] = new(actor, order);
-        this.commitersByOrder[order] = actor;
+        this.commitmentsByActor[actor] = new(actor.RefId, order.Id, this.World.CurrentTick, order.GetBoneLayout());
+        this.commitersByOrder[order.Id] = actor;
+        order.CurrentWorker = actor.RefId;
     }
     internal void Uncommit(Actor actor)
     {
@@ -191,8 +170,9 @@ public sealed class CraftingManager : TownComp
             return;
         this.commitmentsByActor.Remove(actor);
         this.commitersByOrder.Remove(commitment.Order);
-        foreach (var itemId in commitment.Ingredients.Values)
-            this.commitmentsByIngredients.Remove(itemId);
+        this.Get(commitment.Order).CurrentWorker = EntityRefId.Null;
+        foreach (var ingredient in commitment.Ingredients.Values)
+            this.commitmentsByIngredients.Remove(ingredient.Item);
     }
     internal bool TryGetCommitedOrder(Actor actor, out CraftingOrder order)
     {
@@ -201,12 +181,12 @@ public sealed class CraftingManager : TownComp
             order = null;
             return false;
         }
-        order = commitment.Order;
+        order = this.Get(commitment.Order);
         return true;
     }
     internal bool CanCommit(Actor actor, CraftingOrder order)
     {
-        if (this.commitersByOrder.TryGetValue(order, out var worker))
+        if (this.commitersByOrder.TryGetValue(order.Id, out var worker))
             return worker == actor;
         return true;
     }
@@ -214,7 +194,7 @@ public sealed class CraftingManager : TownComp
     {
         order.CompletedBy(actor);
         var commitment = this.commitmentsByActor[actor];
-        commitment.Product = product;
+        commitment.Product = product.RefId;
         this.World.Events.Post(new ActorFinishedCraftingEvent(actor.RefId, order.Id, product.RefId));
         foreach (var plugin in Plugins)
             plugin.Handle(actor, order, product);
@@ -228,7 +208,7 @@ public sealed class CraftingManager : TownComp
     internal Entity? ProductToMove(Actor actor)
     {
         if (this.commitmentsByActor.TryGetValue(actor, out var com))
-            return com.Product;
+            return com.Product.HasValue ? this.World.Get(com.Product.Value) : null; // maybe check if the order actually involves a product? (eg. repairing)
         return null;
     }
     internal Contract Commit(Actor actor, BlockWorkstationComp workstation, CraftingOrder order, IEnumerable<Entity> ingredients)
@@ -297,7 +277,7 @@ public sealed class CraftingManager : TownComp
             this._ordersById.Remove(order.Id);
             order.Dispose();
 
-            if (this.commitersByOrder.Remove(order, out var actor))
+            if (this.commitersByOrder.Remove(order.Id, out var actor))
                 this.commitmentsByActor.Remove(actor);
         }
         return true;
@@ -375,22 +355,31 @@ public sealed class CraftingManager : TownComp
 
     internal bool TryGetOrder(int orderId, out CraftingOrder order)
         => this._ordersById.TryGetValue(orderId, out order);
-    //internal float GetProgressFor(Actor actor)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //internal bool CanContinueItem(Actor actor, UnfinishedItemComp comp)
-    //    => this.TryGetOrder(comp.OrderId, out var order) && order.Pending;
-
+    
     internal CraftingOrder Get(CraftingOrderId id)
         => this._ordersById[id];
 
-   
+    protected override void SaveExtra(SaveTag tag)
+    {
+        tag.Save("Commitments", this.commitmentsByActor.Values);
+    }
 
+    public override void Load(SaveTag tag)
+    {
+        //var commitments = tag.LoadList<CraftingCommitment>("Commitments");
+        if(tag.TryLoadList<CraftingCommitment>("Commitments", out var commitments))
+        foreach (var c in commitments)
+            this.RegisterCommitmentInt(c);
+    }
 
-
-
+    void RegisterCommitmentInt(CraftingCommitment commitment)
+    {
+        var actor = this.World.Get<Actor>(commitment.Actor);
+        this.commitersByOrder[commitment.Order] = actor;
+        this.commitmentsByActor[actor] = commitment;
+        foreach (var i in commitment.Ingredients.Values)
+            this.commitmentsByIngredients[i.Item] = commitment;
+    }
 
     //internal Entity CreateProductFromOrder(Actor actor, CraftingOrder order, IEnumerable<Entity> ingredients)
     //{

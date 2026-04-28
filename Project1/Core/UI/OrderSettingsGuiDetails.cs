@@ -7,12 +7,16 @@ namespace Project1.Core.UI;
 
 internal class OrderSettingsGuiDetails : GroupBox
 {
+    readonly LabelNew LabelWorker;
     readonly SliderNewInt SliderMastery;
     readonly ListCollapsible<Def> ListCollapsible;
     readonly CraftingOrder Order;
 
     public OrderSettingsGuiDetails(CraftingOrder order)
     {
+        var map = order.Workstation.Map;
+        this.LabelWorker = new(() => $"Current Worker: {map.World.Get(order.CurrentWorker)?.Name ?? "none"}");
+
         this.Order = order;
         this.SliderMastery = new(
             () => this.Order.MinMastery, 
@@ -28,8 +32,10 @@ internal class OrderSettingsGuiDetails : GroupBox
         var box = new ScrollableBoxNewNewNew(this.ListCollapsible, 200, 200, ScrollModes.Vertical);
         panel.AddControls(box);
         this.AddControlsVertically(
-            this.SliderMastery.ToPanelLabeled(()=>$"Minimum Mastery Allowed: {this.Order.MinMastery}").InvalidateOn(order.Notifier),
+            this.LabelWorker,
+            this.SliderMastery.ToPanelLabeled(()=>$"Minimum Mastery Allowed: {this.Order.MinMastery}"),//.InvalidateOn(order.Notifier),
             panel);
+        this.InvalidateOn(order.Notifier);
     }
 
     private void OnOrderUpdated(CraftOrderUpdatedEvent e)

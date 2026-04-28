@@ -140,6 +140,7 @@ public sealed class InventoryComp : EntityComp
         {
             //target.Consume(amount);
             finalItem = target.Split(amount); // this creates a new entity
+            // TODO: dont create a new entity when extracting from the target stack to merge with the currently carried stack
         }
         else
             finalItem = target;

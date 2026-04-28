@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core;
 using Project1.Core.Entities;
-using Project1.Core.Systems.Crafting;
 using Project1.Framework.Interfaces;
 using System;
 using System.Collections.Generic;

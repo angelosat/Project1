@@ -295,7 +295,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (this.IsEmpty)
             this.World?.DisposeEntity(this.RefId);
         else
-            this.World?.Events.Post(new EntityStackChangedEvent(this as Entity, amount));
+            this.World?.Events.Post(new EntityStackChangedEvent(this as Entity, -amount));
     }
     
     public void Add(int amount)

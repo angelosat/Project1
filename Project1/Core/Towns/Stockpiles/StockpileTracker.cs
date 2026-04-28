@@ -98,6 +98,10 @@ sealed class StockpileTrackerManager
     {
         this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Remove(item);
     }
+    internal void Update(Entity item, int previousStackSize)
+    {
+        this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Update(item, previousStackSize);
+    }
 }
 
 class StockpileTracker
@@ -169,6 +173,21 @@ class StockpileTracker
         }
     }
 
+    internal void Update(Entity item, int previousStackSize)
+    {
+        if (!this._itemToLeaf.TryGetValue(item, out var leaf))
+            return;
+        var oldQuantity = previousStackSize;
+        var newQuantity = item.StackSize;
+        var qty = newQuantity - oldQuantity;
+        var node = leaf;
+        while (node != null)
+        {
+            node.Quantity += qty;
+            node = node.Parent;
+        }
+    }
+
     //internal Control GetControl()
     //{
     //    var list = new ListCollapsible<Def>();
@@ -188,7 +207,7 @@ class StockpileTracker
     //    }
     //}
 
-  
+
 }
 
 //public class StockpileManager : MapComponent

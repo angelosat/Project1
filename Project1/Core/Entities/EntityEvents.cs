@@ -5,7 +5,7 @@ using Project1.Framework.Events;
 
 namespace Project1.Core.Entities;
 
-internal record struct EntityStackChangedEvent(Entity Entity, int Amount) : IEventPayload { }
+internal record struct EntityStackChangedEvent(Entity Entity, int Delta) : IEventPayload { }
 //internal record struct EntityStackIncreased(Entity Entity, int Amount) : IEventPayload { }
 internal record struct EntityRegisteredEvent(Entity Entity, bool Immediate = false) : IEventPayload { }
 internal record struct EntityDisposedEvent(Entity Entity) : IEventPayload { }

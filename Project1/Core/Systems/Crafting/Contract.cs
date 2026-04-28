@@ -1,7 +1,5 @@
 ﻿using Project1.Core.Animations;
-using Project1.Core.Blocks;
 using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
@@ -12,16 +10,12 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Crafting;
 
-internal record Contract(Actor Author, BlockWorkstationComp Workstation, CraftingOrder Order, IEnumerable<Entity> Ingredients)
-{
-    public bool IsValid => !this.Order.IsDisposed;
-}
-//internal sealed class CraftingCommitment(Actor actor, CraftingOrder order) : ISaveableNewNew<CraftingCommitment>
+//internal record Contract(Actor Author, BlockWorkstationComp Workstation, CraftingOrder Order, IEnumerable<Entity> Ingredients)
+//{
+//    public bool IsValid => !this.Order.IsDisposed;
+//}
 internal sealed class CraftingCommitment : ISaveableNewNew<CraftingCommitment>
 {
-    //internal readonly Actor Actor = actor;
-    //internal readonly CraftingOrder Order = order;
-    //internal Entity? Product;
     internal sealed class BoneToIngredient(BoneDef bone) : ISaveableNewNew<BoneToIngredient>
     {
         internal BoneDef Bone = bone;
@@ -55,10 +49,10 @@ internal sealed class CraftingCommitment : ISaveableNewNew<CraftingCommitment>
     }
     public CraftingCommitment(EntityRefId actor, CraftingOrderId order, SimulationTick tick, IEnumerable<BoneDef> boneLayout)
     {
-        Actor = actor;
-        Order = order;
-        TickCommitted = tick;
-        Ingredients = boneLayout.ToDictionary(b => b, b => new BoneToIngredient(b));
+        this.Actor = actor;
+        this.Order = order;
+        this.TickCommitted = tick;
+        this.Ingredients = boneLayout.ToDictionary(b => b, b => new BoneToIngredient(b));
     }
 
     internal void Bind(BoneDef bone, Entity targetStack)

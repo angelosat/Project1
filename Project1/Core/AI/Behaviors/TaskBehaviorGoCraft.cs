@@ -8,48 +8,36 @@ namespace Project1.Core
 {
     class BehaviorCraftUnfinishedAdvance : BehaviorExecutePlanNew
     {
-        public override bool CommitReservations()
-        {
-            var map = this.Actor.Map;
-            var plan = this.Plan;
-            var order = map.Town.Crafting.Get(plan.Order);
-            var item = order.UnfinishedItem;
-            ArgumentNullException.ThrowIfNull(item);
-            if (!map.Town.ReservationManager.Reserve(this.Actor, plan, new InteractionTarget(item)))
-                return false;
-            return base.CommitReservations();
-        }
+        //public override bool CommitReservations()
+        //{
+        //    var map = this.Actor.Map;
+        //    var plan = this.Plan;
+        //    var order = map.Town.Crafting.Get(plan.Order);
+        //    var item = order.UnfinishedItem;
+        //    ArgumentNullException.ThrowIfNull(item);
+        //    if (!map.Town.ReservationManager.Reserve(this.Actor, plan, new InteractionTarget(item)))
+        //        return false;
+        //    return base.CommitReservations();
+        //}
     }
     class BehaviorGoCraftUnfinishedBegin : BehaviorExecutePlanNew
     {
-        //readonly static TargetIndex CellTarget = TargetIndex.A;
-        //readonly static TargetIndex WorkstationTarget = TargetIndex.B;
         public override string Name { get; } = "CraftingUnfinishedBegin";
 
-        public override bool CommitReservations()
-        {
-            var map = this.Actor.Map;
-            var contract = map.Town.Crafting.GetContract(this.Actor);
-            var ingredients = contract.Ingredients;
-            bool ingredientSuccess = true;
-            foreach (var i in ingredients)
-                ingredientSuccess &= map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new InteractionTarget(i));
-            if (ingredientSuccess)
-                return base.CommitReservations();
-            return ingredientSuccess;
-        }
+        //public override bool CommitReservations()
+        //{
+        //    var map = this.Actor.Map;
+        //    var contract = map.Town.Crafting.GetContract(this.Actor);
+        //    var ingredients = contract.Ingredients;
+        //    bool ingredientSuccess = true;
+        //    foreach (var i in ingredients)
+        //        ingredientSuccess &= map.Town.ReservationManager.Reserve(this.Actor, this.Plan, new InteractionTarget(i));
+        //    if (ingredientSuccess)
+        //        return base.CommitReservations();
+        //    return ingredientSuccess;
+        //}
     }
-    //class TaskBehaviorGoCraftUnfinishedAdvance : BehaviorExecutePlanNew
-    //{
-    //    readonly static TargetIndex CellTarget = TargetIndex.A;
-    //    readonly static TargetIndex WorkstationTarget = TargetIndex.B;
-    //    public override string Name { get; } = "CraftingUnfinishedAdvance";
-
-    //    //public override bool CommitReservations()
-    //    //{
-    //    //    return this.Reserve(CellTarget) && this.Reserve(WorkstationTarget);
-    //    //}
-    //}
+   
     class TaskBehaviorGoCraft : BehaviorExecutePlan
     {
         public override string Name { get; } = "Crafting";

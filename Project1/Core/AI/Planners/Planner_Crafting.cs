@@ -125,7 +125,7 @@ sealed class Planner_Crafting : Planner
 
             foreach (var allocation in feasibility.ArmedSlots)
                 plan.AddTarget(TargetIndex.A, allocation.Entity);
-            manager.Commit(actor, order.Workstation, order, feasibility.ArmedSlots.Select(i => i.Entity));
+            //manager.Commit(actor, order.Workstation, order, feasibility.ArmedSlots.Select(i => i.Entity));
             return (flowControl: true, value: plan);
         }
 

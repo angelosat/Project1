@@ -43,7 +43,8 @@ public sealed class HaulingManager : MapComponent
         "Tools", typeof(ToolProfileDef), [
             item => (ToolProfileDef) item.Profile,
             item => item.Quality]),
-        ("Plants", typeof(PlantSpeciesDef), [item => (PlantSpeciesDef)item.Profile, item => item.Def]),
+        //("Plants", typeof(PlantSpeciesDef), [item => (PlantSpeciesDef)item.Profile, item => item.Def]),
+        ("Plants", typeof(PlantSpeciesDef), [item => item.Def, item => (PlantSpeciesDef)item.Profile]),
         ("Misc", typeof(Def), [])
         )
         ;
@@ -65,7 +66,7 @@ public sealed class HaulingManager : MapComponent
 
     private void HandleEntityStackChanged(EntityStackChangedEvent e)
     {
-        //throw new NotImplementedException();
+        this.TrackerManager.Update(e.Entity, e.Entity.StackSize - e.Delta);
     }
 
     private void OnBlockEntityRemoved(BlockEntityRemovedEvent e)

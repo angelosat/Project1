@@ -16,6 +16,8 @@ internal static class PotionSystem
     static readonly Dictionary<(EffectDef effect, Def target), List<MaterialDef>> _matsByEffect = [];
     static public IEnumerable<(EffectDef effect, Def target)> Recipes => _matsByEffect.Keys;
 
+    static public MaterialDef GetMaterialRequired(EffectDef effect, Def target) => _matsByEffect[(effect, target)].First();
+
     static PotionSystem()
     {
         CacheRecipes();
@@ -79,9 +81,11 @@ internal static class PotionSystem
     {
         //foreach (var (effect, target) in Recipes)
         //    yield return Create(effect, target, 1);
-        var rand = new Random();
         foreach (var recipe in _matsByEffect)
             foreach (var mat in recipe.Value)
-                yield return ConsumableSystem.Create(ConsumableDefOf.Potion, mat, QualityDef.GetRandom());
+                yield return ConsumableSystem.Create(ConsumableDefOf.Potion, mat, QualitySystem.Random);
     }
+
+    public static Entity Create(EffectDef effect, Def target, QualityDef? quality)
+        => ConsumableSystem.Create(ConsumableDefOf.Potion, GetMaterialRequired(effect, target), quality ?? QualitySystem.Random);
 }

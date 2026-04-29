@@ -1,9 +1,10 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Tools;
 using Project1.Core.Systems.Quality;
+using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using System.Collections.Generic;
 
@@ -44,6 +45,13 @@ internal static class ConsumableSystem
     internal static Entity Create(EntityCreationRequest req)
     {
         return Create((ConsumableDef)req.Context, req.MaterialBindings[BoneDefOf.Item], req.Quality, req.StackSize);
+    }
+    internal static void Activate(Entity potion, Actor actor)
+        => Activate(potion, actor, actor);
+    internal static void Activate(Entity consumable, Actor actor, Actor target)
+    {
+        consumable.Consume(1);
+        consumable.Consumable.ApplyEffects(target);
     }
 
     extension(Entity item)

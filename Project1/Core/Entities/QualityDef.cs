@@ -6,7 +6,6 @@ namespace Project1.Core.Entities
 {
     public sealed class QualityDef : Def
     {
-        static readonly Random Rand = new();
 
         public readonly Color Color;
         public readonly float Multiplier;
@@ -31,22 +30,6 @@ namespace Project1.Core.Entities
             return this.ProbabilityTableWeight + mastery;
         }
 
-        static QualityDef[] _allCached;
-        static QualityDef[] All => _allCached ??= [.. Get<QualityDef>()];
-
-        public static QualityDef GetRandom(Random rand, float mastery)
-        {
-            return All.SelectRandomWeighted(rand, q => q.GetWeightFromMastery(mastery));
-        }
-
-        public static QualityDef GetRandom(Random rand)
-        {
-            return All.SelectRandomWeighted(rand, q => q.ProbabilityTableWeight);
-        }
-
-        public static QualityDef GetRandom()
-        {
-            return All.SelectRandomWeighted(Rand, q => q.ProbabilityTableWeight);
-        }
+      
     }
 }

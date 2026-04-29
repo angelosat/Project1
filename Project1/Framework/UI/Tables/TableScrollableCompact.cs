@@ -33,7 +33,11 @@ class TableScrollableCompact<TObject> : GroupBox where TObject : class
         this.AddItems(collection);
         return this;
     }
-
+    public TableScrollableCompact<TObject> SetWidth(string column, int width)
+    {
+        this.Columns.First(c => c.Label == column).Width = width;
+        return this;
+    }
     private void Collection_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
         this.AddItems(e.NewItems?.Cast<TObject>());

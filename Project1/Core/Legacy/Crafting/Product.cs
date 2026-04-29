@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Legacy;
+using Project1.Core.Systems.Quality;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -69,7 +70,7 @@ namespace Project1.Core
                 var craftingLvl = actor.GetSkill(reaction.CraftSkill).Level;
                 int complexity = reaction.Complexity;
                 var masteryRatio = craftingLvl / (float)complexity;
-                var quality = QualityDef.GetRandom(actor.Map.World.Random, masteryRatio);
+                var quality = QualitySystem.GetRandom(actor.Map.World.Random, masteryRatio);
                 return quality;
             }
 

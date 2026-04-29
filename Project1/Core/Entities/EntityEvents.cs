@@ -17,5 +17,6 @@ internal record struct ActorNeedOverridenEvent(Actor Actor, NeedDef Need, float 
 internal record struct ActorNeedUpdatedEvent(NeedRuntime Need) : IEventPayload { }
 internal record struct EntityCompUpdatedEvent(EntityComp Comp) : IEventPayload { }
 internal record struct EntityKilledEvent(Entity Entity) : IEventPayload { }
+internal record struct ActorDeathEvent(Actor Actor) : IEventPayload { }
 internal record struct ActorFootStepEvent(Entity Entity) : IEventPayload { }
 internal record struct EntityEnteringNewCellEvent(Entity Entity) : IEventPayload { }

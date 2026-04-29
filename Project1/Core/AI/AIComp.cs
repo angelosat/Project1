@@ -140,6 +140,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     }
     void HandleBlocksChange(CellsInvalidatedEvent e)
     {
+        return;
         if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
         {
             this.State.Path = null;

@@ -10,10 +10,15 @@ internal sealed class OffmapActivity_FindTreasure : OffmapActivity
         var rand = actor.World.Random;
         if (!frontier.TryFindTreasure(rand, actor, out var treasure))
         {
-            actor.AI.State.Log.Write($"I searched for treasure.");
+            actor.AI.State.Log.Write($"Searched for treasure but found nothing");
             return;
         }
         actor.Inventory.Insert(treasure);
-        actor.AI.State.Log.Write($"I've found treasure! [{treasure.Name}]");
+        actor.AI.State.Log.Write($"Treasure found! [{treasure.Name}]");
+    }
+
+    internal override int GetWeight(FrontierWrapper frontier, Actor actor)
+    {
+        return frontier.Treasures.Count;
     }
 }

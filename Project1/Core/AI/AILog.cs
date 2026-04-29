@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,17 +32,17 @@ public class AILog
         return this.Inner.ToList();
     }
     
-    public class UI
-    {
-        static readonly Lazy<TableScrollableCompact<Entry>> EntriesGUI = new(()=> new TableScrollableCompact<Entry>()
-                .AddColumn(null, "Time", (int)UIManager.Font.MeasureString("HH:mm:ss").X, (e) => new Label(e.Time.ToString("HH:mm:ss")), 0)
-                .AddColumn(null, "Description", 1000, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNew(e.Text)), 0));
+    //public class UI
+    //{
+    //    static readonly Lazy<TableScrollableCompact<Entry>> EntriesGUI = new(()=> new TableScrollableCompact<Entry>()
+    //            .AddColumn(null, "Time", (int)UIManager.Font.MeasureString("HH:mm:ss").X, (e) => new Label(e.Time.ToString("HH:mm:ss")), 0)
+    //            .AddColumn(null, "Description", 1000, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNew(e.Text)), 0));
 
-        static public Control GetGUI(Actor actor)
-        {
-            return EntriesGUI.Value.Bind(actor.Log.Inner);
-        }
-    }
+    //    static public Control GetGUI(Actor actor)
+    //    {
+    //        return EntriesGUI.Value.Bind(actor.Log.Inner);
+    //    }
+    //}
 
     public class Entry
     {

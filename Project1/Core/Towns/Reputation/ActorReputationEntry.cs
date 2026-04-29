@@ -6,7 +6,7 @@ namespace Project1.Core.Towns.Reputation;
 
 sealed class ActorReputationEntry(Actor actor, ulong tick) : IGuiNew
 {
-    internal EntityRefId AgentId = actor.RefId;
+    internal EntityRefId ActorId = actor.RefId;
     readonly ProgressIntSigned Reputation = new(-100, 100, 0);
     internal ulong TickDiscovered = tick;
 

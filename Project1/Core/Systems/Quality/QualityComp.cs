@@ -38,7 +38,7 @@ public class QualityComp : EntityComp
 
     public override void Randomize(GameObject parent, RandomThreaded random)
     {
-        this.Tier = QualityDef.GetRandom();
+        this.Tier = QualitySystem.Random;
     }
 
     public override void Write(IDataWriter w)

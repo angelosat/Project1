@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Windows.Forms;
 
 namespace Project1.Framework.UI;
@@ -54,7 +55,7 @@ public class ScrollableBoxNewNewNew : GroupBox
         var modeFactor = new IntVec2((mode & ScrollModes.Vertical) == ScrollModes.Vertical ? 1 : 0, (mode & ScrollModes.Horizontal) == ScrollModes.Horizontal ? 1 : 0);
         this.Viewport = new GroupBox(width - buttonSize * modeFactor.X, height - buttonSize * modeFactor.Y) { AutoSize = false };
         this.Viewport.AddControls(this.Client);
-        this.VScroll = new ScrollbarV(this.Viewport, this.Client) { Location = new Vector2(this.Viewport.Width, 0), MouseLBAction = this.DisableAutoscroll };
+        this.VScroll = new ScrollbarV(this.Viewport, this.Client) { Location = new Vector2(this.Viewport.Width, 0), ScrollingCallback = this.DisableAutoscroll };
         this.HScroll = new ScrollbarH(this.Viewport, this.Client) { Location = new Vector2(0, this.Viewport.Height) };
         this.Controls.Add(this.Viewport);
         this.UpdateScrollbars();
@@ -88,6 +89,7 @@ public class ScrollableBoxNewNewNew : GroupBox
         this.Client.AddControls(controls);
         this.UpdateScrollbars();
         this.Client.Layout(this.Viewport.Width, this.Viewport.Height);
+        //this.Client.Layout(this.Width, this.Height);
         return this;
     }
     public override void RemoveControls(params Control[] controls)
@@ -160,6 +162,7 @@ public class ScrollableBoxNewNewNew : GroupBox
             return;
         int step = this.VScroll.SmallStep;
         this.Client.Location.Y = System.Math.Min(0, System.Math.Max(this.Viewport.Height - this.Client.Height, this.Client.Location.Y + step * e.Delta));
+        this.DisableAutoscroll();
     }
 
     protected void EnsureClientWithinBounds()
@@ -177,6 +180,7 @@ public class ScrollableBoxNewNewNew : GroupBox
         bool ThumbMoving;
         public int SmallStep = UIManager.DefaultLabelHeight;// 1;
         GroupBox Container, Client;
+        public Action ScrollingCallback;
         public override int Height
         {
             get => base.Height; set
@@ -196,7 +200,7 @@ public class ScrollableBoxNewNewNew : GroupBox
             var areaheight = client.Height - 2 * DefaultWidth;
             this.Up = new IconButton(Icon.ArrowUp) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = StepUp };
             this.Thumb = new PictureBox(Vector2.Zero, UIManager.DefaultVScrollbarSprite, new Rectangle(0, 16, 16, 16), Alignment.Horizontal.Left, Alignment.Vertical.Top);
-            this.Area = new GroupBox() { MouseThrough = false, AutoSize = false, Size = new Rectangle(0, 0, this.Width, areaheight), Location = this.Up.BottomLeft };
+            this.Area = new GroupBox() { Name ="scrollbar area", MouseThrough = false, AutoSize = false, Size = new Rectangle(0, 0, this.Width, areaheight), Location = this.Up.BottomLeft };
             this.Area.AddControls(this.Thumb);
             this.Down = new IconButton(Icon.ArrowDown) { BackgroundTexture = UIManager.Icon16Background, Location = this.Area.BottomLeft, LeftClickAction = StepDown };
             this.AddControls(this.Up, this.Down, this.Area);
@@ -205,15 +209,20 @@ public class ScrollableBoxNewNewNew : GroupBox
         void StepUp()
         {
             this.MoveContainer(this.Container.Location.Y + this.SmallStep);
+            this.ScrollingCallback?.Invoke();
+
         }
         void StepDown()
         {
             this.MoveContainer(this.Container.Location.Y - this.SmallStep);
+            this.ScrollingCallback?.Invoke();
+
         }
         void MoveContainer(float newPos)
         {
             this.Container.Location.Y = System.Math.Min(0, System.Math.Max(this.Client.Height - this.Container.Height, newPos));
             //this.Container.Location.Y = Math.Clamp(newPos, this.Client.Height - this.Container.Height, 0);
+
         }
         public bool AtBottom => this.Container.Location.Y == this.Client.Height - this.Container.Height;
         public void SnapToBottom() => this.MoveContainer(this.Client.Height - this.Container.Height);
@@ -231,6 +240,7 @@ public class ScrollableBoxNewNewNew : GroupBox
                 this.ThumbClickOrigin = (int)(UIManager.MouseScaled.Y - this.Thumb.ScreenLocation.Y);
                 this.ThumbMoving = true;
                 e.Handled = true;
+                this.ScrollingCallback?.Invoke();
             }
             else if (this.Area.IsTopMost)
             {
@@ -239,9 +249,11 @@ public class ScrollableBoxNewNewNew : GroupBox
                     this.MoveContainer(this.Container.Location.Y + this.Client.Height);
                 else
                     this.MoveContainer(this.Container.Location.Y - this.Client.Height);
+                this.ScrollingCallback?.Invoke();
+
             }
             //else
-                base.HandleLButtonDown(e);
+            base.HandleLButtonDown(e);
         }
 
 

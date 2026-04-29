@@ -326,6 +326,7 @@ namespace Project1.Framework.UI
             }
             return lbl;
         }
+        [Obsolete($"use {nameof(ParseNewNew)}")]
         public static IEnumerable<Label> ParseNew(string text)
         {
             var posCurrent = 0;

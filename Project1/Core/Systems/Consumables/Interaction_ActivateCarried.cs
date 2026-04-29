@@ -7,8 +7,9 @@ internal class Interaction_ActivateCarried : InteractionLogic
     internal override void OnFinish(Interaction i)
     {
         var carried = i.Actor.Hauled;
-        carried.Consume(1);
-        var comp = carried.Consumable;
-        comp.ApplyEffects(i.Actor);
+        //carried.Consume(1);
+        //var comp = carried.Consumable;
+        //comp.ApplyEffects(i.Actor);
+        ConsumableSystem.Activate(carried, i.Actor);
     }
 }

@@ -26,6 +26,7 @@ sealed class RecipesComp_Gui : Table<RecipeKnowledge>
             .AddColumn("level", lvlWidth, r => new LabelNew(() => $"Lvl: {r.Level}").InvalidateOn(r.Update));
         this.AddItems(comp.All);
         comp.Updated += Comp_Updated;
+        this.Comp = comp;
     }
     protected override void OnDetached()
     {

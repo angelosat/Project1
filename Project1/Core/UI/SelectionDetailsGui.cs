@@ -23,13 +23,16 @@ public class SelectionDetailsGui : SelectionBoundControl
         //    var ctrl = Activator.CreateInstance(type) as SelectionBoundControl;
         //    ctrl.Name = label;
         //}
-        this.Contents = selectable.GetInspectorTabs().Select(c => {
+        this.Contents = selectable.GetInspectorTabs().Select(c =>
+        {
             var ctrl = Activator.CreateInstance(c.type) as SelectionBoundControl;
             ctrl.Name = c.label;
-            ctrl.Bind(selectable);
+            //ctrl.Bind(selectable);
             return ctrl;
-            });
+        }).ToList();
         this.PanelMain.InitTabs([.. this.Contents]);
+        foreach (var c in this.Contents)
+            ((SelectionBoundControl)c).Bind(selectable);
         this.Validate();
     }
 }

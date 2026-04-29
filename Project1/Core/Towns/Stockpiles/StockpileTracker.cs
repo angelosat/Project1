@@ -102,6 +102,9 @@ sealed class StockpileTrackerManager
     {
         this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Update(item, previousStackSize);
     }
+
+    internal IEnumerable<Entity> Get<T>() where T : Def
+        => this.Trackers[typeof(T) ?? typeof(Def)].Items;
 }
 
 class StockpileTracker
@@ -109,6 +112,9 @@ class StockpileTracker
     private readonly List<GroupSelector> _levels;
     private readonly StockpileNode _root = new();
     internal StockpileNode Root => this._root;
+
+    public IEnumerable<Entity> Items => this._itemToLeaf.Keys;
+
     readonly Dictionary<Entity, StockpileNode> _itemToLeaf = [];
 
     event Action<(IEnumerable<StockpileNode> added, IEnumerable<StockpileNode> removed)> NodesUpdated;

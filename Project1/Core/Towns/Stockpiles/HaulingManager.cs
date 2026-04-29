@@ -50,6 +50,7 @@ public sealed class HaulingManager : MapComponent
         ;
 
 
+
     public HaulingManager(MapBase map) : base(map)
     {
         map.Events.ListenTo<ZoneCreatedEvent>(OnZoneCreated);
@@ -80,6 +81,9 @@ public sealed class HaulingManager : MapComponent
     {
         this.TryRegister(e.Entity);
     }
+
+    public IEnumerable<Entity> Get<T>() where T : Def
+        => this.TrackerManager.Get<T>();
 
     private bool TryRegister(BlockEntity be)
     {

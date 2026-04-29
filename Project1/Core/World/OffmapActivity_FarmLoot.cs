@@ -20,6 +20,10 @@ internal sealed class OffmapActivity_FarmLoot : OffmapActivity
         actor.Inventory.Insert(loot, out var newTotal);
         actor.Skills.ApplyXp(desiredLoot.Value.matdef.Type.GatheringSkill, 10);
         actor.AI.State.Log.Write($"I found {loot.LabelReadable} x{foundCount} ({newTotal})");
-
+    }
+    internal override int GetWeight(FrontierWrapper frontier, Actor actor)
+    {
+        var desiredLoot = actor.AI.GetMeta<RoleAdventurerData>().NextDesiredLoot;
+        return desiredLoot.HasValue ? 1 : 0;
     }
 }

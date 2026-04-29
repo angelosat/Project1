@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Tools;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -12,11 +12,33 @@ public class FrontierWrapper
 {
     public readonly FrontierDef Def;
     readonly internal List<Entity> Treasures = [];
+    internal readonly Dictionary<Actor, SimulationTick> IncapacitatedActors = [];
+    internal HashSet<Actor> Actors = [];
+
+    internal void Tick(WorldBase world)
+    {
+
+    }
     public FrontierWrapper(FrontierDef def)
     {
         this.Def = def;
     }
-
+    internal void AddActor(Actor actor)
+    {
+        this.Actors.Add(actor);
+    }
+    internal void RemoveActor(Actor actor)
+    {
+        this.Actors.Remove(actor);
+    }
+    internal void AddIncapacitatedActor(Actor actor)
+    {
+        this.IncapacitatedActors.Add(actor, actor.World.CurrentTick);
+    }
+    internal void RemoveIncapacitatedActor(Actor actor)
+    {
+        this.IncapacitatedActors.Remove(actor);
+    }
     internal void AddTreasure(Entity entity)
     {
         entity.Detach();

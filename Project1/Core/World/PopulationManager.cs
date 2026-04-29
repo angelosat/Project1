@@ -1,14 +1,16 @@
 ﻿using Project1.Core.AI.MetaRoles;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Needs;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Entities;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Needs;
@@ -33,7 +35,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     readonly ObservableCollection<WorldInhabitantView> WorldInhabitants = [];
     public IEnumerable<WorldInhabitantView> AllActors => this.WorldInhabitants;
     public readonly StaticWorld World;
-    const int WorldPopulationCap = 3;//1;//0;//6;
+    const int WorldPopulationCap = 6;//3;//1;//0;//6;
     public int WorldPopulationCount { get; private set; }
     const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
     const int InitialApproval = 50;
@@ -105,6 +107,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         }
         return null;
     }
+
     private Actor PopulateRuntime(INetEndpoint net)
     {
         if (net is Server && this.WorldPopulationCount < WorldPopulationCap)
@@ -121,7 +124,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
         var coins = ItemDefOf.Coins.Create().SetStackSize(500);
-        var townscroll = ConsumableSystem.CreateScroll(SpellDefOf.Teleporting, MaterialDefOf.ShrubStem, QualityDef.GetRandom());
+        var townscroll = ConsumableSystem.CreateScroll(SpellDefOf.Teleporting, MaterialDefOf.ShrubStem, QualitySystem.Random);
         var inventory = actor.Inventory;
         inventory.Insert(coins);
         inventory.Insert(townscroll);
@@ -134,6 +137,10 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
         inventory.Insert(damagedTool);
+
+
+        var healPot = ConsumableSystem.Create(ConsumableDefOf.Potion, PotionSystem.GetMaterialRequired(EffectDefOf.RestoreResource, ResourceDefOf.Health), QualityDefOf.Common);
+        inventory.Insert(healPot);
 
         this.World.Register(actor);
 
@@ -166,21 +173,26 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         foreach (var v in this.WorldInhabitants)
             yield return v;
     }
+
     internal WorldInhabitantView GetVisitorProperties(Actor actor)
     {
         return this.WorldInhabitants.FirstOrDefault(v => v.Actor == actor);
     }
+
     internal void OnTargetSelected(IUISelection info, ISelectable selected)
     {
     }
+
     internal void OnTargetSelected(SelectionManager info, ISelectable selected)
     {
     }
+
     Control _gui;
+
     public Control Gui => this._gui ??= this.CreateGui();
     Control CreateGui()
     {
-        var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8);
+        var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
         var list = new ListBoxObservable<WorldInhabitantView, ButtonNew>(props =>
         {
             var npc = props.Actor;
@@ -200,7 +212,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
                 if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
                     return;
                 ContextMenuManager.PopUp(
-                    ("Force visit", () => this.ForceVisitDepart(npc)),
+                    ("Force visit", () => ForceVisitDepart(npc)),
                     ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
                 );
             };
@@ -218,7 +230,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         box.AddControlsVertically(filters, list);
         return box;
     }
-    void ForceVisitDepart(Actor actor)
+
+    static void ForceVisitDepart(Actor actor)
     {
         var serverActor = Server.Instance.World.Get<Actor>(actor.RefId);
         var newPercentage = serverActor.Map == null ? 1f : 0;// 0 : 1f;
@@ -228,6 +241,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         Server.Instance.ConsoleBox.Write(debugmsg);
         DebugConsole.Write(DebugConsole.Debug, debugmsg);
     }
+
     public void ResolveReferences()
     {
         this.WorldPopulationCount = 0;
@@ -237,23 +251,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
             this.WorldInhabitants.Add(new WorldInhabitantView(actor));
             this.WorldPopulationCount++;
         }
-        //this.WorldPopulationCount = AllActors.Count();
     }
-    public void ResolveReferencesOld()
-    {
-        foreach (var props in this.WorldInhabitants) // i added this to add visitor needs to existing visitors because I wasn't saving them in the needscomponent class
-        {
-            props.World = this.World;
-            var actor = props.Actor;
-            // TODO move this somewhere else
-            if (this.World.Map.Net is Server)
-                if (!actor.GetNeeds(AdventurerNeedsDefOf.NeedCategoryVisitor).Any())
-                    MakeVisitor(actor);
-            if (actor.IsSpawned)
-                props.Discovered = true; // HACK
-            props.OffsiteArea = FrontierDefOf.Forest; // HACK
-        }
-    }
+ 
     public SaveTag Save(string name = "")
     {
         var tag = new SaveTag(SaveTag.Types.Compound, name);
@@ -270,6 +269,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         this.Undiscovered.TryLoad(tag, "Undiscovered");
         return this;
     }
+
     public void Write(IDataWriter w)
     {
         w.Write(this.Undiscovered);

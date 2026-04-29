@@ -25,6 +25,8 @@ internal class BiologyComp : EntityComp
         var now = this.IsIncapacitated;
         if (now && !this.WasIncapacitated)
             this.World.Events.Post(new ActorIncapacitatedEvent(this.Owner as Actor));
+        else if (!now && this.WasIncapacitated)
+            this.World.Events.Post(new ActorRecoveredEvent(this.Owner as Actor));
         this.WasIncapacitated = now;
     }
     public override void TickOffMap()
@@ -40,3 +42,4 @@ internal class BiologyComp : EntityComp
 }
 
 internal record struct ActorIncapacitatedEvent(Actor Actor) : IEventPayload;
+internal record struct ActorRecoveredEvent(Actor Actor) : IEventPayload;

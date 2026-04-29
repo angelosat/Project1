@@ -78,9 +78,15 @@ namespace Project1.Core.Networking
         }
         static void ReceiveResourceDelta(NetEndpoint endpoint, Packet packet)
         {
-            endpoint.World
-                .Get(packet.PacketReader.ReadEntityRefId())
-                .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadInt32());
+            var r = packet.PacketReader;
+            var actorid = r.ReadId<EntityRefId>();
+            var resDef = r.ReadDef<ResourceDef>();
+            var delta = r.ReadInt32();
+            var actor = endpoint.World.Get(actorid);
+            actor.Resources.ApplyDelta(resDef, delta);
+            //endpoint.World
+            //    .Get(packet.PacketReader.ReadEntityRefId())
+            //    .Resources.ApplyDelta(packet.PacketReader.ReadDef<ResourceDef>(), packet.PacketReader.ReadInt32());
         }
         static void SendBlockResourceDelta(BlockResourceDeltaAppliedEvent e)
         {

@@ -25,6 +25,7 @@ public sealed class ConsumableComp : EntityComp
 
     public EntityEffectWrapper Effect => this.EffectsNew.FirstOrDefault();
     public bool HasEffectTarget(Def target) => this.EffectsNew.Any(f => f.Target == target);
+    public bool HasEffect(EffectDef effect, Def target) => this.EffectsNew.Any(f => f.Def == effect && f.Target == target);
     public override void OnTooltipCreated(Control tooltip)
     {
         foreach (var effect in this.EffectsNew)

@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Quality;
 using System;
 using System.Collections.Generic;
 
@@ -13,7 +14,7 @@ internal static class ScrollSystem
         List<SpellDef> spells = [SpellDefOf.Teleporting];
         foreach(var spell in spells)
         {
-            var scroll = ConsumableSystem.CreateScroll(spell, MaterialDefOf.ShrubStem, QualityDef.GetRandom());
+            var scroll = ConsumableSystem.CreateScroll(spell, MaterialDefOf.ShrubStem, QualitySystem.Random);
             yield return scroll;
         }
     }

@@ -1,7 +1,6 @@
 # todo 2025
 ## immediate
-- replace crafting order contracts with commitments
-- stockpile inventory gui
+- unknown block selection not revealing material in selection panel
 - change entity materials from per-bone to a materialcomp, which defines whether the item has material at all, etc
 - influence system for visitors to help with town tasks
 - clarify auxiliary/additional targets to reserve in plans

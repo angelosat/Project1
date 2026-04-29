@@ -9,6 +9,7 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -115,7 +116,7 @@ public class Entity : GameObject
     public GameObject Randomize(RandomThreaded random)
     {
         if (this.Def.CraftingProperties is not null) // HACK
-            this.SetQuality(QualityDef.GetRandom());
+            this.SetQuality(QualitySystem.Random);
         foreach (var comp in this.Components.Values)
             comp.Randomize(this, random);
         return this;

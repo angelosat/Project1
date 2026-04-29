@@ -31,20 +31,7 @@ internal sealed class OffmapActivity_Injury : OffmapActivity
         {
             var heal = e.Delta > 0;
             e.Actor.AI.State.Log.Write($"{(heal ? "Recovered" : "Lost")} {Math.Abs(e.Delta)} health");
-            //e.Actor.AI.State.Log.Write($"Lost {e.Damage} health");
         }
     }
-
     record struct ActorOffmapHealthEvent(Actor Actor, int Delta) : IEventPayload;
-
-    //internal override void Tick(FrontierWrapper frontier, Actor actor)
-    //{
-    //    var dmgBase = frontier.Def.Tier * 2;
-    //    var dmg = dmgBase + actor.World.Random.Next(-dmgBase, dmgBase) / 2;
-    //    dmg += 50;
-    //    actor.Resources.ApplyDelta(ResourceDefOf.Health, -dmg);
-    //    //actor.AI.State.Log.Write($"I was injured! ({delta} hp)");
-    //    //actor.AI.State.Log.Write($"[Lost {dmg} health,{Color.Red}]");// while exploring {this.Name}");
-    //    actor.AI.State.Log.Write($"Lost {dmg} health");// while exploring {this.Name}");
-    //}
 }

@@ -474,9 +474,12 @@ namespace Project1.Framework
             var xmax = begin.X + end.X - xmin; // prefer? var xmax = Math.Max(begin.X, end.X);
             var ymax = begin.Y + end.Y - ymin;
             var zmax = begin.Z + end.Z - zmin;
-            var dx = xmax - xmin + 1;
-            var dy = ymax - ymin + 1;
-            var dz = zmax - zmin + 1;
+            //var dx = xmax - xmin + 1;
+            //var dy = ymax - ymin + 1;
+            //var dz = zmax - zmin + 1;
+            var dx = Math.Max(1, xmax - xmin);
+            var dy = Math.Max(1, ymax - ymin);
+            var dz = Math.Max(1, zmax - zmin);
 
             var origin = new IntVec3(xmin, ymin, zmin);
 

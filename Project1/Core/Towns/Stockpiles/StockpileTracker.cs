@@ -92,16 +92,25 @@ sealed class StockpileTrackerManager
     }
     internal void Add(Entity item)
     {
-        this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Add(item);
+        //this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Add(item);
+        if (this.Trackers.TryGetValue(GetKey(item), out var tracker))
+            tracker.Add(item);
     }
     internal void Remove(Entity item)
     {
-        this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Remove(item);
+        //this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Remove(item);
+        if (this.Trackers.TryGetValue(GetKey(item), out var tracker))
+            tracker.Remove(item);
     }
     internal void Update(Entity item, int previousStackSize)
     {
-        this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Update(item, previousStackSize);
+        //this.Trackers[item.Profile?.GetType() ?? typeof(Def)].Update(item, previousStackSize);
+        if (this.Trackers.TryGetValue(GetKey(item), out var tracker))
+            tracker.Update(item, previousStackSize);
     }
+
+    private static Type GetKey(Entity item)
+        => item.Profile?.GetType() ?? typeof(Def);
 
     internal IEnumerable<Entity> Get<T>() where T : Def
         => this.Trackers[typeof(T) ?? typeof(Def)].Items;

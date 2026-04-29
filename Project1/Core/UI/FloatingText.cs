@@ -55,6 +55,7 @@ namespace Project1.Core.UI
             this.Velocity = new Vector2((float)Math.Cos(angle), -(float)Math.Sin(angle));
             this.Velocity *= 3;
             this.Position = Vector2.Zero;
+            this.MouseThrough = true;
         }
         public FloatingText(Func<Vector3> global, string text)
             : base(Vector2.Zero, text)
@@ -68,8 +69,9 @@ namespace Project1.Core.UI
             this.Velocity = new Vector2((float)Math.Cos(angle), -(float)Math.Sin(angle));
             this.Velocity *= 3;
             this.Position = Vector2.Zero;
+            this.MouseThrough = true;
         }
-        
+
 
         public override void Update()
         {

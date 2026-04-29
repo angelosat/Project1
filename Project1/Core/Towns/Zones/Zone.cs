@@ -82,25 +82,26 @@ namespace Project1.Core.Towns.Zones
             foreach (var pos in this.Cells.Except(largest).ToList())
                 this.Cells.Remove(pos);
         }
-        internal void Edit(IntVec3 begin, IntVec3 end, bool remove)
-        {
-            var inputpositions = begin.GetBoxLazy(end);
 
-            if (!remove)
-            {
-                var finalPositions = inputpositions.Where(pos => this.Town.GetZoneAt(pos) == null).Union(this.Cells);
-                if (!finalPositions.IsConnectedNew())
-                {
-                    this.Manager.CreateZone(this.ZoneDef, inputpositions);
-                    return;
-                }
-                foreach (var pos in inputpositions.Except(this.Cells))
-                    if (this.Town.GetZoneAt(pos) is null)
-                        this.Cells.Add(pos);
-            }
-            else
-                this.RemovePositions(inputpositions);
-        }
+        //internal void Edit(IntVec3 begin, IntVec3 end, bool remove)
+        //{
+        //    var inputpositions = begin.GetBoxLazy(end);
+
+        //    if (!remove)
+        //    {
+        //        var finalPositions = inputpositions.Where(pos => this.Town.GetZoneAt(pos) == null).Union(this.Cells);
+        //        if (!finalPositions.IsConnectedNew())
+        //        {
+        //            this.Manager.CreateZone(this.ZoneDef, inputpositions);
+        //            return;
+        //        }
+        //        foreach (var pos in inputpositions.Except(this.Cells))
+        //            if (this.Town.GetZoneAt(pos) is null)
+        //                this.Cells.Add(pos);
+        //    }
+        //    else
+        //        this.RemovePositions(inputpositions);
+        //}
         public void MarkDirty()
         {
             this._dirty = true;

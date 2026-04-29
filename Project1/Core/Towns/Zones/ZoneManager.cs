@@ -73,8 +73,10 @@ public class ZoneManager : TownComp
     internal Zone CreateZone(ZoneDef zoneType, IEnumerable<IntVec3> allpositions)
     {
         var finalPositions = allpositions.Where(
-            po => this.Town.GetZoneAt(po) == null &&
-            zoneType.Worker.IsValidLocation(this.Town.Map, po));
+            po =>
+            //this.GetZoneAt(po) == null
+            !this._cellsToZones.ContainsKey(po)
+            && zoneType.Worker.IsValidLocation(this.Town.Map, po));
         if (!finalPositions.Any())
             return null;
         if (!finalPositions.IsConnectedNew())
@@ -106,7 +108,11 @@ public class ZoneManager : TownComp
             zone.ID = this.GetNextID();
         this.ZonesById.Add(zone.ID, zone);
         foreach (var position in zone.Cells)
+        {
+            if (this._cellsToZones.ContainsKey(position))
+                throw new Exception();
             this._cellsToZones[position] = zone;
+        }
         zone.Manager = this;
         zone.Name = zone.UniqueName;
         this.Map.Events.Post(new ZoneCreatedEvent(zone));
@@ -160,7 +166,7 @@ public class ZoneManager : TownComp
     }
     public Zone GetZoneAt(IntVec3 global)
     {
-        if (this.CellsToZones.TryGetValue(global, out var zone))
+        if (this._cellsToZones.TryGetValue(global, out var zone))
             return zone;
         return null;
     }
@@ -174,15 +180,17 @@ public class ZoneManager : TownComp
     }
     internal override void OnBlocksChanged(IEnumerable<IntVec3> positions)
     {
-        for (int i = this.ZonesById.Count - 1; i >= 0; i--)
-        {
-            var item = this.ZonesById.ElementAt(i);
-            foreach (var pos in positions)
-            {
-                item.Value.OnBlockChangedNew(pos);
-                item.Value.OnBlockChangedNew(pos.Below);
-            }
-        }
+        this.Delete(positions);
+        //for (int i = this.ZonesById.Count - 1; i >= 0; i--)
+        //{
+        //    var item = this.ZonesById.ElementAt(i);
+        //    foreach (var pos in positions)
+        //    {
+        //        throw new Exception();
+        //        item.Value.OnBlockChangedNew(pos);
+        //        item.Value.OnBlockChangedNew(pos.Below);
+        //    }
+        //}
     }
     private void OnCellsInvalidated(CellsInvalidatedEvent e)
     {
@@ -195,33 +203,62 @@ public class ZoneManager : TownComp
                 zoneBelow.OnBlockChangedNew(cell.Below);
         }
     }
-    internal Zone PlayerEdit(ZoneId zoneID, ZoneDef zoneType, IntVec3 begin, IntVec3 end, bool IsRemoval)
+    internal Zone PlayerEdit(ZoneId zoneID, ZoneDef zoneType, IntVec3 begin, IntVec3 end, bool deleting)
     {
-        var w = end.X - begin.X;
-        var h = end.Y - begin.Y;
-        return this.PlayerEdit(zoneID, zoneType, begin, w, h, IsRemoval);
-    }
-    internal Zone PlayerEdit(ZoneId zoneID, ZoneDef zoneType, IntVec3 a, int w, int h, bool remove)
-    {
-        if (remove)
-            foreach (var zone in this.ZonesById.Values.ToList())
-                this.EditZone(a, w, h, remove, zone);
-        else if (zoneID == 0)
-                return CreateZone(zoneType, a.GetBoxLazy(a + new IntVec3(w - 1, h - 1, 0)));
-        else
-            this.EditZone(a, a + new IntVec3(w - 1, h - 1, 0), remove, this.ZonesById[zoneID]);
+        var cells = IntVec3Helper.GetBox(begin, end);
+        if (deleting)
+        {
+            Delete(cells);
+            return null;
+        }
+
+        if (zoneID == ZoneId.Null)
+            return this.CreateZone(zoneType, cells);
+
+        var zone = this.ZonesById[zoneID];
+
+        var finalPositions = cells.Where(pos => this.Town.GetZoneAt(pos) == null).Union(zone.Cells);
+
+        if (!finalPositions.IsConnectedNew())
+            return this.CreateZone(zone.ZoneDef, cells);
+
+        foreach (var pos in cells.Except(zone.Cells))
+            if (this.GetZoneAt(pos) is null)
+            {
+                zone.Cells.Add(pos);
+                this._cellsToZones.Add(pos, zone);
+            }
         return null;
     }
-    private void EditZone(IntVec3 a, int w, int h, bool remove, Zone zone)
+
+    private void Delete(IEnumerable<IntVec3> cells)
     {
-        EditZone(a, a + new IntVec3(w - 1, h - 1, 0), remove, zone);
+        foreach (var cell in cells)
+        {
+            if (!this._cellsToZones.TryGetValue(cell, out var zone))
+                continue;
+            zone.Cells.Remove(cell);
+            this._cellsToZones.Remove(cell);
+            foreach (var item in this.Map.GetEntitiesAt(cell.Above))
+                this.RemoveItem(zone, item);
+            if (zone.Cells.Count == 0)
+                this.DeleteZone(zone.ID);
+            else
+            {
+                var splitgraphs = zone.Cells.GetAllConnectedSubGraphs();
+                if (splitgraphs.Count > 1)
+                {
+                    var largest = splitgraphs.OrderByDescending(g => g.Count).First();
+                    foreach (var pos in zone.Cells.Except(largest).ToList())
+                    {
+                        zone.Cells.Remove(pos);
+                        this._cellsToZones.Remove(pos);
+                    }
+                }
+            }
+        }
     }
-    private void EditZone(IntVec3 a, IntVec3 b, bool remove, Zone zone)
-    {
-        zone.Edit(a, b, remove);
-        if (zone.IsEmpty)
-            this.DeleteZone(zone.ID);
-    }
+
     internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()
     {
         yield return (() => $"Zones [{Hotkey.GetLabel()}]", ToggleGui);

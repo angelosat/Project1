@@ -33,6 +33,13 @@ namespace Project1.Core.AI
         {
 
         }
+        public override void Tick()
+        {
+            foreach(var t in this.Traits)
+            {
+                t.Value.Def.Worker?.Tick(this.Owner as Actor, t.Value);
+            }
+        }
         internal override void CopyFrom(EntityComp source)
         {
             //var traits = ((PersonalityComponent)source).Traits;
@@ -51,7 +58,7 @@ namespace Project1.Core.AI
                 box.AddControlsBottomLeft(t.GetListControlGui());
             return box;
         }
-        public Trait GetTrait(TraitDef def)
+        public Trait Get(TraitDef def)
         {
             return this.Traits[def];
         }
@@ -75,6 +82,11 @@ namespace Project1.Core.AI
             this.Favorites = GenerateMaterialPreferences();
         }
 
+        void RandomizeTraitsNormal()
+        {
+            foreach (var t in this.Traits.Values)
+                t.Value = (int)(RandomHelper.NextNormal() * 100);
+        }
         private void RandomizeTraits()
         {
             int budget = 0; //placeholder
@@ -156,6 +168,7 @@ namespace Project1.Core.AI
             this.Favorites.Clear();
             if (!this.Favorites.TryLoadDefs(tag, "Favorites"))
                 this.Favorites = GenerateMaterialPreferences();
+            this.RandomizeTraitsNormal();
         }
         static Control getFavoritesUI(PersonalityComponent p, int width)
         {

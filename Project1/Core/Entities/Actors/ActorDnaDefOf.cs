@@ -61,7 +61,8 @@ public class ActorDnaDefOf
             TraitDefOf.Deliberation,
             TraitDefOf.Resilience,
             TraitDefOf.Manners,
-            TraitDefOf.Selflessness],
+            TraitDefOf.Selflessness,
+            TraitDefOf.Sociability],
         Diet = [
             MaterialTypeDefOf.Fruit,
             MaterialTypeDefOf.Flesh,

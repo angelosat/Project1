@@ -1,11 +1,18 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
+using Project1.Core.Needs;
 using Project1.Core.Resources;
+using System;
 
 namespace Project1.Core.Systems.MentalState;
 
 internal class MentalStateComp : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.MentalState;
+
+    IResourceView Patience => field ??= this.Owner.Resources.View(ResourceDefOf.Patience);
+
+    Action<float> TickSocial => field ??= ((Actor)this.Owner).Needs.GetAccumulatorCallback(NeedDefOf.Social);
 
     public override string Name => "Mental State";
 
@@ -15,6 +22,6 @@ internal class MentalStateComp : EntityComp
     {
         if (this.Owner.Net.IsClient)
             return;
-        this.Owner.Resources.ApplyAccumulatorDelta(ResourceDefOf.Patience, this.Regen);
+        this.Patience.ApplyAccumulatorDelta(this.Regen);
     }
 }

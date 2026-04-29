@@ -6,6 +6,7 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -159,6 +160,9 @@ public sealed class NeedsComp : EntityComp<NeedsComp.Spec>, IGui
     internal void ApplyAccumulatorDelta(NeedDef need, float delta)
         //=> this.NeedsNew[need].Accumulator += delta;
         => this.NeedsNew[need].ApplyAccumulatorDelta(delta);
+
+    internal Action<float> GetAccumulatorCallback(NeedDef need)
+        => this.NeedsNew[need].ApplyAccumulatorDelta;
 
     public new class Spec: Spec<NeedsComp>
     {

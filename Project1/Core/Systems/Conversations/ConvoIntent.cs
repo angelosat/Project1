@@ -30,22 +30,23 @@ sealed class ConvoIntent_Compliment : ConvoIntent
 
     protected override ConvoDeltas OnCalculate(ConvoInputs inputs, float magnitude)
     {
-        var sign = magnitude > 0 ? 1 : -1;
+        //var sign = magnitude > 0 ? 1 : -1;
+        var sign = float.Sign(magnitude);
         var finalmagnitude = (int)Math.Ceiling(Math.Abs(inputs.TalkerSkill * magnitude));
         var xp = 10 + finalmagnitude;
-        //var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * magnitude / 2;
-        //var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * magnitude / 2); 
         var talkerNeedDelta = (1 - inputs.TalkerSelflessness) * xp;
-        var listenerNeedDelta = Math.Max(0, sign * (1 - inputs.ListenerResilience) * xp);
-        //var listenerRel = sign * magnitude;
-        var listenerRel = sign * (int)Math.Ceiling(finalmagnitude / 33f);
+
+        var listenerSociability = inputs.Listener.Personality.Get(TraitDefOf.Sociability).Percentage;
+        var listenerNeedDelta = listenerSociability * Math.Max(0, sign * (1 - inputs.ListenerResilience) * xp);
+        var listenerRelationShift = sign * (int)Math.Ceiling(finalmagnitude / 33f);
+
         var talkerRel = 0;
         if (sign < 0)
         {
             float harshness = 1 - inputs.TalkerManner;
             talkerRel = -(int)Math.Ceiling(finalmagnitude * harshness / 50f);
         }
-        return new(talkerNeedDelta, listenerNeedDelta, xp, talkerRel, listenerRel);
+        return new(talkerNeedDelta, listenerNeedDelta, xp, talkerRel, listenerRelationShift);
     }
 }
 sealed class ConvoIntent_Insult : ConvoIntent
@@ -96,7 +97,7 @@ internal abstract class ConvoIntent
         var talkerManner = this.Manner(talker);
         var talkerSelflessness = this.Selflessness(talker);
         var listenerResilience = this.Resilience(listener);
-        return new(talkerSkill, talkerManner, talkerSelflessness, listenerResilience);
+        return new(talker, listener, talkerSkill, talkerManner, talkerSelflessness, listenerResilience);
     }
     internal ConvoDeltas Calculate(Actor talker, Actor listener, float magnitude)
         => this.OnCalculate(this.Deconstruct(talker, listener), magnitude);

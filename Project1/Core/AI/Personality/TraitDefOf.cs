@@ -65,4 +65,10 @@ public class TraitDefOf
         NameNegative = "Manipulative",
         NamePositive = "Altruistic"
     };
+    // empathy
+    static public readonly TraitDef Sociability = new("Sociability", typeof(TraitWorker_Introvert))
+    {
+        NameNegative = "Extrovert",
+        NamePositive = "Introvert"
+    };
 }

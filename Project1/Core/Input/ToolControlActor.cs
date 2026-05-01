@@ -54,15 +54,16 @@ class ToolControlActor : ControlTool
     }
     public static Vector3 GetDirection3()
     {
-        var cam = Ingame.MainViewport.Camera;
+        var view = Ingame.MainView;
         //var cam = Client.Instance.GetPlayer().ControllingEntity.Map.Camera;
-        var playerScreenPosition = cam.GetScreenPosition(Client.Instance.GetPlayer().ControllingEntity.Global);
+        var playerScreenPosition = view.GetScreenPosition(Client.Instance.GetPlayer().ControllingEntity.Global);
         int x = Controller.Instance.msCurrent.X - (int)playerScreenPosition.X;
         int y = Controller.Instance.msCurrent.Y - (int)playerScreenPosition.Y;
         float xx, yy;
         int xxx, yyy;
         Coords.Ortho(x, y, out xx, out yy);
-        Coords.Rotate((int)cam.Rotation, xx, yy, out xxx, out yyy);
+        //Coords.Rotate((int)view.Rotation, xx, yy, out xxx, out yyy);
+        view.Rotate(xx, yy, out xxx, out yyy);
         var normal = new Vector2(xxx, yyy);
         normal.Normalize();
         var final = new Vector3(normal.X, normal.Y, 0);
@@ -139,7 +140,7 @@ class ToolControlActor : ControlTool
         }
         if (xx != 0 || yy != 0)
         {
-            var cam = Ingame.MainViewport.Camera;
+            var cam = Ingame.MainView.Camera;
             double rx, ry;
             double cos = Math.Cos((-cam.Rotation) * Math.PI / 2f);
             double sin = Math.Sin((-cam.Rotation) * Math.PI / 2f);
@@ -204,7 +205,7 @@ class ToolControlActor : ControlTool
         {
             var delta = InputState.IsKeyDown(Keys.LShiftKey) ? e.Delta * 16 : e.Delta;
             //var camera = Ingame.MainViewport.;
-            Ingame.MainViewport.AdjustDrawLevel(delta);
+            Ingame.MainView.AdjustDrawLevel(delta);
             e.Handled = true;
             return;
         }

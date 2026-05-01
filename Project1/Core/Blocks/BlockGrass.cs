@@ -2,6 +2,7 @@
 using Project1.Core.Graphics;
 using Project1.Core.Graphics.Particles;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -93,12 +94,12 @@ class BlockGrass : Block
     {
         return base.Draw(chunk, global, camera, screenBounds, sunlight, blocklight, fog, tint, depth, variation, orientation, data, mat);
     }
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
-        base.Draw(canvas, chunk, global, camera, screenBounds, sunlight, blocklight, fog, tint, depth, variation, orientation, data, mat);
+        base.Draw(canvas, chunk, global, view, screenBounds, sunlight, blocklight, fog, tint, depth, variation, orientation, data, mat);
         if (data == 0)
             return null;
         var fl = this.GetFlowerOverlay(data);
-        return canvas.Opaque.DrawBlock(fl.Atlas.Texture, screenBounds, fl, camera.Zoom, fog, tint, Color.White, sunlight, blocklight, Vector4.Zero, depth, this, global);
+        return canvas.Opaque.DrawBlock(fl.Atlas.Texture, screenBounds, fl, view.Zoom, fog, tint, Color.White, sunlight, blocklight, Vector4.Zero, depth, this, global);
     }
 }

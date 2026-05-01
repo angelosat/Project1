@@ -343,7 +343,7 @@ public sealed class UIManager : IDisposable, IInputEventHandler
         return closedsomething;
     }
 
-    public void DrawOnCamera(SpriteBatch sb, MapViewport viewport)
+    public void DrawOnCamera(SpriteBatch sb, MapView viewport)
     {
         foreach (var layer in this.Layers)
             foreach (var ctrl in layer.Value)
@@ -354,11 +354,11 @@ public sealed class UIManager : IDisposable, IInputEventHandler
     {
         foreach (var layer in this.Layers)
             foreach (var ctrl in layer.Value)
-                ctrl.DrawWorld(sb, ctx.MapViewport);
+                ctrl.DrawWorld(sb, ctx.View);
         SelectionManager.Instance.DrawWorld(sb, ctx);
     }
 
-    public void Draw(SpriteBatch sb, MapViewport viewport)
+    public void Draw(SpriteBatch sb, MapView viewport)
     {
         GraphicsDevice gd = Game1.Instance.GraphicsDevice;
         var camera = viewport?.Camera;

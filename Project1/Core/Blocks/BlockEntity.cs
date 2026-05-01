@@ -212,15 +212,15 @@ public class BlockEntity : Inspectable, ITransformAnchor, IDisposable, ISerializ
         foreach (var comp in this.Comps.Values)
             comp.Draw(camera, renderer, global);
     }
-    public void DrawUI(SpriteBatch sb, MapViewport viewport, IntVec3 global)
+    public void DrawUI(SpriteBatch sb, MapView view, IntVec3 global)
     {
         foreach (var comp in this.Comps.Values)
-            comp.DrawUI(sb, viewport);
+            comp.DrawUI(sb, view);
         if (this.Errors.Any())
-            Icon.Cross.DrawFloating(sb, viewport.Camera, this.OriginGlobal);
-        this.OnDrawUI(sb, viewport, global);
+            Icon.Cross.DrawFloating(sb, view, this.OriginGlobal);
+        this.OnDrawUI(sb, view, global);
     }
-    protected virtual void OnDrawUI(SpriteBatch sb, MapViewport viewport, IntVec3 global) { }
+    protected virtual void OnDrawUI(SpriteBatch sb, MapView view, IntVec3 global) { }
    
     internal virtual void GetQuickButtons(Action<string, Type> register, MapBase map, IntVec3 vector3)
     {

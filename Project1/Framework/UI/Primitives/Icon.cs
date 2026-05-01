@@ -4,6 +4,7 @@ using Project1.Core;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
+using Project1.Core.Screens;
 using Project1.Framework.Graphics;
 
 namespace Project1.Framework.UI;
@@ -116,28 +117,28 @@ public class Icon
         this.Draw(sb, UIManager.Mouse + new Vector2(16, 0));
     }
 
-    public void DrawFloating(SpriteBatch sb, Camera camera, GameObject entity, float scale = .5f)
+    public void DrawFloating(SpriteBatch sb, MapView view, GameObject entity, float scale = .5f)
     {
-        var zoom = camera.Zoom;
+        var zoom = view.Zoom;
         var bounds = entity.GetSprite().GetBounds();
         var offset = -1 + 2 * UIManager.CosOffest1;
         var offset2 = -1 + 2 * UIManager.CosOffest2;
         scale *= zoom;
         var rect = this.AtlasToken?.Rectangle ?? this.SourceRect;
-        var pos = camera.GetScreenPosition(entity.Global);// - new Vector2(rect.Width, rect.Height) * scale / 2; ;
+        var pos = view.GetScreenPosition(entity.Global);// - new Vector2(rect.Width, rect.Height) * scale / 2; ;
         pos.Y -= bounds.Height * zoom;
         pos.Y += offset * rect.Height / 4 * scale;
         var scaleVec2 = new Vector2(offset2, 1) * scale;
         //this.Draw(sb, pos, scaleVec2, alpha: .5f);
         this.Draw(sb, pos, Color.White * .5f, new Vector2(rect.Width, rect.Height) * .5f, scaleVec2);
     }
-    public void DrawFloating(SpriteBatch sb, Camera camera, Vector3 global, float scale = .5f)
+    public void DrawFloating(SpriteBatch sb, MapView view, Vector3 global, float scale = .5f)
     {
         var bounds = Block.Bounds;
         var offset = -1 + 2 * UIManager.CosOffest1;
-        scale *= camera.Zoom;
-        var pos = camera.GetScreenPosition(global) - new Vector2(this.SourceRect.Width, this.SourceRect.Height) * scale / 2; ;
-        pos.Y -= (bounds.Height / 2) * camera.Zoom;
+        scale *= view.Zoom;
+        var pos = view.GetScreenPosition(global) - new Vector2(this.SourceRect.Width, this.SourceRect.Height) * scale / 2; ;
+        pos.Y -= (bounds.Height / 2) * view.Zoom;
         pos.Y += offset * this.SourceRect.Height / 4 * scale;
         this.Draw(sb, pos, scale, alpha: .5f);
     }

@@ -447,7 +447,7 @@ public sealed class DesignationManager : TownComp
     }
     private static void SetTool(DesignationDef d)
     {
-        ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(d, Ingame.Net.MainViewport.Map.ID, begin, end, isRemoval))));
+        ToolManager.SetTool(new ToolDesignation((begin, end, isRemoval) => Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(d, Ingame.Net.MainView.Map.ID, begin, end, isRemoval))));
     }
     GroupBox UpdatePendingDesignationLabel(DesignationDef des)
     {
@@ -460,9 +460,8 @@ public sealed class DesignationManager : TownComp
     //    if (this.Designations.FirstOrDefault(d => d.Value.Contains(targetArgs)).Key is DesignationDef des)
     //        info.AddInfo(this.UpdatePendingDesignationLabel(des));
     //}
-    public override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    public override void DrawUI(SpriteBatch sb, MapView view)
     {
-        var c = viewport.Camera;
         foreach(var entityDes in this.EntityDesignations)
         {
             if (!entityDes.Key.IsManual)
@@ -470,7 +469,7 @@ public sealed class DesignationManager : TownComp
             foreach (var entity in entityDes.Value)
             {
                 //var icon = entityDes.Key.IconAdd.Icon;
-                entityDes.Key.Icon?.DrawFloating(sb, c, entity);
+                entityDes.Key.Icon?.DrawFloating(sb, view, entity);
             }
         }
     }

@@ -7,6 +7,7 @@ using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
 using Project1.Core.Rooms;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -131,24 +132,24 @@ sealed class BlockBed : Block
         var part = origin == IntVec3.Zero ? Part.Top : Part.Bottom;
         return this.Parts[(int)part][(cell.Orientation + cameraRotation) % 4];
     }
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         var map = chunk.Map;
         var origin = Cell.GetOrigin(map, global);// map.GetCell(global)
         var part = origin == global ? Part.Top : Part.Bottom;
-        var token = this.Parts[(int)part][(orientation + (int)camera.Rotation) % 4];
+        var token = this.Parts[(int)part][(orientation + view.Rotation) % 4];
 
         var comp = chunk.Map.GetBlockComp<BlockBedComp>(origin);
         var col = comp.GetColorFromType();
 
-        return canvas.NonOpaque.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, col /*Color.White*/, sunlight, blocklight, depth, this, global);
+        return canvas.NonOpaque.DrawBlock(Block.Atlas.Texture, screenBounds, token, view.Zoom, fog, col /*Color.White*/, sunlight, blocklight, depth, this, global);
     }
-    public override void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, Color tint, byte data, MaterialDef material, int variation = 0, int orientation = 0)
+    public override void DrawPreview(MySpriteBatch sb, IntVec3 global, MapView view, Color tint, byte data, MaterialDef material, int variation = 0, int orientation = 0)
     {
         var top = global;
         var bottom = global + Coords.Rotate(IntVec3.UnitY, orientation);
-        var bottomSecIndex = (int)cam.Rotation;
-        var topSrcIndex = (int)cam.Rotation;
+        var bottomSecIndex = view.Rotation;
+        var topSrcIndex = view.Rotation;
 
         switch (orientation)
         {
@@ -174,17 +175,17 @@ sealed class BlockBed : Block
         var topSrc = this.Parts[0][topSrcIndex];
         var bottomSrc = this.Parts[1][bottomSecIndex];
 
-        var topd = top.GetDrawDepth(map, cam);
-        var bottomd = bottom.GetDrawDepth(map, cam);
+        var topd = view.GetDrawDepth(top);
+        var bottomd = view.GetDrawDepth(bottom);
         if (topd > bottomd)
         {
-            sb.DrawBlock(Atlas.Texture, map, top, topSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
-            sb.DrawBlock(Atlas.Texture, map, bottom, bottomSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
+            sb.DrawBlock(Atlas.Texture, top, topSrc, view, Color.Transparent, tint, Color.White, Vector4.One);
+            sb.DrawBlock(Atlas.Texture, bottom, bottomSrc, view, Color.Transparent, tint, Color.White, Vector4.One);
         }
         else
         {
-            sb.DrawBlock(Atlas.Texture, map, bottom, bottomSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
-            sb.DrawBlock(Atlas.Texture, map, top, topSrc, cam, Color.Transparent, tint, Color.White, Vector4.One);
+            sb.DrawBlock(Atlas.Texture, bottom, bottomSrc, view, Color.Transparent, tint, Color.White, Vector4.One);
+            sb.DrawBlock(Atlas.Texture, top, topSrc, view, Color.Transparent, tint, Color.White, Vector4.One);
         }
     }
     

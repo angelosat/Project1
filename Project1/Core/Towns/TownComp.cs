@@ -71,7 +71,7 @@ namespace Project1.Core.Towns
         public virtual ISelectable QuerySelectable(CellSelection selected) { return null; }
 
         public virtual void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx) { }
-        public virtual void DrawUI(SpriteBatch sb, MapViewport viewport) { }
+        public virtual void DrawUI(SpriteBatch sb, MapView viewport) { }
 
         internal virtual void Tick()
         {

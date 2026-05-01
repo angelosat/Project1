@@ -35,7 +35,7 @@ class ToolSelectRectangle : ControlTool
     public override void Update()
     {
         this.Selection = this.Begin.GetRectangle(UIManager.Mouse);
-        this.CurrentSelected = Ingame.Instance.Scene.ObjectsDrawn.Where(o => o.GetScreenBounds(Ingame.MainViewport).Intersects(this.Selection)).ToList();
+        this.CurrentSelected = Ingame.Instance.Scene.ObjectsDrawn.Where(o => o.GetScreenBounds(Ingame.MainView).Intersects(this.Selection)).ToList();
     }
 
     public override ControlTool.Messages MouseLeftUp(HandledMouseEventArgs e)
@@ -43,7 +43,7 @@ class ToolSelectRectangle : ControlTool
         this.Select();
         return Messages.Remove;
     }
-    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(SpriteBatch sb, MapView viewport)
     {
         this.Selection.DrawHighlight(sb);
         if (this.CurrentSelected != null)

@@ -70,7 +70,8 @@ public class InteractionBar : Label
         if (PositionComponent != null)
         {
             var global = PositionComponent.Global;
-            bounds = Ingame.MainViewport.Camera.GetScreenBounds((int)global.X, (int)global.Y, (int)global.Z, new Rectangle(0, 0, 1, 1));
+            //bounds = Ingame.MainView.Camera.GetScreenBounds((int)global.X, (int)global.Y, (int)global.Z, new Rectangle(0, 0, 1, 1));
+            bounds = Ingame.MainView.GetScreenBounds((int)global.X, (int)global.Y, (int)global.Z, new Rectangle(0, 0, 1, 1));
             screenLoc = new Vector2(bounds.X + bounds.Width/2 - Width / 2, bounds.Top - Height);
         }
         else

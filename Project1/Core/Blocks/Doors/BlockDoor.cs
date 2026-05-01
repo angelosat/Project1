@@ -152,7 +152,7 @@ public sealed class BlockDoor : Block
         return Def.Get<MaterialDef>().Where(m => m.Type == MaterialTypeDefOf.Stone || m.Type == MaterialTypeDefOf.Metal || m.Type == MaterialTypeDefOf.Wood);
     }
     
-    public override void GetTooltip(Control tooltip, MapViewport viewport, IntVec3 global, IntVec3 face)
+    public override void GetTooltip(Control tooltip, MapView viewport, IntVec3 global, IntVec3 face)
     {
         var map = viewport.Map;
         base.GetTooltip(tooltip, viewport, global, face);
@@ -216,21 +216,21 @@ public sealed class BlockDoor : Block
         sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[ori], zoom, fog, Color.White, sunlight, blocklight, depth);
     }
 
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         Read(data, out bool locked, out bool open, out int part);
-        int ori = (orientation - (int)camera.Rotation + (open ? 1 : 0)); // FASTER???
+        int ori = orientation - view.Rotation + (open ? 1 : 0); // FASTER???
         if (ori < 0)
             ori += 4;
         else
             ori %= 4;
-        return canvas.Opaque.DrawBlock(Atlas.Texture, screenBounds, Orientations[ori], camera.Zoom, fog, Color.White, sunlight, blocklight, depth, this, global);
+        return canvas.Opaque.DrawBlock(Atlas.Texture, screenBounds, Orientations[ori], view.Zoom, fog, Color.White, sunlight, blocklight, depth, this, global);
     }
-    public override void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, Color tint, byte data, MaterialDef material, int variation = 0, int orientation = 0)
+    public override void DrawPreview(MySpriteBatch sb, IntVec3 global, MapView view, Color tint, byte data, MaterialDef material, int variation = 0, int orientation = 0)
     {
         var token = Orientations[orientation];
-        sb.DrawBlock(Atlas.Texture, map, global, token, cam, Color.Transparent, tint, Color.White, Vector4.One);
-        sb.DrawBlock(Atlas.Texture, map, global + IntVec3.UnitZ, token, cam, Color.Transparent, tint, Color.White, Vector4.One);
-        sb.DrawBlock(Atlas.Texture, map, global + IntVec3.UnitZ, token, cam, Color.Transparent, tint, Color.White, Vector4.One);
+        sb.DrawBlock(Atlas.Texture, global, token, view, Color.Transparent, tint, Color.White, Vector4.One);
+        sb.DrawBlock(Atlas.Texture, global + IntVec3.UnitZ, token, view, Color.Transparent, tint, Color.White, Vector4.One);
+        sb.DrawBlock(Atlas.Texture, global + IntVec3.UnitZ, token, view, Color.Transparent, tint, Color.White, Vector4.One);
     }
 }

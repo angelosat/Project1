@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -19,11 +20,11 @@ partial class BlockDesignation : Block
 
     public override bool IsStandableIn => true;
    
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         var token = this.Variations[0];
         var color = Color.White;
-        return canvas.Designations.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, color, sunlight, blocklight, depth, this, global);
+        return canvas.Designations.DrawBlock(Block.Atlas.Texture, screenBounds, token, view.Zoom, fog, color, sunlight, blocklight, depth, this, global);
     }
    
     public override BlockEntity GetBlockEntityOrNew(MapBase map, IntVec3 originGlobal, BlockComp.Spec args)

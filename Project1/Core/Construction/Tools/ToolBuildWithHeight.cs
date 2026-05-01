@@ -116,9 +116,9 @@ abstract class ToolBuildWithHeight : ToolBlockBuild
     }
     static protected int GetHeight(IntVec3 end, Vector2 mousePointer)
     {
-        var cam = Ingame.MainViewport.Camera;
-        var endscreenposition = cam.GetScreenPosition(end);
-        var length = (endscreenposition.Y - mousePointer.Y) / cam.Zoom;
+        var view = Ingame.MainView;
+        var endscreenposition = view.GetScreenPosition(end);
+        var length = (endscreenposition.Y - mousePointer.Y) / view.Zoom;
         var lengthinblocks = (int)(length / Block.BlockHeight);
         var height = lengthinblocks;
         return height;

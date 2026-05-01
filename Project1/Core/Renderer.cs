@@ -25,18 +25,14 @@ interface IDrawContext
 {
     RenderContext View { get; }
 }
-public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
+public sealed class Renderer : IDrawContext, IInputEventHandler
 {
-    //static XElement XCameraSettings = GameSettings.XmlNodeSettings.GetOrCreateElement("Camera");
     static Renderer()
     {
-        //SmoothCentering = (bool?)XCameraSettings.Element(nameof(SmoothCentering)) ?? true;
     }
     int _lastWidth, _lastHeight;
     public const int FogZOffset = 2, FogFadeLength = 8;
     Vector4 FogColor = Color.SteelBlue.ToVector4();
-    //GameObject Following;
-    //Vector2 _Coordinates;
     bool _hideUnknownBlocks = true;
     public bool MysteriousBlocks // TODO: make it static
     {
@@ -59,36 +55,16 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
     }
     public bool DrawZones = true;
     public static bool HideCeiling;
-    //public static bool SmoothCentering;
-    //public Vector2 Location;
     public bool HideTerrainAbovePlayer;
     public int HideTerrainAbovePlayerOffset;
-    //public float ZoomMax = 8;// 16;
-    //public float ZoomMin = 0.125f;
-    //public int Width, Height;
-    //public Vector3? Center = Vector3.Zero;
-    //int _DrawLevel = MapBase.MaxHeight - 1;
-    //public int DrawLevel
-    //{
-    //    get => this._DrawLevel;
-    //    set
-    //    {
-    //        var oldvalue = this._DrawLevel;
-    //        this._DrawLevel = value;
-    //        //if (InputState.IsKeyDown(Keys.LMenu))
-    //        //    this.Move(this.Coordinates - new Vector2(0, Block.BlockHeight * (value - oldvalue)));
-    //    }
-    //}
-    //public float ZoomNext;
-    //public float Zoom = 2;//1;
+
+
     public static bool BlockTargeting = true;
-    const float InitialZoom = 2;
     public static bool Fog = true;
     public bool HideUnderground;
     public bool BorderShading;
     public float FogLevel = 0;
     public int MaxDrawZ;
-    //Vector2 CameraOffset = Vector2.Zero;
     public int RenderIndex = 0;
     public RenderTarget2D MapRender,
       WaterRender, WaterDepth, WaterLight, WaterFog,
@@ -96,56 +72,18 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
       MapDepth, MapLight, TextureFogWater, MapComposite,
       RenderBeforeFog, LightBeforeFog, DepthBeforeFog, FogBeforeFog,
       FinalScene;
-    //public Rectangle ViewPort;
-    //double _rotation;
-    //public double RotCos{ get; private set; }
-    //public double RotSin { get; private set; }
+
 
     public float LastZTarget;
     float DepthFar, DepthNear;
     public MySpriteBatch SpriteBatch;
     public MySpriteBatch WaterSpriteBatch, // waterspritebatch is not used!?
         ParticlesSpriteBatch, BlockParticlesSpriteBatch, TransparentBlocksSpriteBatch;
-    float FogT = 0;
+    //float FogT = 0;
     public Effect Effect;
     public static bool DrawnOnce = false;
     public RenderTarget2D[] RenderTargets = new RenderTarget2D[5];
-    //public double Rotation
-    //{
-    //    get => this._rotation;
-    //    set
-    //    {
-    //        double oldRot = this._rotation;
-    //        this._rotation = value % 4;
-
-    //        if (this._rotation < 0)
-    //            this._rotation = 4 + value;
-
-    //        this.RotationReverse = -(int)this._rotation;
-    //        if (this.RotationReverse < 0)
-    //            this.RotationReverse += 4;
-
-    //        this.RotCos = Math.Cos((Math.PI / 2f) * this._rotation);
-    //        this.RotSin = Math.Sin((Math.PI / 2f) * this._rotation);
-
-    //        this.RotCos = Math.Round(this.RotCos + this.RotCos) / 2f;
-    //        this.RotSin = Math.Round(this.RotSin + this.RotSin) / 2f;
-
-
-    //        if (this._rotation != oldRot)
-    //            this.OnRotationChanged();
-    //    }
-    //}
-    //public int RotationReverse { get; private set; }
-    //public Vector2 Coordinates
-    //{
-    //    get => this._Coordinates;
-    //    set
-    //    {
-    //        this._Coordinates = value;
-    //        this.Location = this.Coordinates - new Vector2((int)((this.Width / 2) / this.Zoom), (int)((this.Height / 2) / this.Zoom));
-    //    }
-    //}
+    
     public Renderer()
         : this(Game1.Bounds.Width, Game1.Bounds.Height)
     {
@@ -179,241 +117,27 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         //this.ViewPort = new Rectangle(0, 0, this.Width, this.Height);
         this.RecreateRenderTargets();
     }
-    public void Update(MapBase map)
-    {
-        //this.Follow();
-        //this.SmoothZoom(this.ZoomNext);
-        this.UpdateFog(map);
-    }
-    void UpdateFog(MapBase map)
-    {
-        this.FogT = (this.FogT + 0.05f * map.Net.Speed) % 100;
-    }
-    //public void Move(Vector2 coords)
-    //{
-    //    this.Center = null;
-    //    this.Following = null;
-    //    this.Coordinates = coords;
-    //}
-    //void SetZoom(float value)
-    //{
-    //    this.Zoom = value;
-    //    var offset = new Vector2(this.Width / 2, this.Height / 2);
-    //    offset /= this.Zoom;
-    //    this.Location = this.Coordinates - offset;
-    //}
-    //public void SmoothZoom(float next)
-    //{
-    //    float diff = next - this.Zoom;
-    //    var zoomSpeed = 0.1f;
-    //    var n = zoomSpeed * diff;
-    //    if (Math.Abs(n) < 0.001f)
-    //        this.SetZoom(next);
-    //    else
-    //        this.SetZoom(this.Zoom + n);
-    //}
-    //static int PreviousDrawLevel = -1;
+    
     internal bool HideWalls;
-    //public void SliceOn(int next)
-    //{
-    //    var current = this.DrawLevel;
-    //    if (next != current)
-    //    {
-    //        PreviousDrawLevel = current;
-    //        this.DrawLevel = next;
-    //    }
-    //    else if (PreviousDrawLevel != -1)
-    //        this.DrawLevel = PreviousDrawLevel;
-    //}
-    //public void CenterOn(Vector3 global, bool forceSnap = false)
-    //{
-    //    this.Center = global;
-    //    this.DrawLevel = (int)Math.Max(this.DrawLevel, global.Z + 1);
-    //    if (!SmoothCentering || forceSnap)
-    //    {
-    //        Coords.Iso(this, global.X, global.Y, global.Z, out int xx, out int yy);
-    //        this.Coordinates = new Vector2(xx, yy);
-    //    }
-    //}
-    //public void Follow()
-    //{
-    //    if (this.Following is null)
-    //    {
-    //        if(this.Center.HasValue)
-    //            this.Follow(this.Center.Value);
-    //        return;
-    //    }
-    //    if(this.Following.Map is null)
-    //    {
-    //        this.Following = null;
-    //        return;
-    //    }
-    //    if (this.Following.IsIndoors())
-    //        this.DrawLevel = (int)(this.Following.Global.CeilingZ().Z + this.Following.Physics.Height - 1);
-    //    else
-    //        this.DrawLevel = this.Following.Map.GetMaxHeight();
-    //    this.Follow(this.Following.Global);
-    //}
-    //public void Follow(Vector3 global)
-    //{
-    //    this.Center = global;
-    //    Coords.Iso(this, global.X, global.Y, global.Z, out float xx, out float yy);
-
-    //    Vector2
-    //        currentLoc = this.Coordinates,
-    //        nextLoc = new(xx, yy),
-    //        diff = nextLoc - currentLoc;
-
-    //    diff *= 100;
-    //    diff = diff.ToRounded();
-    //    diff /= 100;
-
-    //    var nextCoords = currentLoc + 0.05f * diff;
-
-    //    // TODO: find a way to make it smooth without seaming between sprites
-
-    //    /// uncomment this to make camera movement rigid instead of smooth
-    //    nextCoords = nextCoords.ToRounded(); // must round to prevent seaming between blocks when moving camera
-    //    ///
-
-    //    this.Coordinates = nextCoords;
-    //}
-    //public void GetEverything(MapBase map, Camera camera, Vector3 global, Rectangle spriteRect, out float depth, out Rectangle screenBounds, out Vector2 screenLoc)
-    //{
-    //    depth = global.GetDrawDepth(map, camera);
-    //    screenBounds = this.GetScreenBounds(global, spriteRect);
-    //    screenLoc = new Vector2(screenBounds.X, screenBounds.Y);
-    //}
-    //public Rectangle GetScreenBounds(float x, float y, float z, Rectangle spriteRectangle)
-    //{
-    //    return this.GetScreenBounds(x, y, z, spriteRectangle, 0, 0);
-    //}
-    //public Rectangle GetScreenBounds(float x, float y, float z, Rectangle spriteRectangle, int originx, int originy)
-    //{
-    //    Coords.Iso(this, x, y, z, out int xx, out int yy);
-    //    return new Rectangle(
-    //        (int)(this.Zoom * (xx + spriteRectangle.X - this.Location.X - originx)),
-    //        (int)(this.Zoom * (yy + spriteRectangle.Y - this.Location.Y - originy)),
-    //        (int)(this.Zoom * spriteRectangle.Width),
-    //        (int)(this.Zoom * spriteRectangle.Height));
-    //}
-    //public Rectangle GetScreenBounds(float x, float y, float z, Rectangle spriteRectangle, int originx, int originy, float scale)
-    //{
-    //    Coords.Iso(this, x, y, z, out int xx, out int yy);
-    //    var scalezoom = scale * this.Zoom;
-    //    return new Rectangle(
-    //        (int)(this.Zoom * (xx + scale * spriteRectangle.X - this.Location.X - originx)),
-    //        (int)(this.Zoom * (yy + scale * spriteRectangle.Y - this.Location.Y - originy)),
-    //        (int)(scalezoom * spriteRectangle.Width),
-    //        (int)(scalezoom * spriteRectangle.Height));
-    //}
-    //public Vector4 GetScreenBoundsVector4(float x, float y, float z, Rectangle spriteRectangle, Vector2 origin, float scale = 1)
-    //{
-    //    Coords.Iso(this, x, y, z, out float xx, out float yy);
-    //    var loc = this.Location;
-    //    float xxx = (float)xx + scale * spriteRectangle.X - loc.X - origin.X;
-    //    float yyy = (float)yy + scale * spriteRectangle.Y - loc.Y - origin.Y;
-    //    float w = scale * spriteRectangle.Width;
-    //    float h = scale * spriteRectangle.Height;
-    //    var vector = new Vector4(xxx, yyy, w, h);
-    //    vector *= this.Zoom;
-    //    return vector;
-    //}
-    //public Vector4 GetScreenBoundsVector4NoOffset(float x, float y, float z, Rectangle spriteRectangle, Vector2 origin)
-    //{
-    //    Coords.Iso(this, x, y, z, out float xx, out float yy);
-    //    float xxx = (float)(xx + spriteRectangle.X - origin.X);
-    //    float yyy = (float)(yy + spriteRectangle.Y - origin.Y);
-    //    float w = spriteRectangle.Width;
-    //    float h = spriteRectangle.Height;
-    //    var vector = new Vector4(xxx, yyy, w, h);
-    //    return vector;
-    //}
-    //public Vector4 GetScreenBoundsVector4NoOffset(Vector3 pos, Rectangle spriteRectangle, Vector2 origin)
-    //{
-    //    Coords.Iso(this, pos.X, pos.Y, pos.Z, out float xx, out float yy);
-    //    float xxx = (float)(xx + spriteRectangle.X - origin.X);
-    //    float yyy = (float)(yy + spriteRectangle.Y - origin.Y);
-    //    float w = spriteRectangle.Width;
-    //    float h = spriteRectangle.Height;
-    //    var vector = new Vector4(xxx, yyy, w, h);
-    //    return vector;
-    //}
-    //public Vector2 GetScreenPosition(InteractionTarget t)
-    //{
-    //    var fx = t.Face.X * .5f;
-    //    var fy = t.Face.Y * .5f;
-    //    var yx = fx + fy;
-    //    var fz = yx == 0 ? (t.Face.Z == 1 ? 1 : 0) : .5f;
-    //    return this.GetScreenPosition(t.Global + new Vector3(fx, fy, fz));
-    //}
-    //public Vector2 GetScreenPosition(Vector3 pos)
-    //{
-    //    Coords.Iso(this, pos.X, pos.Y, pos.Z, out int xx, out int yy);
-    //    return new Vector2(this.Zoom * (xx - this.Location.X), this.Zoom * (yy - this.Location.Y));
-    //}
-    //public Vector2 GetScreenPositionFloat(Vector3 pos)
-    //{
-    //    Coords.Iso(this, pos.X, pos.Y, pos.Z, out float xx, out float yy);
-    //    var loc = this.Location;
-    //    var screenpos = new Vector2(this.Zoom * (xx - loc.X), this.Zoom * (yy - loc.Y));
-    //    return screenpos;
-    //}
-    //public Rectangle GetScreenBounds(Vector3 global, Rectangle spriteRectangle)
-    //{
-    //    return this.GetScreenBounds(global.X, global.Y, global.Z, spriteRectangle);
-    //}
-    //internal float GetDrawDepth(GameObject o)
-    //{
-    //    return o.Global.GetDrawDepth(o.Map, this);
-    //}
-    //internal float GetDrawDepth(MapBase map, Vector3 global)
-    //{
-    //    return global.GetDrawDepth(map, this);
-    //}
-    //internal int GetDrawDepthSimple(IntVec3 global)
-    //{
-    //    Coords.Rotate(this, global.X, global.Y, out int rx, out int ry);
-    //    return rx + ry + global.Z;
-    //}
-    //public bool CullingCheck(float x, float y, float z, Rectangle sourceBounds, out Rectangle screenBounds)
-    //{
-    //    screenBounds = this.GetScreenBounds(x, y, z, sourceBounds);
-    //    return this.ViewPort.Intersects(screenBounds);
-    //}
-    /// <summary>
-    /// TODO: make rotation a field for speed and calculate the shits in some other way
-    /// </summary>
-    //public void RotateClockwise()
-    //{
-    //    this.Rotation++;
-    //}
-    //public void RotateCounterClockwise()
-    //{
-    //    this.Rotation--;
-    //}
-    //public void RotationReset()
-    //{
-    //    this.Rotation = 0;
-    //}
-    public void DrawBlock(Canvas canvas, Camera camera, Block block, MapBase map, Chunk chunk, IntVec3Local local)
+ 
+    public void DrawBlock(Canvas canvas, MapView view, Block block, Chunk chunk, IntVec3Local local)
     {
         int lx = local.X, ly = local.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
         int z = local.Z;
         var global = new IntVec3(gx, gy, z);
-        var light = GetFinalLight(camera, map, chunk, global);
+        var light = GetFinalLight(view, chunk, global);
 
-        var screenBoundsVector4 = camera.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-        Coords.Rotate(camera, lx, ly, out int rlx, out int rly);
+        var screenBoundsVector4 = view.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
+        view.Rotate(lx, ly, out int rlx, out int rly);
         var depth = rlx + rly;
 
         var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
         //var isDiscovered = !map.IsUndiscovered(global);
 
-        block.Draw(canvas, chunk, global, camera, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, 0, 0, 0, null);
+        block.Draw(canvas, chunk, global, view, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth, 0, 0, 0, null);
     }
     
-    public bool DrawCell(Canvas canvas, Camera camera, MapBase map, Chunk chunk, IntVec3Local local)
+    public bool DrawCell(Canvas canvas, MapView view, Chunk chunk, IntVec3Local local)
     {
         var block = chunk.GetBlock(local);
         if (block is BlockAir)
@@ -422,54 +146,55 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         int lx = local.X, ly = local.Y, gx = chunk.Start.X + lx, gy = chunk.Start.Y + ly;
         int z = local.Z;
         var global = local.ToGlobal(chunk);
-        var light = this.GetFinalLight(map, camera, chunk, global);
+        var light = this.GetFinalLight(view, chunk, global);
 
-        var screenBoundsVector4 = camera.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-        Coords.Rotate(camera, lx, ly, out int rlx, out int rly);
+        var screenBoundsVector4 = view.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
+        view.Rotate(lx, ly, out int rlx, out int rly);
         var depth = rlx + rly;
 
         var finalFogColor = Color.Transparent; // i calculate fog inside the shader from now on
         //var isDiscovered = !map.IsUndiscovered(global);
 
-        block.Draw(canvas, chunk, global, camera, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
+        block.Draw(canvas, chunk, global, view, screenBoundsVector4, light.Sun, light.Block, finalFogColor, Color.White, depth);//.Variation, cell.Orientation, cell.BlockData, cell.Material);
 
         return true;
     }
     static readonly Color CellSelectionTint = Color.White * .5f;
-    public void DrawBlockSelectionGlobal(MySpriteBatch sb, Camera camera, IntVec3 global)
+    public void DrawBlockSelectionGlobal(MySpriteBatch sb, MapView view, IntVec3 global)
     {
-        this.DrawBlockSelectionGlobal(sb, camera, Block.BlockHighlight, global);
+        this.DrawBlockSelectionGlobal(sb, view, Block.BlockHighlight, global);
     }
-    public void DrawBlockSelectionGlobal(MySpriteBatch sb, Camera camera, AtlasDepthNormals.Node.Token texToken, IntVec3 global)
+    public void DrawBlockSelectionGlobal(MySpriteBatch sb, MapView view, AtlasDepthNormals.Node.Token texToken, IntVec3 global)
     {
-        this.DrawBlockSelectionGlobal(sb, camera, global, texToken, CellSelectionTint);
+        this.DrawBlockSelectionGlobal(sb, view, global, texToken, CellSelectionTint);
     }
-    public void DrawBlockSelectionGlobal(MySpriteBatch sb, Camera camera, IntVec3 global, AtlasDepthNormals.Node.Token texToken, Color tint)
+    public void DrawBlockSelectionGlobal(MySpriteBatch sb, MapView view, IntVec3 global, AtlasDepthNormals.Node.Token texToken, Color tint)
     {
         int z = global.Z;
         int gx = global.X;
         int gy = global.Y;
-        var screenBoundsVector4 = camera.GetScreenBoundsVector4NoOffset(gx, gy, z, Block.Bounds, Vector2.Zero);
-        Coords.Rotate(camera, gx, gy, out int rlx, out int rly);
+        var screenBoundsVector4 = view.GetScreenBoundsVector4NoOffset(gx, gy, z, Block.Bounds, Vector2.Zero);
+        view.Rotate(gx, gy, out int rlx, out int rly);
         var depth = rlx + rly;
 
         sb.DrawBlock(Block.Atlas.Texture, screenBoundsVector4,
             texToken,
-            camera.Zoom, Color.Transparent, tint, Color.White, Color.White, Vector4.One, Vector4.Zero, depth, null, global);
+            view.Zoom, Color.Transparent, tint, Color.White, Color.White, Vector4.One, Vector4.Zero, depth, null, global);
     }
     
-    public bool DrawUnknown(Canvas canvas, Camera camera, MapBase map, Chunk chunk, IntVec3Local local)
+    public bool DrawUnknown(Canvas canvas, MapView view, Chunk chunk, IntVec3Local local)
     {
         int z = local.Z;
         int lx = local.X, ly = local.Y, gx = (int)chunk.Start.X + lx, gy = (int)chunk.Start.Y + ly;
-
+        var map = view.Map;
+        var camera = view.Camera;
         var global = local.ToGlobal(chunk);
         var mapOffset = map.GetOffset();
-        Coords.Rotate(camera, gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
-        var light = GetFinalLight(camera, map, chunk, global, false);
+        view.Rotate(gx - mapOffset.X, gy - mapOffset.Y, out int rgx, out int rgy);
+        var light = GetFinalLight(view, chunk, global, false);
 
-        var screenBoundsVector4 = camera.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
-        Coords.Rotate(camera, lx, ly, out int rlx, out int rly);
+        var screenBoundsVector4 = view.GetScreenBoundsVector4NoOffset(lx, ly, z, Block.Bounds, Vector2.Zero);
+        view.Rotate(lx, ly, out int rlx, out int rly);
         var depth = rlx + rly;
 
         Block.DrawUnknown(canvas.Opaque, new Vector3(gx, gy, z), camera, screenBoundsVector4, light.Sun, light.Block, Color.Transparent, Color.White, depth);
@@ -503,7 +228,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         throw new Exception();
     }
 
-    public void PrepareShader(MapViewport viewport)
+    public void PrepareShader(MapView viewport)
     {
         var map = viewport.Map;
         var camera = viewport.Camera;
@@ -546,7 +271,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         this.Effect.Parameters["OutlineThreshold"].SetValue(1 / depthDiff);
     }
 
-    public void PrepareShaderTransparent(MapViewport viewport)
+    public void PrepareShaderTransparent(MapView viewport)
     {
         var camera = viewport.Camera;
         var zoom = camera.Zoom;
@@ -583,14 +308,16 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         this.Effect.Parameters["OutlineThreshold"].SetValue(1 / depthD);
 
     }
-    public LightToken GetFinalLight(MapBase map, Camera camera, Chunk chunk, IntVec3 global)
+    public LightToken GetFinalLight(MapView view, Chunk chunk, IntVec3 global)
     {
         if (chunk.LightCache.TryGetValue(global, out LightToken cached))
             return cached;
 
-        Coords.Rotate(camera, 1, 0, out int rightx, out int righty);
-        Coords.Rotate(camera, 0, 1, out int leftx, out int lefty);
-
+        //Coords.Rotate(camera, 1, 0, out int rightx, out int righty);
+        //Coords.Rotate(camera, 0, 1, out int leftx, out int lefty);
+        view.Rotate(1, 0, out int rightx, out int righty);
+        view.Rotate(0, 1, out int leftx, out int lefty);
+        var map = view.Map;
         Chunk.TryGetFinalLight(map, global + new IntVec3(rightx, -righty, 0), out byte suneast, out byte blockeast);
         Chunk.TryGetFinalLight(map, global + new IntVec3(-leftx, lefty, 0), out byte sunsouth, out byte blocksouth);
         Chunk.TryGetFinalLight(map, global, out byte sunCenter, out byte blockCenter);
@@ -615,15 +342,17 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         return light;
     }
     
-    public static LightToken GetFinalLight(Camera camera, MapBase map, Chunk chunk, IntVec3 global, bool updateblockfaces = true)
+    public static LightToken GetFinalLight(MapView view, Chunk chunk, IntVec3 global, bool updateblockfaces = true)
     {
         if (chunk.LightCache.TryGetValue(global, out LightToken cached))
             return cached;
         var local = global.ToLocal();
-        
-        Coords.Rotate(camera, 1, 0, out int rightx, out int righty);
-        Coords.Rotate(camera, 0, 1, out int leftx, out int lefty);
 
+        //Coords.Rotate(camera, 1, 0, out int rightx, out int righty);
+        //Coords.Rotate(camera, 0, 1, out int leftx, out int lefty);
+        view.Rotate(1, 0, out int rightx, out int righty);
+        view.Rotate(0, 1, out int leftx, out int lefty);
+        var map = view.Map;
         Chunk.TryGetFinalLight(map, global + new IntVec3(rightx, - righty, 0), out byte suneast, out byte blockeast);
         Chunk.TryGetFinalLight(map, global + new IntVec3(-leftx, lefty, 0), out byte sunsouth, out byte blocksouth);
         Chunk.TryGetFinalLight(map, global, out byte sunCenter, out byte blockCenter);
@@ -647,7 +376,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         return light;
     }
 
-    public void DrawMap(MapViewport viewport, ToolManager toolManager, UIManager ui, SceneState scene)
+    public void DrawMap(MapView viewport, ToolManager toolManager, UIManager ui, SceneState scene)
     {
         var map = viewport.Map;
         var camera = viewport.Camera;
@@ -684,7 +413,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
 
 
 
-    private void NewDraw(MapViewport viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager, UIManager ui)
+    private void NewDraw(MapView viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager, UIManager ui)
     {
         var map = viewport.Map;
         var camera = viewport.Camera;
@@ -736,7 +465,8 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         fx.Parameters["FogColor"].SetValue(fogColor);
         fx.Parameters["FogDistance"].SetValue(FogFadeLength);
 
-        var fogoffset = new Vector2(this.FogT / 100f, 0);
+        var fog = ctx.View.FogT;
+        var fogoffset = new Vector2(fog / 100f, 0);
         fx.Parameters["FogOffset"].SetValue(fogoffset - coordinates / 1000f);
         if (toolManager.ActiveTool.Target != null && toolManager.ActiveTool.Target.Type != TargetType.Null)
         {
@@ -756,7 +486,8 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
                 followTarget.Global.X * rotCos - followTarget.Global.Y * rotSin +
                 followTarget.Global.X * rotSin + followTarget.Global.Y * rotCos));
             fx.Parameters["PlayerCenterOffset"].SetValue(
-                camera.GetScreenPositionFloat(followTarget.Global + followTarget.Physics.Height * Vector3.UnitZ / 2) / new Vector2(w, h) - Vector2.One * .5f);
+                //camera.GetScreenPositionFloat(followTarget.Global + followTarget.Physics.Height * Vector3.UnitZ / 2) / new Vector2(w, h) - Vector2.One * .5f);
+                viewport.GetScreenPositionFloat(followTarget.Global + followTarget.Physics.Height * Vector3.UnitZ / 2) / new Vector2(w, h) - Vector2.One * .5f);
         }
 
         fx.Parameters["FogLevel"].SetValue(this.FogLevel);
@@ -817,9 +548,10 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         {
             if (actor.Exists)
             {
-                Sprite sprite = actor.GetSprite();
-                Rectangle spriteBounds = sprite.GetBounds();
-                Rectangle screenBounds = camera.GetScreenBounds(actor.Global, spriteBounds);
+                var sprite = actor.GetSprite();
+                var spriteBounds = sprite.GetBounds();
+                //Rectangle screenBounds = camera.GetScreenBounds(actor.Global, spriteBounds);
+                var screenBounds = ctx.View.GetScreenBounds(actor.Global, spriteBounds);
                 var xxx = screenBounds.X / (float)w - .5f;
                 var yyy = screenBounds.Y / (float)h - .5f;
                 var www = (screenBounds.X + screenBounds.Width) / (float)w - .5f;
@@ -830,7 +562,9 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
                 hhh = .15f * zoom;
                 var box = new Vector4(xxx, yyy, www, hhh);
                 this.Effect.Parameters["PlayerBoundingBox"].SetValue(box);
-                this.Effect.Parameters["PlayerDepth"].SetValue(actor.Global.GetDrawDepth(map, camera));
+                //var d = actor.Global.GetDrawDepth(map, camera);
+                var d = ctx.View.GetDrawDepth(actor.Global);
+                this.Effect.Parameters["PlayerDepth"].SetValue(d);
             }
         }
 
@@ -844,7 +578,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
             if (!chunk.Valid)
                 chunk.Build(ctx);
 
-            chunk.DrawOpaqueLayers(this, camera, this.Effect); // TODO: is it faster to pass only the effectparameters?
+            chunk.DrawOpaqueLayers(this, ctx.View, this.Effect); // TODO: is it faster to pass only the effectparameters?
             continue;
         }
         //this.TopSliceChanged = false;
@@ -894,7 +628,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         {
             if (!chunk.Valid)
                 continue;
-            chunk.DrawTransparentLayers(this, camera, this.Effect);
+            chunk.DrawTransparentLayers(this, ctx.View, this.Effect);
         }
 
         // combine scenes and apply ambient light
@@ -913,7 +647,8 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         gd.SamplerStates[4] = SamplerState.PointWrap;
         fx.Parameters["WaterTextureSize"].SetValue(new Vector2(watertxt.Width, watertxt.Height));
 
-        var offset2 = new Vector2(0, .5f + this.FogT / 100f);
+        //var offset2 = new Vector2(0, .5f + this.FogT / 100f);
+        var offset2 = new Vector2(0, .5f + fog / 100f);
 
         var wateroffset = (coordinates / (watertxt.Width)).ToFloored() * (watertxt.Width);
         wateroffset = (coordinates - wateroffset) / (watertxt.Width);
@@ -949,7 +684,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
 
         //sort objects back to front for proper semitraspanrent rendering
         // TODO: culling
-        this.SortEntities(camera, map, objs);
+        this.SortEntities(ctx.View, objs);
         // TODO: have the particle manager set textures because different emitters might use different atlases (blocks vs entities)
         fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
         fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
@@ -1110,11 +845,11 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         this.SpriteBatch.Flush();
     }
     RenderContext _currentCtx;
-    private RenderContext BeginContext(MapViewport viewport)
+    private RenderContext BeginContext(MapView viewport)
     {
         var ctx = new RenderContext
         {
-            MapViewport = viewport,
+            View = viewport,
             Map = viewport.Map,
             Camera = viewport.Camera,
             Origin = viewport.Camera.Coordinates - new Vector2(viewport.Width, viewport.Height) / 2 / viewport.Camera.Zoom,
@@ -1149,12 +884,14 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         }
     }
 
-    private void SortEntities(Camera camera, MapBase map, List<Entity> objs)
+    private void SortEntities(MapView view, List<Entity> objs)
     {
         objs.Sort((o1, o2) =>
         {
-            float d1 = o1.Global.GetDrawDepth(map, camera);
-            float d2 = o2.Global.GetDrawDepth(map, camera);
+            //float d1 = o1.Global.GetDrawDepth(map, camera);
+            //float d2 = o2.Global.GetDrawDepth(map, camera);
+            float d1 = view.GetDrawDepth(o1.Global);
+            float d2 = view.GetDrawDepth(o2.Global);
             if (d1 < d2)
                 return -1;
             else if (d1 == d2)
@@ -1163,7 +900,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
                 return 1;
         });
     }
-    public void NewDraw(RenderTarget2D target, MapViewport viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager)
+    public void NewDraw(RenderTarget2D target, MapView viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager)
     {
 
 
@@ -1393,241 +1130,7 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
         this.WaterFog = new RenderTarget2D(gfx, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.PreserveContents);
         this.WaterComposite = new RenderTarget2D(gfx, w, h, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.PreserveContents);
     }
-
-    //public void MousePicking(MapBase map, bool ignoreEntities = false)
-    //{
-    //    var visibleChunks = map.GetActiveChunks().Values.Where(ch => this.ViewPort.Intersects(ch.GetScreenBounds(this)));
-    //    if(!(ignoreEntities || Controller.IsBlockTargeting()))
-    //        foreach (var chunk in visibleChunks)
-    //            chunk.HitTestEntities(this);
-
-    //    /// uncomment this to prefer targetting entities even when they are behind blocks
-    //    //if (Controller.Instance.MouseoverNext.Object is not null)
-    //    //    return;
-      
-    //    if (!BlockTargeting)
-    //        return;
-
-    //    var controller = Controller.Instance;
-    //    var hidewalls = Engine.HideWalls;
-    //    var actor = map.Net.GetPlayer()?.ControllingEntity;
-    //    var playerExists = actor != null;
-    //    var playerGlobal = playerExists ? actor.Global : default;
-    //    var radius = .01f * this.Zoom * this.Zoom; //occlusion radius
-    //    var found = false;
-    //    var foundDepth = float.MinValue;
-    //    var foundGlobal = Vector3.Zero;
-    //    var foundMouse = Vector2.Zero;
-    //    Block foundBlock;
-    //    var foundRect = Rectangle.Empty;
-    //    var camx = this.Coordinates.X - (this.Width / 2f) / this.Zoom;
-    //    var camy = this.Coordinates.Y - (this.Height / 2f) / this.Zoom;
-    //    var mouse = UIManager.Mouse;
-    //    var mousex = (int)mouse.X;
-    //    var mousey = (int)mouse.Y;
-    //    var behind = InputState.IsKeyDown(Keys.Menu);
-
-    //    var rectw = (int)(Block.Width * this.Zoom);
-    //    var recth = (int)(Block.Height * this.Zoom);
-    //    foreach (var chunk in visibleChunks)
-    //    {
-    //        var chunkBounds = chunk.GetScreenBounds(this);
-    //        if (!chunkBounds.Contains(mousex, mousey))
-    //            continue;
-
-    //        Coords.Iso(this, chunk.X * Chunk.Size, chunk.Y * Chunk.Size, 0, out float chunkx, out float chunky);
-    //        chunkx -= camx;
-    //        chunky -= camy;
-
-    //        var foglvl = this.GetFogLevel();
-    //        for (int j = this.MaxDrawZ; j >= foglvl; j--)
-    //        {
-    //            var slice = chunk.Slices[j];
-    //            if (slice is null)
-    //                continue;
-
-    //            /// removing this check because it screws up mousepicking when slices are invalidated by blocks changing (like actors trampling grass)
-    //            //if (!slice.Valid)
-    //            //    continue;
-    //            if (slice.Canvas is null)
-    //                continue;
-
-             
-    //            var arrays = slice.Canvas.GetMouseoverableMeshes();
-
-                
-    //            //if (j == this.MaxDrawZ)
-    //            //    arrays.Add(slice.Unknown.vertices);
-    //            if (j == this.MaxDrawZ)
-    //            {
-    //                // i've consolidated mysterious blocks into the "cover" canvas, and removed the "unknown" spritebatch from the slice structure
-    //                //if(this.MysteriousBlocks)
-    //                //    arrays = arrays.Append(slice.Unknown.vertices);
-    //                //else
-    //                    arrays = arrays.Concat(slice.Cover.GetMouseoverableMeshes());
-    //            }
-
-    //            // HACK
-    //            //if(map.Town.DesignationManager.Renderers[DesignationDefOf.Construct].Slices.TryGetValue(j, out var constructionDesignationMesh))
-    //            //    arrays = arrays.Append(constructionDesignationMesh.vertices);
-
-
-    //            foreach (var array in arrays)
-    //            {
-    //                var count = array.Length;
-    //                for (int i = count - 4; i >= 0; i -= 4)
-    //                {
-    //                    if (!this.EarlyOutMousePicking(array, i, mousex, mousey, chunkx, chunky, rectw, recth, out int rectx, out int recty, out Vector3 global))
-    //                        continue;
-
-
-    //                    //var block = chunk.GetBlockFromGlobal(global.X, global.Y, global.Z);
-    //                    var block = map.GetCell(global).Block;
-
-    //                    if (!block.IsTargetable(global))
-    //                        continue;
-
-    //                    if (hidewalls)
-    //                    {
-    //                        if (playerExists)
-    //                        {
-    //                            if (global.Z >= playerGlobal.Z)
-    //                            {
-    //                                if (global.X + global.Y > playerGlobal.X + playerGlobal.Y)
-    //                                {
-    //                                    if (block.Opaque)
-    //                                    {
-    //                                        //distance between mouse and center of screen normalized between -1,1
-    //                                        var dx = mousex - this.Width / 2f;
-    //                                        var dy = mousey - this.Height / 2f;
-    //                                        var d = new Vector2(dx, dy);
-    //                                        d.Y /= this.Width / (float)this.Height;
-    //                                        d /= new Vector2(this.Width / 2f, this.Height / 2f);
-    //                                        var l = d.LengthSquared();
-    //                                        if (l < radius)
-    //                                            continue;
-    //                                    }
-    //                                }
-    //                            }
-    //                        }
-    //                    }
-
-    //                    var xx = (int)((mousex - rectx) / this.Zoom);
-    //                    var yy = (int)((mousey - recty) / this.Zoom);
-    //                    if (!block.MouseMap.HitTestEarly(xx, yy))
-    //                        continue;
-
-    //                    Coords.Rotate(this, global.X, global.Y, out int rx, out int ry);
-    //                    var currentDepth = rx + ry + global.Z;
-
-    //                    if (currentDepth > foundDepth)
-    //                    {
-    //                        foundDepth = currentDepth;
-    //                        foundGlobal = global;
-    //                        foundMouse = mouse;
-    //                        foundRect = new Rectangle(rectx, recty, rectw, recth);
-    //                        foundBlock = block;
-    //                        found = true;
-    //                    }
-    //                    //}
-    //                }
-    //            }
-    //        }
-
-    //    }
-    //    if (found)
-    //    {
-    //        // create mouseover anyway even if air in case of undiscovered area? or check drawunknownblocks?
-    //        this.CreateMouseover(map, foundGlobal, foundRect, foundMouse, behind);
-    //    }
-    //}
-    //public void CreateMouseover(MapBase map, Vector3 global, Rectangle rect, Vector2 point, bool behind)
-    //{
-    //    /// uncomment this to prefer targetting entities even when they are behind blocks
-    //    /// i also call this at the start of the mouspicking method, no need to call it here too
-    //    //if (Controller.Instance.MouseoverNext.Object != null)
-    //    //    return;
-    //    if (Controller.Instance.MouseoverNext.Object is InteractionTarget target && target.Object is Entity obj)
-    //        if (this.GetDrawDepthSimple(obj.CellIfSpawned.Value) > this.GetDrawDepthSimple(global)) // HACK
-    //            return;
-
-    //    if (!map.TryGetAll(global, out var chunk, out var cell))
-    //        return;
-
-    //    var uvCoords = new Vector2((point.X - rect.X) / this.Zoom, (point.Y - rect.Y) / this.Zoom);
-    //    int faceIndex = (int)uvCoords.Y * cell.Block.MouseMap.Texture.Width + (int)uvCoords.X;
-
-    //    // find block coordinates
-    //    var sample = cell.Block.UV[faceIndex];
-    //    float u = sample.R / 255f;
-    //    float v = sample.G / 255f;
-    //    float w = sample.B / 255f;
-    //    var precise = new Vector3(u, v, w);// Vector3.Zero;
-    //    precise.X -= 0.5f;
-    //    precise.Y -= 0.5f; // compensate for (0,0) being at the center of the block
-
-    //    cell.Block.MouseMap.HitTest(behind, (int)uvCoords.X, (int)uvCoords.Y, out Vector3 vec);
-
-    //    // comment these lines if i want to select blocks even if mouseover face is inaccessible
-    //    //if (!Cell.CheckFace(this, cell, vec))
-    //    //    return;
-
-    //    Coords.Rotate((int)this.Rotation, vec, out Vector3 rotVec);
-    //    precise = precise.Rotate(-this.Rotation);
-    //    // TODO: find more elegant way to do this
-    //    if (rotVec == Vector3.UnitX || rotVec == -Vector3.UnitX)
-    //        precise.X = 0;
-    //    else if (rotVec == Vector3.UnitY || rotVec == -Vector3.UnitY)
-    //        precise.Y = 0;
-    //    else if (rotVec == Vector3.UnitZ || rotVec == -Vector3.UnitZ)
-    //        precise.Z = 0;
-    //    Controller.SetMouseoverBlock(this, map, global, rotVec, precise);
-    //}
-
-    //public bool EarlyOutMousePicking(MyVertex[] array, int i, float mousex, float mousey, float chunkx, float chunky, int rectw, int recth, out int rectx, out int recty, out Vector3 global)
-    //{
-    //    rectx = recty = 0;
-    //    var v = array[i];
-    //    global = v.BlockCoords;
-    //    var tl = v.Position;
-
-    //    var br = array[i + 2].Position;
-    //    if (br.X - tl.X == 0)
-    //        return false;
-
-    //    var xxx = tl.X + chunkx;
-    //    rectx = (int)(xxx * this.Zoom);
-    //    if (mousex < rectx)
-    //        return false;
-
-    //    var yyy = tl.Y + chunky;
-    //    recty = (int)(yyy * this.Zoom);
-    //    if (mousey < recty)
-    //        return false;
-
-    //    if (mousex >= rectx + rectw)
-    //        return false;
-
-    //    if (mousey >= recty + recth)
-    //        return false;
-
-    //    return true;
-    //}
-
-    public int GetFogLevel()
-    {
-        return (int)Math.Max(0, this.LastZTarget - FogZOffset - FogFadeLength);
-    }
-
-    //public void DrawGrid(MySpriteBatch sb, MapBase map, IEnumerable<IntVec3> positions, Color col)
-    //{
-    //    Sprite.Atlas.Begin(this.Effect);
-
-    //    foreach (var pos in positions)
-    //        this.DrawGridCell(sb, col, pos);
-
-    //    sb.Flush();
-    //}
+    
     public void DrawGridCells(MySpriteBatch sb, Color col, IEnumerable<IntVec3> globals)
     {
         foreach (var pos in globals)
@@ -1636,42 +1139,42 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
     public void DrawGridCell(MySpriteBatch sb, Color col, IntVec3 global)
     {
         var ctx = this._currentCtx;
-        if (global.Z > ctx.MapViewport.Settings.DrawLevel + 1)
+        if (global.Z > ctx.View.Settings.DrawLevel + 1)
             return;
-        var camera = ctx.Camera;
-        var bounds = camera.GetScreenBounds(global, Block.Bounds);
+        var view = ctx.View;
+        var bounds = view.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
-        //var depth = global.GetDrawDepth(Engine.Map, this);
-        var depth = global.GetDrawDepth(camera);
+        //var depth = global.GetDrawDepth(camera);
+        var depth = view.GetDrawDepth(global);
         var highlight = Block.FaceHighlights[IntVec3.UnitZ];
-        sb.Draw(highlight.Atlas.Texture, pos, highlight.Rectangle, 0, Vector2.Zero, camera.Zoom, col, SpriteEffects.None, depth);
+        sb.Draw(highlight.Atlas.Texture, pos, highlight.Rectangle, 0, Vector2.Zero, view.Zoom, col, SpriteEffects.None, depth);
     }
     [Obsolete]
     public void DrawGridBlock(MySpriteBatch sb, Color col, IntVec3 global)
     {
         var ctx = this._currentCtx;
-        if (global.Z > ctx.MapViewport.Settings.DrawLevel)
-            return;
+        var view = ctx.View;
 
-        var bounds = ctx.Camera.GetScreenBounds(global, Block.Bounds);
+        if (global.Z > view.Settings.DrawLevel)
+            return;
+        //var bounds = ctx.Camera.GetScreenBounds(global, Block.Bounds);
+        var bounds = view.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
         //var depth = global.GetDrawDepth(Engine.Map, this);
-        var depth = global.GetDrawDepth(ctx.Camera);
-        sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, ctx.Camera.Zoom, col * .5f, SpriteEffects.None, depth);
+        var depth = view.GetDrawDepth(global);
+        sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, view.Zoom, col * .5f, SpriteEffects.None, depth);
     }
     public void DrawGridBlock(MySpriteBatch sb, AtlasDepthNormals.Node.Token sprite, Color col, IntVec3 global)
     {
         var ctx = this._currentCtx;
-        if (global.Z > ctx.MapViewport.Settings.DrawLevel)
+        if (global.Z > ctx.View.Settings.DrawLevel)
             return;
-        //col *= .5f;
-        var camera = ctx.Camera;
+        var view = ctx.View;
         sprite.Atlas.Begin(this.Effect); // this was commented out
-        var bounds = camera.GetScreenBounds(global, Block.Bounds);
+        var bounds = view.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
-        //var depth = global.GetDrawDepth(Engine.Map, this);
-        var depth = global.GetDrawDepth(camera);
-        sb.Draw(sprite.Atlas.Texture, pos, sprite.Rectangle, 0, Vector2.Zero, camera.Zoom, col, SpriteEffects.None, depth);
+        var depth = view.GetDrawDepth(global);
+        sb.Draw(sprite.Atlas.Texture, pos, sprite.Rectangle, 0, Vector2.Zero, view.Zoom, col, SpriteEffects.None, depth);
     }
     public void DrawGridBlocks(MySpriteBatch sb, IEnumerable<IntVec3> positions, Color col)
     {
@@ -1700,16 +1203,19 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
     public void DrawBlockMouseover(MySpriteBatch sb, Vector3 global, Color color)
     {
         var ctx = this._currentCtx;
-        if (global.Z > ctx.MapViewport.Settings.DrawLevel)
+        if (global.Z > ctx.View.Settings.DrawLevel)
             return;
         var map = ctx.Map;
         var camera = ctx.Camera;
-        Rectangle bounds = Block.Bounds;
-        camera.GetEverything(map, global, bounds, out float cd, out Rectangle screenBounds, out Vector2 screenLoc);
-        var scrbnds = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
+        var view = ctx.View;
+        var bounds = Block.Bounds;
+        view.GetEverything(global, bounds, out float cd, out Rectangle screenBounds, out Vector2 screenLoc);
+        //var scrbnds = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
+        var scrbnds = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
         screenLoc = new Vector2(scrbnds.X, scrbnds.Y);
-        cd = global.GetDrawDepth(map, camera);
-        
+        //cd = global.GetDrawDepth(view);
+        cd = view.GetDrawDepth(global);
+
         Block.Atlas.Begin(this.Effect);
         var c = color * .5f;
         var zoom = new Vector2(camera.Zoom);
@@ -1733,16 +1239,18 @@ public sealed class Renderer : IDrawContext, /*ICamera,*/ IInputEventHandler
     {
         var ctx = this._currentCtx;
         var global = target.Global;
-        if (global.Z > ctx.MapViewport.Settings.DrawLevel)
+        if (global.Z > ctx.View.Settings.DrawLevel)
             return;
         var map = ctx.Map;
         var camera = ctx.Camera;
+        var view = ctx.View;
         Rectangle bounds = Block.Bounds;
-        camera.GetEverything(map, global, bounds, out float cd, out Rectangle screenBounds, out Vector2 screenLoc);
+        view.GetEverything(global, bounds, out float cd, out Rectangle screenBounds, out Vector2 screenLoc);
         //var scrbnds = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
-        var scrbnds = ctx.MapViewport.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
+        var scrbnds = ctx.View.GetScreenBoundsVector4(global.X, global.Y, global.Z, bounds, Vector2.Zero);
         screenLoc = new Vector2(scrbnds.X, scrbnds.Y);
-        cd = global.GetDrawDepth(map, camera);
+        //cd = global.GetDrawDepth(map, camera);
+        cd = view.GetDrawDepth(global);
 
         Block.Atlas.Begin(this.Effect);
         var c = color * .5f;

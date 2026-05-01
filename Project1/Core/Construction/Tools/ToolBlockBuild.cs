@@ -166,15 +166,16 @@ public abstract class ToolBlockBuild : ToolManagement, INamed
         var cam = ctx.Camera;
         var renderer = ctx.Renderer;
         var map = ctx.Map;
+        var view = ctx.View;
         var atlastoken = this.Block.GetDefault();
         atlastoken.Atlas.Begin(renderer.Effect);
         foreach (var pos in this.ToolDef.Worker.GetPositions(this.Begin, this.EndFinal).Where(map.IsValidBuildSpot))
-            this.Block.DrawPreview(sb, map, pos, cam, this.State, this.Material, this.Variation, this.Orientation);
+            this.Block.DrawPreview(sb, pos, view, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();
     }
     protected virtual IntVec3 EndFinal => this.End;
 
-    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(SpriteBatch sb, MapView viewport)
     {
         base.DrawUI(sb, viewport);
         this.Icon.Draw(sb, UIManager.Mouse);

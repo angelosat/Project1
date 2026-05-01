@@ -134,7 +134,7 @@ class ToolSelect3D : ControlTool
 
     Icon _Icon = new(UIManager.Icons32, 12, 32);
     public override Icon Icon => _Icon;
-    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(SpriteBatch sb, MapView viewport)
     {
         base.DrawUI(sb, viewport); 
         
@@ -197,14 +197,16 @@ class ToolSelect3D : ControlTool
     private void DrawGridCell(MySpriteBatch sb, RenderContext ctx, Color col, Vector3 global)
     {
         var renderer = ctx.Renderer;
-        var map = ctx.Map;
         var camera = ctx.Camera;
         if (global.Z > renderer.MaxDrawZ)
             return;
-        var bounds = camera.GetScreenBounds(global, Block.Bounds);
+        var view = ctx.View;
+        //var bounds = camera.GetScreenBounds(global, Block.Bounds);
+        var bounds = view.GetScreenBounds(global, Block.Bounds);
         var pos = new Vector2(bounds.X, bounds.Y);
         //var depth = global.GetDrawDepth(Engine.Map, cam);
-        var depth = global.GetDrawDepth(map, camera);
+        //var depth = global.GetDrawDepth(map, camera);
+        var depth = view.GetDrawDepth(global);
         if (IsRemoving() && Enabled)
         {
             var x = Math.Min(this.Begin.X, this.End.X);

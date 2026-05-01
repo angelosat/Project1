@@ -66,7 +66,7 @@ class ServerCommandParser
                         int y = int.Parse(queue.Dequeue());
                         var pos = new IntVec2(x, y);
                         //if (!this.Server.Map.GetActiveChunks().TryGetValue(pos, out Chunk chunk))
-                        if (this.Server.MainViewport.Map.GetChunk(x, y) is not Chunk chunk)
+                        if (this.Server.MainView.Map.GetChunk(x, y) is not Chunk chunk)
                         {
                             this.Server.ConsoleBox.Write("SERVER", "Chunk " + pos.ToString() + " doesn't exist");
                             break;
@@ -80,12 +80,12 @@ class ServerCommandParser
                 case "savechunks":
 
                     this.Server.ConsoleBox.Write("SERVER", "Saving all active chunks");
-                    foreach (var ch in this.Server.MainViewport.Map.GetActiveChunks().Values)
+                    foreach (var ch in this.Server.MainView.Map.GetActiveChunks().Values)
                         ch.SaveToFile();
                     break;
 
                 case "savethumb":
-                    this.Server.MainViewport.Map.GenerateThumbnails();
+                    this.Server.MainView.Map.GenerateThumbnails();
                     break;
 
                 default:

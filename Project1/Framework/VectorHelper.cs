@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Project1.Core.Screens;
 
 namespace Project1.Framework
 {
@@ -191,6 +192,13 @@ namespace Project1.Framework
             return new Vector3((
                 float)(pos.X * camera.RotCos - pos.Y * camera.RotSin),
                 (float)(pos.X * camera.RotSin + pos.Y * camera.RotCos),
+                pos.Z);
+        }
+        public static Vector3 Rotate(this Vector3 pos, MapView view)
+        {
+            return new Vector3((
+                float)(pos.X * view.Camera.RotCos - pos.Y * view.Camera.RotSin),
+                (float)(pos.X * view.Camera.RotSin + pos.Y * view.Camera.RotCos),
                 pos.Z);
         }
         public static Vector3 Rotate(this IntVec3 pos, ICamera camera)

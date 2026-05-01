@@ -39,7 +39,7 @@ class ToolSelect : ControlTool
     {
         //var cam = Engine.Map.Camera;
         //cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
-        Ingame.MainViewport.Picker.Perform(Ingame.MainViewport);
+        Ingame.MainView.Picker.Perform(Ingame.MainView);
         this.UpdateTarget();
 
         if (Controller.TargetCell != null)

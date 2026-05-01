@@ -18,7 +18,7 @@ internal sealed class MousePicker
 {
     public static bool BlockTargeting = true;
 
-    public void Perform(MapViewport viewport, bool ignoreEntities = false)
+    public void Perform(MapView viewport, bool ignoreEntities = false)
     {
         var result = this.MousePicking(viewport, UIManager.Mouse, ignoreEntities);
         if (!result.HasValue)
@@ -26,19 +26,19 @@ internal sealed class MousePicker
         this.CreateMouseover(viewport, result.Value);
     }
 
-    public PickerResult? MousePicking(MapViewport viewport, Vector2 mousePos, bool ignoreEntities = false)
+    public PickerResult? MousePicking(MapView view, Vector2 mousePos, bool ignoreEntities = false)
     {
-        var map = viewport.Map;
-        var camera = viewport.Camera;
+        var map = view.Map;
+        var camera = view.Camera;
         var width = camera.Width;
         var height = camera.Height;
         var zoom = camera.Zoom;
-        var origin = viewport.Origin;
+        var origin = view.Origin;
         //var renderer = ctx.Renderer;
-        var visibleChunks = map.GetActiveChunks().Values.Where(ch => viewport.Viewport.Intersects(ch.GetScreenBounds(viewport)));
+        var visibleChunks = map.GetActiveChunks().Values.Where(ch => view.Viewport.Intersects(ch.GetScreenBounds(view)));
         if (!(ignoreEntities || Controller.IsBlockTargeting()))
             foreach (var chunk in visibleChunks)
-                chunk.HitTestEntities(viewport);
+                chunk.HitTestEntities(view);
 
         /// uncomment this to prefer targetting entities even when they are behind blocks
         //if (Controller.Instance.MouseoverNext.Object is not null)
@@ -70,18 +70,18 @@ internal sealed class MousePicker
         var recth = (int)(Block.Height * zoom);
         foreach (var chunk in visibleChunks)
         {
-            var chunkBounds = chunk.GetScreenBounds(viewport); // TODO: i already have this, cache it
+            var chunkBounds = chunk.GetScreenBounds(view); // TODO: i already have this, cache it
             if (!chunkBounds.Contains(mousex, mousey))
                 continue;
 
             //Coords.Iso(camera, chunk.X * Chunk.Size, chunk.Y * Chunk.Size, 0, out float chunkx, out float chunky);
-            camera.Iso(chunk.X * Chunk.Size, chunk.Y * Chunk.Size, 0, out float chunkx, out float chunky);
+            view.Iso(chunk.X * Chunk.Size, chunk.Y * Chunk.Size, 0, out float chunkx, out float chunky);
             //chunkx -= camx;
             //chunky -= camy;
             chunkx -= origin.X;
             chunky -= origin.Y;
-            var foglvl = viewport.FogLevel;
-            var drawLevel = viewport.Settings.DrawLevel;
+            var foglvl = view.FogLevel;
+            var drawLevel = view.Settings.DrawLevel;
             for (int j = drawLevel; j >= foglvl; j--)
             {
                 var slice = chunk.Slices[j];
@@ -159,7 +159,9 @@ internal sealed class MousePicker
                         if (!block.MouseMap.HitTestEarly(xx, yy))
                             continue;
 
-                        Coords.Rotate(camera, global.X, global.Y, out int rx, out int ry);
+                        //Coords.Rotate(camera, global.X, global.Y, out int rx, out int ry);
+                        view.Rotate(global.X, global.Y, out int rx, out int ry);
+
                         var currentDepth = rx + ry + global.Z;
 
                         if (currentDepth > foundDepth)
@@ -217,12 +219,12 @@ internal sealed class MousePicker
         return true;
     }
 
-    public void CreateMouseover(MapViewport viewport, PickerResult result)
+    public void CreateMouseover(MapView view, PickerResult result)
     {
         var point = result.Point;
-        var camera = viewport.Camera;
+        var camera = view.Camera;
         var global = result.Global;
-        var map = viewport.Map;
+        var map = view.Map;
         var rect = result.Rect;
         var zoom = camera.Zoom;
         var behind = result.Behind;
@@ -232,7 +234,7 @@ internal sealed class MousePicker
         //if (Controller.Instance.MouseoverNext.Object != null)
         //    return;
         if (Controller.Instance.MouseoverNext.Object is InteractionTarget target && target.Object is Entity obj)
-            if (camera.GetDrawDepthSimple(obj.CellIfSpawned.Value) > camera.GetDrawDepthSimple(global)) // HACK
+            if (view.GetDrawDepthSimple(obj.CellIfSpawned.Value) > view.GetDrawDepthSimple(global)) // HACK
                 return;
 
         if (!map.TryGetAll(global, out var chunk, out var cell))
@@ -256,7 +258,8 @@ internal sealed class MousePicker
         //if (!Cell.CheckFace(this, cell, vec))
         //    return;
 
-        Coords.Rotate((int)rotation, vec, out Vector3 rotVec);
+        //Coords.Rotate((int)rotation, vec, out Vector3 rotVec);
+        view.Rotate(vec, out Vector3 rotVec);
         precise = precise.Rotate(-rotation);
         // TODO: find more elegant way to do this
         if (rotVec == Vector3.UnitX || rotVec == -Vector3.UnitX)
@@ -265,7 +268,8 @@ internal sealed class MousePicker
             precise.Y = 0;
         else if (rotVec == Vector3.UnitZ || rotVec == -Vector3.UnitZ)
             precise.Z = 0;
-        var depth = global.GetDrawDepth(map, camera);
+        //var depth = global.GetDrawDepth(map, camera);
+        var depth = view.GetDrawDepth(global);
         Controller.SetMouseoverBlock(depth, map, global, rotVec, precise);
     }
 }

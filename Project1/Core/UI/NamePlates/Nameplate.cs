@@ -61,7 +61,7 @@ public class Nameplate : GroupBox, IContextable
         this.Active = true;
         this.LocationFunc = () =>
         {
-            var viewport = Ingame.MainViewport;
+            var viewport = Ingame.MainView;
             var rect = this.Object.GetScreenBounds(viewport);
             return new Vector2(rect.X + rect.Width / 2, rect.Y - this.Height - VertOffset) - this.Dimensions * new Vector2(.5f, 0);
         };
@@ -168,7 +168,7 @@ public class Nameplate : GroupBox, IContextable
     public override void Draw(SpriteBatch sb, Rectangle viewport)
     {
     }
-    public override void DrawOnCamera(SpriteBatch sb, MapViewport viewport)
+    public override void DrawOnCamera(SpriteBatch sb, MapView viewport)
     {
         base.Draw(sb, viewport.Viewport);
         if (SelectionManager.IsSelected(this.Object as Entity))

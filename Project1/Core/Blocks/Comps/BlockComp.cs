@@ -39,7 +39,7 @@ public abstract class BlockComp : Inspectable, IBlockEntityComp, ISerializable
     internal virtual void OnSpawned(BlockEntity entity, MapBase map) { }
     internal virtual void OnDespawned(BlockEntity entity, MapBase map) { }
     public virtual void Draw(Camera camera, Renderer renderer, IntVec3 global) { }
-    public virtual void DrawUI(SpriteBatch sb, MapViewport viewport) { }
+    public virtual void DrawUI(SpriteBatch sb, MapView viewport) { }
     public virtual void Load(SaveTag tag)
     {
     }

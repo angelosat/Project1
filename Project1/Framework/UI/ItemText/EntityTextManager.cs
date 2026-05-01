@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Project1.Core.UI;
 
-class EntityTextManager : Control
+sealed class EntityTextManager : Control
 {
     readonly Dictionary<GameObject, RenderTarget2D> StackSizes = [];
     readonly Queue<GameObject> ToValidate = new();
@@ -40,7 +40,7 @@ class EntityTextManager : Control
     {
         throw new NotImplementedException();
     }
-    internal static void DrawStackSize(SpriteBatch sb, MapViewport viewport, GameObject parent)
+    internal static void DrawStackSize(SpriteBatch sb, MapView viewport, GameObject parent)
     {
         var border = 2;
         if (viewport.Camera.Zoom <= 1)
@@ -75,14 +75,14 @@ class EntityTextManager : Control
     //    var depth = 1-(entityDepth / depthRange);
     //    UIManager.DrawStringOutlined(sb, text, new Vector2(pos.X - textSize.X / 2 + border, pos.Y), depth: depth);
     //}
-    public override void DrawWorld(MySpriteBatch sb, MapViewport viewport)
+    public override void DrawWorld(MySpriteBatch sb, MapView view)
     {
-        var camera = viewport.Camera;
+        var camera = view.Camera;
         if (camera.Zoom <= 1)
             return;
        
         //var objects = Client.Instance.Map.Entities;
-        var objects = Ingame.Net.MainViewport.Map.Entities;
+        var objects = Ingame.Net.MainView.Map.Entities;
         foreach (var o in objects)
         {
             if (o.StackSize <= 1)
@@ -93,7 +93,8 @@ class EntityTextManager : Control
                 continue;
             }
             var rt = StackSizes[o];
-            var depth = camera.GetDrawDepth(o);
+            //var depth = camera.GetDrawDepth(o);
+            var depth = view.GetDrawDepth(o.Global);
             sb.Draw(rt, Vector2.Zero, rt.Bounds, 0, Vector2.Zero, Vector2.One, Color.White, Color.White, Color.White, Color.White, Color.Transparent, SpriteEffects.None, depth); 
         }
     }

@@ -131,7 +131,7 @@ public class TooltipManager
     {
         var map = e.Map;
         var cells = e.Positions;
-        if (Ingame.Net.MainViewport.Map == map)
+        if (Ingame.Net.MainView.Map == map)
             if (Instance.Object is InteractionTarget target && target.Type == TargetType.Cell && cells.Contains((IntVec3)target.Global))
                 Instance.Reset();
     }

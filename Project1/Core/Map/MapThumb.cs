@@ -47,7 +47,7 @@ namespace Project1.Core.Map
         {
             return Color.White;
         }
-        public Rectangle GetScreenBounds(MapViewport viewport)
+        public Rectangle GetScreenBounds(MapView viewport)
         {
             Vector2 screenPos = Coords.GetScreenCoords(Global, viewport, new Vector3(Size, Size / 2, Size / 2));
             return new Rectangle((int)screenPos.X, (int)screenPos.Y, 1, 1);
@@ -101,7 +101,10 @@ namespace Project1.Core.Map
             Texture2D tex = thumb.Texture;
             screenLoc = Coords.GetScreenCoords(new Vector3(Map.GetOffset(), 0), camera, ObjectDimensions) - new Vector2(tex.Width / 2, tex.Height / 2);
             screenBounds = new Rectangle((int)screenLoc.X, (int)screenLoc.Y, tex.Width, tex.Height);
-            sb.Draw(tex, screenLoc, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, new Vector3(Map.GetOffset(), 0).GetDrawDepth(this.Map, camera));
+            var view = new MapView(tex.Width, tex.Height, this.Map, camera);
+            //var depth = new Vector3(Map.GetOffset(), 0).GetDrawDepth(this.Map, camera);
+            var depth = view.GetDrawDepth(new Vector3(Map.GetOffset(), 0));
+            sb.Draw(tex, screenLoc, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, depth);
             if (thumb.HitTest(1, screenBounds, UIManager.MouseRect))
             {
                 Controller.Instance.MouseoverNext.Object = this;
@@ -118,7 +121,7 @@ namespace Project1.Core.Map
                     {
                         LoadingBox box = new LoadingBox()
                         {
-                            LocationFunc = () => Coords.GetScreenCoords(new Vector3(Map.GetOffset(), 0), Ingame.MainViewport.Camera, ObjectDimensions),
+                            LocationFunc = () => Coords.GetScreenCoords(new Vector3(Map.GetOffset(), 0), Ingame.MainView.Camera, ObjectDimensions),
                             ProgressFunc = () => Map.LoadProgress.ToString("##0%"),
                             TextFunc = () => "Loading map...",
                             TintFunc = () => Color.Lerp(Color.Red, Color.Lime, Map.LoadProgress),

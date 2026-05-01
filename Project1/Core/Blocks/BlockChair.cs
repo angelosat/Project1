@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Construction;
 using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -39,9 +40,9 @@ sealed class BlockChair : Block
     {
         return Orientations[0];
     }
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Microsoft.Xna.Framework.Vector4 screenBounds, Microsoft.Xna.Framework.Color sunlight, Microsoft.Xna.Framework.Vector4 blocklight, Microsoft.Xna.Framework.Color fog, Microsoft.Xna.Framework.Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Microsoft.Xna.Framework.Vector4 screenBounds, Microsoft.Xna.Framework.Color sunlight, Microsoft.Xna.Framework.Vector4 blocklight, Microsoft.Xna.Framework.Color fog, Microsoft.Xna.Framework.Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
-        DrawShadow(canvas.NonOpaque, global, camera, screenBounds, sunlight, blocklight, fog, tint, depth);
-        return base.Draw(canvas, chunk, global, camera, screenBounds, sunlight, blocklight, fog, tint, depth, 0, variation, data, mat);
+        DrawShadow(canvas.NonOpaque, global, view, screenBounds, sunlight, blocklight, fog, tint, depth);
+        return base.Draw(canvas, chunk, global, view, screenBounds, sunlight, blocklight, fog, tint, depth, 0, variation, data, mat);
     }
 }

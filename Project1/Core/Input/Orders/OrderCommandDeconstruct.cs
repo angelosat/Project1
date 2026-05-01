@@ -13,11 +13,11 @@ namespace Project1.Core.Input.Orders
         internal override void Issue(SelectionFinal selection)
         {
             if(selection.Begin.HasValue)
-                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, Ingame.Net.MainView.Map.ID, selection.Begin.Value, selection.End.Value, false));
             else
             {
                 if(selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be)
-                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, Ingame.Net.MainViewport.Map.ID, be.OriginGlobal, be.OriginGlobal, false));
+                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Deconstruct, Ingame.Net.MainView.Map.ID, be.OriginGlobal, be.OriginGlobal, false));
             }
         }
     }
@@ -28,11 +28,11 @@ namespace Project1.Core.Input.Orders
         internal override void Issue(SelectionFinal selection)
         {
             if (selection.Begin.HasValue)
-                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, Ingame.Net.MainView.Map.ID, selection.Begin.Value, selection.End.Value, false));
             else
             {
                 if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be)
-                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, Ingame.Net.MainViewport.Map.ID, be.OriginGlobal, be.OriginGlobal, false));
+                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.Switch, Ingame.Net.MainView.Map.ID, be.OriginGlobal, be.OriginGlobal, false));
             }
         }
         
@@ -44,11 +44,11 @@ namespace Project1.Core.Input.Orders
         internal override void Issue(SelectionFinal selection)
         {
             if (selection.Begin.HasValue)
-                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, Ingame.Net.MainViewport.Map.ID, selection.Begin.Value, selection.End.Value, false));
+                Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, Ingame.Net.MainView.Map.ID, selection.Begin.Value, selection.End.Value, false));
             else
             {
                 if (selection.Targets.Count == 1 && selection.Targets.First() is BlockEntity be)
-                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, Ingame.Net.MainViewport.Map.ID, be.OriginGlobal, be.OriginGlobal, false));
+                    Ingame.Instance.Events.Post(new PlayerDesignationCellsEvent(DesignationDefOf.SwitchOff, Ingame.Net.MainView.Map.ID, be.OriginGlobal, be.OriginGlobal, false));
             }
         }
     }

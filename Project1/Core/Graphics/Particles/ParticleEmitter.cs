@@ -199,21 +199,21 @@ public abstract class ParticleEmitter : ICloneable
             foreach (var particle in this.Particles)
                 particle.Draw(renderer.BlockParticlesSpriteBatch, ctx, global + this.Offset);
     }
-    private void SortParticlesByDepth(MapViewport viewport)
-    {
-        var map = viewport.Map;
-        var camera = viewport.Camera;
-        this.Particles.Sort((p1, p2) =>
-        {
-            var d1 = p1.Offset.GetDrawDepth(map, camera);
-            var d2 = p2.Offset.GetDrawDepth(map, camera);
-            if (d1 < d2)
-                return -1;
-            if (d1 > d2)
-                return 1;
-            return 0;
-        });
-    }
+    //private void SortParticlesByDepth(MapView viewport)
+    //{
+    //    var map = viewport.Map;
+    //    var camera = viewport.Camera;
+    //    this.Particles.Sort((p1, p2) =>
+    //    {
+    //        var d1 = p1.Offset.GetDrawDepth(map, camera);
+    //        var d2 = p2.Offset.GetDrawDepth(map, camera);
+    //        if (d1 < d2)
+    //            return -1;
+    //        if (d1 > d2)
+    //            return 1;
+    //        return 0;
+    //    });
+    //}
 
     public abstract object Clone();
 

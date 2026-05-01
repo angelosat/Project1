@@ -68,10 +68,10 @@ class FloatingTextEx : GroupBox
     }
     public override void Update()
     {
-        var cam = Ingame.MainViewport.Camera;
+        var view = Ingame.MainView;
 
         var global = this.GetGlobal();
-        Vector2 origin = cam.GetScreenPosition(global);
+        Vector2 origin = view.GetScreenPosition(global);
         Location = origin + Position;
         Position += Velocity;
         Velocity.Y += Gravity;

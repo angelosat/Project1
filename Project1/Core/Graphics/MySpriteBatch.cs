@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Graphics;
@@ -375,11 +376,12 @@ public sealed class MySpriteBatch
             new Vector3(screenBounds.X, screenBounds.Y + screenBounds.Height, depth)
             , fog, tint, sunLight, blockLight, token.BottomLeftUV);
     }
-    public void DrawBlock(Texture2D texture, MapBase map, Vector3 global, IAtlasNodeToken token, Camera cam, Color fog, Color tint, Color sunLight, Vector4 blockLight)
+    public void DrawBlock(Texture2D texture, Vector3 global, IAtlasNodeToken token, MapView view, Color fog, Color tint, Color sunLight, Vector4 blockLight)
     {
-        float depth = global.GetDrawDepth(map, cam);
-        Rectangle dstRectangle = cam.GetScreenBounds(global, Block.Bounds);
-        this.DrawBlock(texture, dstRectangle, token, cam.Zoom, fog, tint, sunLight, blockLight, depth);
+        //float depth = global.GetDrawDepth(map, view.Camera);
+        float depth = view.GetDrawDepth(global);
+        var dstRectangle = view.GetScreenBounds(global, Block.Bounds);
+        this.DrawBlock(texture, dstRectangle, token, view.Zoom, fog, tint, sunLight, blockLight, depth);
     }
     public void DrawBlock(Texture2D texture, Rectangle screenBounds, IAtlasNodeToken token, float scale, Color tint, Color sunLight, Vector4 blockLight, float depth)
     {

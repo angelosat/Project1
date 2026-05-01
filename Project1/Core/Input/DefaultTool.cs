@@ -74,7 +74,7 @@ public class DefaultTool : ControlTool
         if (xx != 0 || yy != 0)
         {
             var actor = this.Actor;
-            var cam = Ingame.MainViewport.Camera;
+            var cam = Ingame.MainView.Camera;
 
             double rx, ry;
             double cos = Math.Cos((-cam.Rotation) * Math.PI / 2f);
@@ -268,7 +268,7 @@ public class DefaultTool : ControlTool
 
     internal override void DrawAfterWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        var cam = ctx.Camera;
+        var view = ctx.View;
         base.DrawAfterWorld(sb, ctx);
         var haul = this.Actor.Inventory.HaulSlot.Object;
         if (haul is not null)
@@ -276,7 +276,7 @@ public class DefaultTool : ControlTool
             if (this.Target is null)
                 return;
             var global = this.Target.Global + this.Target.Face + (!InputState.IsKeyDown(System.Windows.Forms.Keys.ShiftKey) ? Vector3.Zero : this.Target.Precise);
-            haul.DrawPreview(sb, cam, global);
+            haul.DrawPreview(sb, view, global);
         }
     }
 }

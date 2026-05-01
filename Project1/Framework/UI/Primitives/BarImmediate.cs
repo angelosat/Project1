@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core;
 using Project1.Core.Entities;
+using Project1.Core.Screens;
 using Project1.Core.UI;
 using Project1.Framework.Interfaces;
 using System;
@@ -67,21 +68,21 @@ namespace Project1.Framework.UI.Primitives
             this.LastPercentage = this.Percentage;
         }
 
-        static public void Draw(SpriteBatch sb, Camera camera, GameObject parent, string text, float percentage)
+        //static public void Draw(SpriteBatch sb, Camera camera, GameObject parent, string text, float percentage)
+        //{
+        //    var bounds = camera.GetScreenBounds(parent.Global, parent.GetSprite().GetBounds());
+        //    var scrLoc = new Vector2(bounds.X + bounds.Width / 2f, bounds.Y);//
+        //    var barLoc = scrLoc - new Vector2(InteractionBar.DefaultWidth / 2, InteractionBar.DefaultHeight / 2);
+        //    var textLoc = new Vector2(barLoc.X, scrLoc.Y);
+        //    InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, percentage);
+        //    UIManager.DrawStringOutlined(sb, text, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
+        //}
+        static public void Draw(SpriteBatch sb, MapView view, Vector3 global, string text, float percentage, float scale)
+            => Draw(sb, view, global, text, percentage, scale, Color.Orange);
+        static public void Draw(SpriteBatch sb, MapView view, Vector3 global, string text, float percentage, float scale, Color color)
         {
-            var bounds = camera.GetScreenBounds(parent.Global, parent.GetSprite().GetBounds());
-            var scrLoc = new Vector2(bounds.X + bounds.Width / 2f, bounds.Y);//
-            var barLoc = scrLoc - new Vector2(InteractionBar.DefaultWidth / 2, InteractionBar.DefaultHeight / 2);
-            var textLoc = new Vector2(barLoc.X, scrLoc.Y);
-            InteractionBar.Draw(sb, barLoc, InteractionBar.DefaultWidth, percentage);
-            UIManager.DrawStringOutlined(sb, text, textLoc, Alignment.Horizontal.Left, Alignment.Vertical.Center, 0.5f);
-        }
-        static public void Draw(SpriteBatch sb, Camera camera, Vector3 global, string text, float percentage, float scale)
-            => Draw(sb, camera, global, text, percentage, scale, Color.Orange);
-        static public void Draw(SpriteBatch sb, Camera camera, Vector3 global, string text, float percentage, float scale, Color color)
-        {
-            text = camera.Zoom > 2 ? text : "";
-            var scrLoc = camera.GetScreenPositionFloat(global);
+            text = view.Zoom > 2 ? text : "";
+            var scrLoc = view.GetScreenPositionFloat(global);
             InteractionBar.Draw(sb, scrLoc, InteractionBar.DefaultWidth, percentage, scale, color);
             UIManager.DrawStringOutlined(sb, text, scrLoc, Color.Black, Color.White, 1, Alignment.Horizontal.Center, Alignment.Vertical.Center, 0.5f);
         }

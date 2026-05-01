@@ -399,7 +399,7 @@ public sealed class Town : Inspectable, IDutyProvider
         return this.ZoneManager.GetZoneAt(pos);
     }
 
-    internal void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal void DrawUI(SpriteBatch sb, MapView viewport)
     {
         foreach (var comp in this.TownComponents)
             comp.DrawUI(sb, viewport);

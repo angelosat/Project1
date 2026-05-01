@@ -422,42 +422,42 @@ public class RegionTracker
         return node;
     }
 
-    [Obsolete]
-    public HashSet<Region> InitNoDoors()
-    {
-        this.Regions.Clear();
-        var maxz = this.Chunk.Map.GetMaxHeight() - 1;
-        var handled = new HashSet<Vector3>();
-        for (int x = 0; x < Chunk.Size; x++)
-            for (int y = 0; y < Chunk.Size; y++)
-            {
-                bool foundSolid = false;
-                var lastSolidZ = 0;
-                for (int z = 0; z < maxz; z++)
-                {
-                    var vec = new Vector3(x, y, z);
-                    var global = vec.ToGlobal(this.Chunk);
-                    var cell = this.Chunk[x, y, z];
-                    if (cell.IsSolid())
-                    {
-                        foundSolid = true;
-                        lastSolidZ = z;
-                    }
-                    else
-                    {
-                        var existing = this.GetRegionAt(global - new Vector3(0, 0, 2));
-                        if (foundSolid && lastSolidZ == z - 2 && existing == null)
-                        {
-                            var region = Flood(handled, x, y, lastSolidZ);
-                            region.LinkNodes();
-                            this.Regions.Add(region);
-                            foundSolid = false;
-                        }
-                    }
-                }
-            }
-        return this.Regions;
-    }
+    //[Obsolete]
+    //public HashSet<Region> InitNoDoors()
+    //{
+    //    this.Regions.Clear();
+    //    var maxz = this.Chunk.Map.GetMaxHeight() - 1;
+    //    var handled = new HashSet<Vector3>();
+    //    for (int x = 0; x < Chunk.Size; x++)
+    //        for (int y = 0; y < Chunk.Size; y++)
+    //        {
+    //            bool foundSolid = false;
+    //            var lastSolidZ = 0;
+    //            for (int z = 0; z < maxz; z++)
+    //            {
+    //                var vec = new Vector3(x, y, z);
+    //                var global = vec.ToGlobal(this.Chunk);
+    //                var cell = this.Chunk[x, y, z];
+    //                if (cell.IsSolid())
+    //                {
+    //                    foundSolid = true;
+    //                    lastSolidZ = z;
+    //                }
+    //                else
+    //                {
+    //                    var existing = this.GetRegionAt(global - new Vector3(0, 0, 2));
+    //                    if (foundSolid && lastSolidZ == z - 2 && existing == null)
+    //                    {
+    //                        var region = Flood(handled, x, y, lastSolidZ);
+    //                        region.LinkNodes();
+    //                        this.Regions.Add(region);
+    //                        foundSolid = false;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    return this.Regions;
+    //}
     [Obsolete]
     internal void Handle2Height(Vector3 global)
     {

@@ -13,7 +13,7 @@ internal class Gui_PriceList : GroupBox
     readonly Table<Entity> Table;
     public Gui_PriceList()
     {
-        var shops = Ingame.Net.MainViewport.Map.Town.Shops;
+        var shops = Ingame.Net.MainView.Map.Town.Shops;
         
         this.Table = new Table<Entity>()
                     .AddColumn("item", 256, a => new LabelNew(a))
@@ -41,6 +41,6 @@ internal class Gui_PriceList : GroupBox
     private static void CenterCamera(Entity entity)
     {
         Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([entity]));
-        Ingame.Net.MainViewport.Camera.CenterOn(entity.Global);
+        Ingame.Net.MainView.CenterOn(entity.Global);
     }
 }

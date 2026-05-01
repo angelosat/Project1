@@ -6,6 +6,7 @@ using Project1.Core.Screens;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
+using System.Windows.Forms;
 
 namespace Project1.Core.Interactions;
 
@@ -79,11 +80,11 @@ public class WorkComponent : EntityComp
         this.Owner.LastMap.Events.Post<InteractionStoppedEvent>(new(this.Owner as Actor));
     }
 
-    public override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    public override void DrawUI(SpriteBatch sb, MapView view)
     {
         if (this.Task == null)
             return;
-        this.Task.DrawUI(sb, viewport.Camera);
+        this.Task.DrawUI(sb, view);
     }
 
     public override void Write(IDataWriter w)

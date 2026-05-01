@@ -156,7 +156,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
         tooltip.AddControls(this.Name.ToLabel());
     }
 
-    public virtual void GetTooltip(Control tooltip, MapViewport viewport, IntVec3 global, IntVec3 face)
+    public virtual void GetTooltip(Control tooltip, MapView viewport, IntVec3 global, IntVec3 face)
     {
         var map = viewport.Map;
         var cell = map.GetCell(global);
@@ -588,20 +588,20 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
             token,
             camera.Zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, blockCoordinates);
     }
-    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 vector3, Camera camera, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth, Cell cell)
+    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 vector3, MapView view, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth, Cell cell)
     {
-        this.Draw(canvas, chunk, vector3, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
+        this.Draw(canvas, chunk, vector3, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
         if (cell.Damage > 0)
-            DrawCracks(canvas.Opaque, vector3, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
+            DrawCracks(canvas.Opaque, vector3, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
     }
-    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth)
+    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth)
     {
         var cell = chunk.GetLocalCell(global);
-        this.Draw(canvas, chunk, global, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
+        this.Draw(canvas, chunk, global, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
         if (cell.Damage > 0)
-            DrawCracks(canvas.Opaque, global, camera, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
+            DrawCracks(canvas.Opaque, global, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
     }
-    public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         if (this == BlockDefOf.Air.Block)
             return null;
@@ -613,13 +613,13 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
 
         if (this.IsRoomBorder && 
             chunk.Map.Town.RoomManager.GetRoomBorderAt(global) is Room room && 
-            room.IsWallHidable(global, camera.RotationReverse))
+            room.IsWallHidable(global, view.Camera.RotationReverse))
             mesh = canvas.WallHidable;
 
-        var token = this.GetToken(variation, orientation, (int)camera.Rotation, data);// maybe change the method to accept double so i don't have to cast the camera rotation to int?
+        var token = this.GetToken(variation, orientation, (int)view.Rotation, data);// maybe change the method to accept double so i don't have to cast the camera rotation to int?
         return mesh.DrawBlock(Atlas.Texture, screenBounds,
             token,
-            camera.Zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, global);
+            view.Zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, global);
     }
     public virtual void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
     {
@@ -628,26 +628,27 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
 
         sb.DrawBlock(Atlas.Texture, screenPos, this.Variations[cell.Variation], zoom, tint, sunlight, blocklight, depth);
     }
-    public virtual void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, byte data, MaterialDef mat, int variation = 0, int orientation = 0)
+    public virtual void DrawPreview(MySpriteBatch sb, IntVec3 global, MapView view, byte data, MaterialDef mat, int variation = 0, int orientation = 0)
     {
-        this.DrawPreview(sb, map, global, cam, Color.White * .5f, data, mat, variation, orientation);
+        this.DrawPreview(sb, global, view, Color.White * .5f, data, mat, variation, orientation);
     }
-    public virtual void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, Color tint, byte data, MaterialDef mat, int variation = 0, int orientation = 0)
+    public virtual void DrawPreview(MySpriteBatch sb, IntVec3 global, MapView view, Color tint, byte data, MaterialDef mat, int variation = 0, int orientation = 0)
     {
-        var depth = global.GetDrawDepth(map, cam);
+        //var depth = global.GetDrawDepth(view);
+        var depth = view.GetDrawDepth(global);
         var materialcolor = this.DrawMaterialColor ? mat.Color : Color.White;// this.GetColor(data);
-        var token = this.GetPreviewToken(variation, orientation, (int)cam.Rotation, data); // change the method to accept double so i don't have to cast the camera rotation to int?
-        var bounds = cam.GetScreenBoundsVector4(global.X, global.Y, global.Z, Bounds, Vector2.Zero);
-        sb.DrawBlock(Atlas.Texture, bounds, token, cam.Zoom, Color.Transparent, tint, materialcolor, Color.White, Vector4.One, Vector4.Zero, depth, this);
+        var token = this.GetPreviewToken(variation, orientation, (int)view.Rotation, data); // change the method to accept double so i don't have to cast the camera rotation to int?
+        var bounds = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, Bounds, Vector2.Zero);
+        sb.DrawBlock(Atlas.Texture, bounds, token, view.Zoom, Color.Transparent, tint, materialcolor, Color.White, Vector4.One, Vector4.Zero, depth, this);
     }
-    protected static void DrawShadow(MySpriteBatch nonopaquemesh, IntVec3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth)
+    protected static void DrawShadow(MySpriteBatch nonopaquemesh, IntVec3 blockCoordinates, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth)
     {
-        nonopaquemesh.DrawBlock(Atlas.Texture, screenBounds, BlockShadow, camera.Zoom, fog, tint, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
+        nonopaquemesh.DrawBlock(Atlas.Texture, screenBounds, BlockShadow, view.Zoom, fog, tint, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
     }
-    protected static void DrawCracks(MySpriteBatch opaquemesh, IntVec3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int damage)
+    protected static void DrawCracks(MySpriteBatch opaquemesh, IntVec3 blockCoordinates, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int damage)
     {
         var cracksTexture = Cracks[damage - 1];
-        opaquemesh.DrawBlock(Atlas.Texture, screenBounds, cracksTexture, camera.Zoom, fog, Color.White, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
+        opaquemesh.DrawBlock(Atlas.Texture, screenBounds, cracksTexture, view.Zoom, fog, Color.White, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
     }
     public virtual AtlasDepthNormals.Node.Token GetToken(int variation, int orientation, int cameraRotation, byte blockdata)
     {

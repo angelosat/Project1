@@ -178,7 +178,7 @@ public class Entity : GameObject
             new(x + .25f, y + .25f, z + this.Def.Height));
     }
 
-    internal void HitTest(MapViewport viewport)
+    internal void HitTest(MapView viewport)
     {
         this.SpriteComp.HitTest(this, viewport);
     }

@@ -52,7 +52,7 @@ namespace Project1.Core.Towns.Digging
         {
             if (!this.Enabled)
                 return;
-            var viewport = ctx.MapViewport;
+            var viewport = ctx.View;
             if (this.End != this.PrevEnd)
             {
                 this.Validate(ctx);

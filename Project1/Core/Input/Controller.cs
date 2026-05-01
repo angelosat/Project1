@@ -91,7 +91,7 @@ namespace Project1.Core.Input
             return this.ksCurrent.GetPressedKeys();
         }
 
-        public static void TrySetMouseoverEntity(MapViewport viewport, Entity entity, Vector3 face, float drawdepth)
+        public static void TrySetMouseoverEntity(MapView viewport, Entity entity, Vector3 face, float drawdepth)
         {
             var global = entity.Global;
             if (entity.Map != viewport.Map)

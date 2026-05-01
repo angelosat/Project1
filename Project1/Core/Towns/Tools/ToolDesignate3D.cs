@@ -140,7 +140,7 @@ class ToolDesignate3D : ToolManagement
     }
     Icon _icon = new Icon(UIManager.Icons32, 12, 32);
     public override Icon Icon => this._icon;
-    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(SpriteBatch sb, MapView viewport)
     {
         base.DrawUI(sb, viewport); 
         
@@ -177,6 +177,7 @@ class ToolDesignate3D : ToolManagement
             return;
         var renderer = ctx.Renderer;
         var camera = ctx.Camera;
+        var view = ctx.View;
         var col = this.Valid ? Color.Lime : Color.Red;
         int x = (int)Math.Min(this.Begin.X, this.End.X);
         int y = (int)Math.Min(this.Begin.Y, this.End.Y);
@@ -196,65 +197,67 @@ class ToolDesignate3D : ToolManagement
                 {
                     Vector3 global = minBegin + new Vector3(i, j, k);
 
-                    var bounds = camera.GetScreenBounds(global, Block.Bounds);
+                    //var bounds = camera.GetScreenBounds(global, Block.Bounds);
+                    var bounds = view.GetScreenBounds(global, Block.Bounds);
                     var pos = new Vector2(bounds.X, bounds.Y);
                     //var depth = global.GetDrawDepth(Engine.Map, cam);
-                    var depth = global.GetDrawDepth(camera);
-                    sb.Draw(Block.Atlas.Texture, pos, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, camera.Zoom, col * .5f, SpriteEffects.None, depth);
+                    //var depth = global.GetDrawDepth(view);
+                    var depth = view.GetDrawDepth(global);
+                    sb.Draw(Block.Atlas.Texture, pos, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, view.Zoom, col * .5f, SpriteEffects.None, depth);
 
                 }
             }
         }
     }
-    void DrawGrid2d(MySpriteBatch sb, Camera camera)
-    {
-        if (!this.Enabled)
-            return;
-        var col = this.Valid ? Color.Lime : Color.Red;
-        int x = (int)Math.Min(this.Begin.X, this.End.X);
-        int y = (int)Math.Min(this.Begin.Y, this.End.Y);
-        for (int i = x; i < x + this.Width; i++)
-            for (int j = y; j < y + this.Height; j++)
-            {
-                Vector3 global = new Vector3(i, j, this.Begin.Z);
+    //void DrawGrid2d(MySpriteBatch sb, Camera camera)
+    //{
+    //    if (!this.Enabled)
+    //        return;
+    //    var col = this.Valid ? Color.Lime : Color.Red;
+    //    int x = (int)Math.Min(this.Begin.X, this.End.X);
+    //    int y = (int)Math.Min(this.Begin.Y, this.End.Y);
+    //    for (int i = x; i < x + this.Width; i++)
+    //        for (int j = y; j < y + this.Height; j++)
+    //        {
+    //            Vector3 global = new Vector3(i, j, this.Begin.Z);
 
-                var bounds = camera.GetScreenBounds(global, Block.Bounds);
-                var pos = new Vector2(bounds.X, bounds.Y);
-                //var depth = global.GetDrawDepth(Engine.Map, cam);
-                var depth = global.GetDrawDepth(camera);
-                sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, camera.Zoom, col*.5f, SpriteEffects.None, depth);
-            }
-    }
+    //            var bounds = camera.GetScreenBounds(global, Block.Bounds);
+    //            var pos = new Vector2(bounds.X, bounds.Y);
+    //            //var depth = global.GetDrawDepth(Engine.Map, cam);
+    //            var depth = global.GetDrawDepth(camera);
+    //            sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, camera.Zoom, col*.5f, SpriteEffects.None, depth);
+    //        }
+    //}
 
-    private void DrawGridCell(MySpriteBatch sb, RenderContext ctx, Color col, Vector3 global)
-    {
-        var camera = ctx.Camera;
-        var renederer = ctx.Renderer;
-        if (global.Z > renederer.MaxDrawZ)
-            return;
-        var bounds = camera.GetScreenBounds(global, Block.Bounds);
-        var pos = new Vector2(bounds.X, bounds.Y);
-        //var depth = global.GetDrawDepth(Engine.Map, cam);
-        var depth = global.GetDrawDepth(camera);
-        if (IsRemoving() && Enabled)
-        {
-            var x = Math.Min(this.Begin.X, this.End.X);
-            var y = Math.Min(this.Begin.Y, this.End.Y);
-            var z = Math.Min(this.Begin.Z, this.End.Z);
+    //private void DrawGridCell(MySpriteBatch sb, RenderContext ctx, Color col, Vector3 global)
+    //{
+    //    var camera = ctx.Camera;
+    //    var renederer = ctx.Renderer;
+    //    if (global.Z > renederer.MaxDrawZ)
+    //        return;
+    //    var bounds = camera.GetScreenBounds(global, Block.Bounds);
+    //    var pos = new Vector2(bounds.X, bounds.Y);
+    //    //var depth = global.GetDrawDepth(Engine.Map, cam);
+    //    var depth = global.GetDrawDepth(camera);
+    //    if (IsRemoving() && Enabled)
+    //    {
+    //        var x = Math.Min(this.Begin.X, this.End.X);
+    //        var y = Math.Min(this.Begin.Y, this.End.Y);
+    //        var z = Math.Min(this.Begin.Z, this.End.Z);
 
-            var xx = this.Begin.X + this.End.X - x;
-            var yy = this.Begin.Y + this.End.Y - y;
-            var zz = this.Begin.Z + this.End.Z - z;
+    //        var xx = this.Begin.X + this.End.X - x;
+    //        var yy = this.Begin.Y + this.End.Y - y;
+    //        var zz = this.Begin.Z + this.End.Z - z;
 
-            var a = new Vector3(x, y, z);
-            var b = new Vector3(xx, yy, zz);
-            BoundingBox box = new BoundingBox(a, b);
-            if (box.Contains(global) != ContainmentType.Disjoint)
-                col = Color.Red;
-        }
-        sb.Draw(Block.Atlas.Texture, pos, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, camera.Zoom, col * .5f, SpriteEffects.None, depth);
+    //        var a = new Vector3(x, y, z);
+    //        var b = new Vector3(xx, yy, zz);
+    //        BoundingBox box = new BoundingBox(a, b);
+    //        if (box.Contains(global) != ContainmentType.Disjoint)
+    //            col = Color.Red;
+    //    }
+    //    sb.Draw(Block.Atlas.Texture, pos, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, camera.Zoom, col * .5f, SpriteEffects.None, depth);
 
-    }
+    //}
     protected override void WriteData(IDataWriter w)
     {
         w.Write(this.Enabled);

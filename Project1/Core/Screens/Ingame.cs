@@ -30,8 +30,8 @@ internal class Ingame : GameScreen
     public override GameScreen Initialize(NetEndpoint net)
     {
         //var map = net.Map.Camera;
-        var map = net.MainViewport.Map;
-        var camera = net.MainViewport.Camera;
+        var map = net.MainView.Map;
+        var camera = net.MainView.Camera;
         if (net is Server)
             DrawServer = true;
         WindowManager = new UIManager();
@@ -65,7 +65,7 @@ internal class Ingame : GameScreen
     {
         base.Update(game, gt);
         //var map = DrawServer? Server.Instance.Map : Client.Instance.Map;
-        var viewport = MainViewport;
+        var viewport = MainView;
         var map = viewport.Map;
         ToolManager.Update(map, this.Scene);
         viewport.Camera.Update(map);
@@ -77,7 +77,7 @@ internal class Ingame : GameScreen
         this.Scene.ObjectBounds.Clear();
         this.Scene.ObjectsDrawn.Clear();
 
-        var viewport = MainViewport;
+        var viewport = MainView;
         renderer.DrawMap(viewport, ToolManager, WindowManager, Scene);
         ToolManager.DrawUI(sb, viewport);
         DrawInterface(sb, Scene);
@@ -90,7 +90,7 @@ internal class Ingame : GameScreen
             return;
 
         //var cam = DrawServer ? Server.Instance.Map.Camera : Client.Instance.Map.Camera;
-        WindowManager.Draw(sb, MainViewport);
+        WindowManager.Draw(sb, MainView);
     }
 
     internal override void OnGameEvent(GameEvent e)
@@ -102,9 +102,9 @@ internal class Ingame : GameScreen
     //static public MapBase GetMap()
     //    => DrawServer ? Server.Instance.MainViewport.Map : Client.Instance.MainViewport.Map;
 
-    static public MapBase MainViewportMap => MainViewport.Map;
-    static public Camera MainViewportCamera => MainViewport.Camera;
-    static public MapViewport MainViewport => DrawServer ? Server.Instance.MainViewport : Client.Instance.MainViewport;
+    static public MapBase MainViewportMap => MainView.Map;
+    static public Camera MainViewportCamera => MainView.Camera;
+    static public MapView MainView => DrawServer ? Server.Instance.MainView : Client.Instance.MainView;
 
     static public bool DrawServer;
     public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)

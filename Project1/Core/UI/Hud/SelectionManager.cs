@@ -52,7 +52,7 @@ public sealed class SelectionManager
 
     public void Bind(NetEndpoint net)
     {
-        var map = net.MainViewport.Map;//.Map;
+        var map = net.MainView.Map;//.Map;
         map.Events.ListenTo<EntityDespawnedEvent>(OnEntityDespawned);
         map.Events.ListenTo<BlockEntityRemovedEvent>(OnBlockEntityRemoved);
         map.Events.ListenTo<BlockEntityUpdatedEvent>(OnBlockEntityUpdated);
@@ -454,7 +454,7 @@ public sealed class SelectionManager
             }
         }
     }
-    public void DrawOnCamera(SpriteBatch sb, MapViewport viewport)
+    public void DrawOnCamera(SpriteBatch sb, MapView viewport)
     {
         if (this.MultipleSelected.Count == 0)
             return;

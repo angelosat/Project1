@@ -76,12 +76,12 @@ namespace Project1.Core.Blocks
             {
                 info.AddInfo(new Label(this.Product));
             }
-            protected override void OnDrawUI(SpriteBatch sb, MapViewport viewport, IntVec3 global)
+            protected override void OnDrawUI(SpriteBatch sb, MapView view, IntVec3 global)
             {
                 if (ToolManager.Instance.ActiveTool != null)
                     if (ToolManager.Instance.ActiveTool.Target != null)
                         if (ToolManager.Instance.ActiveTool.Target.Type == TargetType.Cell && (IntVec3)ToolManager.Instance.ActiveTool.Target.Global == global)
-                            BarImmediate.Draw(sb, viewport.Camera, global.Above, "", this.BuildProgress.Percentage, viewport.Camera.Zoom * .2f);
+                            BarImmediate.Draw(sb, view, global.Above, "", this.BuildProgress.Percentage, view.Zoom * .2f);
             }
 
             protected override void AddSaveData(SaveTag tag)

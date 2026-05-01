@@ -72,6 +72,7 @@ class ToolBuildSinglePreview : ToolBlockBuild
     {
         var cam = ctx.Camera;
         var map = ctx.Map;
+        var view = ctx.View;
         var renderer = ctx.Renderer;
         if (this.Target == null && !this.Enabled)
             return;
@@ -79,7 +80,7 @@ class ToolBuildSinglePreview : ToolBlockBuild
         var atlastoken = this.Block.GetDefault();
         var global = this.Enabled ? this.Begin : (IntVec3)this.Target.FaceGlobal;
         atlastoken.Atlas.Begin(renderer.Effect);
-        this.Block.DrawPreview(sb, map, global, cam, this.State, this.Material, this.Variation, this.Orientation);
+        this.Block.DrawPreview(sb, global, view, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();
 
         this.Block.DrawInteractionCells(sb, ctx, global, this.Orientation);

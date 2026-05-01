@@ -4,6 +4,7 @@ using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Framework;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Project1.Core.Graphics;
 
@@ -28,7 +29,9 @@ struct Shadow
         if (ctx.Renderer.IsCompletelyHiddenByFog(this.Global.Z))
             return;
         var camera = ctx.Camera;
-        float dn = this.Global.GetDrawDepth(ctx.Map, camera);
+        var view = ctx.View;
+        //float dn = this.Global.GetDrawDepth(ctx.Map, camera);
+        float dn = view.GetDrawDepth(this.Global);
         //Vector2 pos = camera.GetScreenPosition(this.Global).ToFloored();
         var pos = ctx.GetScreenPosition(this.Global).ToFloored();
         Sprite.Shadow.Draw(sb, pos, Color.White * this.Alpha, 0, Sprite.Shadow.OriginGround, camera.Zoom*Parent.Body.Scale, SpriteEffects.None, dn);

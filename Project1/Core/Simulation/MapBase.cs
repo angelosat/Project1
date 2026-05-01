@@ -778,8 +778,8 @@ public abstract class MapBase : Inspectable
     public abstract void UpdateLight(IEnumerable<IntVec3> positions);
     public abstract void DrawBlocks(MySpriteBatch sb, RenderContext ctx, EngineArgs a);
     public abstract void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene);
-    public abstract void DrawInterface(SpriteBatch sb, MapViewport viewport);
-    public abstract void DrawWorld(MySpriteBatch sb, MapViewport viewport);
+    public abstract void DrawInterface(SpriteBatch sb, MapView viewport);
+    public abstract void DrawWorld(MySpriteBatch sb, MapView viewport);
     public abstract void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx);
     public abstract void GetTooltipInfo(Control tooltip);
     internal void AddBlockEntityInternal(BlockEntity entity)

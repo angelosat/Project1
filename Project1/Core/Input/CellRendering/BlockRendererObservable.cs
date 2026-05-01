@@ -43,6 +43,7 @@ public sealed class BlockRendererObservable
             return;
         var r = ctx.Renderer;
         var c = ctx.Camera;
+        var view = ctx.View;
         var bySlice = this.Cells.ToLookup(c => c.Z);
         foreach (var z in this.InvalidatedSlices)
         {
@@ -56,7 +57,7 @@ public sealed class BlockRendererObservable
                 foreach (var cell in cells)
                     r.DrawBlockSelectionGlobal(
                         slice,
-                        c,
+                        view,
                         this.BlockToken,
                         cell);
             }
@@ -72,15 +73,15 @@ public sealed class BlockRendererObservable
     {
         this.Validate(ctx);
         var r = ctx.Renderer;
-        var c = ctx.Camera;
-        r.PrepareShader(ctx.MapViewport);
-        Coords.Rotate(c, 0, 0, out int rotx, out int roty);
+        var view = ctx.View;
+        r.PrepareShader(ctx.View);
+        view.Rotate(0, 0, out int rotx, out int roty);
         var world = Matrix.CreateTranslation(new Vector3(0, 0, (rotx + roty) * Chunk.Size));
         r.Effect.Parameters["World"].SetValue(world);
         r.Effect.CurrentTechnique.Passes["Pass1"].Apply();
 
         foreach (var slice in this.Slices)
-            if (slice.Key <= ctx.MapViewport.Settings.DrawLevel)
+            if (slice.Key <= ctx.View.Settings.DrawLevel)
                 slice.Value.Draw();
     }
 }

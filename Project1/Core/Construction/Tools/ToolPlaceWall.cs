@@ -113,10 +113,10 @@ public partial class ToolPlaceWall : DefaultTool
     private void SetHeight()
     {
         //var endscreenposition = ScreenManager.CurrentScreen.Camera.GetScreenPosition(this.End);
-        var camera = Ingame.MainViewport.Camera;
-        var endscreenposition = camera.GetScreenPosition(this.End);
+        var view = Ingame.MainView;
+        var endscreenposition = view.GetScreenPosition(this.End);
         var currentposition = UIManager.Mouse;
-        var length = Math.Max(0, endscreenposition.Y - currentposition.Y) / camera.Zoom;
+        var length = Math.Max(0, endscreenposition.Y - currentposition.Y) / view.Zoom;
         var lengthinblocks = (int)(length / Block.BlockHeight);
         this.Height = lengthinblocks;
     }
@@ -139,6 +139,7 @@ public partial class ToolPlaceWall : DefaultTool
         if (!this.Enabled)
             return;
         var cam = ctx.Camera;
+        var view = ctx.View;
         var end = this.End + Vector3.UnitZ * this.Height;
         var col = this.Valid ? Color.Lime : Color.Red;
         int x = (int)Math.Min(this.Begin.X, end.X);
@@ -158,16 +159,18 @@ public partial class ToolPlaceWall : DefaultTool
                 {
                     Vector3 global = minBegin + new Vector3(i, j, k);
 
-                    var bounds = cam.GetScreenBounds(global, Block.Bounds);
+                    //var bounds = cam.GetScreenBounds(global, Block.Bounds);
+                    var bounds = view.GetScreenBounds(global, Block.Bounds);
                     var pos = new Vector2(bounds.X, bounds.Y);
-                    var depth = global.GetDrawDepth(this.Map, cam);
+                    //var depth = global.GetDrawDepth(this.Map, cam);
+                    var depth = view.GetDrawDepth(global);
                     sb.Draw(Sprite.Atlas.Texture, pos, Sprite.BlockHighlight.AtlasToken.Rectangle, 0, Vector2.Zero, cam.Zoom, col * .5f, SpriteEffects.None, depth);
                 }
             }
         }
     }
 
-    internal override void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, MapView viewport)
     {
         base.DrawUI(sb, viewport);
         if (IsDesignating())

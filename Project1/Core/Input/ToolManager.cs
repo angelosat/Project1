@@ -48,7 +48,7 @@ public sealed class ToolManager : IInputEventHandler
     {
         var actor = e.Actor;
         var net = e.Actor?.Net ?? e.LastActor.Net;
-        net.MainViewport.ToggleFollow(actor);
+        net.MainView.ToggleFollow(actor);
         SetTool(actor is not null ? ToolControlActor : null);
     }
 
@@ -120,7 +120,7 @@ public sealed class ToolManager : IInputEventHandler
                     renderer.DrawBlockMouseover(sb, pl.Target.Global, pl.Color);
     }
 
-    internal void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal void DrawUI(SpriteBatch sb, MapView viewport)
     {
         if (this.ActiveTool is null)
             return;
@@ -134,7 +134,7 @@ public sealed class ToolManager : IInputEventHandler
                     pl.Target.Object.GetScreenBounds(viewport).DrawHighlightBorder(sb, pl.Color, camera.Zoom);
         sb.End();
     }
-    internal void DrawPlayerMousePointers(SpriteBatch sb, MapViewport viewport)
+    internal void DrawPlayerMousePointers(SpriteBatch sb, MapView viewport)
     {
         var map = viewport.Map;
         var camera = viewport.Camera;
@@ -152,7 +152,7 @@ public sealed class ToolManager : IInputEventHandler
         }
     }
 
-    private static Vector2 GetSmoothedMousePosition(MapViewport viewport, PlayerData pl)
+    private static Vector2 GetSmoothedMousePosition(MapView viewport, PlayerData pl)
     {
         //Vector2 pos = camera.GetScreenPosition(pl.Target);
         var pos = viewport.GetScreenPosition(pl.Target);

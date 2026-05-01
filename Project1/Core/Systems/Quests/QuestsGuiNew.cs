@@ -42,7 +42,7 @@ internal sealed class CreateFetchQuestGui : GroupBox
 
     private void Apply()
     {
-        Ingame.Instance.Events.Post(new PlayerRequestQuestCreationEvent(Ingame.Net.MainViewport.Map.ID, this.refDef, this.materialDef));
+        Ingame.Instance.Events.Post(new PlayerRequestQuestCreationEvent(Ingame.Net.MainView.Map.ID, this.refDef, this.materialDef));
     }
 
     void CalculateReward()
@@ -122,7 +122,7 @@ internal sealed class QuestsGuiNew : GroupBox
 
     private static void Delete(QuestRuntime q)
     {
-        Ingame.Instance.Events.Post(new PlayerRequestQuestDeletionEvent(Ingame.Net.MainViewport.Map.ID, q.Id));
+        Ingame.Instance.Events.Post(new PlayerRequestQuestDeletionEvent(Ingame.Net.MainView.Map.ID, q.Id));
     }
 
     private void OnQuestRemoved(QuestRuntime q)

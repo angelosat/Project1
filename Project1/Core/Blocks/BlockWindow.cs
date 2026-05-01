@@ -2,6 +2,7 @@
 using Project1.Core.Construction;
 using Project1.Core.Graphics;
 using Project1.Core.Legacy.Crafting;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -66,16 +67,16 @@ class BlockWindow : Block
         base.OnPlaced(map, global + IntVec3.UnitZ, material, GetData(1), variation, orientation, notify);
     }
  
-    public override void DrawPreview(MySpriteBatch sb, MapBase map, IntVec3 global, Camera cam, byte data, MaterialDef material, int variation = 0, int orientation = 0)
+    public override void DrawPreview(MySpriteBatch sb, IntVec3 global, MapView view, byte data, MaterialDef material, int variation = 0, int orientation = 0)
     {
-        var orientationindex = (int)(orientation + cam.Rotation) % 2;
+        var orientationindex = (int)(orientation + view.Rotation) % 2;
         var bottom = this.PartsSeparate[0][orientationindex][0];
         var top = this.PartsSeparate[1][orientationindex][0];
-        sb.DrawBlock(Block.Atlas.Texture, map, global, bottom, cam, Color.Transparent, Color.White * 0.5f, Color.White, Vector4.One);
-        sb.DrawBlock(Block.Atlas.Texture, map, global + IntVec3.UnitZ, top, cam, Color.Transparent, Color.White * 0.5f, Color.White, Vector4.One);
+        sb.DrawBlock(Block.Atlas.Texture, global, bottom, view, Color.Transparent, Color.White * 0.5f, Color.White, Vector4.One);
+        sb.DrawBlock(Block.Atlas.Texture, global + IntVec3.UnitZ, top, view, Color.Transparent, Color.White * 0.5f, Color.White, Vector4.One);
     }
 
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         //15 18 65
         //sunlight 255 16 239(159?) 255
@@ -94,11 +95,11 @@ class BlockWindow : Block
         //blocklight .0625 1
 
         var partindex = GetPartIndex(data);
-        var orientationindex = (int)(orientation + camera.Rotation) % 2;
+        var orientationindex = (orientation + view.Rotation) % 2;
         var parts = this.PartsSeparate[partindex][orientationindex];
         var frame = parts[0];
         var glass = parts[1];
-        canvas.Opaque.DrawBlock(Block.Atlas.Texture, screenBounds, frame, camera.Zoom, fog, Color.White, sunlight, blocklight, depth, this, global);
-        return canvas.Transparent.DrawBlock(Block.Atlas.Texture, screenBounds, glass, camera.Zoom, fog, Color.White, sunlight, blocklight, depth, this, global);
+        canvas.Opaque.DrawBlock(Block.Atlas.Texture, screenBounds, frame, view.Zoom, fog, Color.White, sunlight, blocklight, depth, this, global);
+        return canvas.Transparent.DrawBlock(Block.Atlas.Texture, screenBounds, glass, view.Zoom, fog, Color.White, sunlight, blocklight, depth, this, global);
     }
 }

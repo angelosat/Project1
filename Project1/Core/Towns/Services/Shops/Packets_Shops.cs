@@ -49,7 +49,7 @@ internal static class Packets_Shops
         if(Ingame.Net.IsServer)
         {
             foreach (var item in e.Items)
-                Ingame.Net.MainViewport.Map.Town.Shops.ToggleForSale(item);
+                Ingame.Net.MainView.Map.Town.Shops.ToggleForSale(item);
         }
         SendPlayerToggledItemForSale(e.Items);
     }

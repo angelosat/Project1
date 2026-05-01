@@ -27,7 +27,7 @@ class ToolDesignateZone : ToolZoningPositionsNew
     void Perform(IntVec3 begin, int width, int height, bool isRemoval)
     {
         var end = new IntVec3(begin.X + width, begin.Y + height, begin.Z);
-        Ingame.Instance.Events.Post(new PlayerAddingZoneEvent(this.Def, this.EditingZone, Ingame.Net.MainViewport.Map.ID, begin, end, isRemoval));
+        Ingame.Instance.Events.Post(new PlayerAddingZoneEvent(this.Def, this.EditingZone, Ingame.Net.MainView.Map.ID, begin, end, isRemoval));
     }
 
     public override Messages MouseLeftPressed(System.Windows.Forms.HandledMouseEventArgs e)

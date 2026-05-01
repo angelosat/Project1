@@ -123,7 +123,7 @@ class ToolZoningPositionsNew : ToolManagement
             this.End = new(target.Global.XY(), this.Begin.Z);
     }
    
-    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(SpriteBatch sb, MapView viewport)
     {
         base.DrawUI(sb, viewport); 
         

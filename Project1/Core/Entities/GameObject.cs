@@ -238,7 +238,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             comp.OnNameplateCreated(this, plate);
         }
     }
-    public Rectangle GetScreenBounds(MapViewport viewport)
+    public Rectangle GetScreenBounds(MapView viewport)
     {
         var g = this.Global;
         var bounds = viewport.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
@@ -247,7 +247,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public Rectangle GetScreenBounds(RenderContext ctx)
     {
         var g = this.Global;
-        var bounds = ctx.MapViewport.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
+        var bounds = ctx.View.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
         return bounds;
     }
     public virtual Color GetNameplateColor()
@@ -650,7 +650,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         foreach (var comp in this.Components.Values)
             comp.DrawMouseover(sb, ctx);
     }
-    internal void DrawInterface(SpriteBatch sb, MapViewport viewport)
+    internal void DrawInterface(SpriteBatch sb, MapView viewport)
     {
         foreach (var comp in this.Components.Values)
             comp.DrawUI(sb, viewport);
@@ -663,18 +663,21 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
         var blockHeight = Block.GetBlockHeight(target.Map, target.Global);
         var global = target.Global + target.Face * new Vector3(1, 1, blockHeight) + (precise ? target.Precise : Vector3.Zero);
-        this.DrawPreview(sb, ctx.Camera, global);
+        this.DrawPreview(sb, ctx.View, global);
     }
 
-    public void DrawPreview(MySpriteBatch sb, Camera camera, Vector3 global)
+    public void DrawPreview(MySpriteBatch sb, MapView view, Vector3 global)
     {
         var body = this.Body;
-        var pos = camera.GetScreenPositionFloat(global);
-        pos += body.OriginGroundOffset * camera.Zoom;
+        var pos = view.GetScreenPositionFloat(global);
+        pos += body.OriginGroundOffset * view.Zoom;
         // TODO: fix difference between tint and material in this drawtree method
         var tint = Color.White * .5f;
         //body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, cam.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(Engine.Map, cam));
-        body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, camera.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(camera));
+        //var depth = global.GetDrawDepth(view.Camera);
+        var depth = view.GetDrawDepth(global);
+
+        body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, view.Zoom, 0, SpriteEffects.None, 0.5f, depth);
     }
 
     public virtual void GetTooltipInfo(Control tooltip)
@@ -1128,12 +1131,12 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     internal bool IsForbiddable() => !this.HasComponent<NpcComponent>();
     
-    internal void DrawHighlight(SpriteBatch sb, MapViewport viewport)
+    internal void DrawHighlight(SpriteBatch sb, MapView viewport)
     {
         SpriteComp.DrawHighlight(this, sb, viewport);
     }
 
-    internal void DrawBorder(SpriteBatch sb, MapViewport viewport)
+    internal void DrawBorder(SpriteBatch sb, MapView viewport)
     {
         var camera = viewport.Camera;
         this.GetScreenBounds(viewport).DrawHighlightBorder(sb, .5f, camera.Zoom);

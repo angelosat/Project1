@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Graphics;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
@@ -23,15 +24,15 @@ sealed class BlockConstruction : Block
             throw new InvalidOperationException("Missing or unexpected block entity in construction block placement");
         return null;
     }
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         var block = chunk.Map.GetBlockComp<BlockConstructionComp>(global).Block;
         block = BlockDefOf.Construction.Block;
         AtlasDepthNormals.Node.Token token;
-            token = block.GetToken((int)camera.Rotation, chunk.Map.GetCell(global));
+            token = block.GetToken(view.Rotation, chunk.Map.GetCell(global));
 
         var color = Color.White;
         var targetMesh = canvas.Opaque;
-        return targetMesh.DrawBlock(Block.Atlas.Texture, screenBounds, token, camera.Zoom, fog, color, sunlight, blocklight, depth, this, global);
+        return targetMesh.DrawBlock(Block.Atlas.Texture, screenBounds, token, view.Zoom, fog, color, sunlight, blocklight, depth, this, global);
     }
 }

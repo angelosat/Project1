@@ -17,9 +17,9 @@ namespace Project1.Core.Input;
 public class ControlTool : IInputEventHandler
 {
     public enum Messages { Default, Remove }
-    protected MapBase Map => Ingame.MainViewport.Map;
-    protected Camera Camera => Ingame.MainViewport.Camera;
-    protected MapViewport Viewport => Ingame.MainViewport;
+    protected MapBase Map => Ingame.MainView.Map;
+    protected Camera Camera => Ingame.MainView.Camera;
+    protected MapView Viewport => Ingame.MainView;
 
     protected void Sync()
     {
@@ -64,7 +64,7 @@ public class ControlTool : IInputEventHandler
     public virtual void UpdateRemote(InteractionTarget target) { this.Target = target; }
     public virtual void Update()
     {
-        var viewport = Ingame.MainViewport;
+        var viewport = Ingame.MainView;
         var cam = viewport.Camera;
         //cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
         var result = viewport.Picker.MousePicking(viewport, UIManager.Mouse);
@@ -158,7 +158,7 @@ public class ControlTool : IInputEventHandler
     internal virtual void Use() { }
     internal virtual void Throw() { }
 
-    internal virtual void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal virtual void DrawUI(SpriteBatch sb, MapView viewport)
     {
         var icon = this.GetIcon();
         icon?.Draw(sb, UIManager.Mouse + new Vector2(icon.SourceRect.Width / 2, 0));

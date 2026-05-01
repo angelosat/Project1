@@ -25,16 +25,19 @@ public sealed class BlockRenderer
         this.Batch.Clear();
         var r = ctx.Renderer;
         var c = ctx.Camera;
+        var view = ctx.View;
         foreach (var pos in positions)
-            r.DrawBlockSelectionGlobal(this.Batch, c, this.BlockToken, pos);
+            r.DrawBlockSelectionGlobal(this.Batch, view, this.BlockToken, pos);
     }
     public void DrawBlocks(RenderContext ctx)
     {
         var camera = ctx.Camera;
         var renderer = ctx.Renderer;
-        renderer.PrepareShader(ctx.MapViewport);
-        Coords.Iso(camera, 0 * Chunk.Size, 0 * Chunk.Size, 0, out float x, out float y);
-        Coords.Rotate(camera, 0, 0, out int rotx, out int roty);
+        var view = ctx.View;
+        renderer.PrepareShader(ctx.View);
+        view.Iso(0 * Chunk.Size, 0 * Chunk.Size, 0, out float x, out float y);
+        //Coords.Rotate(camera, 0, 0, out int rotx, out int roty);
+        view.Rotate(0, 0, out int rotx, out int roty);
         var world = Matrix.CreateTranslation(new Vector3(x, y, (rotx + roty) * Chunk.Size));
         renderer.Effect.Parameters["World"].SetValue(world);
         renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();

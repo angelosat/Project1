@@ -7,14 +7,14 @@ using System;
 
 namespace Project1.Core.UI;
 
-public class FloatingBar : InteractionBar
+public sealed class FloatingBar : InteractionBar
 {
     static public float Speed = 0.5f, Life = 300f;
     float CurrentLife;
    
     public override void Update()
     {
-        var rect = Ingame.MainViewport.Camera.GetScreenBounds(Object.Global, Object.GetComponent<SpriteComp>("Sprite").Sprite.GetBounds());
+        var rect = Ingame.MainView.GetScreenBounds(Object.Global, Object.GetComponent<SpriteComp>("Sprite").Sprite.GetBounds());
         Location = new Vector2(rect.X + rect.Width / 2 - Width / 2, rect.Y);
         CurrentLife -= 1;
         if (CurrentLife < 0)

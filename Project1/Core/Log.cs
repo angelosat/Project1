@@ -138,7 +138,7 @@ List of available commands:
                         Set(wordQueue);
                         break;
                     case "/updatethumb":
-                        UpdateMapThumpnail(Ingame.Net.MainViewport.Map);
+                        UpdateMapThumpnail(Ingame.Net.MainView.Map);
                         break;
                    
                     case "/help":
@@ -186,7 +186,7 @@ List of available commands:
                     try
                     {
                         color = (Color)typeof(Color).GetProperty(colorName).GetValue(null, null);
-                        Ingame.Net.MainViewport.Map.SetAmbientColor(color);
+                        Ingame.Net.MainView.Map.SetAmbientColor(color);
                         break;
                     }
                     catch (Exception)
@@ -198,7 +198,7 @@ List of available commands:
                         int r = int.Parse(words.Dequeue()),
                             g = int.Parse(words.Dequeue()),
                             b = int.Parse(words.Dequeue());
-                        Ingame.Net.MainViewport.Map.SetAmbientColor(new Color(r, g, b));
+                        Ingame.Net.MainView.Map.SetAmbientColor(new Color(r, g, b));
                     }
                     catch (Exception)
                     {
@@ -209,7 +209,7 @@ List of available commands:
                 case "hour":
                 case "time":
                     int t = int.Parse(words.Dequeue());
-                    foreach (var ch in Ingame.Net.MainViewport.Map.GetActiveChunks())
+                    foreach (var ch in Ingame.Net.MainView.Map.GetActiveChunks())
                         ch.Value.LightCache.Clear();
                     Enqueue(EntryTypes.System, "Hour set to " + t);
                     break;

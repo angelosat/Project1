@@ -289,6 +289,7 @@ public sealed class Client : NetEndpoint
             }
             while (this.CurrentTick + ClientTickDelay < this.TickTarget)
             {
+                this.MainView.Update(1);
                 this._tick++;
                 this.HandleBufferedPackets();
                 this.HandleBufferedTimestampedNew();
@@ -311,7 +312,7 @@ public sealed class Client : NetEndpoint
         }
 
         //if (this.PlayerData is not null && this.Map is not null)
-        if (this.PlayerData is not null && this.MainViewport is not null)
+        if (this.PlayerData is not null && this.MainView is not null)
             PacketMousePosition.Send(Instance, this.PlayerData.ID, ToolManager.CurrentTarget); // TODO: do this at the toolmanager class instead of here
 
         PacketAcks.Send(this, this.PlayerData); // acks are written to the unreliable packet
@@ -913,7 +914,7 @@ public sealed class Client : NetEndpoint
                 return;
 
             case "rebuildchunks":
-                foreach (var chunk in Instance.MainViewport.Map.GetActiveChunks().Values)
+                foreach (var chunk in Instance.MainView.Map.GetActiveChunks().Values)
                 {
                     chunk.LightCache.Clear();
                     chunk.InvalidateMesh();
@@ -1082,19 +1083,19 @@ public sealed class Client : NetEndpoint
     internal void UnloadMap(MapId mapid)
     {
         var map = this.World.Get(mapid);
-        if (this.MainViewport.Map == map)
+        if (this.MainView.Map == map)
             throw new NotImplementedException();
         Registry.MapEventHooksClient.UnHook(map.Events);
         this.World.RemoveMap(mapid);
     }
-    public override MapViewport ViewMap(MapId mapid)
+    public override MapView ViewMap(MapId mapid)
     {
         var map = this.World.Get(mapid);
         var camera = new Camera();
         //var renderer = new Renderer();
         var bounds = Game1.Bounds;
-        this.MainViewport = new(bounds.Width, bounds.Height, map, camera);//, renderer);
-        return this.MainViewport;
+        this.MainView = new(bounds.Width, bounds.Height, map, camera);//, renderer);
+        return this.MainView;
     }
     internal void SetWorld(StaticWorld world)
     {

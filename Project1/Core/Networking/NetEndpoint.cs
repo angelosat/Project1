@@ -16,7 +16,7 @@ public abstract partial class NetEndpoint : INetEndpoint
 {
     public abstract bool IsServer { get; }
     public abstract bool IsClient { get; }
-    internal MapViewport MainViewport;
+    internal MapView MainView;
 
     protected readonly NetworkStream[] StreamsArray = [new(ReliabilityType.Unreliable, false), new(ReliabilityType.Reliable), new(ReliabilityType.OrderedReliable)];
     protected NetworkStream GetStream(ReliabilityType reliability)
@@ -53,7 +53,7 @@ public abstract partial class NetEndpoint : INetEndpoint
     public abstract PlayerData CurrentPlayer { get; }
     public abstract ulong CurrentTick { get; }
     public abstract WorldBase World { get; set; }
-    public abstract MapViewport ViewMap(MapId mapid);
+    public abstract MapView ViewMap(MapId mapid);
     public abstract int Speed { get; protected set; }
     public abstract bool DisposeObject(Entity obj);
     public abstract bool DisposeObject(int netID);

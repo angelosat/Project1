@@ -62,8 +62,8 @@ public class ToolManagement : DefaultTool
     public override void Update()
     {
         var map = Ingame.MainViewportMap;
-        var cam = Ingame.MainViewport.Camera;
-        Ingame.MainViewport.Picker.Perform(Ingame.MainViewport, this.TargetOnlyBlocks);
+        var cam = Ingame.MainView.Camera;
+        Ingame.MainView.Picker.Perform(Ingame.MainView, this.TargetOnlyBlocks);
 
         this.UpdateTargetNew();
 
@@ -158,7 +158,7 @@ public class ToolManagement : DefaultTool
         delta *= minL;
 
         delta *= .01f;
-        Ingame.MainViewport.Move(Ingame.MainViewport.Camera.Coordinates += delta * 4);
+        Ingame.MainView.Move(Ingame.MainView.Camera.Coordinates += delta * 4);
 
     }
     private void MouseDrag()
@@ -166,8 +166,8 @@ public class ToolManagement : DefaultTool
         var currentMouse = UIManager.Mouse;
         var delta = currentMouse - this.MouseScrollOrigin;
         //var map = Ingame.MainViewport.Map;
-        var cam = Ingame.MainViewport.Camera;
-        Ingame.MainViewport.Move(this.CameraCoordinatesOrigin - delta / cam.Zoom);
+        var cam = Ingame.MainView.Camera;
+        Ingame.MainView.Move(this.CameraCoordinatesOrigin - delta / cam.Zoom);
     }
 
     public override void MoveKeys()
@@ -184,7 +184,7 @@ public class ToolManagement : DefaultTool
             xx += 1;
         if (xx != 0 || yy != 0)
         {
-            var cam = Ingame.MainViewport.Camera;
+            var cam = Ingame.MainView.Camera;
 
             double rx, ry;
             double cos = Math.Cos((-cam.Rotation) * Math.PI / 2f);
@@ -199,7 +199,7 @@ public class ToolManagement : DefaultTool
             nextStep.Normalize();
 
             var speed = HotkeyCameraFaster.ShortcutKeys.Any(k => InputState.IsKeyDown(k)) ? 3 : 1;
-            Ingame.MainViewport.Move(cam.Coordinates += new Vector2(xx, yy) * 4 * speed);
+            Ingame.MainView.Move(cam.Coordinates += new Vector2(xx, yy) * 4 * speed);
         }
     }
     public override void HandleKeyDown(KeyEventArgs e)
@@ -232,10 +232,10 @@ public class ToolManagement : DefaultTool
     {
         base.HandleMouseWheel(e);
         var map = Ingame.MainViewportMap;
-        var cam = Ingame.MainViewport.Camera;
+        var cam = Ingame.MainView.Camera;
         if (InputState.IsKeyDown(System.Windows.Forms.Keys.LControlKey))
         {
-            Ingame.MainViewport.AdjustDrawLevel(InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? e.Delta * 16 : e.Delta);
+            Ingame.MainView.AdjustDrawLevel(InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? e.Delta * 16 : e.Delta);
             return;
         }
         if (InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu))
@@ -281,8 +281,8 @@ public class ToolManagement : DefaultTool
             this.MouseMiddleTimestamp = DateTime.Now;
         this.ScrollingMode = this.MouseDrag;
         this.MouseScrollOrigin = UIManager.Mouse;
-        var map = Ingame.MainViewport.Map;
-        var cam = Ingame.MainViewport.Camera;
+        var map = Ingame.MainView.Map;
+        var cam = Ingame.MainView.Camera;
         this.CameraCoordinatesOrigin = cam.Coordinates;
         return Messages.Default;
     }
@@ -389,7 +389,7 @@ public class ToolManagement : DefaultTool
         if (Engine.DrawRegions && this.Target.Type != TargetType.Null)
             map.Regions.Draw(this.Target.Global, sb, renderer, cam);
     }
-    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    internal override void DrawUI(SpriteBatch sb, MapView viewport)
     {
         if (this.ScrollingMode == this.MouseScroll)
             Icon.Cross.Draw(sb, this.MouseScrollOrigin, Vector2.One * .5f);
@@ -400,6 +400,6 @@ public class ToolManagement : DefaultTool
     {
         if (ToolManager.Instance.ActiveTool is not ToolManagement)
             return;
-        Ingame.MainViewport.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
+        Ingame.MainView.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
     }
 }

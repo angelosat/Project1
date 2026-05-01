@@ -17,7 +17,7 @@ sealed class FloatingText : Label
     }
     static public void Create(MapBase map, Func<Vector3> global, string text, Action<FloatingText> initializer = null)
     {
-        if (map is null || map != Ingame.Net.MainViewport.Map)
+        if (map is null || map != Ingame.Net.MainView.Map)
             return;
         var ft = new FloatingText(global, text);
         ft.Font = UIManager.FontBold;
@@ -75,10 +75,9 @@ sealed class FloatingText : Label
 
     public override void Update()
     {
-        var cam = Ingame.MainViewport.Camera;
-
+        var view = Ingame.MainView;
         var global = this.GetGlobal();
-        Vector2 origin = cam.GetScreenPosition(global) / UIManager.Scale;
+        Vector2 origin = view.GetScreenPosition(global) / UIManager.Scale;
         Location = origin + Position;
         Position += Velocity;
         Velocity.Y += Gravity;

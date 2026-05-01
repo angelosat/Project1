@@ -27,7 +27,7 @@ class Coords
 
         return new Vector2((int)(xx - camera.Zoom * camera.Location.X), (int)(yy - camera.Zoom * camera.Location.Y));
     }
-    public static Vector2 GetScreenCoords(Vector3 global, MapViewport viewport, Vector3 unitDimensions)
+    public static Vector2 GetScreenCoords(Vector3 global, MapView viewport, Vector3 unitDimensions)
     {
         var camera = viewport.Camera;
         float x = global.X, y = global.Y, z = global.Z;
@@ -56,78 +56,19 @@ class Coords
     
     public static void Ortho(int x, int y, out float xx, out float yy)
     {
-        Vector2 xy = new Vector2(x, 2 * y);
+        var xy = new Vector2(x, 2 * y);
         xy = Vector2.Transform(xy, IsoMatrix);
         xx = xy.X;
         yy = xy.Y;
     }
-
+   
     public static Vector2 Rotate(double radians, Vector2 vector)
     {
         float x = vector.X, y = vector.Y;
-        return new Vector2((float)(x * Math.Cos(radians) - y * Math.Sin(radians)), (float)(x * Math.Sin(radians) + y * Math.Cos(radians)));
+        var cos = Math.Cos(radians);
+        var sin = Math.Sin(radians);
+        return new Vector2((float)(x * cos - y * sin), (float)(x * sin + y * cos));
     }
-    public static Vector2 Rotate(Camera camera, Vector2 vector)
-    {
-        float x = vector.X, y = vector.Y;
-        return new Vector2((float)(x * camera.RotCos - y * camera.RotSin), (float)(x * camera.RotSin + y * camera.RotCos));
-    }
-    public static void Rotate(Camera camera, IntVec2 normal, out IntVec2 rotated)
-    {
-        rotated = new IntVec2(
-            (int)(normal.X * camera.RotCos - normal.Y* camera.RotSin),
-            (int)(normal.X * camera.RotSin + normal.Y * camera.RotCos)
-            );
-    }
-    public static void Rotate(Camera camera, float x, float y, out int xx, out int yy)
-    {
-        xx = (int)(x * camera.RotCos - y * camera.RotSin);
-        yy = (int)(x * camera.RotSin + y * camera.RotCos);
-    }
-    public static void Rotate(Camera camera, float x, float y, out float xx, out float yy)
-    {
-        xx = (float)(x * camera.RotCos - y * camera.RotSin);
-        yy = (float)(x * camera.RotSin + y * camera.RotCos);
-    }
-    public static void Rotate(int r, Vector3 global, out Vector3 rotatedGlobal)
-    {
-        int _r = -r;
-        int _Rotation = _r % 4;
-        if (_Rotation < 0)
-        {
-            _Rotation = 4 + _r;
-        }
-
-        double RotCos = Math.Cos((Math.PI / 2f) * _Rotation);
-        double RotSin = Math.Sin((Math.PI / 2f) * _Rotation);
-
-        RotCos = Math.Round(RotCos + RotCos) / 2f;
-        RotSin = Math.Round(RotSin + RotSin) / 2f;
-
-        int xx, yy;
-        xx = (int)(global.X * RotCos - global.Y * RotSin);
-        yy = (int)(global.X * RotSin + global.Y * RotCos);
-        rotatedGlobal = new Vector3(xx, yy, global.Z);
-    }
-    public static void Rotate(int r, float x, float y, out int xx, out int yy)
-    {
-        int _r = -r;
-        int _Rotation = _r % 4;
-        if (_Rotation < 0)
-        {
-            _Rotation = 4 + _r;
-        }
-
-        double RotCos = Math.Cos((Math.PI / 2f) * _Rotation);
-        double RotSin = Math.Sin((Math.PI / 2f) * _Rotation);
-
-        RotCos = Math.Round(RotCos + RotCos) / 2f;
-        RotSin = Math.Round(RotSin + RotSin) / 2f;
-
-        xx = (int)(x * RotCos - y * RotSin);
-        yy = (int)(x * RotSin + y * RotCos);
-    }
-    
     
     static readonly Matrix MatrixRot0 = new(
         1, 0, 0, 0,

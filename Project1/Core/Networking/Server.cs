@@ -239,6 +239,7 @@ public class Server : NetEndpoint
     {
         for (int i = 0; i < this.Speed; i++)
         {
+            this.MainView.Update(1);
             this.World.Tick();
             foreach (var map in this.World.Maps)
             {
@@ -641,14 +642,14 @@ public class Server : NetEndpoint
         this.World.Net = this;
         Registry.WorldEventHooksServer.HookTo(world.Events);
     }
-    public override MapViewport ViewMap(MapId mapid)
+    public override MapView ViewMap(MapId mapid)
     {
         var map = this.World.Get(mapid);
         var camera = new Camera();
         //var renderer = new Renderer();
         var bounds = Game1.Bounds;
-        this.MainViewport = new(bounds.Width, bounds.Height, map, camera);//, renderer);
-        return this.MainViewport;
+        this.MainView = new(bounds.Width, bounds.Height, map, camera);//, renderer);
+        return this.MainView;
     }
     public override bool TryGetNetworkObject(int netID, out Entity obj)
     {

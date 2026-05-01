@@ -65,7 +65,7 @@ public sealed class Hud : GroupBox
             LeftClickAction = () => this.TogglePlayerList(net)
         };
 
-        this.UnitFrames = new UINpcFrameContainer(net.MainViewport.Map) { LocationFunc = () => new Vector2(UIManager.Width / 2, 0), Anchor = Vector2.UnitX * .5f };
+        this.UnitFrames = new UINpcFrameContainer(net.MainView.Map) { LocationFunc = () => new Vector2(UIManager.Width / 2, 0), Anchor = Vector2.UnitX * .5f };
         this.PartyFrame = new Panel();
 
         this.Box_Buttons = new Panel() { AutoSize = true };//, Location = UIManager.Size };//, Color = Color.Black };
@@ -104,16 +104,16 @@ public sealed class Hud : GroupBox
         GameMode.Current.OnIngameMenuCreated(this.IngameMenu);
 
         this.ZLevelDrawBar = new ScrollbarVNew(MapBase.MaxHeight, MapBase.MaxHeight, 1, 16, 1,
-             () => MapBase.MaxHeight - Ingame.MainViewport.Settings.DrawLevel,
+             () => MapBase.MaxHeight - Ingame.MainView.Settings.DrawLevel,
              () => 1 / (float)MapBase.MaxHeight,
-             () => Ingame.MainViewport.Settings.DrawLevel / MapBase.MaxHeight,
+             () => Ingame.MainView.Settings.DrawLevel / MapBase.MaxHeight,
              //v => Ingame.MainViewport.Renderer.DrawLevel = MapBase.MaxHeight - v);
-             v => Ingame.MainViewport.SetDrawLevel(MapBase.MaxHeight - v));
+             v => Ingame.MainView.SetDrawLevel(MapBase.MaxHeight - v));
 
         this.ZLevelDrawBar.AnchorToCenterRight();
 
         //this.StockpileTracker = net.MainViewport.Map.Hauling.Tracker.GetControl();
-        this.StockpileTracker = net.MainViewport.Map.Hauling.TrackerManager.GetControl();
+        this.StockpileTracker = net.MainView.Map.Hauling.TrackerManager.GetControl();
 
         this.Controls.Add(
             this.ZLevelDrawBar,

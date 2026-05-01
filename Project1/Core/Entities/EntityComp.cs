@@ -58,7 +58,7 @@ public abstract class EntityComp : Inspectable
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
     public virtual void Draw(MySpriteBatch sb, RenderContext ctx) { }
     public virtual void DrawMouseover(MySpriteBatch sb, RenderContext ctx) { }
-    public virtual void DrawUI(SpriteBatch sb, MapViewport viewport) { }
+    public virtual void DrawUI(SpriteBatch sb, MapView viewport) { }
     public virtual void DrawAfter(MySpriteBatch sb, RenderContext ctx) { }
     public virtual IEnumerable<Entity> GetChildren() { yield break; }
     public virtual void GetChildren(List<GameObjectSlot> list) { }

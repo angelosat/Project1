@@ -200,11 +200,13 @@ public sealed class StaticMap : MapBase, ITooltippable
         var hiddenRects = new List<Rectangle>();
         var camera = ctx.Camera;
         var renderer = ctx.Renderer;
+        var view = ctx.View;
         //ctx.MapViewport.Settings.UpdateMaxDrawLevel(this);
 
         foreach (var chunk in copyOfActiveChunks)
         {
-            var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
+            //var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
+            var chunkBounds = view.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
             if (!ctx.Viewport.Intersects(chunkBounds))
                 continue;
             renderer.DrawChunk(sb, this, chunk.Value, playerGlobal, hiddenRects, a);
@@ -214,16 +216,17 @@ public sealed class StaticMap : MapBase, ITooltippable
     public override void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene)
     {
         var camera = ctx.Camera;
-        var renderer = ctx.Renderer;
+        var view = ctx.View;
         foreach (var chunk in this.ActiveChunks)
         {
-            var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
-            if (ctx.Viewport.Intersects(chunkBounds))
+            //var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
+            var chunkBounds = view.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
+            if (view.Intersects(chunkBounds))
                 chunk.Value.DrawObjects(sb, ctx, Controller.Instance, scene);
         }
     }
 
-    public override void DrawInterface(SpriteBatch sb, MapViewport viewport)
+    public override void DrawInterface(SpriteBatch sb, MapView viewport)
     {
         var camera = viewport.Camera;
         var copyOfActiveChunks = new Dictionary<int, Chunk>(this.ActiveChunks);
@@ -422,7 +425,7 @@ public sealed class StaticMap : MapBase, ITooltippable
         //var renderer = new Renderer(width, width, x: mapCoords.X, y: mapCoords.Y, z: MaxHeight / 2, zoom: zoom);
         var final = new RenderTarget2D(gd, width, width);
         var camera = new Camera();
-        var viewport = new MapViewport(width, width, this, camera);//, renderer);
+        var viewport = new MapView(width, width, this, camera);//, renderer);
         throw new Exception();
         //renderer.NewDraw(final, viewport, gd, EngineArgs.Default, new SceneState(), ToolManager.Instance);
         gd.SetRenderTarget(null);
@@ -677,7 +680,7 @@ public sealed class StaticMap : MapBase, ITooltippable
         }
     }
 
-    public override void DrawWorld(MySpriteBatch mySB, MapViewport viewport)
+    public override void DrawWorld(MySpriteBatch mySB, MapView viewport)
     {
     }
     public override void DrawBeforeWorld(MySpriteBatch mySB, RenderContext ctx)

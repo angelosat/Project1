@@ -281,7 +281,7 @@ public sealed class ZoneManager : TownComp
     }
     public override void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        if (!ctx.MapViewport.Settings.DrawZones)
+        if (!ctx.View.Settings.DrawZones)
             return;
         foreach (var s in this.ZonesById.Values)
             s.DrawBeforeWorld(sb, ctx);

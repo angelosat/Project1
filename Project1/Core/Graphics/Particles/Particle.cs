@@ -37,6 +37,7 @@ public sealed class Particle
         var renderer = ctx.Renderer;
         var map = ctx.Map;
         var camera = ctx.Camera;
+        var view = ctx.View;
         var transformedGlobal = this.Offset + global;
         if (transformedGlobal.Z > renderer.MaxDrawZ + 1)
             return;
@@ -46,11 +47,12 @@ public sealed class Particle
         skyColor.A = 255;
         var blockColorVector = Vector4.Lerp(new Vector4(0, 0, 0, 1), Vector4.One, (blocklight) / 15f);
 
-        var screenpos = camera.GetScreenPositionFloat(transformedGlobal);
+        var screenpos = view.GetScreenPositionFloat(transformedGlobal);
         var alpha = this.AlphaFunc(this);
         var scale = this.ScaleFunc(this);
         var color = this.ColorFunc(this);
-        var depth = transformedGlobal.GetDrawDepth(map, camera);
+        //var depth = transformedGlobal.GetDrawDepth(map, camera);
+        var depth = view.GetDrawDepth(transformedGlobal);
         var finalscale = new Vector2(camera.Zoom) * scale;
         var finalcolor = color * alpha;
         var origin = new Vector2(this.SourceRectangle.Width, this.SourceRectangle.Height) / 2f;

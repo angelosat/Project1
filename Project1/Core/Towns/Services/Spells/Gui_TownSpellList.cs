@@ -13,7 +13,7 @@ sealed class Gui_TownSpellList : GroupBox
     readonly Table<(SpellDef spell, PriceTag_Spell tag)> Table;
     public Gui_TownSpellList()
     {
-        var shops = Ingame.Net.MainViewport.Map.Town.Spells;
+        var shops = Ingame.Net.MainView.Map.Town.Spells;
 
         this.Table = new Table<(SpellDef spell, PriceTag_Spell tag)>()
                     .AddColumn("item", 256, a => new LabelNew(a.spell) { HoverText = getHoverText(a.spell) })
@@ -32,5 +32,5 @@ sealed class Gui_TownSpellList : GroupBox
         }
     }
     static void ToggleSpell(SpellDef spell)
-        => Ingame.Instance.Events.Post(new PlayerTownSpellToggledEvent(Ingame.Net.MainViewport.Map, spell));
+        => Ingame.Instance.Events.Post(new PlayerTownSpellToggledEvent(Ingame.Net.MainView.Map, spell));
 }

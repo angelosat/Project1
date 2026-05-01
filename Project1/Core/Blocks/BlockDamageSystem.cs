@@ -47,13 +47,12 @@ internal sealed class BlockDamageSystem(Chunk chunk) : ChunkSystem
         this._blockTokens.Remove(pos);
     }
 
-    internal void DrawBlockTokens(SpriteBatch sb, MapViewport viewport)
+    internal void DrawBlockTokens(SpriteBatch sb, MapView view)
     {
-        var camera = viewport.Camera;
-        if (camera.Zoom < 1)
+        if (view.Zoom < 1)
             return;
         foreach (var (pos, token) in this._blockTokens)
             if (token.Lifetime < BlockTokenDrawThreshold)
-                BarImmediate.Draw(sb, camera, pos.ToGlobal(this.Chunk), "Block HitPoints", token.HealthPercentage, camera.Zoom * .2f);
+                BarImmediate.Draw(sb, view, pos.ToGlobal(this.Chunk), "Block HitPoints", token.HealthPercentage, view.Zoom * .2f);
     }
 }

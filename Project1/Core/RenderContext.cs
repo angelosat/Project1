@@ -13,7 +13,7 @@ public struct RenderContext
     public Camera Camera;
     public Rectangle Viewport;
     public Renderer Renderer;
-    public MapViewport MapViewport;
+    public MapView View;
 
     //public Vector2 Pos;
     //public Vector2 ScreenCenter;
@@ -27,17 +27,17 @@ public struct RenderContext
 
     int DrawLevel;
 
-    public void CenterOn(Vector3 global, bool forceSnap = false)
-    {
-        //this.Camera.Center = global;
-        this.Camera.CenterOn(global, forceSnap);
-        this.DrawLevel = (int)Math.Max(this.DrawLevel, global.Z + 1);
-        //if (!SmoothCentering || forceSnap)
-        //{
-        //    Coords.Iso(this.Camera, global.X, global.Y, global.Z, out int xx, out int yy);
-        //    this.Camera.Coordinates = new Vector2(xx, yy);
-        //}
-    }
+    //public void CenterOn(Vector3 global, bool forceSnap = false)
+    //{
+    //    //this.Camera.Center = global;
+    //    this.Camera.CenterOn(global, forceSnap);
+    //    this.DrawLevel = (int)Math.Max(this.DrawLevel, global.Z + 1);
+    //    //if (!SmoothCentering || forceSnap)
+    //    //{
+    //    //    Coords.Iso(this.Camera, global.X, global.Y, global.Z, out int xx, out int yy);
+    //    //    this.Camera.Coordinates = new Vector2(xx, yy);
+    //    //}
+    //}
 
     public Vector4 GetScreenBoundsVector4(float x, float y, float z, Rectangle spriteRectangle, Vector2 origin, float scale = 1)
     {

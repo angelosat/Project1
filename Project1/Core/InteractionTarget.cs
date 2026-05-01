@@ -37,7 +37,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
                 break;
 
             case TargetType.Cell:
-                var viewport = Ingame.MainViewport;
+                var viewport = Ingame.MainView;
                 viewport.Map.GetBlock(this.Global).GetTooltip(tooltip, viewport, this.Global, this.Face);
 
                 break;

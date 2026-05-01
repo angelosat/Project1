@@ -6,6 +6,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Resources;
+using Project1.Core.Screens;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
@@ -187,17 +188,17 @@ public sealed class Interaction : Inspectable
         tooltip.Controls.Add(panel);
     }
  
-    public void DrawUI(SpriteBatch sb, Camera camera)
+    public void DrawUI(SpriteBatch sb, MapView view)
     {
         //var actor = this.Actor;
         BarImmediate.Draw(
-            sb, 
-            camera, 
+            sb,
+            view, 
             this.Actor.Global, 
             //this.Def.LabelReadable, 
             this.Def.Logic.GetLabel(this),
-            this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage, 
-            camera.Zoom * .2f,
+            this.Def.Controller?.GetProgressBarPercentage(this) ?? this.Progress.Percentage,
+            view.Zoom * .2f,
             this.Def.ProgressBarColor
             );
     }

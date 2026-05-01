@@ -17,8 +17,8 @@ internal class Gui_ItemForSale : SelectionBoundControl
         this.AutoSize = false;
         this.Width = 300;
         this.Height = 300;
-        var manager = Ingame.Net.MainViewport.Map.Town.Shops;
-        this.ChbxForSale = new("For Sale", this.MarkForSale, () => Ingame.Net.MainViewport.Map.Town.Shops.IsForSale(this.Item));
+        var manager = Ingame.Net.MainView.Map.Town.Shops;
+        this.ChbxForSale = new("For Sale", this.MarkForSale, () => Ingame.Net.MainView.Map.Town.Shops.IsForSale(this.Item));
         this.ChbxForSale.InvalidateOn(manager.Notifier);
 
         this.LblPrice = new LabelNew(() => $"Price: {manager.GetPrice(this.Item)?.ToString() ?? "<unassigned>"}");

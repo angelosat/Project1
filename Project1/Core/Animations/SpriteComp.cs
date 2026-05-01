@@ -227,12 +227,13 @@ public sealed class SpriteComp : EntityComp
         var global = parent.Transform.Global;
         //Rectangle bounds = camera.GetScreenBounds(global, spriteBounds);
         var map = parent.Map;
-
+        var view = ctx.View;
         var source = Sprite.AtlasToken.Rectangle;
         var shaderRect = new Vector4(source.X / (float)Sprite.Texture.Width, source.Y / (float)Sprite.Texture.Height, source.Width / (float)Sprite.Texture.Width, source.Height / (float)Sprite.Texture.Height);
         Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(shaderRect);
 
-        float depth = global.GetDrawDepth(map, camera);
+        //float depth = global.GetDrawDepth(map, camera);
+        float depth = view.GetDrawDepth(global);
         var body = this.Body;
         // TODO: slow?
         if (Flash)
@@ -244,7 +245,8 @@ public sealed class SpriteComp : EntityComp
         else
         {
             Vector2 direction = parent.Transform.Direction;
-            Vector2 finalDir = Coords.Rotate(camera, direction);
+            //Vector2 finalDir = Coords.Rotate(camera, direction);
+            var finalDir = view.Rotate(direction);
             SpriteEffects sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             parent.Map.GetLight(parent.Global.RoundXY(), out byte skylight, out byte blocklight);
             var skyColor = map.GetAmbientColor() * ((skylight + 1) / 16f); //((skylight) / 15f);
@@ -262,20 +264,20 @@ public sealed class SpriteComp : EntityComp
         this.RegisterShadow(ctx, spriteBounds, parent);
     }
 
-    static public void DrawPreview(SpriteBatch sb, MapViewport viewport, Vector3 global, GameObject obj)
-    {
-        if (!obj.TryGetComponent<SpriteComp>("Sprite", out var spriteComp))
-            return;
-        Rectangle bounds;
-        Vector2 screenLoc;
-        bounds = viewport.Camera.GetScreenBounds(global, spriteComp.Sprite.GetBounds());
-        screenLoc = new Vector2(bounds.X, bounds.Y);
+    //static public void DrawPreview(SpriteBatch sb, MapView viewport, Vector3 global, GameObject obj)
+    //{
+    //    if (!obj.TryGetComponent<SpriteComp>("Sprite", out var spriteComp))
+    //        return;
+    //    Rectangle bounds;
+    //    Vector2 screenLoc;
+    //    bounds = viewport.Camera.GetScreenBounds(global, spriteComp.Sprite.GetBounds());
+    //    screenLoc = new Vector2(bounds.X, bounds.Y);
 
-        sb.Draw(spriteComp.Sprite.Texture, screenLoc,
-            spriteComp.Sprite.SourceRects[0][spriteComp.Orientation], Color.White * 0.5f,
-            0, Vector2.Zero, viewport.Camera.Zoom, SpriteEffects.None, 0);
-        Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
-    }
+    //    sb.Draw(spriteComp.Sprite.Texture, screenLoc,
+    //        spriteComp.Sprite.SourceRects[0][spriteComp.Orientation], Color.White * 0.5f,
+    //        0, Vector2.Zero, viewport.Camera.Zoom, SpriteEffects.None, 0);
+    //    Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
+    //}
 
     public override void DrawMouseover(MySpriteBatch sb, RenderContext ctx)
     {
@@ -283,10 +285,12 @@ public sealed class SpriteComp : EntityComp
             return;
         var camera = ctx.Camera;
         var parent = this.Owner;
-        Vector2 loc = ctx.MapViewport.GetScreenPositionFloat(parent.Global);
+        var view = ctx.View;
+        Vector2 loc = ctx.View.GetScreenPositionFloat(parent.Global);
 
         Vector2 direction = parent.Transform.Direction;
-        Vector2 finalDir = Coords.Rotate(camera, direction);
+        //Vector2 finalDir = Coords.Rotate(camera, direction);
+        var finalDir = view.Rotate(direction);
         SpriteEffects sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
         var mouseovertint = new Color(1f, 1f, 1f, 0.5f);
 
@@ -297,7 +301,7 @@ public sealed class SpriteComp : EntityComp
         sb.Flush();
     }
 
-    static public void DrawHighlight(GameObject parent, SpriteBatch sb, MapViewport viewport)
+    static public void DrawHighlight(GameObject parent, SpriteBatch sb, MapView view)
     {
         var comp = parent.SpriteComp;
         var sprite = comp.Sprite;
@@ -305,7 +309,7 @@ public sealed class SpriteComp : EntityComp
         var global = parent.Global;
         var w = source.Width;
         var h = source.Height;
-        var boundsVector4 = viewport.Camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, w, h), comp.Body.OriginGroundOffset);
+        var boundsVector4 = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, w, h), comp.Body.OriginGroundOffset);
         var rect = boundsVector4.ToRectangle();
         rect.DrawHighlight(sb, .5f);
     }
@@ -332,18 +336,19 @@ public sealed class SpriteComp : EntityComp
         }
         return false;
     }
-    public void HitTest(Entity parent, MapViewport viewport)
+    public void HitTest(Entity parent, MapView view)
     {
-        var camera = viewport.Camera;
+        var camera = view.Camera;
         var source = this.GetSpriteBounds();// this.SpriteBounds;
         var global = parent.Global;
         //var boundsVector4 = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, source, Vector2.Zero, this.Body.Scale);// + Body.Sprite.WhiteSpace));
-        var boundsVector4 = viewport.GetScreenBoundsVector4(global.X, global.Y, global.Z, source, Vector2.Zero, this.Body.Scale);// + Body.Sprite.WhiteSpace));
+        var boundsVector4 = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, source, Vector2.Zero, this.Body.Scale);// + Body.Sprite.WhiteSpace));
 
         if (HitTest(boundsVector4, source, camera, out Vector3 face))
         {
-            float depth = global.GetDrawDepth(parent.Map, camera);
-            Controller.TrySetMouseoverEntity(viewport, parent, face, depth);
+            //float depth = global.GetDrawDepth(parent.Map, camera);
+            float depth = view.GetDrawDepth(global);
+            Controller.TrySetMouseoverEntity(view, parent, face, depth);
         }
     }
 
@@ -379,7 +384,7 @@ public sealed class SpriteComp : EntityComp
             if (map.TryGetCell(globalcheck, out Cell cellShadow) && cellShadow.Block.IsSolid(cellShadow))
             {
                 var blockheight = Block.GetBlockHeight(map, globalcheck);
-                if (ctx.MapViewport.CullingCheck(global.X, global.Y, n + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out Rectangle shadowBounds))
+                if (ctx.View.CullingCheck(global.X, global.Y, n + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out Rectangle shadowBounds))
                     ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, n + blockheight)));
 
                 drawn = true;
@@ -396,7 +401,7 @@ public sealed class SpriteComp : EntityComp
         {
             if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOf.Air.Block)
             {
-                if (ctx.MapViewport.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
+                if (ctx.View.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
                     ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, z + 1)));
                 drawn = true;
             }
@@ -409,7 +414,9 @@ public sealed class SpriteComp : EntityComp
         {
             var map = ctx.Map;
             var camera = ctx.Camera;
-            foreach (Shadow shadow in ShadowList.OrderBy(foo => foo.Global.GetDrawDepth(map, camera)))
+            var view = ctx.View;
+            //foreach (Shadow shadow in ShadowList.OrderBy(foo => foo.Global.GetDrawDepth(map, camera)))
+            foreach (Shadow shadow in ShadowList.OrderBy(foo => view.GetDrawDepth(foo.Global)))
                 shadow.Draw(sb, ctx);
         }
           
@@ -434,22 +441,21 @@ public sealed class SpriteComp : EntityComp
         }
     }
 
-    public override void DrawUI(SpriteBatch sb, MapViewport viewport)
+    public override void DrawUI(SpriteBatch sb, MapView view)
     {
-        var camera = viewport.Camera;
-        DrawForbidden(sb, camera);
-        EntityTextManager.DrawStackSize(sb, viewport, this.Owner);
+        DrawForbidden(sb, view);
+        EntityTextManager.DrawStackSize(sb, view, this.Owner);
     }
 
-    private void DrawForbidden(SpriteBatch sb, Camera camera)
+    private void DrawForbidden(SpriteBatch sb, MapView view)
     {
         var parent = this.Owner;
         if (!parent.IsForbidden)
             return;
-        if (camera.Zoom <= .5f)
+        if (view.Zoom <= .5f)
             return;
         var zoom = 1;
-        var pos = camera.GetScreenPosition(parent.Global) - new Vector2(Icon.Cross.SourceRect.Width, Icon.Cross.SourceRect.Height) * zoom / 2; ;// -new Vector2(UI.Icon.Cross.SourceRect.Width / 2, rect.Height * camera.Zoom);
+        var pos = view.GetScreenPosition(parent.Global) - new Vector2(Icon.Cross.SourceRect.Width, Icon.Cross.SourceRect.Height) * zoom / 2; ;// -new Vector2(UI.Icon.Cross.SourceRect.Width / 2, rect.Height * camera.Zoom);
         pos.Y -= Icon.Cross.SourceRect.Height / 2;
         Icon.Cross.Draw(sb, pos, zoom);
     }

@@ -17,7 +17,7 @@ public interface INameplateable
     string Name { get; }
     Vector3 Global { get; }
     MapBase Map { get; }
-    Rectangle GetScreenBounds(MapViewport viewport);
+    Rectangle GetScreenBounds(MapView viewport);
     Color GetNameplateColor();
     void OnNameplateCreated(Nameplate plate);
     //void DrawNameplate(SpriteBatch sb, Rectangle viewport, Nameplate plate);

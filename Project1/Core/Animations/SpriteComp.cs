@@ -7,8 +7,8 @@ using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
-using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -18,10 +18,11 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Animations;
 
-public class SpriteComp : EntityComp
+public sealed class SpriteComp : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Sprite;
     public override string Name { get; } = "Sprite";
@@ -214,16 +215,17 @@ public class SpriteComp : EntityComp
     public float _Angle;
     public override void Draw(
         MySpriteBatch sb,
-        GameObject parent,
-        Camera camera
+        RenderContext ctx
         )
     {
         //this.Body.Sprite = ItemContent.AxeFull;
         if (this.Hidden)
             return;
-        Rectangle spriteBounds = this.Sprite.GetBounds();
-        Vector3 global = parent.Transform.Global;
-        Rectangle bounds = camera.GetScreenBounds(global, spriteBounds);
+        var parent = this.Owner;
+        var camera = ctx.Camera;
+        var spriteBounds = this.Sprite.GetBounds(); // TODO: cache this
+        var global = parent.Transform.Global;
+        //Rectangle bounds = camera.GetScreenBounds(global, spriteBounds);
         var map = parent.Map;
 
         var source = Sprite.AtlasToken.Rectangle;
@@ -248,39 +250,40 @@ public class SpriteComp : EntityComp
             var skyColor = map.GetAmbientColor() * ((skylight + 1) / 16f); //((skylight) / 15f);
             skyColor.A = 255;
             var blockColor = Color.Lerp(Color.Black, Color.White, (blocklight) / 15f);
-            var fog = camera.GetFogColorNew((int)parent.Global.Z);
-            var test = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
+            var fog = ctx.Renderer.GetFogColorNew((int)parent.Global.Z);
+            var test = ctx.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
             var finalpos = new Vector2(test.X, test.Y) + (body.OriginGroundOffset * camera.Zoom);
-            body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations.Values, sb, finalpos, skyColor, blockColor, this.Tint, fog, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, depth);
+            body.DrawTreeAnimationDeltas(parent, this.Customization, this.Animations.Values, sb, finalpos, skyColor, blockColor, this.Tint, fog, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, depth);
         }
 
         // DRAW SHADOW
         Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
 
-        this.DrawShadow(camera, spriteBounds, parent);
+        this.RegisterShadow(ctx, spriteBounds, parent);
     }
 
-    static public void DrawPreview(SpriteBatch sb, Camera camera, Vector3 global, GameObject obj)
+    static public void DrawPreview(SpriteBatch sb, MapViewport viewport, Vector3 global, GameObject obj)
     {
         if (!obj.TryGetComponent<SpriteComp>("Sprite", out var spriteComp))
             return;
         Rectangle bounds;
         Vector2 screenLoc;
-        bounds = camera.GetScreenBounds(global, spriteComp.Sprite.GetBounds());
+        bounds = viewport.Camera.GetScreenBounds(global, spriteComp.Sprite.GetBounds());
         screenLoc = new Vector2(bounds.X, bounds.Y);
 
         sb.Draw(spriteComp.Sprite.Texture, screenLoc,
             spriteComp.Sprite.SourceRects[0][spriteComp.Orientation], Color.White * 0.5f,
-            0, Vector2.Zero, camera.Zoom, SpriteEffects.None, 0);
+            0, Vector2.Zero, viewport.Camera.Zoom, SpriteEffects.None, 0);
         Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
     }
 
-    public override void DrawMouseover(MySpriteBatch sb, Camera camera, GameObject parent)
+    public override void DrawMouseover(MySpriteBatch sb, RenderContext ctx)
     {
         if (this.Hidden)
             return;
-
-        Vector2 loc = camera.GetScreenPositionFloat(parent.Global);
+        var camera = ctx.Camera;
+        var parent = this.Owner;
+        Vector2 loc = ctx.MapViewport.GetScreenPositionFloat(parent.Global);
 
         Vector2 direction = parent.Transform.Direction;
         Vector2 finalDir = Coords.Rotate(camera, direction);
@@ -290,11 +293,11 @@ public class SpriteComp : EntityComp
         this.Body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations.Values, sb, loc + (this.Body.OriginGroundOffset) * camera.Zoom, Color.White, Color.White, mouseovertint, Color.Transparent, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, .99f);
 
         // TODO: handle case where root bone doesn't have a sprite, or draw whole bone tree instead
-        camera.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
+        ctx.Renderer.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
         sb.Flush();
     }
 
-    static public void DrawHighlight(GameObject parent, SpriteBatch sb, Camera camera)
+    static public void DrawHighlight(GameObject parent, SpriteBatch sb, MapViewport viewport)
     {
         var comp = parent.SpriteComp;
         var sprite = comp.Sprite;
@@ -302,7 +305,7 @@ public class SpriteComp : EntityComp
         var global = parent.Global;
         var w = source.Width;
         var h = source.Height;
-        var boundsVector4 = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, w, h), comp.Body.OriginGroundOffset);
+        var boundsVector4 = viewport.Camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, w, h), comp.Body.OriginGroundOffset);
         var rect = boundsVector4.ToRectangle();
         rect.DrawHighlight(sb, .5f);
     }
@@ -329,16 +332,18 @@ public class SpriteComp : EntityComp
         }
         return false;
     }
-    public void HitTest(Entity parent, Camera camera)
+    public void HitTest(Entity parent, MapViewport viewport)
     {
+        var camera = viewport.Camera;
         var source = this.GetSpriteBounds();// this.SpriteBounds;
         var global = parent.Global;
-        var boundsVector4 = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, source, Vector2.Zero, this.Body.Scale);// + Body.Sprite.WhiteSpace));
+        //var boundsVector4 = camera.GetScreenBoundsVector4(global.X, global.Y, global.Z, source, Vector2.Zero, this.Body.Scale);// + Body.Sprite.WhiteSpace));
+        var boundsVector4 = viewport.GetScreenBoundsVector4(global.X, global.Y, global.Z, source, Vector2.Zero, this.Body.Scale);// + Body.Sprite.WhiteSpace));
 
         if (HitTest(boundsVector4, source, camera, out Vector3 face))
         {
             float depth = global.GetDrawDepth(parent.Map, camera);
-            Controller.TrySetMouseoverEntity(camera, parent, face, depth);
+            Controller.TrySetMouseoverEntity(viewport, parent, face, depth);
         }
     }
 
@@ -362,7 +367,7 @@ public class SpriteComp : EntityComp
         return this.Body.ToString();
     }
 
-    public void DrawShadow(Camera camera, Rectangle spriteBounds, GameObject parent)
+    public void RegisterShadow(RenderContext ctx, Rectangle spriteBounds, Entity parent)
     {
         var global = parent.Global;
         var map = parent.Map;
@@ -374,7 +379,7 @@ public class SpriteComp : EntityComp
             if (map.TryGetCell(globalcheck, out Cell cellShadow) && cellShadow.Block.IsSolid(cellShadow))
             {
                 var blockheight = Block.GetBlockHeight(map, globalcheck);
-                if (camera.CullingCheck(global.X, global.Y, n + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out Rectangle shadowBounds))
+                if (ctx.MapViewport.CullingCheck(global.X, global.Y, n + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out Rectangle shadowBounds))
                     ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, n + blockheight)));
 
                 drawn = true;
@@ -382,7 +387,7 @@ public class SpriteComp : EntityComp
             n--;
         }
     }
-    public static void DrawShadow(Camera camera, Rectangle spriteBounds, MapBase map, GameObject parent, float depthNear, float depthFar)
+    public static void DrawShadow(RenderContext ctx, Rectangle spriteBounds, MapBase map, GameObject parent, float depthNear, float depthFar)
     {
         var global = parent.Global;
         int z = (int)global.RoundXY().Z; //(int)global.Z; // 
@@ -391,18 +396,23 @@ public class SpriteComp : EntityComp
         {
             if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOf.Air.Block)
             {
-                if (camera.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
+                if (ctx.MapViewport.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
                     ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, z + 1)));
                 drawn = true;
             }
             z--;
         }
     }
-    static public void DrawShadows(MySpriteBatch sb, MapBase map, Camera camera)
+    static public void DrawShadows(MySpriteBatch sb, RenderContext ctx)
     {
         if (ShadowsEnabled)
+        {
+            var map = ctx.Map;
+            var camera = ctx.Camera;
             foreach (Shadow shadow in ShadowList.OrderBy(foo => foo.Global.GetDrawDepth(map, camera)))
-                shadow.Draw(sb, map, camera);
+                shadow.Draw(sb, ctx);
+        }
+          
         ShadowList.Clear();
     }
   
@@ -424,14 +434,16 @@ public class SpriteComp : EntityComp
         }
     }
 
-    public override void DrawUI(SpriteBatch sb, Camera camera, GameObject parent)
+    public override void DrawUI(SpriteBatch sb, MapViewport viewport)
     {
-        DrawForbidden(sb, camera, parent);
-        EntityTextManager.DrawStackSize(sb, camera, parent);
+        var camera = viewport.Camera;
+        DrawForbidden(sb, camera);
+        EntityTextManager.DrawStackSize(sb, viewport, this.Owner);
     }
 
-    private static void DrawForbidden(SpriteBatch sb, Camera camera, GameObject parent)
+    private void DrawForbidden(SpriteBatch sb, Camera camera)
     {
+        var parent = this.Owner;
         if (!parent.IsForbidden)
             return;
         if (camera.Zoom <= .5f)

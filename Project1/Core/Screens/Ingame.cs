@@ -25,13 +25,13 @@ internal class Ingame : GameScreen
 
     bool HideInterface = false;
     public SceneState Scene = new();
-    public override Camera Camera => MainViewportMap.Camera; 
+    //public override Camera Camera => MainViewportMap.Camera; 
 
     public override GameScreen Initialize(NetEndpoint net)
     {
         //var map = net.Map.Camera;
         var map = net.MainViewport.Map;
-        var camera = map.Camera;
+        var camera = net.MainViewport.Camera;
         if (net is Server)
             DrawServer = true;
         WindowManager = new UIManager();
@@ -49,7 +49,7 @@ internal class Ingame : GameScreen
         this.InputRouter.Add(this.ToolManager);
         this.InputRouter.Add(this.WindowManager);
         this.InputRouter.Add(ContextMenuManager.Instance);
-        this.InputRouter.Add(this.Camera);
+        this.InputRouter.Add(Game1.Renderer);
         this.InputRouter.Add(this);
 
         SelectionManager.Instance.Bind(net);
@@ -59,25 +59,27 @@ internal class Ingame : GameScreen
         return this;
     }
     static public NetEndpoint Net => DrawServer ? Server.Instance : Client.Instance;
+    //public override Renderer Renderer => Net.MainViewport.Renderer;
     public Hud Hud;
     public override void Update(Game1 game, GameTime gt)
     {
         base.Update(game, gt);
         //var map = DrawServer? Server.Instance.Map : Client.Instance.Map;
-        var map = MainViewportMap;
+        var viewport = MainViewport;
+        var map = viewport.Map;
         ToolManager.Update(map, this.Scene);
-        map.Camera.Update(map);
+        viewport.Camera.Update(map);
         WindowManager.Update(game, gt);
         NotificationArea.Update();
     }
-    public override void Draw(SpriteBatch sb)
+    public override void Draw(SpriteBatch sb, Renderer renderer)
     {
         this.Scene.ObjectBounds.Clear();
         this.Scene.ObjectsDrawn.Clear();
 
-        var map = MainViewportMap;
-        map.Camera.DrawMap(map, ToolManager, WindowManager, Scene);
-        ToolManager.DrawUI(sb, map);
+        var viewport = MainViewport;
+        renderer.DrawMap(viewport, ToolManager, WindowManager, Scene);
+        ToolManager.DrawUI(sb, viewport);
         DrawInterface(sb, Scene);
         NotificationArea.Draw(sb);
     }
@@ -88,20 +90,22 @@ internal class Ingame : GameScreen
             return;
 
         //var cam = DrawServer ? Server.Instance.Map.Camera : Client.Instance.Map.Camera;
-        var cam = MainViewportMap.Camera;
-        WindowManager.Draw(sb, cam);
+        WindowManager.Draw(sb, MainViewport);
     }
 
     internal override void OnGameEvent(GameEvent e)
     {
         this.NameplateManager.OnGameEvent(e);
         base.OnGameEvent(e);
-    } 
+    }
 
     //static public MapBase GetMap()
     //    => DrawServer ? Server.Instance.MainViewport.Map : Client.Instance.MainViewport.Map;
-    
-    static public MapBase MainViewportMap => DrawServer ? Server.Instance.MainViewport.Map : Client.Instance.MainViewport.Map;
+
+    static public MapBase MainViewportMap => MainViewport.Map;
+    static public Camera MainViewportCamera => MainViewport.Camera;
+    static public MapViewport MainViewport => DrawServer ? Server.Instance.MainViewport : Client.Instance.MainViewport;
+
     static public bool DrawServer;
     public override void HandleKeyDown(System.Windows.Forms.KeyEventArgs e)
     {

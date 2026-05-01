@@ -137,11 +137,11 @@ namespace Project1.Core.Screens
             return true;
         }
 
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, Renderer renderer)
         {
             if (GameScreens.Count == 0)
                 return;
-            GameScreens.Peek().Draw(sb);
+            GameScreens.Peek().Draw(sb, renderer);
         }
         
         /// <summary>

@@ -188,11 +188,11 @@ class GameModeStaticMaps : GameMode
         map.Init();
         map.ResolveReferences();
         client.AddMap(map);
-        client.ViewMap(map.ID);
+        client.ViewMap(map.ID).SnapToMapCenter();
 
         var ingame = Ingame.Instance.Initialize(client);
 
-        map.CameraRecenter(); // TODO: save camera position
+        //map.CameraRecenter(); // TODO: save camera position
         ScreenManager.Add(ingame); // TODO: find out why there's a freeze when ingame screen begins (and causing rendertargets during ingame.initialize() not work
     }
 

@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Input.Building;
 using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Input;
@@ -115,24 +115,24 @@ public abstract class ToolBlockBuild : ToolManagement, INamed
     {
         return IsReplacing() ? this.Target.Global : this.Target.FaceGlobal;
     }
-    internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
+    internal override void DrawAfterWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        var cam = map.Camera;
+        var renderer = ctx.Renderer;
         if (this.Target is not null)
         {
             var vec = this.GetMouseover();
-            var col = map.IsValidBuildSpot(vec) ? Color.Lime : Color.Red;
-            cam.DrawBlockMouseover(sb, map, vec, col);
+            var col = ctx.Map.IsValidBuildSpot(vec) ? Color.Lime : Color.Red;
+            renderer.DrawBlockMouseover(sb, vec, col);
         }
         if (this.Enabled)
-            this.DrawBlockPreviews(sb, map, cam);
+            this.DrawBlockPreviews(sb, ctx);
     }
 
-    protected virtual void DrawGrid(MySpriteBatch sb, MapBase map, Camera cam, Color color)
+    protected virtual void DrawGrid(MySpriteBatch sb, RenderContext ctx, Color color)
     {
         if (!this.Enabled)
             return;
-
+        var renderer = ctx.Renderer;
         var end = this.End + IntVec3.UnitZ * this.Height;
         var col = this.Valid ? Color.Lime : Color.Red;
         int x = Math.Min(this.Begin.X, end.X);
@@ -151,7 +151,7 @@ public abstract class ToolBlockBuild : ToolManagement, INamed
                 for (int k = 0; k <= dz; k++)
                 {
                     IntVec3 global = minBegin + new IntVec3(i, j, k);
-                    cam.DrawGridCell(sb, col, global);
+                    renderer.DrawGridCell(sb, col, global);
                 }
             }
         }
@@ -161,19 +161,22 @@ public abstract class ToolBlockBuild : ToolManagement, INamed
         var list = new List<Vector3>();
         return list;
     }
-    void DrawBlockPreviews(MySpriteBatch sb, MapBase map, Camera cam)
+    void DrawBlockPreviews(MySpriteBatch sb, RenderContext ctx)
     {
+        var cam = ctx.Camera;
+        var renderer = ctx.Renderer;
+        var map = ctx.Map;
         var atlastoken = this.Block.GetDefault();
-        atlastoken.Atlas.Begin(cam.Effect);
+        atlastoken.Atlas.Begin(renderer.Effect);
         foreach (var pos in this.ToolDef.Worker.GetPositions(this.Begin, this.EndFinal).Where(map.IsValidBuildSpot))
             this.Block.DrawPreview(sb, map, pos, cam, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();
     }
     protected virtual IntVec3 EndFinal => this.End;
 
-    internal override void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera)
+    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
     {
-        base.DrawUI(sb, camera);
+        base.DrawUI(sb, viewport);
         this.Icon.Draw(sb, UIManager.Mouse);
         if (this.Replacing || IsReplacing())
             Icon.Replace.Draw(sb);

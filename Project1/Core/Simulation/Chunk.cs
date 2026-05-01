@@ -8,6 +8,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Rendering;
+using Project1.Core.Screens;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Terrain;
@@ -250,9 +251,9 @@ public sealed class Chunk : Inspectable
     public static readonly int Height = MapBase.MaxHeight * Block.BlockHeight + Size * Block.Depth;
     public static readonly Rectangle Bounds = new(-Width / 2, -Height / 2, Width, Height);
 
-    public Rectangle GetScreenBounds(Camera cam)
+    public Rectangle GetScreenBounds(MapViewport viewport)
     {
-        Rectangle chunkBounds = cam.GetScreenBounds(this.Start.X + Chunk.Size / 2, this.Start.Y + Chunk.Size / 2, MapBase.MaxHeight / 2, Bounds);  //chunk.Value.GetBounds(camera);
+        Rectangle chunkBounds = viewport.GetScreenBounds(this.Start.X + Chunk.Size / 2, this.Start.Y + Chunk.Size / 2, MapBase.MaxHeight / 2, Bounds);  //chunk.Value.GetBounds(camera);
         return chunkBounds;
     }
     #endregion
@@ -678,10 +679,10 @@ public sealed class Chunk : Inspectable
         this.ValidateCells();
     }
 
-    public void HitTestEntities(Camera camera)
+    public void HitTestEntities(MapViewport viewport)
     {
         foreach (var o in this.Entities)
-            o.HitTest(camera);
+            o.HitTest(viewport);
     }
 
     private void ValidateHeightmap()
@@ -725,15 +726,19 @@ public sealed class Chunk : Inspectable
     #endregion
 
     #region Drawing
-    public void DrawObjects(MySpriteBatch sb, Camera camera, Controller controller, MapBase map, SceneState scene)
+    public void DrawObjects(MySpriteBatch sb, RenderContext ctx, Controller controller, SceneState scene)
     {
+        var map = ctx.Map;
+        var camera = ctx.Camera;
+        var renderer = ctx.Renderer;
+        var actor = map.Net.GetPlayer().ControllingEntity;
+
         foreach (var obj in this.Entities) //make a copy of the list first because currently the player character might be added while drawing
         {
             Vector3 global = obj.Global;
-            if (global.Z > camera.DrawLevel + 1)// - 1)
+            if (global.Z > ctx.MapViewport.Settings.DrawLevel + 1)// - 1)
                 continue;
-            var actor = map.Net.GetPlayer().ControllingEntity;
-            if (camera.HideTerrainAbovePlayer && actor is not null)
+            if (renderer.HideTerrainAbovePlayer && actor is not null)
                 if (global.Z > actor.Transform.Global.Z + 2)// - 1)
                     continue;
 
@@ -753,7 +758,7 @@ public sealed class Chunk : Inspectable
             Rectangle screenBounds = camera.GetScreenBounds(global, spriteBounds);
             screenBounds.X -= BordersEffect.Thickness;
             screenBounds.Y -= BordersEffect.Thickness;
-            if (!camera.ViewPort.Intersects(screenBounds))
+            if (!ctx.Viewport.Intersects(screenBounds))
                 continue;
             float cd = global.GetDrawDepth(map, camera);
             //var local = cell.LocalCoords;
@@ -762,8 +767,8 @@ public sealed class Chunk : Inspectable
             Color color = new Color(l, l, l, 1);
             Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
 
-            obj.Draw(sb, new DrawObjectArgs(camera, controller, map, this, cell, spriteBounds, screenBounds, obj, color, cd));
-            SpriteComp.DrawShadow(camera, spriteBounds, map, obj, cd, cd);
+            obj.Draw(sb, new DrawObjectArgs(renderer, controller, map, this, cell, spriteBounds, screenBounds, obj, color, cd));
+            SpriteComp.DrawShadow(ctx, spriteBounds, map, obj, cd, cd);
 
             if (scene.ObjectsDrawn.Contains(obj))
                 throw new Exception();
@@ -771,18 +776,18 @@ public sealed class Chunk : Inspectable
             scene.ObjectBounds.Add(obj, screenBounds);
         }
     }
-    public void DrawInterface(SpriteBatch sb, Camera cam)
+    public void DrawInterface(SpriteBatch sb, MapViewport viewport)
     {
         foreach (var obj in this.Entities)
-            obj.DrawInterface(sb, cam);
+            obj.DrawInterface(sb, viewport);
         foreach (var blockentity in this.BlockEntitiesByPosition)
-            blockentity.Value.DrawUI(sb, cam, blockentity.Key.ToGlobal(this));
-        this.DrawBlockTokens(sb, cam);
+            blockentity.Value.DrawUI(sb, viewport, blockentity.Key.ToGlobal(this));
+        this.DrawBlockTokens(sb, viewport);
     }
     static readonly float BlockTokenDrawThreshold = Ticks.FromSeconds(2);
-    private void DrawBlockTokens(SpriteBatch sb, Camera camera)
+    private void DrawBlockTokens(SpriteBatch sb, MapViewport viewport)
     {
-        this.BlockDamageSystem.DrawBlockTokens(sb, camera);
+        this.BlockDamageSystem.DrawBlockTokens(sb, viewport);
         //return;
         //if (camera.Zoom < 1)
         //    return;
@@ -1041,7 +1046,7 @@ public sealed class Chunk : Inspectable
     }
     #endregion
 
-    public void OnCameraRotated(Camera camera)
+    public void OnCameraRotated(Renderer camera)
     {
         this.LightCache.Clear();
     }
@@ -1122,66 +1127,66 @@ public sealed class Chunk : Inspectable
 
     public Canvas Canvas;
 
-    public void Build(Camera cam)
+    public void Build(RenderContext ctx)
     {
-        this.ValidateSlicesNew(cam);
+        this.ValidateSlicesNew(ctx);
         this.Valid = true;
     }
 
-    public void DrawOpaqueLayers(Camera cam, Effect effect)
+    public void DrawOpaqueLayers(Renderer renderer, Camera camera, Effect effect)
     {
-        Coords.Iso(cam, this.MapCoords.X * Chunk.Size, this.MapCoords.Y * Chunk.Size, 0, out float x, out float y);
-        Coords.Rotate(cam, this.MapCoords.X, this.MapCoords.Y, out int rotx, out int roty);
+        Coords.Iso(camera, this.MapCoords.X * Chunk.Size, this.MapCoords.Y * Chunk.Size, 0, out float x, out float y);
+        Coords.Rotate(camera, this.MapCoords.X, this.MapCoords.Y, out int rotx, out int roty);
         var world = Matrix.CreateTranslation(new Vector3(x, y, ((rotx + roty) * Chunk.Size)));
         effect.Parameters["World"].SetValue(world);
         effect.CurrentTechnique.Passes["Pass1"].Apply();
         EffectParameter effectHideWalls = effect.Parameters["HideWalls"];
         effectHideWalls.SetValue(Engine.HideWalls);
         effect.CurrentTechnique.Passes["Pass1"].Apply();
-        int foglvel = cam.GetFogLevel();
-        for (int i = foglvel; i <= cam.MaxDrawZ; i++)
+        int foglvel = renderer.GetFogLevel();
+        for (int i = foglvel; i <= renderer.MaxDrawZ; i++)
         {
             var slice = this.Slices[i];
             slice.Canvas.Opaque.Draw();
-            if (i == cam.MaxDrawZ && cam.DrawTopSlice)
+            if (i == renderer.MaxDrawZ && renderer.DrawTopSlice)
                 slice.Cover.Opaque.Draw();
-            if (!cam.HideWalls)
+            if (!renderer.HideWalls)
                 slice.Canvas.WallHidable.Draw();
         }
         effectHideWalls.SetValue(false);
         effect.CurrentTechnique.Passes["Pass1"].Apply();
-        for (int i = foglvel; i <= cam.MaxDrawZ; i++)
+        for (int i = foglvel; i <= renderer.MaxDrawZ; i++)
         {
             var slice = this.Slices[i];
             slice.Canvas.NonOpaque.Draw();
-            if (i == cam.MaxDrawZ && cam.DrawTopSlice)
+            if (i == renderer.MaxDrawZ && renderer.DrawTopSlice)
                 slice.Cover.NonOpaque.Draw();
         }
 
         foreach (var blockentity in this.BlockEntitiesByPosition)
-            blockentity.Value.Draw(cam, this.Map, blockentity.Key.ToGlobal(this));
+            blockentity.Value.Draw(renderer, camera, blockentity.Key.ToGlobal(this));
     }
-    public void DrawTransparentLayers(Camera cam, Effect effect)
+    public void DrawTransparentLayers(Renderer renderer, Camera camera, Effect effect)
     {
-        Coords.Iso(cam, this.MapCoords.X * Chunk.Size, this.MapCoords.Y * Chunk.Size, 0, out float x, out float y);
-        Coords.Rotate(cam, this.MapCoords.X, this.MapCoords.Y, out int rotx, out int roty);
+        Coords.Iso(camera, this.MapCoords.X * Chunk.Size, this.MapCoords.Y * Chunk.Size, 0, out float x, out float y);
+        Coords.Rotate(camera, this.MapCoords.X, this.MapCoords.Y, out int rotx, out int roty);
         var world = Matrix.CreateTranslation(new Vector3(x, y, ((rotx + roty) * Chunk.Size)));
         effect.Parameters["World"].SetValue(world);
         effect.CurrentTechnique.Passes["Pass1"].Apply();
         // no need to apply pass?
-        int foglvel = (int)Math.Max(0, cam.LastZTarget - Camera.FogZOffset - Camera.FogFadeLength);
-        for (int i = foglvel; i <= cam.MaxDrawZ; i++)
+        int foglvel = (int)Math.Max(0, renderer.LastZTarget - Renderer.FogZOffset - Renderer.FogFadeLength);
+        for (int i = foglvel; i <= renderer.MaxDrawZ; i++)
         {
             var slice = this.Slices[i];
             slice.Canvas.Transparent.Draw();
-            if (cam.DrawZones)
+            if (renderer.DrawZones)
                 slice.Canvas.Designations.Draw();
         }
-        if (cam.DrawTopSlice && !cam.MysteriousBlocks)
+        if (renderer.DrawTopSlice && !renderer.MysteriousBlocks)
         {
-            var slice = this.Slices[cam.MaxDrawZ];
+            var slice = this.Slices[renderer.MaxDrawZ];
             slice.Cover.Transparent.Draw();
-            if (cam.DrawZones)
+            if (renderer.DrawZones)
                 slice.Cover.Designations.Draw();
         }
     }
@@ -1286,9 +1291,11 @@ public sealed class Chunk : Inspectable
         return this[local].IsSolid();
     }
 
-    public void ValidateSlicesNew(Camera cam)
+    public void ValidateSlicesNew(RenderContext ctx)
     {
-        var frontmost = UpdateFrontmostXY(cam);
+        if (ctx.Map != this.Map)
+            throw new Exception();
+        var frontmost = UpdateFrontmostXY(ctx.Camera);
         var count = this.Slices.Length;
         for (int i = 0; i < count; i++)
         {
@@ -1300,7 +1307,7 @@ public sealed class Chunk : Inspectable
             }
             if (slice.Valid)
                 continue;
-            this.BuildSliceNew(slice, cam, this.Map, i, frontmost);
+            this.BuildSliceNew(slice, ctx, i, frontmost);
             slice.Valid = true;
         }
     }
@@ -1328,8 +1335,12 @@ public sealed class Chunk : Inspectable
         return (frontCellX, frontCellY);
     }
 
-    public void BuildSliceNew(Slice slice, Camera camera, MapBase map, int z, (int x, int y) frontCells)
+    public void BuildSliceNew(Slice slice, RenderContext ctx, int z, (int x, int y) frontCells)
     {
+        var camera = ctx.Camera;
+        var map = ctx.Map;
+        var renderer = ctx.Renderer;
+
         var maxCapacity = Size * Size;
         var obstructed = new List<IntVec3Local>(maxCapacity);
         var mysterious = new List<IntVec3Local>(maxCapacity);
@@ -1349,11 +1360,11 @@ public sealed class Chunk : Inspectable
                 // HACK
                 if (isair && this.Map.Town.ConstructionsManager.IsDesignatedConstruction(global))
                     //if (isair && this.Map.Town.DesignationManager.IsDesignation(global, DesignationDefOf.Construct)) // HACK
-                    camera.DrawBlock(canvas, BlockDefOf.Designation.Block, map, this, global);
+                    renderer.DrawBlock(canvas, camera, BlockDefOf.Designation.Block, map, this, global);
 
                 var isobstructed = !map.IsVisible(global);// || !(global.X == frontCellX || global.Y == frontCellY);
                 var isundiscovered = map.IsUndiscovered(global);
-                var ismysterious = camera.MysteriousBlocks && isundiscovered;
+                var ismysterious = renderer.MysteriousBlocks && isundiscovered;
 
                 if (global.X == frontCells.x || global.Y == frontCells.y)
                 {
@@ -1382,20 +1393,20 @@ public sealed class Chunk : Inspectable
         var topCover = new Canvas(Game1.Instance.GraphicsDevice, obstructed.Count + mysterious.Count);
 
         foreach (var cell in obstructed)
-            camera.DrawCell(topCover, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
+            renderer.DrawCell(topCover, camera, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
 
         foreach (var cell in mysterious)
-            camera.DrawUnknown(topCover, map, this, cell);//);
+            renderer.DrawUnknown(topCover, camera, map, this, cell);//);
 
 
         foreach (var cell in visible)
-            camera.DrawCell(canvas, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
+            renderer.DrawCell(canvas, camera, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
 
         foreach (var cell in frontmost)
-            camera.DrawCell(canvas, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
+            renderer.DrawCell(canvas, camera, map, this, cell);//, cell.LocalCoords.ToGlobal(this));
 
         foreach (var cell in frontmostMysterious)
-            camera.DrawUnknown(canvas, map, this, cell);
+            renderer.DrawUnknown(canvas, camera, map, this, cell);
 
         slice.Canvas = canvas;
         slice.Cover = topCover;

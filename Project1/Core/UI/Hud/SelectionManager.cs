@@ -254,7 +254,7 @@ public sealed class SelectionManager
     {
         Instance.SelectInternal(targets);
     }
-    internal void OnCameraRotated(Camera camera)
+    internal void OnCameraRotated(Renderer camera)
     {
         this.Renderer.Invalidate();
     }
@@ -438,23 +438,23 @@ public sealed class SelectionManager
     {
         action(this.ActionsAdded[action]);
     }
-    public void DrawWorld(MySpriteBatch sb, Camera camera)
+    public void DrawWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        var map = Ingame.MainViewportMap;
-
+        var map = ctx.Map;// Ingame.MainViewportMap;
+        var camera = ctx.Camera;
         if (this.Selection.Cells.Any())
-            this.Renderer.DrawBlocks(map, camera, this.Selection.Cells);
+            this.Renderer.DrawBlocks(ctx, this.Selection.Cells);
         else
         {
             foreach (var blockEntity in this.Selection.Targets.OfType<BlockEntity>())
             {
-                Renderer.DrawBlocks(map, camera, blockEntity.CellsOccupied);
+                Renderer.DrawBlocks(ctx, blockEntity.CellsOccupied);
                 // HACK: using this to make the origin block draw its interaction spot, if any
-                map.GetBlock(blockEntity.OriginGlobal).DrawSelected(sb, camera, map, blockEntity.OriginGlobal);
+                map.GetBlock(blockEntity.OriginGlobal).DrawSelected(sb, ctx, blockEntity.OriginGlobal);
             }
         }
     }
-    public void DrawOnCamera(SpriteBatch sb, Camera camera)
+    public void DrawOnCamera(SpriteBatch sb, MapViewport viewport)
     {
         if (this.MultipleSelected.Count == 0)
             return;
@@ -462,9 +462,9 @@ public sealed class SelectionManager
         foreach (var obj in this.MultipleSelected)
         {
             if (obj is Entity entity && entity.Map == Ingame.MainViewportMap)
-                entity.DrawBorder(sb, camera);
+                entity.DrawBorder(sb, viewport);
             else if (this.SelectedSource is Entity entitySource)
-                entitySource.DrawBorder(sb, camera);
+                entitySource.DrawBorder(sb, viewport);
         }
     }
     internal static bool IsSelected(ISelectable item)

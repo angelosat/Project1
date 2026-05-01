@@ -10,6 +10,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Map;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
+using Project1.Core.Screens;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Systems.Materials;
@@ -20,6 +21,7 @@ using Project1.Core.WorldGen;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using Project1.Framework.Interfaces;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -82,9 +84,27 @@ public sealed class EntityQueryEnumerator() : ISaveableNewNew<EntityQueryEnumera
 }
 public abstract class MapBase : Inspectable
 {
+    public MapSize Size;
+    public class MapSize(
+        string name, int blocks) : INamed
+    {
+        public string Name { get; private set; } = name;
+        public int Blocks { get; private set; } = blocks;
+        public int Chunks { get; private set; } = blocks / Chunk.Size;
+
+        public static readonly MapSize Micro = new("Micro", 32);
+        public static readonly MapSize Tiny = new("Tiny", 64);
+        public static readonly MapSize Small = new("Small", 128);
+        public static readonly MapSize Normal = new("Normal", 256);
+        public static readonly MapSize Huge = new("Huge", 512);
+
+        public static readonly MapSize Default = Micro;
+
+        public static readonly List<MapSize> AllSizes = [Micro, Tiny, Small, Normal, Huge];
+    }
     public readonly EventBus Events = new();
     public override string LabelReadable => this.ToString();
-    public Camera Camera;
+    //public Camera Camera;
     public static float IconOffset = 0;
     public Biome Biome = new();
     protected Queue<IntVec3> RandomBlockUpdateQueue = new();
@@ -161,14 +181,14 @@ public abstract class MapBase : Inspectable
     }
 
     int RandomChunkIndex, RandomCellIndex;
-    internal void OnCameraRotated(Camera camera)
+    internal void OnCameraRotated(Renderer renderer)
     {
         foreach (var chunk in this.GetActiveChunks())
         {
-            chunk.Value.OnCameraRotated(camera);
+            chunk.Value.OnCameraRotated(renderer);
             chunk.Value.Invalidate();
         }
-        this.Town.OnCameraRotated(camera);
+        this.Town.OnCameraRotated(renderer);
     }
 
     public IntVec3 GetNextRandomCell()
@@ -756,11 +776,11 @@ public abstract class MapBase : Inspectable
     public abstract string GetFolderName();
     public abstract string GetFullPath();
     public abstract void UpdateLight(IEnumerable<IntVec3> positions);
-    public abstract void DrawBlocks(MySpriteBatch sb, Camera cam, EngineArgs a);
-    public abstract void DrawObjects(MySpriteBatch sb, Camera cam, SceneState scene);
-    public abstract void DrawInterface(SpriteBatch sb, Camera cam);
-    public abstract void DrawWorld(MySpriteBatch sb, Camera cam);
-    public abstract void DrawBeforeWorld(MySpriteBatch sb, Camera cam);
+    public abstract void DrawBlocks(MySpriteBatch sb, RenderContext ctx, EngineArgs a);
+    public abstract void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene);
+    public abstract void DrawInterface(SpriteBatch sb, MapViewport viewport);
+    public abstract void DrawWorld(MySpriteBatch sb, MapViewport viewport);
+    public abstract void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx);
     public abstract void GetTooltipInfo(Control tooltip);
     internal void AddBlockEntityInternal(BlockEntity entity)
     {
@@ -956,14 +976,16 @@ public abstract class MapBase : Inspectable
     {
         this.ParticleManager.Update();
     }
-    internal void DrawParticles(Camera camera)
+    internal void DrawParticles(RenderContext ctx)
     {
         if (this.Net is Server)
             return;
-        this.ParticleManager.Draw(camera);
+        this.ParticleManager.Draw(ctx);
+        var renderer = ctx.Renderer;
+        var camera = ctx.Camera;
         foreach (var ch in this.ActiveChunks.Values)
             foreach (var (local, entity) in ch.GetBlockEntitiesByPosition())
-                entity.Draw(camera, this, local.ToGlobal(ch));
+                entity.Draw(renderer, camera, local.ToGlobal(ch));
     }
     internal IEnumerable<(string label, Type type)> GetSelectionTabs()
     {
@@ -1044,7 +1066,7 @@ public abstract class MapBase : Inspectable
 
     internal virtual void AreaDiscovered(HashSet<Vector3> hashSet) { }
 
-    internal virtual void CameraRecenter() { }
+    //internal virtual void CameraRecenter() { }
 
     //public IEnumerable<Entity> Haulables => this.ActiveChunks.Values.SelectMany(c => c.Entities.Where(e => e.Def.IsHaulable)).Cast<Entity>();
     public IEnumerable<Entity> Haulables => this.Entities.Where(e => e.Def.IsHaulable);

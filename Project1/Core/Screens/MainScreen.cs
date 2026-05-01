@@ -11,7 +11,7 @@ class MainScreen : GameScreen
     static MainScreen _Instance;
     public static MainScreen Instance => _Instance ??= new MainScreen();
 
-    public override Camera Camera => throw new System.NotImplementedException();
+    //public override Renderer Renderer => throw new System.NotImplementedException();
 
     MainMenuWindow MainMenuWindow;
     static Texture2D Background;
@@ -42,7 +42,7 @@ class MainScreen : GameScreen
         base.Update(game, gt);
     }
 
-    public override void Draw(SpriteBatch sb)
+    public override void Draw(SpriteBatch sb, Renderer renderer)
     {
         sb.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
         sb.Draw(Background, new Rectangle(0, 0, Game1.Instance.graphics.GraphicsDevice.Viewport.Width, Game1.Instance.graphics.GraphicsDevice.Viewport.Height), Color.White);

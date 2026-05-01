@@ -178,9 +178,9 @@ public class Entity : GameObject
             new(x + .25f, y + .25f, z + this.Def.Height));
     }
 
-    internal void HitTest(Camera camera)
+    internal void HitTest(MapViewport viewport)
     {
-        this.SpriteComp.HitTest(this, camera);
+        this.SpriteComp.HitTest(this, viewport);
     }
     internal int GetUnreservedAmount()
     {

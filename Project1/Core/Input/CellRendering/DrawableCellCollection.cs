@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Project1.Core.Input.CellRendering
 {
-    public class DrawableCellCollection : ICollection<IntVec3>
+    public sealed class DrawableCellCollection : ICollection<IntVec3>
     {
         readonly ObservableCollection<IntVec3> Cells = [];
         readonly Dictionary<int, MySpriteBatch> Slices = [];
@@ -65,10 +65,12 @@ namespace Project1.Core.Input.CellRendering
                 foreach (var z in e.NewItems.Cast<IntVec3>().Select(cell => cell.Z))
                     this.InvalidatedSlices.Add(z);
         }
-        void Validate(Camera camera)
+        void Validate(RenderContext ctx)
         {
-            if (!this.InvalidatedSlices.Any())
+            if (this.InvalidatedSlices.Count == 0)
                 return;
+            var renderer = ctx.Renderer;
+            var camera = ctx.Camera;
             var bySlice = this.Cells.ToLookup(c => c.Z);
             foreach (var z in this.InvalidatedSlices)
             {
@@ -80,8 +82,9 @@ namespace Project1.Core.Input.CellRendering
                     var slice = this.Slices.GetOrAdd(z, sliceCtor);
                     slice.Clear();
                     foreach (var cell in cells)
-                        camera.DrawBlockSelectionGlobal(
+                        renderer.DrawBlockSelectionGlobal(
                             slice,
+                            camera,
                             cell,
                             this.BlockToken,
                             this._color
@@ -96,16 +99,18 @@ namespace Project1.Core.Input.CellRendering
             }
         }
 
-        public void DrawBlocks(MapBase map, Camera camera)
+        public void DrawBlocks(RenderContext ctx)
         {
-            this.Validate(camera);
-            camera.PrepareShader(map);
+            this.Validate(ctx);
+            var renderer = ctx.Renderer;
+            var camera = ctx.Camera;
+            renderer.PrepareShader(ctx.MapViewport);
             Coords.Rotate(camera, 0, 0, out int rotx, out int roty);
             var world = Matrix.CreateTranslation(new Vector3(0, 0, (rotx + roty) * Chunk.Size));
-            camera.Effect.Parameters["World"].SetValue(world);
-            camera.Effect.CurrentTechnique.Passes["Pass1"].Apply();
+            renderer.Effect.Parameters["World"].SetValue(world);
+            renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();
             foreach (var slice in this.Slices)
-                if (slice.Key <= camera.DrawLevel)
+                if (slice.Key <= ctx.MapViewport.Settings.DrawLevel)
                     slice.Value.Draw();
         }
         internal void Invalidate()

@@ -213,7 +213,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     {
         this.State.AddMoveOrder(target, enqueue);
     }
-    public override void DrawAfter(MySpriteBatch sb, Camera cam)
+    public override void DrawAfter(MySpriteBatch sb, RenderContext ctx)
     {
         var parent = this.Owner;
         var serverentity = parent;
@@ -228,24 +228,24 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         {
             return;
         }
-
+        var renderer = ctx.Renderer;
         var first = true;
         if (path is not null)
         {
-            cam.DrawBlockMouseover(sb, parent.Map, path.Current, Color.Lime);
+            renderer.DrawBlockMouseover(sb, path.Current, Color.Lime);
 
             if (path.Stack != null)
             {
                 foreach (var global in path.Stack)
                 {
-                    cam.DrawBlockMouseover(sb, parent.Map, global, first ? Color.Red : Color.Blue);
+                    renderer.DrawBlockMouseover(sb, global, first ? Color.Red : Color.Blue);
                     first = false;
                 }
             }
         }
         foreach (var target in state.MoveOrders)
         {
-            cam.DrawBlockMouseover(sb, parent.Map, target.Global.Above(), Color.Yellow);
+            renderer.DrawBlockMouseover(sb, target.Global.Above(), Color.Yellow);
         }
     }
     readonly Label CachedGuiLabelCurrentTask = new();

@@ -47,9 +47,9 @@ namespace Project1.Core.Map
         {
             return Color.White;
         }
-        public Rectangle GetScreenBounds(Camera camera)
+        public Rectangle GetScreenBounds(MapViewport viewport)
         {
-            Vector2 screenPos = Coords.GetScreenCoords(Global, camera, new Vector3(Size, Size / 2, Size / 2));
+            Vector2 screenPos = Coords.GetScreenCoords(Global, viewport, new Vector3(Size, Size / 2, Size / 2));
             return new Rectangle((int)screenPos.X, (int)screenPos.Y, 1, 1);
         }
         public void OnNameplateCreated(Nameplate plate)
@@ -118,7 +118,7 @@ namespace Project1.Core.Map
                     {
                         LoadingBox box = new LoadingBox()
                         {
-                            LocationFunc = () => Coords.GetScreenCoords(new Vector3(Map.GetOffset(), 0), ScreenManager.CurrentScreen.Camera, ObjectDimensions),
+                            LocationFunc = () => Coords.GetScreenCoords(new Vector3(Map.GetOffset(), 0), Ingame.MainViewport.Camera, ObjectDimensions),
                             ProgressFunc = () => Map.LoadProgress.ToString("##0%"),
                             TextFunc = () => "Loading map...",
                             TintFunc = () => Color.Lerp(Color.Red, Color.Lime, Map.LoadProgress),

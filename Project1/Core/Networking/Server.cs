@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Loot;
 using Project1.Core.Networking.Packets;
 using Project1.Core.Networking.Simulation;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -640,10 +641,14 @@ public class Server : NetEndpoint
         this.World.Net = this;
         Registry.WorldEventHooksServer.HookTo(world.Events);
     }
-    public override void ViewMap(MapId mapid)
+    public override MapViewport ViewMap(MapId mapid)
     {
         var map = this.World.Get(mapid);
-        this.MainViewport = new(map, map.Camera);
+        var camera = new Camera();
+        //var renderer = new Renderer();
+        var bounds = Game1.Bounds;
+        this.MainViewport = new(bounds.Width, bounds.Height, map, camera);//, renderer);
+        return this.MainViewport;
     }
     public override bool TryGetNetworkObject(int netID, out Entity obj)
     {

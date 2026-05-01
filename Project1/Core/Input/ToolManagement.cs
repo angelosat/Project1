@@ -6,7 +6,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -63,8 +62,9 @@ public class ToolManagement : DefaultTool
     public override void Update()
     {
         var map = Ingame.MainViewportMap;
-        var cam = map.Camera;
-        cam.MousePicking(map, this.TargetOnlyBlocks);
+        var cam = Ingame.MainViewport.Camera;
+        Ingame.MainViewport.Picker.Perform(Ingame.MainViewport, this.TargetOnlyBlocks);
+
         this.UpdateTargetNew();
 
         if (this.Origin is not null && this.Target is not null && this.Origin.Global != this.Target.Global)
@@ -158,17 +158,16 @@ public class ToolManagement : DefaultTool
         delta *= minL;
 
         delta *= .01f;
-        var cam = this.Map.Camera;
-        cam.Move(cam.Coordinates += delta * 4);
+        Ingame.MainViewport.Move(Ingame.MainViewport.Camera.Coordinates += delta * 4);
 
     }
     private void MouseDrag()
     {
         var currentMouse = UIManager.Mouse;
         var delta = currentMouse - this.MouseScrollOrigin;
-        var map = Ingame.MainViewportMap;
-        var cam = map.Camera;
-        cam.Move(this.CameraCoordinatesOrigin - delta / cam.Zoom);
+        //var map = Ingame.MainViewport.Map;
+        var cam = Ingame.MainViewport.Camera;
+        Ingame.MainViewport.Move(this.CameraCoordinatesOrigin - delta / cam.Zoom);
     }
 
     public override void MoveKeys()
@@ -185,7 +184,7 @@ public class ToolManagement : DefaultTool
             xx += 1;
         if (xx != 0 || yy != 0)
         {
-            var cam = Ingame.MainViewportMap.Camera;
+            var cam = Ingame.MainViewport.Camera;
 
             double rx, ry;
             double cos = Math.Cos((-cam.Rotation) * Math.PI / 2f);
@@ -200,7 +199,7 @@ public class ToolManagement : DefaultTool
             nextStep.Normalize();
 
             var speed = HotkeyCameraFaster.ShortcutKeys.Any(k => InputState.IsKeyDown(k)) ? 3 : 1;
-            cam.Move(cam.Coordinates += new Vector2(xx, yy) * 4 * speed);
+            Ingame.MainViewport.Move(cam.Coordinates += new Vector2(xx, yy) * 4 * speed);
         }
     }
     public override void HandleKeyDown(KeyEventArgs e)
@@ -233,10 +232,10 @@ public class ToolManagement : DefaultTool
     {
         base.HandleMouseWheel(e);
         var map = Ingame.MainViewportMap;
-        var cam = map.Camera;
+        var cam = Ingame.MainViewport.Camera;
         if (InputState.IsKeyDown(System.Windows.Forms.Keys.LControlKey))
         {
-            cam.AdjustDrawLevel(InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? e.Delta * 16 : e.Delta);
+            Ingame.MainViewport.AdjustDrawLevel(InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey) ? e.Delta * 16 : e.Delta);
             return;
         }
         if (InputState.IsKeyDown(System.Windows.Forms.Keys.LMenu))
@@ -282,8 +281,8 @@ public class ToolManagement : DefaultTool
             this.MouseMiddleTimestamp = DateTime.Now;
         this.ScrollingMode = this.MouseDrag;
         this.MouseScrollOrigin = UIManager.Mouse;
-        var map = Ingame.MainViewportMap;
-        var cam = map.Camera;
+        var map = Ingame.MainViewport.Map;
+        var cam = Ingame.MainViewport.Camera;
         this.CameraCoordinatesOrigin = cam.Coordinates;
         return Messages.Default;
     }
@@ -378,27 +377,29 @@ public class ToolManagement : DefaultTool
 
     static readonly Control UIForceTask = new Panel() { AutoSize = true }.HideOnAnyClick();
 
-    internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
+    internal override void DrawAfterWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        var cam = map.Camera;
+        var renderer = ctx.Renderer;
+        var cam = ctx.Camera;
+        var map = ctx.Map;
         if(this.Target is InteractionTarget tar && tar.Type == TargetType.Cell)
-            cam.DrawBlockMouseover(sb, map, tar, Color.White);
+            renderer.DrawBlockMouseover(sb, tar, Color.White);
         if (this.Target is null || this.Target.Type == TargetType.Null)
             return;
         if (Engine.DrawRegions && this.Target.Type != TargetType.Null)
-            map.Regions.Draw(this.Target.Global, sb, cam);
+            map.Regions.Draw(this.Target.Global, sb, renderer, cam);
     }
-    internal override void DrawUI(SpriteBatch sb, Camera camera)
+    internal override void DrawUI(SpriteBatch sb, MapViewport viewport)
     {
         if (this.ScrollingMode == this.MouseScroll)
             Icon.Cross.Draw(sb, this.MouseScrollOrigin, Vector2.One * .5f);
-        base.DrawUI(sb, camera);
+        base.DrawUI(sb, viewport);
     }
 
     public static void Slice()
     {
         if (ToolManager.Instance.ActiveTool is not ToolManagement)
             return;
-        ScreenManager.CurrentScreen.Camera.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
+        Ingame.MainViewport.SliceOn((int)SelectionManager.Instance.SelectedSource.Global.Z);
     }
 }

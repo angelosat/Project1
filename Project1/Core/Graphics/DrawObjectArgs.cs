@@ -7,7 +7,7 @@ namespace Project1.Core.Rendering
 {
     public class DrawObjectArgs
     {
-        public Camera Camera;
+        public Renderer Camera;
         public Controller Controller;
         public MapBase Map;
         public Chunk Chunk;
@@ -17,7 +17,7 @@ namespace Project1.Core.Rendering
         public float Depth;
         public Color Light;
 
-        public DrawObjectArgs(Camera camera,
+        public DrawObjectArgs(Renderer camera,
             Controller controller,
             MapBase map,
             Chunk chunk,

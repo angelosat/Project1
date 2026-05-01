@@ -4,6 +4,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Towns;
 using Project1.Core.UI;
@@ -17,7 +18,7 @@ using System.Linq;
 
 namespace Project1.Core.Rooms;
 
-public class RoomManager : TownComp
+public sealed class RoomManager : TownComp
 {
     int RoomIDSequence;
     int GetNextRoomID()
@@ -256,12 +257,12 @@ public class RoomManager : TownComp
         => this.GetRoomAt(cell.Global + cell.Face) is Room r ? r : null;
         // instead of selecting the room itself, add a tab when selecting a block that is contained in the room?
     
-    public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
+    public override void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx)
     {
         if (!Engine.DrawRooms)
             return;
         foreach (var room in this.Rooms.Values)
-            room.Draw(cam);
+            room.Draw(ctx);
     }
 
     public bool TryGetRoomAt(IntVec3 global, out Room room)

@@ -2,6 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Screens;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using System;
@@ -78,11 +79,11 @@ public class WorkComponent : EntityComp
         this.Owner.LastMap.Events.Post<InteractionStoppedEvent>(new(this.Owner as Actor));
     }
 
-    public override void DrawUI(SpriteBatch sb, Camera camera, GameObject parent)
+    public override void DrawUI(SpriteBatch sb, MapViewport viewport)
     {
         if (this.Task == null)
             return;
-        this.Task.DrawUI(sb, camera);
+        this.Task.DrawUI(sb, viewport.Camera);
     }
 
     public override void Write(IDataWriter w)

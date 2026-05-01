@@ -98,7 +98,7 @@ public abstract class ResourceWorker
     protected virtual float GetRegenRate(ResourceRuntime resource) => resource.Def.BaseRegenRate;
     public virtual string Format => "";
     public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate, ResourceRuntime values) { }
-    public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent) { }
+    public virtual void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Renderer camera, GameObject parent) { }
 
     internal virtual int GetMax(Entity owner) => 100;
 }

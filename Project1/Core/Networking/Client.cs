@@ -909,7 +909,7 @@ public sealed class Client : NetEndpoint
         switch (type)
         {
             case "reset":
-                ScreenManager.CurrentScreen.Camera.OnDeviceLost();
+                //ScreenManager.CurrentScreen.Renderer.OnDeviceLost();
                 return;
 
             case "rebuildchunks":
@@ -1087,10 +1087,14 @@ public sealed class Client : NetEndpoint
         Registry.MapEventHooksClient.UnHook(map.Events);
         this.World.RemoveMap(mapid);
     }
-    public override void ViewMap(MapId mapid)
+    public override MapViewport ViewMap(MapId mapid)
     {
         var map = this.World.Get(mapid);
-        this.MainViewport = new(map, map.Camera);
+        var camera = new Camera();
+        //var renderer = new Renderer();
+        var bounds = Game1.Bounds;
+        this.MainViewport = new(bounds.Width, bounds.Height, map, camera);//, renderer);
+        return this.MainViewport;
     }
     internal void SetWorld(StaticWorld world)
     {

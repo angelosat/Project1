@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Project1.Core.Entities;
+using Project1.Core.Screens;
 
 namespace Project1.Core.Graphics.Particles
 {
@@ -24,10 +25,11 @@ namespace Project1.Core.Graphics.Particles
             foreach (var emitter in this.Emitters)
                 emitter.Update(parent.Map, parent.Global);
         }
-        public override void Draw(MySpriteBatch sb, GameObject parent, Camera camera)
+        public override void Draw(MySpriteBatch sb, RenderContext ctx)
         {
+            var pos = this.Owner.Global;
             foreach (var emitter in this.Emitters)
-                emitter.Draw(camera, parent.Map, parent.Global);
+                emitter.Draw(ctx, pos);
         }
     }
 }

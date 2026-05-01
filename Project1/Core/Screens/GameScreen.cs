@@ -19,7 +19,7 @@ public abstract class GameScreen : IDisposable, IInputEventHandler
     internal readonly InputRouter InputRouter = new();
 
     //public virtual Camera Camera => Client.Instance.Map.Camera;
-    public abstract Camera Camera { get; }// => Client.Instance.Map.Camera;
+    //public abstract Renderer Renderer { get; }// => Client.Instance.Map.Camera;
 
     public GameScreen()
     {
@@ -46,7 +46,7 @@ public abstract class GameScreen : IDisposable, IInputEventHandler
     public virtual void Update(Game1 game, GameTime gt)
     {
     }
-    public abstract void Draw(SpriteBatch sb);
+    public abstract void Draw(SpriteBatch sb, Renderer renderer);
 
 
     public virtual void Dispose()

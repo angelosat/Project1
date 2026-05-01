@@ -9,170 +9,169 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.UI.NamePlates
+namespace Project1.Core.UI.NamePlates;
+
+public class Nameplate : GroupBox, IContextable
 {
-    public class Nameplate : GroupBox, IContextable
+    const int VertOffset = 10;
+    public bool AlwaysShow;
+
+    static readonly Dictionary<INameplateable, Nameplate> Plates = new();
+
+    public static void Reset()
     {
-        const int VertOffset = 10;
-        public bool AlwaysShow;
+        ScreenManager.CurrentScreen.WindowManager[UIManager.LayerNameplates].Clear();
+    }
 
-        static readonly Dictionary<INameplateable, Nameplate> Plates = new();
+    public static Nameplate Create(INameplateable obj)
+    {
+        var plate = new Nameplate(obj);
+        obj.OnNameplateCreated(plate);
+        plate.AlignVertically(Alignment.Horizontal.Center);
+        plate.Tag = obj;
+        plate.MouseThrough = false; //hmmm
+        return plate;
+    }
 
-        public static void Reset()
-        {
-            ScreenManager.CurrentScreen.WindowManager[UIManager.LayerNameplates].Clear();
-        }
+    public void OnFocus()
+    {
+        this.Show();
+    }
+    public void OnFocusLost()
+    {
+        if (this.AlwaysShow)
+            return;
 
-        public static Nameplate Create(INameplateable obj)
-        {
-            var plate = new Nameplate(obj);
-            obj.OnNameplateCreated(plate);
-            plate.AlignVertically(Alignment.Horizontal.Center);
-            plate.Tag = obj;
-            plate.MouseThrough = false; //hmmm
-            return plate;
-        }
+        this.Hide();
+    }
 
-        public void OnFocus()
+    public static void Show(GameObject entity)
+    {
+        GetNameplate(entity)?.OnFocus();
+    }
+    public static void Hide(GameObject entity)
+    {
+        GetNameplate(entity)?.OnFocusLost();
+    }
+    public INameplateable Object;
+    Nameplate(INameplateable obj)
+    {
+        this.Layer = UIManager.LayerNameplates;
+        this.Object = obj;
+        this.Active = true;
+        this.LocationFunc = () =>
         {
-            this.Show();
-        }
-        public void OnFocusLost()
-        {
-            if (this.AlwaysShow)
-                return;
+            var viewport = Ingame.MainViewport;
+            var rect = this.Object.GetScreenBounds(viewport);
+            return new Vector2(rect.X + rect.Width / 2, rect.Y - this.Height - VertOffset) - this.Dimensions * new Vector2(.5f, 0);
+        };
+    }
 
-            this.Hide();
+    public override void OnBeforeDraw(SpriteBatch sb, Rectangle viewport)
+    {
+        var obj = this.Tag as GameObject;
+        var actor = obj.Net.GetPlayer()?.ControllingEntity;
+        if (actor is null)
+            return;
+        if (this.Object is GameObject entity &&
+            actor.AttackTarget is GameObject playertarget &&
+            entity.RefId == playertarget.RefId)
+        {
+            var border = this.BoundsScreen;
+            border.Inflate(1, 1);
+            border.DrawHighlight(sb, Color.Red * 0.5f, Vector2.Zero, 0);
         }
+    }
+    /// <summary>
+    /// need to override this because if i'm drawing nameplates indepentendly of ui scale, i need to re-adjust the positions in the check
+    /// </summary>
+    /// <param name="viewport"></param>
+    /// <returns></returns>
+    public override bool HitTest(Rectangle viewport)
+    {
+        if (this.IsMouseThrough)
+            return false;
+        var scissor = Rectangle.Intersect(viewport, new((int)(this.BoundsScreen.X / UIManager.Scale), (int)(this.BoundsScreen.Y / UIManager.Scale), (int)( this.BoundsScreen.Width / UIManager.Scale), (int)(this.BoundsScreen.Height / UIManager.Scale)));
+        return scissor.Intersects(UIManager.MouseRect);
+    }
+    public override void OnHitTestPass()
+    {
+        if (!ToolManager.CurrentTool.TargetOnlyBlocks)
+            Controller.Instance.MouseoverNext.Object = this.Object;
+    }
 
-        public static void Show(GameObject entity)
-        {
-            GetNameplate(entity)?.OnFocus();
-        }
-        public static void Hide(GameObject entity)
-        {
-            GetNameplate(entity)?.OnFocusLost();
-        }
-        public INameplateable Object;
-        Nameplate(INameplateable obj)
-        {
-            this.Layer = UIManager.LayerNameplates;
-            this.Object = obj;
-            this.Active = true;
-            this.LocationFunc = () =>
-            {
-                var camera = Ingame.Instance.Camera;
-                var rect = this.Object.GetScreenBounds(camera);
-                return new Vector2(rect.X + rect.Width / 2, rect.Y - this.Height - VertOffset) - this.Dimensions * new Vector2(.5f, 0);
-            };
-        }
+    public override void OnMouseEnter()
+    {
+        this.BackgroundColor = this.Object.GetNameplateColor() * 0.5f;
+        base.OnMouseEnter();
+    }
 
-        public override void OnBeforeDraw(SpriteBatch sb, Rectangle viewport)
-        {
-            var obj = this.Tag as GameObject;
-            var actor = obj.Net.GetPlayer()?.ControllingEntity;
-            if (actor is null)
-                return;
-            if (this.Object is GameObject entity &&
-                actor.AttackTarget is GameObject playertarget &&
-                entity.RefId == playertarget.RefId)
-            {
-                var border = this.BoundsScreen;
-                border.Inflate(1, 1);
-                border.DrawHighlight(sb, Color.Red * 0.5f, Vector2.Zero, 0);
-            }
-        }
-        /// <summary>
-        /// need to override this because if i'm drawing nameplates indepentendly of ui scale, i need to re-adjust the positions in the check
-        /// </summary>
-        /// <param name="viewport"></param>
-        /// <returns></returns>
-        public override bool HitTest(Rectangle viewport)
-        {
-            if (this.IsMouseThrough)
-                return false;
-            var scissor = Rectangle.Intersect(viewport, new((int)(this.BoundsScreen.X / UIManager.Scale), (int)(this.BoundsScreen.Y / UIManager.Scale), (int)( this.BoundsScreen.Width / UIManager.Scale), (int)(this.BoundsScreen.Height / UIManager.Scale)));
-            return scissor.Intersects(UIManager.MouseRect);
-        }
-        public override void OnHitTestPass()
-        {
-            if (!ToolManager.CurrentTool.TargetOnlyBlocks)
-                Controller.Instance.MouseoverNext.Object = this.Object;
-        }
-
-        public override void OnMouseEnter()
-        {
-            this.BackgroundColor = this.Object.GetNameplateColor() * 0.5f;
-            base.OnMouseEnter();
-        }
-
-        public override void OnMouseLeave()
-        {
-            this.BackgroundColor = Color.Black * 0.5f;
-            base.OnMouseLeave();
-        }
+    public override void OnMouseLeave()
+    {
+        this.BackgroundColor = Color.Black * 0.5f;
+        base.OnMouseLeave();
+    }
 
 
-        public static Nameplate GetNameplate(INameplateable entity)
-        {
-            return Plates.GetValueOrDefaultMy(entity);
-        }
-        static bool Collision2(Nameplate b1, Nameplate toMove, Camera camera)
-        {
-            if (b1 == toMove)
-                return false;
-            if (!b1.BoundsScreen.Intersects(toMove.BoundsScreen))
-                return false;
+    public static Nameplate GetNameplate(INameplateable entity)
+    {
+        return Plates.GetValueOrDefaultMy(entity);
+    }
+    static bool Collision2(Nameplate b1, Nameplate toMove, Renderer camera)
+    {
+        if (b1 == toMove)
+            return false;
+        if (!b1.BoundsScreen.Intersects(toMove.BoundsScreen))
+            return false;
 
-            var plateCenter = new Vector2(b1.BoundsScreen.Center.X, b1.BoundsScreen.Center.Y);
-            var toMoveCenter = new Vector2(toMove.BoundsScreen.Center.X, toMove.BoundsScreen.Center.Y);
-            var d = toMoveCenter - plateCenter;
+        var plateCenter = new Vector2(b1.BoundsScreen.Center.X, b1.BoundsScreen.Center.Y);
+        var toMoveCenter = new Vector2(toMove.BoundsScreen.Center.X, toMove.BoundsScreen.Center.Y);
+        var d = toMoveCenter - plateCenter;
 
-            if (Math.Abs(d.X) > Math.Abs(d.Y)) // offset on x axis
-            {
-                if (d.X > 0)
-                    toMove.Location.X = b1.Location.X + b1.BoundsScreen.Width + 1;
-                else
-                    toMove.Location.X = b1.Location.X - toMove.BoundsScreen.Width - 1;
-            }
-            else // offset on y axis
-            {
-                if (d.Y < 0)
-                    toMove.Location.Y = b1.Location.Y - toMove.BoundsScreen.Height - 1;
-                else
-                    toMove.Location.Y = b1.Location.Y + b1.BoundsScreen.Height + 1;
-            }
-            return true;
+        if (Math.Abs(d.X) > Math.Abs(d.Y)) // offset on x axis
+        {
+            if (d.X > 0)
+                toMove.Location.X = b1.Location.X + b1.BoundsScreen.Width + 1;
+            else
+                toMove.Location.X = b1.Location.X - toMove.BoundsScreen.Width - 1;
         }
+        else // offset on y axis
+        {
+            if (d.Y < 0)
+                toMove.Location.Y = b1.Location.Y - toMove.BoundsScreen.Height - 1;
+            else
+                toMove.Location.Y = b1.Location.Y + b1.BoundsScreen.Height + 1;
+        }
+        return true;
+    }
 
-        public override void GetTooltipInfo(Control tooltip)
-        {
-            if (this.Object is not ITooltippable tooltippable)
-                return;
-            tooltippable.GetTooltipInfo(tooltip);
-            tooltip.Tag = this.Object;
-        }
+    public override void GetTooltipInfo(Control tooltip)
+    {
+        if (this.Object is not ITooltippable tooltippable)
+            return;
+        tooltippable.GetTooltipInfo(tooltip);
+        tooltip.Tag = this.Object;
+    }
 
-        public void GetContextActions(GameObject playerEntity, ContextArgs a)
-        {
-            if (this.Object is not IContextable contextable)
-                return;
-            contextable.GetContextActions(playerEntity, a);
-        }
+    public void GetContextActions(GameObject playerEntity, ContextArgs a)
+    {
+        if (this.Object is not IContextable contextable)
+            return;
+        contextable.GetContextActions(playerEntity, a);
+    }
 
-        public override Control Invalidate(bool invalidateChildren = false)
-        {
-            return base.Invalidate(invalidateChildren);
-        }
+    public override Control Invalidate(bool invalidateChildren = false)
+    {
+        return base.Invalidate(invalidateChildren);
+    }
 
-        public override void Draw(SpriteBatch sb, Rectangle viewport)
-        {
-        }
-        public override void DrawOnCamera(SpriteBatch sb, Camera camera)
-        {
-            base.Draw(sb, camera.ViewPort);
-            if (SelectionManager.IsSelected(this.Object as Entity))
-                this.BoundsScreen.DrawHighlightBorder(sb, thickness: 2, padding: 2);
-        }
+    public override void Draw(SpriteBatch sb, Rectangle viewport)
+    {
+    }
+    public override void DrawOnCamera(SpriteBatch sb, MapViewport viewport)
+    {
+        base.Draw(sb, viewport.Viewport);
+        if (SelectionManager.IsSelected(this.Object as Entity))
+            this.BoundsScreen.DrawHighlightBorder(sb, thickness: 2, padding: 2);
     }
 }

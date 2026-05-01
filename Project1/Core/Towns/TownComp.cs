@@ -5,6 +5,7 @@ using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
@@ -69,8 +70,8 @@ namespace Project1.Core.Towns
         public virtual IContextable QueryPosition(Vector3 global) { return null; }
         public virtual ISelectable QuerySelectable(CellSelection selected) { return null; }
 
-        public virtual void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam) { }
-        public virtual void DrawUI(SpriteBatch sb, MapBase map, Camera cam) { }
+        public virtual void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx) { }
+        public virtual void DrawUI(SpriteBatch sb, MapViewport viewport) { }
 
         internal virtual void Tick()
         {
@@ -86,7 +87,7 @@ namespace Project1.Core.Towns
         internal virtual void ResolveReferences() { }
         internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
         internal virtual void OnHudCreated(Hud hud) { }
-        internal virtual void OnCameraRotated(Camera camera) { }
+        internal virtual void OnCameraRotated(Renderer camera) { }
         internal virtual bool IsClaimedBySystem(Entity item) => false;
 
         internal virtual void Scan(BlockEntity entity) { }

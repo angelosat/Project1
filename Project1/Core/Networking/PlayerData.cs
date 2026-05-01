@@ -117,7 +117,7 @@ public class PlayerData
         return GameMode.Current.IsPlayerWithinRangeForPacket(this, global);
     }
    
-    static public Vector2 GetMousePosition(Vector2 cameraPos, Vector2 mousePos, float zoom, Camera camera)
+    static public Vector2 GetMousePosition(Vector2 cameraPos, Vector2 mousePos, float zoom, RenderContext ctx)
     {
         throw new NotImplementedException();
     }

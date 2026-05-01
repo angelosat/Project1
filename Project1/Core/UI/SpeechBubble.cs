@@ -107,7 +107,7 @@ namespace Project1.Core.UI
                 this.Hide();
                 return;
             }
-            Camera camera = ScreenManager.CurrentScreen.Camera;
+            var camera = Ingame.MainViewport.Camera;
             Rectangle rect = camera.GetScreenBounds(this.Owner.Global, (this.Owner.GetSprite().GetBounds()));
             Vector2 loc = new Vector2(rect.X + rect.Width / 2 - this.ClientSize.Width / 2, rect.Y - this.ClientSize.Height);
             this.Location = loc;

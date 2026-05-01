@@ -11,6 +11,7 @@ using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Map;
 using Project1.Core.Networking;
+using Project1.Core.Screens;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Towns;
@@ -19,7 +20,6 @@ using Project1.Core.UI.Hud;
 using Project1.Core.WorldGen;
 using Project1.Framework;
 using Project1.Framework.Helpers;
-using Project1.Framework.Interfaces;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -31,30 +31,13 @@ using System.Threading.Tasks;
 
 namespace Project1.Core.Simulation;
 
-public class StaticMap : MapBase, ITooltippable
+public sealed class StaticMap : MapBase, ITooltippable
 {
     public override float LoadProgress => this.ActiveChunks.Count / (float)(this.Size.Chunks * this.Size.Chunks);
     public Color? TooltipColor => null;
 
 
-    public MapSize Size;
-    public class MapSize(
-        string name, int blocks) : INamed
-    {
-        public string Name { get; private set; } = name;
-        public int Blocks { get; private set; } = blocks;
-        public int Chunks { get; private set; } = blocks / Chunk.Size;
-
-        public static readonly MapSize Micro = new("Micro", 32);
-        public static readonly MapSize Tiny = new("Tiny", 64);
-        public static readonly MapSize Small = new("Small", 128);
-        public static readonly MapSize Normal = new("Normal", 256);
-        public static readonly MapSize Huge = new("Huge", 512);
-
-        public static readonly MapSize Default = Micro;
-
-        public static readonly List<MapSize> AllSizes = [Micro, Tiny, Small, Normal, Huge];
-    }
+   
     public int CellsPerAxis;
     public byte SkyDarkness = 0, SkyDarknessMax = 13;
     public Color AmbientColor = Color.Blue;//Color.MidnightBlue; //Color.RoyalBlue;//Color.MidnightBlue; //Color.MediumPurple; //Color.Lerp(Color.White, Color.Cornsilk, 0.5f);
@@ -93,7 +76,7 @@ public class StaticMap : MapBase, ITooltippable
     {
         this.World = world;
         this.LightingEngine = new(this);
-        this.Camera = new Camera(Game1.Bounds.Width, Game1.Bounds.Height);
+        //this.Camera = new Renderer(Game1.Bounds.Width, Game1.Bounds.Height);
         this.Name = name;
         this.Thumbnails = new Texture2D[3];
         this.Town = new Town(this);
@@ -210,45 +193,50 @@ public class StaticMap : MapBase, ITooltippable
 
     #region Drawing
 
-    public override void DrawBlocks(MySpriteBatch sb, Camera camera, EngineArgs a)
+    public override void DrawBlocks(MySpriteBatch sb, RenderContext ctx, EngineArgs a)
     {
         var copyOfActiveChunks = new Dictionary<int, Chunk>(this.ActiveChunks);
         Vector3? playerGlobal = null;
         var hiddenRects = new List<Rectangle>();
-
-        camera.UpdateMaxDrawLevel(this);
+        var camera = ctx.Camera;
+        var renderer = ctx.Renderer;
+        //ctx.MapViewport.Settings.UpdateMaxDrawLevel(this);
 
         foreach (var chunk in copyOfActiveChunks)
         {
             var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
-            if (!camera.ViewPort.Intersects(chunkBounds))
+            if (!ctx.Viewport.Intersects(chunkBounds))
                 continue;
-            camera.DrawChunk(sb, this, chunk.Value, playerGlobal, hiddenRects, a);
+            renderer.DrawChunk(sb, this, chunk.Value, playerGlobal, hiddenRects, a);
         }
     }
 
-    public override void DrawObjects(MySpriteBatch sb, Camera camera, SceneState scene)
+    public override void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene)
     {
+        var camera = ctx.Camera;
+        var renderer = ctx.Renderer;
         foreach (var chunk in this.ActiveChunks)
         {
             var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
-            if (camera.ViewPort.Intersects(chunkBounds))
-                chunk.Value.DrawObjects(sb, camera, Controller.Instance, this, scene);
+            if (ctx.Viewport.Intersects(chunkBounds))
+                chunk.Value.DrawObjects(sb, ctx, Controller.Instance, scene);
         }
     }
 
-    public override void DrawInterface(SpriteBatch sb, Camera camera)
+    public override void DrawInterface(SpriteBatch sb, MapViewport viewport)
     {
+        var camera = viewport.Camera;
         var copyOfActiveChunks = new Dictionary<int, Chunk>(this.ActiveChunks);
         foreach (var chunk in copyOfActiveChunks)
         {
-            Rectangle chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);  //chunk.Value.GetBounds(camera);
-            if (camera.ViewPort.Intersects(chunkBounds))
-                chunk.Value.DrawInterface(sb, camera);
+            //Rectangle chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);  //chunk.Value.GetBounds(camera);
+            var chunkBounds = viewport.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);  //chunk.Value.GetBounds(camera);
+            if (viewport.Viewport.Intersects(chunkBounds))
+                chunk.Value.DrawInterface(sb, viewport);
             Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
         }
         Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
-        this.Town.DrawUI(sb, camera);
+        this.Town.DrawUI(sb, viewport);
     }
 
     #endregion
@@ -431,9 +419,12 @@ public class StaticMap : MapBase, ITooltippable
         float zoom = 1 / 8f;
         int width = (int)(this.Size.Blocks * Block.Width * zoom);
         Vector2 mapCoords = this.Global;
-        var camera = new Camera(width, width, x: mapCoords.X, y: mapCoords.Y, z: MaxHeight / 2, zoom: zoom);
+        //var renderer = new Renderer(width, width, x: mapCoords.X, y: mapCoords.Y, z: MaxHeight / 2, zoom: zoom);
         var final = new RenderTarget2D(gd, width, width);
-        camera.NewDraw(final, this, gd, EngineArgs.Default, new SceneState(), ToolManager.Instance);
+        var camera = new Camera();
+        var viewport = new MapViewport(width, width, this, camera);//, renderer);
+        throw new Exception();
+        //renderer.NewDraw(final, viewport, gd, EngineArgs.Default, new SceneState(), ToolManager.Instance);
         gd.SetRenderTarget(null);
         return final;
     }
@@ -686,12 +677,12 @@ public class StaticMap : MapBase, ITooltippable
         }
     }
 
-    public override void DrawWorld(MySpriteBatch mySB, Camera camera)
+    public override void DrawWorld(MySpriteBatch mySB, MapViewport viewport)
     {
     }
-    public override void DrawBeforeWorld(MySpriteBatch mySB, Camera camera)
+    public override void DrawBeforeWorld(MySpriteBatch mySB, RenderContext ctx)
     {
-        this.Town.DrawBeforeWorld(mySB, this, camera);
+        this.Town.DrawBeforeWorld(mySB, ctx);
     }
 
     public override bool IsInBounds(Vector3 global)
@@ -921,13 +912,13 @@ public class StaticMap : MapBase, ITooltippable
         }
         this.Net.Report("Area discovered!");
     }
-    internal override void CameraRecenter()
-    {
-        var x = this.Size.Blocks / 2;
-        var y = x;
-        var z = this.GetHeightmapValue(x, y);
-        this.Camera.CenterOn(new Vector3(x, y, z), true);
-    }
+    //internal override void CameraRecenter()
+    //{
+    //    var x = this.Size.Blocks / 2;
+    //    var y = x;
+    //    var z = this.GetHeightmapValue(x, y);
+    //    this.Camera.CenterOn(new Vector3(x, y, z), true);
+    //}
     internal void AddStartingActors(Actor[] actors)
     {
         var x = this.Size.Blocks / 2;

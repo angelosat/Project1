@@ -57,12 +57,11 @@ static class SaveFileManager
            () => map.Init());
         DialogLoading.Start(() =>
         {
-            map.CameraRecenter();
             string localHost = "127.0.0.1";
             UIConnecting.Create(localHost);
             Server.Instance.SetWorld(item.World);
             Server.Instance.AddMap(map);
-            Server.Instance.ViewMap(map.ID);
+            Server.Instance.ViewMap(map.ID).SnapToMapCenter();
             Client.Instance.Connect(localHost, "host", a => { LobbyWindow.Instance.Console.Write("Connected to " + localHost); });
         });
     }

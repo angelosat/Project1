@@ -147,10 +147,11 @@ class GuiNewGame : GroupBox
         world.AddMap(map);
         string localHost = "127.0.0.1";
         UIConnecting.Create(localHost);
-        map.CameraRecenter();
+        //map.CameraRecenter();
         Server.Start();
         map.ResolveReferences();
         Server.Instance.AddMap(map);
+        Server.Instance.ViewMap(map.ID).SnapToMapCenter();
         map.AddStartingActors(actors);
 
         foreach (var a in actors)

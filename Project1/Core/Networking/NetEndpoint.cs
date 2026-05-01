@@ -53,7 +53,7 @@ public abstract partial class NetEndpoint : INetEndpoint
     public abstract PlayerData CurrentPlayer { get; }
     public abstract ulong CurrentTick { get; }
     public abstract WorldBase World { get; set; }
-    public abstract void ViewMap(MapId mapid);
+    public abstract MapViewport ViewMap(MapId mapid);
     public abstract int Speed { get; protected set; }
     public abstract bool DisposeObject(Entity obj);
     public abstract bool DisposeObject(int netID);

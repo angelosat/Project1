@@ -1,13 +1,11 @@
-﻿using Project1.Core.Simulation;
-using Project1.Framework;
+﻿using Project1.Framework;
 
-namespace Project1.Core
+namespace Project1.Core.Blocks.Comps;
+
+public interface IBlockEntityComp
 {
-    public interface IBlockEntityComp
-    {
-        void Draw(Camera camera, MapBase map, IntVec3 global);
-       
-        void Load(SaveTag tag);
-        SaveTag Save(string name);
-    }
+    void Draw(Camera camera, Renderer renderer, IntVec3 global);
+   
+    void Load(SaveTag tag);
+    SaveTag Save(string name);
 }

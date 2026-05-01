@@ -38,6 +38,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Project1.Core.Systems.Crafting;
+using Project1.Core.Screens;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Project1.Core.Towns;
 
@@ -250,7 +252,7 @@ public sealed class Town : Inspectable, IDutyProvider
             this.RemoveMember(entity);
     }
     
-    internal void OnCameraRotated(Camera camera)
+    internal void OnCameraRotated(Renderer camera)
     {
         foreach (var c in this.TownComponents)
             c.OnCameraRotated(camera);
@@ -262,10 +264,10 @@ public sealed class Town : Inspectable, IDutyProvider
             c.Tick();
     }
 
-    public void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
+    public void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx)
     {
         foreach(var comp in this.TownComponents)
-            comp.DrawBeforeWorld(sb, map, cam);
+            comp.DrawBeforeWorld(sb, ctx);
     }
 
     internal void ResolveReferences()
@@ -397,10 +399,10 @@ public sealed class Town : Inspectable, IDutyProvider
         return this.ZoneManager.GetZoneAt(pos);
     }
 
-    internal void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera)
+    internal void DrawUI(SpriteBatch sb, MapViewport viewport)
     {
         foreach (var comp in this.TownComponents)
-            comp.DrawUI(sb, this.Map, camera);
+            comp.DrawUI(sb, viewport);
     }
 
     internal UIQuickMenu ToggleQuickMenu()

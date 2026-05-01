@@ -2,6 +2,7 @@
 using Project1.Core.Graphics;
 using Project1.Core.Interactions;
 using Project1.Core.Rendering;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
@@ -13,7 +14,6 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities;
 
@@ -56,10 +56,10 @@ public abstract class EntityComp : Inspectable
     //internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
     internal virtual void ApplyQuality(Entity parent, QualityDef quality) { }
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
-    public virtual void Draw(MySpriteBatch sb, GameObject parent, Camera camera) { }
-    public virtual void DrawMouseover(MySpriteBatch sb, Camera camera, GameObject parent) { }
-    public virtual void DrawUI(SpriteBatch sb, Camera camera, GameObject parent) { }
-    public virtual void DrawAfter(MySpriteBatch sb, Camera cam) { }
+    public virtual void Draw(MySpriteBatch sb, RenderContext ctx) { }
+    public virtual void DrawMouseover(MySpriteBatch sb, RenderContext ctx) { }
+    public virtual void DrawUI(SpriteBatch sb, MapViewport viewport) { }
+    public virtual void DrawAfter(MySpriteBatch sb, RenderContext ctx) { }
     public virtual IEnumerable<Entity> GetChildren() { yield break; }
     public virtual void GetChildren(List<GameObjectSlot> list) { }
     public virtual void GetContainers(List<Container> list) { }

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Project1.Core.AI.Behaviors.Pathing;
 
-public class RegionManager
+public sealed class RegionManager
 {
     int RoomIDSequence = 0;
     internal int GetRoomID()
@@ -52,7 +52,7 @@ public class RegionManager
         $"regions initialized in {watch.ElapsedMilliseconds} ms".ToConsole();
     }
 
-    internal void Draw(IntVec3 global, MySpriteBatch sb, Camera cam)
+    internal void Draw(IntVec3 global, MySpriteBatch sb, Renderer renderer, Camera camera)
     {
         var region = this.GetRegionAt(global);
         if (region is null)
@@ -62,10 +62,10 @@ public class RegionManager
             foreach (var r in ch.Value.Regions.Where(r => r.RoomID == region.RoomID))
             {
                 var color = region.Color * (r == region ? 1 : .5f);
-                cam.DrawGridCells(sb, color, r.GetPositions());
+                renderer.DrawGridCells(sb, color, r.GetPositions());
             }
         }
-        region.DrawNode(global, sb, cam);
+        region.DrawNode(global, sb, renderer, camera);
     }
     public RegionTracker GetRegions(Chunk chunk)
     {

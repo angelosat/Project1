@@ -41,7 +41,7 @@ namespace Project1.Core.Towns.UI
 
         public override void Update()
         {
-            if (!Camera.DrawnOnce)
+            if (!Renderer.DrawnOnce)
                 return;
             //var actors = Net.Client.Instance.Map.Town.GetMembers().Where(a => a != null).ToList(); // WHY WOULD THE RETURNED TOWN MEMBER LIST CONTAIN NULL VALUES???
             var actors = this.Map.Town.GetMembers();

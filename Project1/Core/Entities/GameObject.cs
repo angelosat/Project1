@@ -30,7 +30,6 @@ using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Towns;
 using Project1.Core.UI;
-using Project1.Core.UI.Hud;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -200,21 +199,21 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             yield return groupbox;
         }
     }
-    public virtual IEnumerable<IconButton> GetMiniButtons()
-    {
-        yield return IconCameraFollow.Value;
-    }
+    //public virtual IEnumerable<IconButton> GetMiniButtons()
+    //{
+    //    yield return IconCameraFollow.Value;
+    //}
     public virtual IEnumerable<(string label, Type type)> GetInspectorTabs() { yield break; }
     
     internal void AttackTelegraph(GameObject parent)
     {
         throw new NotImplementedException();
     }
-    static readonly Lazy<IconButton> IconCameraFollow = new(()=> new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" });
-    static void FollowCam()
-    {
-        ScreenManager.CurrentScreen.Camera.ToggleFollowing(SelectionManager.Instance.SelectedSource as GameObject);
-    }
+    //static readonly Lazy<IconButton> IconCameraFollow = new(()=> new(Icon.Replace) { BackgroundTexture = UIManager.Icon16Background, LeftClickAction = FollowCam, HoverText = "Camera follow" });
+    //static void FollowCam()
+    //{
+    //    ScreenManager.CurrentScreen.Renderer.ToggleFollowing(SelectionManager.Instance.SelectedSource as GameObject);
+    //}
     public void ToggleForbidden()
     {
         this.IsForbidden = !this.IsForbidden;
@@ -239,10 +238,16 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             comp.OnNameplateCreated(this, plate);
         }
     }
-    public Rectangle GetScreenBounds(Camera camera)
+    public Rectangle GetScreenBounds(MapViewport viewport)
     {
         var g = this.Global;
-        var bounds = camera.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
+        var bounds = viewport.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
+        return bounds;
+    }
+    public Rectangle GetScreenBounds(RenderContext ctx)
+    {
+        var g = this.Global;
+        var bounds = ctx.MapViewport.GetScreenBounds(g.X, g.Y, g.Z, this.SpriteComp.GetSpriteBounds(), 0, 0, this.Body.Scale);
         return bounds;
     }
     public virtual Color GetNameplateColor()
@@ -629,10 +634,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     //    map.SyncSpawn(this, global, Vector3.Zero);
     //}
 
-    public virtual void Draw(MySpriteBatch sb, Camera camera)
+    public virtual void Draw(MySpriteBatch sb, RenderContext ctx)
     {
         foreach (var comp in this.Components.Values)
-            comp.Draw(sb, this, camera);
+            comp.Draw(sb, ctx);
     }
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e)
     {
@@ -640,36 +645,36 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             comp.Draw(sb, e);
     }
 
-    internal void DrawMouseover(MySpriteBatch sb, Camera camera)
+    internal void DrawMouseover(MySpriteBatch sb, RenderContext ctx)
     {
         foreach (var comp in this.Components.Values)
-            comp.DrawMouseover(sb, camera, this);
+            comp.DrawMouseover(sb, ctx);
     }
-    internal void DrawInterface(SpriteBatch sb, Camera camera)
+    internal void DrawInterface(SpriteBatch sb, MapViewport viewport)
     {
         foreach (var comp in this.Components.Values)
-            comp.DrawUI(sb, camera, this);
+            comp.DrawUI(sb, viewport);
     }
 
-    public void DrawPreview(MySpriteBatch sb, Camera cam, InteractionTarget target, bool precise)
+    public void DrawPreview(MySpriteBatch sb, RenderContext ctx, InteractionTarget target, bool precise)
     {
         if (target.Type != TargetType.Cell)
             return;
 
         var blockHeight = Block.GetBlockHeight(target.Map, target.Global);
         var global = target.Global + target.Face * new Vector3(1, 1, blockHeight) + (precise ? target.Precise : Vector3.Zero);
-        this.DrawPreview(sb, cam, global);
+        this.DrawPreview(sb, ctx.Camera, global);
     }
 
-    public void DrawPreview(MySpriteBatch sb, Camera cam, Vector3 global)
+    public void DrawPreview(MySpriteBatch sb, Camera camera, Vector3 global)
     {
         var body = this.Body;
-        var pos = cam.GetScreenPositionFloat(global);
-        pos += body.OriginGroundOffset * cam.Zoom;
+        var pos = camera.GetScreenPositionFloat(global);
+        pos += body.OriginGroundOffset * camera.Zoom;
         // TODO: fix difference between tint and material in this drawtree method
         var tint = Color.White * .5f;
         //body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, cam.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(Engine.Map, cam));
-        body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, cam.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(cam));
+        body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, camera.Zoom, 0, SpriteEffects.None, 0.5f, global.GetDrawDepth(camera));
     }
 
     public virtual void GetTooltipInfo(Control tooltip)
@@ -1109,10 +1114,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         var cylindermax = new BoundingCylinder(global, .1f, 1);
         return cylindermax.Contains(this.Global);
     }
-    internal void DrawAfter(MySpriteBatch sb, Camera cam)
+    internal void DrawAfter(MySpriteBatch sb, RenderContext ctx)
     {
         foreach (var comp in this.Components.Values)
-            comp.DrawAfter(sb, cam);
+            comp.DrawAfter(sb, ctx);
     }
    
     internal bool IsIndoors()
@@ -1123,14 +1128,15 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     internal bool IsForbiddable() => !this.HasComponent<NpcComponent>();
     
-    internal void DrawHighlight(SpriteBatch sb, Camera camera)
+    internal void DrawHighlight(SpriteBatch sb, MapViewport viewport)
     {
-        SpriteComp.DrawHighlight(this, sb, camera);
+        SpriteComp.DrawHighlight(this, sb, viewport);
     }
 
-    internal void DrawBorder(SpriteBatch sb, Camera camera)
+    internal void DrawBorder(SpriteBatch sb, MapViewport viewport)
     {
-        this.GetScreenBounds(camera).DrawHighlightBorder(sb, .5f, camera.Zoom);
+        var camera = viewport.Camera;
+        this.GetScreenBounds(viewport).DrawHighlightBorder(sb, .5f, camera.Zoom);
     }
    
     static readonly Vector3[] HitboxCorners = [

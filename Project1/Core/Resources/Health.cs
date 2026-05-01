@@ -76,7 +76,7 @@ namespace Project1.Core.Resources
             plate.AddControls(bar);
             plate.SetMousethrough(true, true);
         }
-        public override void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Camera camera, GameObject parent)
+        public override void DrawUI(Microsoft.Xna.Framework.Graphics.SpriteBatch sb, Renderer camera, GameObject parent)
         {
             base.DrawUI(sb, camera, parent);
         }

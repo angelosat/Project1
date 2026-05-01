@@ -91,107 +91,107 @@ public abstract class Workplace : ISerializable, ISaveable
         return (_Gui,
             a => a.OpenGui()
         );
-        int listw = 200, listh = 300;
-        var box = new ScrollableBoxNewNewNew(listw, listh, ScrollModes.Vertical);
+        //int listw = 200, listh = 300;
+        //var box = new ScrollableBoxNewNewNew(listw, listh, ScrollModes.Vertical);
 
-        var liststockpiles = new ListBoxNoScroll<Stockpile, Button>(i => new Button(i.Name));
-        var listfacilities = new ListBoxNoScroll<CellSelection, Button>(
-            t => new Button(t.Block.Name,
-                () =>
-                {
-                    Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(t.Global, t.Global));
-                    //SelectionManager.Select(t);
-                    Ingame.Instance.Camera.CenterOn(t.Global);
-                }));
+        //var liststockpiles = new ListBoxNoScroll<Stockpile, Button>(i => new Button(i.Name));
+        //var listfacilities = new ListBoxNoScroll<CellSelection, Button>(
+        //    t => new Button(t.Block.Name,
+        //        () =>
+        //        {
+        //            Ingame.Instance.Events.Post(new PlayerSelectionCubeEvent(t.Global, t.Global));
+        //            //SelectionManager.Select(t);
+        //            Ingame.Instance.Renderer.CenterOn(t.Global);
+        //        }));
 
-        string nameGetter() => box.Tag is Workplace wp ? $" {wp.Name}" : "";
-        var boxstockpiles = liststockpiles.ToPanelLabeled(() => $"Stockpiles{nameGetter()}");
-        var boxfacilities = listfacilities.ToPanelLabeled(() => $"Facilities{nameGetter()}");
+        //string nameGetter() => box.Tag is Workplace wp ? $" {wp.Name}" : "";
+        //var boxstockpiles = liststockpiles.ToPanelLabeled(() => $"Stockpiles{nameGetter()}");
+        //var boxfacilities = listfacilities.ToPanelLabeled(() => $"Facilities{nameGetter()}");
 
-        var btnCounter = new Button()
-        {
-            TextFunc = () =>
-            {
-                var text = "Counter:";
-                if (box.Tag is Shop shop)
-                    text += " " + (shop.Counter.HasValue ? shop.Counter.Value.ToString() : "null");
-                return text;
-            }
-        };
-        var boxtabs = new GroupBox();
-        var boxLists = new GroupBox();
+        //var btnCounter = new Button()
+        //{
+        //    TextFunc = () =>
+        //    {
+        //        var text = "Counter:";
+        //        if (box.Tag is Shop shop)
+        //            text += " " + (shop.Counter.HasValue ? shop.Counter.Value.ToString() : "null");
+        //        return text;
+        //    }
+        //};
+        //var boxtabs = new GroupBox();
+        //var boxLists = new GroupBox();
 
-        boxtabs.AddControlsLineWrap(new[] {
-            new Button("Stockpiles", ()=>selectTab(boxstockpiles)),
-            new Button("Facilities", ()=>selectTab(boxfacilities)) },
-            listw);
+        //boxtabs.AddControlsLineWrap(new[] {
+        //    new Button("Stockpiles", ()=>selectTab(boxstockpiles)),
+        //    new Button("Facilities", ()=>selectTab(boxfacilities)) },
+        //    listw);
 
-        void selectTab(Control tab)
-        {
-            boxLists.ClearControls();
-            boxLists.AddControls(tab);
-            tab.Validate(true);
-        }
+        //void selectTab(Control tab)
+        //{
+        //    boxLists.ClearControls();
+        //    boxLists.AddControls(tab);
+        //    tab.Validate(true);
+        //}
 
-        boxLists.AddControlsHorizontally(boxstockpiles);
+        //boxLists.AddControlsHorizontally(boxstockpiles);
 
-        box.AddControlsVertically(boxtabs, boxLists);
+        //box.AddControlsVertically(boxtabs, boxLists);
 
-        void refresh(Workplace shop)
-        {
-            if (box.Tag?.GetType() != shop.GetType())
-                boxLists.ClearControls();
+        //void refresh(Workplace shop)
+        //{
+        //    if (box.Tag?.GetType() != shop.GetType())
+        //        boxLists.ClearControls();
 
-            liststockpiles.Clear().AddItems(shop.StockpilesInput.Select(i => shop.Town.ZoneManager.GetZone<Stockpile>(i)));
-            //listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new TargetArgs(shop.Town.Map, f)));
-            listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new CellSelection(shop.Town.Map, f)));
+        //    liststockpiles.Clear().AddItems(shop.StockpilesInput.Select(i => shop.Town.ZoneManager.GetZone<Stockpile>(i)));
+        //    //listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new TargetArgs(shop.Town.Map, f)));
+        //    listfacilities.Clear().AddItems(shop.GetFacilities().Select(f => new CellSelection(shop.Town.Map, f)));
 
-            boxtabs.ClearControls();
-            boxtabs.AddControlsLineWrap(new[] {
-            new Button("Stockpiles", ()=>selectTab(boxstockpiles)),
-            new Button("Facilities", ()=>selectTab(boxfacilities)) },
-            listw);
-            boxtabs.AddControlsLineWrap(shop.GetUIBase().Select(b =>
-            {
-                return new Button(b.Name, () =>
-                {
-                    b.GetData(shop);
-                    selectTab(b);
-                });
-            }), listw);
+        //    boxtabs.ClearControls();
+        //    boxtabs.AddControlsLineWrap(new[] {
+        //    new Button("Stockpiles", ()=>selectTab(boxstockpiles)),
+        //    new Button("Facilities", ()=>selectTab(boxfacilities)) },
+        //    listw);
+        //    boxtabs.AddControlsLineWrap(shop.GetUIBase().Select(b =>
+        //    {
+        //        return new Button(b.Name, () =>
+        //        {
+        //            b.GetData(shop);
+        //            selectTab(b);
+        //        });
+        //    }), listw);
 
-            box.ClearControls();
+        //    box.ClearControls();
 
-            box.AddControlsVertically(boxtabs, boxLists);
-            box.Validate(true);
-            box.Tag = shop;
-        }
-        liststockpiles.OnGameEventAction = e =>
-        {
-            var shop = box.Tag as Shop;
-            switch ((Message.Types)e.Type)
-            {
-                case Message.Types.ShopUpdated:
-                    if (e.Parameters[0] != shop)
-                        break;
-                    if (e.Parameters[1] is Stockpile[] p)
-                    {
-                        for (int i = 0; i < p.Length; i++)
-                        {
-                            var st = p[i];
-                            if (shop.StockpilesInput.Contains(st.ID))
-                                liststockpiles.AddItems(st);
-                            else
-                                liststockpiles.RemoveItems(st);
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-        };
+        //    box.AddControlsVertically(boxtabs, boxLists);
+        //    box.Validate(true);
+        //    box.Tag = shop;
+        //}
+        //liststockpiles.OnGameEventAction = e =>
+        //{
+        //    var shop = box.Tag as Shop;
+        //    switch ((Message.Types)e.Type)
+        //    {
+        //        case Message.Types.ShopUpdated:
+        //            if (e.Parameters[0] != shop)
+        //                break;
+        //            if (e.Parameters[1] is Stockpile[] p)
+        //            {
+        //                for (int i = 0; i < p.Length; i++)
+        //                {
+        //                    var st = p[i];
+        //                    if (shop.StockpilesInput.Contains(st.ID))
+        //                        liststockpiles.AddItems(st);
+        //                    else
+        //                        liststockpiles.RemoveItems(st);
+        //                }
+        //            }
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //};
 
-        return (box, refresh);
+        //return (box, refresh);
     }
 
     public bool ActorHasJob(Actor a, DutyDef def)

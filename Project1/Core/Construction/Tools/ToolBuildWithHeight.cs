@@ -2,9 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
-using Project1.Core.Networking;
 using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -118,20 +116,22 @@ abstract class ToolBuildWithHeight : ToolBlockBuild
     }
     static protected int GetHeight(IntVec3 end, Vector2 mousePointer)
     {
-        var endscreenposition = ScreenManager.CurrentScreen.Camera.GetScreenPosition(end);
-        var length = (endscreenposition.Y - mousePointer.Y) / ScreenManager.CurrentScreen.Camera.Zoom;
+        var cam = Ingame.MainViewport.Camera;
+        var endscreenposition = cam.GetScreenPosition(end);
+        var length = (endscreenposition.Y - mousePointer.Y) / cam.Zoom;
         var lengthinblocks = (int)(length / Block.BlockHeight);
         var height = lengthinblocks;
         return height;
     }
 
-    protected override void DrawGrid(MySpriteBatch sb, MapBase map, Camera cam, Color color)
+    protected override void DrawGrid(MySpriteBatch sb, RenderContext ctx, Color color)
     {
         if (!this.Enabled)
             return;
+        var map = ctx.Map;
         var positions = this.GetPositionsNew(this.Begin, this.End)
             .Where(vec => this.Replacing ? map.GetBlock(vec) != BlockDefOf.Air.Block : map.GetBlock(vec) == BlockDefOf.Air.Block);
-        cam.DrawCellHighlights(sb, Block.BlockBlueprint, positions, color);
+        ctx.Renderer.DrawCellHighlights(sb, Block.BlockBlueprint, positions, color);
     }
     protected virtual IEnumerable<IntVec3> GetPositionsNew(IntVec3 a, IntVec3 b) { yield break; }
     protected override void WriteData(IDataWriter w)

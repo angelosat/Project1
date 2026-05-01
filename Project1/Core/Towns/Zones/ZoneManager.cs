@@ -17,7 +17,7 @@ using System.Linq;
 namespace Project1.Core.Towns.Zones;
 
 [EnsureStaticCtorCall]
-public class ZoneManager : TownComp
+public sealed class ZoneManager : TownComp
 {
     static readonly ZoneDef[] ZoneDefs;// = [ZoneDefOf.Stockpile, ZoneDefOf.Growing];
     public override string Name => "ZoneManager";
@@ -279,14 +279,14 @@ public class ZoneManager : TownComp
         var global = target.Global;
         return this.GetZoneAt(global);
     }
-    public override void DrawBeforeWorld(MySpriteBatch sb, MapBase map, Camera cam)
+    public override void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        if (!cam.DrawZones)
+        if (!ctx.MapViewport.Settings.DrawZones)
             return;
         foreach (var s in this.ZonesById.Values)
-            s.DrawBeforeWorld(sb, map, cam);
+            s.DrawBeforeWorld(sb, ctx);
     }
-    internal override void OnCameraRotated(Camera camera)
+    internal override void OnCameraRotated(Renderer camera)
     {
         foreach (var z in this.ZonesById.Values)
             z.OnCameraRotated(camera);

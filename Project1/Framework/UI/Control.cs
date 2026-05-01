@@ -1482,15 +1482,15 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         if(!this.Parent.Controls.Contains(this))
             this.Parent.AddControls(this);
     }
-    public virtual void DrawOnCamera(SpriteBatch sb, Camera camera)
+    public virtual void DrawOnCamera(SpriteBatch sb, MapViewport viewport)
     {
         foreach (var ch in this.Controls)
-            ch.DrawOnCamera(sb, camera);
+            ch.DrawOnCamera(sb, viewport);
     }
-    public virtual void DrawWorld(MySpriteBatch sb, Camera camera)
+    public virtual void DrawWorld(MySpriteBatch sb, MapViewport viewport)
     {
         foreach (var ch in this.Controls)
-            ch.DrawWorld(sb, camera);
+            ch.DrawWorld(sb, viewport);
     }
     public virtual Window ToWidget(string name)
     {

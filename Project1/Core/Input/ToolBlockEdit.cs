@@ -107,10 +107,12 @@ namespace Project1.Core.Input
         {
             this.Orientation = (this.Orientation + 1) % 4;
         }
-        internal override void DrawAfterWorld(MySpriteBatch sb, MapBase map)
+        internal override void DrawAfterWorld(MySpriteBatch sb, RenderContext ctx)
         {
-            var cam = map.Camera;
-            base.DrawAfterWorld(sb, map);
+            var cam = ctx.Camera;
+            var map = ctx.Map;
+            var renderer = ctx.Renderer;
+            base.DrawAfterWorld(sb, ctx);
             if (this.Painting)
                 return;
             if (InputState.IsKeyDown(Keys.ControlKey))
@@ -120,10 +122,10 @@ namespace Project1.Core.Input
 
             var atlastoken = this.Block.GetDefault();
             var global = (IntVec3)this.Target.FaceGlobal;
-            atlastoken.Atlas.Begin(cam.Effect);
+            atlastoken.Atlas.Begin(renderer.Effect);
             this.Block.DrawPreview(sb, map, global, cam, this.State, this.Material, this.Variation, this.Orientation);
             sb.Flush();
-            this.Block.DrawInteractionCells(sb, cam, map, global, this.Orientation);
+            this.Block.DrawInteractionCells(sb, ctx, global, this.Orientation);
         }
         public override Icon GetIcon()
         {
@@ -134,15 +136,15 @@ namespace Project1.Core.Input
             return base.GetIcon();
         }
 
-        internal override void DrawAfterWorldRemote(MySpriteBatch sb, MapBase map, Camera camera, PlayerData player)
+        internal override void DrawAfterWorldRemote(MySpriteBatch sb, RenderContext ctx, PlayerData player)
         {
             var targetArgs = player.Target;
             if (targetArgs.Type != TargetType.Cell)
                 return;
             var atlastoken = this.Block.GetDefault();
             var global = targetArgs.FaceGlobal;
-            atlastoken.Atlas.Begin(camera.Effect);
-            this.Block.DrawPreview(sb, map, global, camera, this.State, this.Material, this.Variation, this.Orientation);
+            atlastoken.Atlas.Begin(ctx.Renderer.Effect);
+            this.Block.DrawPreview(sb, ctx.Map, global, ctx.Camera, this.State, this.Material, this.Variation, this.Orientation);
             sb.Flush();
         }
         protected override void WriteData(IDataWriter w)

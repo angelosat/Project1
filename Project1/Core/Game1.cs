@@ -39,6 +39,7 @@ public class Game1 : Game
     public static TextInputHandler Input;
     double FpsTimer;
     int Fps;
+    public static Renderer Renderer;// = new();
 
 
     static public Rectangle Bounds => new(0, 0, Instance.graphics.PreferredBackBufferWidth, Instance.graphics.PreferredBackBufferHeight);
@@ -63,7 +64,6 @@ public class Game1 : Game
         };
         Content.RootDirectory = "Content";
         IsFixedTimeStep = false;
-       
         graphics.SynchronizeWithVerticalRetrace = false;
         graphics.PreparingDeviceSettings += new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
         graphics.DeviceReset += new EventHandler<EventArgs>(graphics_DeviceReset);
@@ -75,7 +75,8 @@ public class Game1 : Game
       
         // put these here to prevent thousands of framerate in the menus resulting in gpu whine noise
         this.IsFixedTimeStep = true;
-        this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 120d); 
+        this.TargetElapsedTime = TimeSpan.FromSeconds(1d / 120d);
+
     }
 
     void Window_ClientSizeChanged(object sender, EventArgs e)
@@ -148,6 +149,8 @@ public class Game1 : Game
         this.Network = new Network();
         //EnsureInitHelper.Init();
         GameSettings.Init();
+        Renderer = new();
+
     }
 
 
@@ -258,7 +261,7 @@ public class Game1 : Game
     {
         GraphicsDevice.SetRenderTarget(null);
         GraphicsDevice.Clear(Color.Black);
-        ScreenManager.Instance.Draw(spriteBatch);
+        ScreenManager.Instance.Draw(spriteBatch, Renderer);
         Controller.Instance.MouseoverNext.Valid = true; // i added this here to fix mouseover flickering but it caused other problems
         base.Draw(gameTime);
         var elapsed = gameTime.ElapsedGameTime.TotalSeconds;

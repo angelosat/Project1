@@ -5,6 +5,7 @@ using Project1.Framework.Input;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
+using Project1.Core.Screens;
 
 namespace Project1.Core.Input
 {
@@ -90,10 +91,12 @@ namespace Project1.Core.Input
             return this.ksCurrent.GetPressedKeys();
         }
 
-        public static void TrySetMouseoverEntity(Camera camera, Entity entity, Vector3 face, float drawdepth)
+        public static void TrySetMouseoverEntity(MapViewport viewport, Entity entity, Vector3 face, float drawdepth)
         {
             var global = entity.Global;
-            if (!camera.IsDrawable(entity.Map, global))
+            if (entity.Map != viewport.Map)
+                throw new Exception();
+            if (!viewport.IsDrawable(global))
                 return;
 
             float mouseoverDepth = drawdepth;
@@ -113,9 +116,9 @@ namespace Project1.Core.Input
                 Instance.MouseoverNext.Depth = drawdepth;
             }
         }
-        public static void SetMouseoverBlock(Camera camera, MapBase map, Vector3 global, Vector3 face, Vector3 precise)
+        public static void SetMouseoverBlock(float depth, MapBase map, Vector3 global, Vector3 face, Vector3 precise)
         {
-            var depth = global.GetDrawDepth(map, camera);
+            //var depth = global.GetDrawDepth(map, camera);
             if (Instance.MouseoverNext.Depth > depth)
                 return;
 

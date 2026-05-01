@@ -31,7 +31,7 @@ namespace Project1.Core.Networking
                     var client = net as Client;
                     if(client!=null)
                     {
-                        ScreenManager.CurrentScreen.Camera.FogLevel = int.Parse(p[1]);
+                        Ingame.MainViewport.Settings.FogLevel = int.Parse(p[1]);
                     }
                     if (net is Server)
                         (net as Server).Enqueue(PacketType.PlayerServerCommand, Network.Serialize(w => w.WriteASCII(command)), ReliabilityType.OrderedReliable);

@@ -4,6 +4,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -36,7 +37,8 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
                 break;
 
             case TargetType.Cell:
-                this.Map.GetBlock(this.Global).GetTooltip(tooltip, this.Map, this.Global, this.Face);
+                var viewport = Ingame.MainViewport;
+                viewport.Map.GetBlock(this.Global).GetTooltip(tooltip, viewport, this.Global, this.Face);
 
                 break;
 

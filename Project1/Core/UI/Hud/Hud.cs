@@ -11,7 +11,7 @@ using Project1.Framework.UI;
 namespace Project1.Core.UI.Hud;
 
 [EnsureStaticCtorCall]
-public class Hud : GroupBox
+public sealed class Hud : GroupBox
 {
     static Hud()
     {
@@ -43,7 +43,7 @@ public class Hud : GroupBox
         this.Box_Buttons.Controls.Add(btn);
     }
 
-    public Hud(NetEndpoint net, Camera camera)
+    public Hud(NetEndpoint net, ICamera camera)
     {
         this.AutoSize = false;
         this.Width = UIManager.Width;
@@ -104,10 +104,11 @@ public class Hud : GroupBox
         GameMode.Current.OnIngameMenuCreated(this.IngameMenu);
 
         this.ZLevelDrawBar = new ScrollbarVNew(MapBase.MaxHeight, MapBase.MaxHeight, 1, 16, 1,
-             () => MapBase.MaxHeight - Ingame.MainViewportMap.Camera.DrawLevel,
+             () => MapBase.MaxHeight - Ingame.MainViewport.Settings.DrawLevel,
              () => 1 / (float)MapBase.MaxHeight,
-             () => Ingame.MainViewportMap.Camera.DrawLevel / MapBase.MaxHeight,
-             v => Ingame.MainViewportMap.Camera.DrawLevel = MapBase.MaxHeight - v);
+             () => Ingame.MainViewport.Settings.DrawLevel / MapBase.MaxHeight,
+             //v => Ingame.MainViewport.Renderer.DrawLevel = MapBase.MaxHeight - v);
+             v => Ingame.MainViewport.SetDrawLevel(MapBase.MaxHeight - v));
 
         this.ZLevelDrawBar.AnchorToCenterRight();
 

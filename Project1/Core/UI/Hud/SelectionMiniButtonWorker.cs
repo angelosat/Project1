@@ -46,21 +46,21 @@ internal class MiniButton_CameraFollow : SelectionMiniButtonWorker
         => selectable is Entity;
 
     internal override void OnClick(ISelectable selectable)
-        => ScreenManager.CurrentScreen.Camera.ToggleFollowing(selectable as Entity);
+        => Ingame.MainViewport.ToggleFollow(selectable as Entity);
 }
 internal class MiniButton_SlizeZ : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => true;
     internal override void OnClick(ISelectable selectable)
-        => ScreenManager.CurrentScreen.Camera.SliceOn((int)selectable.Global.Z);
+        => Ingame.MainViewport.SliceOn((int)selectable.Global.Z);
 }
 internal class MiniButton_CameraCenter : SelectionMiniButtonWorker
 {
     internal override bool IsVisible(ISelectable selectable)
         => true;
     internal override void OnClick(ISelectable selectable)
-        => ScreenManager.CurrentScreen.Camera.CenterOn(selectable.Global);
+        => Ingame.MainViewport.CenterOn(selectable.Global);
 }
 internal class MiniButton_CycleSelection : SelectionMiniButtonWorker
 {

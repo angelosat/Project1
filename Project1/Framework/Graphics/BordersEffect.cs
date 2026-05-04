@@ -20,7 +20,7 @@ namespace Project1.Framework.Graphics
             gfx.SetRenderTarget(next);
             gfx.Clear(Color.Transparent);
 
-            Effect blur = Game1.Instance.Content.Load<Effect>("blur");
+            Effect blur = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
             blur.Parameters["Viewport"].SetValue(new Vector2(texture.Width + 2 * Thickness, texture.Height + 2 * Thickness));
             blur.CurrentTechnique = blur.Techniques["Technique1"];
             blur.CurrentTechnique.Passes["Pass1"].Apply();
@@ -53,7 +53,7 @@ namespace Project1.Framework.Graphics
             var nextRender = new RenderTarget2D(gfx, texture.Width + 2 * Thickness, texture.Height + 2 * Thickness);
             gfx.SetRenderTarget(nextRender);
             gfx.Clear(Color.Transparent);
-            Effect blur = Game1.Instance.Content.Load<Effect>("blur");
+            Effect blur = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
             blur.Parameters["Viewport"].SetValue(new Vector2(texture.Width + 2 * Thickness, texture.Height + 2 * Thickness));
 
             blur.CurrentTechnique = blur.Techniques["Solid"];
@@ -79,7 +79,7 @@ namespace Project1.Framework.Graphics
             gfx.SetRenderTarget(next);
             gfx.Clear(Color.Transparent);
 
-            Effect blur = Game1.Instance.Content.Load<Effect>("blur");
+            Effect blur = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
             blur.Parameters["Viewport"].SetValue(new Vector2(texture.Width + 2 * Thickness, texture.Height + 2 * Thickness));
 
             blur.CurrentTechnique = blur.Techniques["SpriteDepthTexture"];
@@ -106,7 +106,7 @@ namespace Project1.Framework.Graphics
             gfx.SetRenderTarget(next);
             gfx.Clear(Color.Transparent);
 
-            Effect blur = Game1.Instance.Content.Load<Effect>("blur");
+            Effect blur = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
             blur.Parameters["Viewport"].SetValue(new Vector2(texture.Width, texture.Height));
           
 

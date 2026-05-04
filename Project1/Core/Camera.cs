@@ -18,13 +18,13 @@ public sealed class Camera : ICamera
     public int Width, Height;
     public static bool SmoothCentering;
 
-    public Vector2 Coordinates
+    public Vector2 Position
     {
         get => this._Coordinates;
         set
         {
             this._Coordinates = value;
-            this.Location = this.Coordinates - new Vector2((int)((this.Width / 2) / this.Zoom), (int)((this.Height / 2) / this.Zoom));
+            this.Location = this.Position - new Vector2((int)((this.Width / 2) / this.Zoom), (int)((this.Height / 2) / this.Zoom));
         }
     }
     public Vector3? Center = Vector3.Zero;
@@ -95,7 +95,7 @@ public sealed class Camera : ICamera
         this.Zoom = value;
         var offset = new Vector2(this.Width / 2, this.Height / 2);
         offset /= this.Zoom;
-        this.Location = this.Coordinates - offset;
+        this.Location = this.Position - offset;
     }
     internal void SnapToCenter()
     {
@@ -109,7 +109,7 @@ public sealed class Camera : ICamera
         Coords.Iso(this, global.X, global.Y, global.Z, out float xx, out float yy);
 
         Vector2
-            currentLoc = this.Coordinates,
+            currentLoc = this.Position,
             nextLoc = new(xx, yy),
             diff = nextLoc - currentLoc;
 
@@ -125,7 +125,7 @@ public sealed class Camera : ICamera
         nextCoords = nextCoords.ToRounded(); // must round to prevent seaming between blocks when moving camera
         ///
 
-        this.Coordinates = nextCoords;
+        this.Position = nextCoords;
     }
     void OnRotationChanged()
     {

@@ -128,8 +128,8 @@ public partial class ToolPlaceWall : DefaultTool
     internal override void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx)
     {
         var renderer = ctx.Renderer;
-        renderer.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-        renderer.Effect.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
+        Renderer.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
+        Renderer.Effect.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
         this.DrawGrid(sb, ctx);
 
         base.DrawBeforeWorld(sb, ctx);

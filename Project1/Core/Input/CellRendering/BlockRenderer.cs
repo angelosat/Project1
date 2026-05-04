@@ -39,8 +39,8 @@ public sealed class BlockRenderer
         //Coords.Rotate(camera, 0, 0, out int rotx, out int roty);
         view.Rotate(0, 0, out int rotx, out int roty);
         var world = Matrix.CreateTranslation(new Vector3(x, y, (rotx + roty) * Chunk.Size));
-        renderer.Effect.Parameters["World"].SetValue(world);
-        renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();
+        Renderer.Effect.Parameters["World"].SetValue(world);
+        Renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();
         this.Batch.Draw();
     }
 }

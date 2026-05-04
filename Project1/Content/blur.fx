@@ -3,6 +3,10 @@ sampler s1 : register(s1);
 sampler s2 : register(s2);
 sampler s3 : register(s3);
 sampler s4 : register(s4);
+sampler s5 : register(s5);
+//sampler s6 : register(s6);
+//sampler s7 : register(s7);
+
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
@@ -141,6 +145,7 @@ struct MyPixelOutput
 	float4 Light : COLOR1;
 	float4 Depth : COLOR2;
 	float4 Fog : COLOR3;
+    float4 Normal : COLOR4;
 	float DepthBuffer : DEPTH0;
 };
 MyVertexOutput MyChunkVertexShader(MyVertexInput input)
@@ -668,15 +673,79 @@ float4 FinalInsideBordersFunctionNoFog(VertexShaderOutput input, out float depth
 		float4 outline = ((1 - b) * float4(0, 0, 0, 1) + (b) * color * light) * AmbientLight;
 		return outline;
 	}
+	
+ //   float bx = BorderResolution.x * 15;
+ //   float by = BorderResolution.y * 15;
+ //   float offset = 16; // / DepthResolution;
+ //   float2 dx = float2(BorderResolution.x * offset, 0);
+ //   float2 dy = float2(0, BorderResolution.y * offset);
 
-	float4 beforeFog = color.a * color * light;
+ //   float2 uv = input.TexCoord.xy;
+	/////---
+ //   float c = depth.r;
+ //   float d1 = tex2D(s2, uv + dx).r;
+ //   float d2 = tex2D(s2, uv - dx).r;
+ //   float d3 = tex2D(s2, uv + dy).r;
+ //   float d4 = tex2D(s2, uv - dy).r;
+ //   float eps = DepthResolution;
+ //   float maxd = max(max(d1, d2), max(d3, d4));
+ // //  if (maxd < c + 0.005)
+	//	//return float4(maxd, maxd, maxd, 1);
+ //   float difff = maxd - c;
+ //   float ao;
+  
+ //       ao = 3 * difff / eps;
+ //       ao = saturate(ao);
+ //       ao = lerp(0.5, 1, ao);
+   
+	//---
+    //float aoo = ao;
+    //float4 aooo = float4(aoo, aoo, aoo, 1);
+	
 
+	
+	
+	//---
+//// 1) pixel size in UV space (NO guessing)
+//    float2 texelSize = BorderResolution;
+
+//// 2) sampling radius in pixels (tune this)
+//    float sampleRadius = 20.0;
+
+//// 3) build offsets (screen-space sampling directions)
+//    float2 offsetX = float2(texelSize.x * sampleRadius, 0.0);
+//    float2 offsetY = float2(0.0, texelSize.y * sampleRadius);
+
+//// 4) center depth
+//    float center = tex2D(s2, uv).r;
+//// 5) neighbor depths (4 directions)
+//    float dLeft = tex2D(s2, uv - offsetX).r;
+//    float dRight = tex2D(s2, uv + offsetX).r;
+//    float dUp = tex2D(s2, uv - offsetY).r;
+//    float dDown = tex2D(s2, uv + offsetY).r;
+//    float ao;
+//// 6) cavity signal (your original idea, stabilized)
+//    float maxNeighbor = max(max(dLeft, dRight), max(dUp, dDown));
+//    float difff = maxNeighbor - center;
+//// 7) remove tiny slope noise (IMPORTANT for “flat surface haze” issue)
+//    difff = max(difff - 0.002, 0.0);
+//    difff = max(difff, 0.0);
+//// 8) normalize by depth scale
+//    ao = saturate(difff * (2.0 / DepthResolution));
+//    ao = lerp(0.5, 1, ao);
+	//---
+	
+    //float4 aooo = float4(ao, ao, ao, 1);
+	
+    float4 beforeFog = color.a * color * light; // * aooo;
+	
+    //return float4(depth.r, depth.r, depth.r, 1);
 	//	//effect for reducing color depth
 	//	float r = round(beforeFog.r * 8) / 8;
 	//float g = round(beforeFog.g * 8) / 8;
 	//float b = round(beforeFog.b * 8) / 8; //4) / 4;
 	//beforeFog = float4(r, g, b, beforeFog.a);
-
+    //return occlusion;
 	return beforeFog;
 }
 
@@ -865,6 +934,10 @@ MyPixelOutput MyChunkPixelShader(MyVertexOutput input)
 	// which is faster???
 	sunlight = input.Light.b * face.r + input.Light.g * face.g + input.Light.r * face.b;
 	blocklight = input.BlockLight.b * face.r + input.BlockLight.g * face.g + input.BlockLight.r* face.b;
+	
+	// prevent total blackness for unlit cells
+    sunlight = lerp(0.1, 1, sunlight);
+    blocklight = lerp(0.1, 1, blocklight);
 
 	float a = input.Color.a;
 	float4 d = tex2D(s3, input.TexCoord.xy);
@@ -876,8 +949,8 @@ MyPixelOutput MyChunkPixelShader(MyVertexOutput input)
 	output.DepthBuffer = depthToWrite;
 
 	float4 lightcolor = sunlight * AmbientLight + float4(blocklight, blocklight, blocklight, 1);
-		output.Light = lightcolor;
-
+	output.Light = lightcolor;
+    output.Normal = face;
 	return output;
 }
 
@@ -922,6 +995,7 @@ MyPixelOutput MyPixelShaderWithNormals(MyVertexOutput input)
 	output.DepthBuffer = depthToWrite;
 	float4 lightcolor = sunlight * AmbientLight + float4(blocklight, blocklight, blocklight, 1);
 	output.Light = lightcolor;
+    output.Normal = float4(0, 1, 1, 1);
 	return output;
 }
 

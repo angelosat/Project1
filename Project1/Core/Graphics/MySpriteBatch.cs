@@ -521,30 +521,30 @@ public sealed class MySpriteBatch
             Array.Resize(ref vertices, Math.Max(vertexCount + vertexSpace, vertices.Length * 2));
     }
 
-    public void FlushOld()
-    {
-        if (this.vertexCount > 0)
-        {
-            Effect fx = Game1.Instance.Content.Load<Effect>("blur");
-            fx.CurrentTechnique = fx.Techniques["Normal"];
+    //public void FlushOld()
+    //{
+    //    if (this.vertexCount > 0)
+    //    {
+    //        Effect fx = Game1.Instance.Content.Load<Effect>("blur");
+    //        fx.CurrentTechnique = fx.Techniques["Normal"];
 
-            fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * BordersEffect.Thickness);
-            fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * BordersEffect.Thickness);
-            fx.Parameters["AtlasWidth"].SetValue(Block.Atlas.Texture.Width);
-            fx.Parameters["AtlasHeight"].SetValue(Block.Atlas.Texture.Height);
-            fx.Parameters["Viewport"].SetValue(new Vector2(Device.Viewport.Width, Device.Viewport.Height));
-            fx.Parameters["s"].SetValue(Block.Atlas.Texture);
-            fx.Parameters["s2"].SetValue(Block.ShaderMouseMap);
-            Device.DepthStencilState = DepthStencilState.Default;
-            fx.CurrentTechnique.Passes["Pass1"].Apply();
-            Device.DrawUserIndexedPrimitives(
-                PrimitiveType.TriangleList, this.vertices, 0, this.vertexCount,
-                this.indices, 0, this.indexCount / 3);
+    //        fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * BordersEffect.Thickness);
+    //        fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * BordersEffect.Thickness);
+    //        fx.Parameters["AtlasWidth"].SetValue(Block.Atlas.Texture.Width);
+    //        fx.Parameters["AtlasHeight"].SetValue(Block.Atlas.Texture.Height);
+    //        fx.Parameters["Viewport"].SetValue(new Vector2(Device.Viewport.Width, Device.Viewport.Height));
+    //        fx.Parameters["s"].SetValue(Block.Atlas.Texture);
+    //        fx.Parameters["s2"].SetValue(Block.ShaderMouseMap);
+    //        Device.DepthStencilState = DepthStencilState.Default;
+    //        fx.CurrentTechnique.Passes["Pass1"].Apply();
+    //        Device.DrawUserIndexedPrimitives(
+    //            PrimitiveType.TriangleList, this.vertices, 0, this.vertexCount,
+    //            this.indices, 0, this.indexCount / 3);
 
-            this.vertexCount = 0;
-            this.indexCount = 0;
-        }
-    }
+    //        this.vertexCount = 0;
+    //        this.indexCount = 0;
+    //    }
+    //}
 
     public void Flush()
     {

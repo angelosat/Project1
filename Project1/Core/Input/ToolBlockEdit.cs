@@ -122,7 +122,7 @@ class ToolBlockEdit : ToolManagement
 
         var atlastoken = this.Block.GetDefault();
         var global = (IntVec3)this.Target.FaceGlobal;
-        atlastoken.Atlas.Begin(renderer.Effect);
+        atlastoken.Atlas.Begin(Renderer.Effect);
         this.Block.DrawPreview(sb, global, view, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();
         this.Block.DrawInteractionCells(sb, ctx, global, this.Orientation);
@@ -144,7 +144,7 @@ class ToolBlockEdit : ToolManagement
             return;
         var atlastoken = this.Block.GetDefault();
         var global = targetArgs.FaceGlobal;
-        atlastoken.Atlas.Begin(ctx.Renderer.Effect);
+        atlastoken.Atlas.Begin(Renderer.Effect);
         this.Block.DrawPreview(sb, global, view, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();
     }

@@ -24,8 +24,8 @@ public sealed class LightingEngine(MapBase map)
 
     readonly MapBase Map = map;
 
-    HashSet<IntVec3> Queued = [];
-    Queue<PositionQuery> Queue = [];
+    readonly HashSet<IntVec3> Queued = [];
+    readonly Queue<PositionQuery> Queue = [];
 
     readonly Queue<PositionQuery> DarkenQueue = new();
     readonly HashSet<IntVec3> DarkenQueued = new();
@@ -52,6 +52,7 @@ public sealed class LightingEngine(MapBase map)
         //var s = Stopwatch.StartNew();
         while (this.Queue.Count > 0)
         {
+            // TODO: remove also from the hashset to allow it to be requeued after darkening?
             HandleSkyGlobalImmediate(this.Queue.Dequeue());
             //count++;
 
@@ -148,13 +149,13 @@ public sealed class LightingEngine(MapBase map)
                     continue;
                 if (nquery.Chunk.IsAboveHeightMap(n))
                 {
-                    //if (!this.Queued.Contains(pos.GlobalCellId))
-                    if (!this.Queued.Contains(pos.Global))
-                    {
+                    // force requeue block for brightening even if it was already queued?
+                    //if (!this.Queued.Contains(pos.Global))
+                    //{
                         this.Queue.Enqueue(pos);
                         //this.Queued.Add(pos.GlobalCellId);
                         this.Queued.Add(pos.Global);
-                    }
+                    //}
                     continue;
                 }
                 nlight = nquery.Chunk.GetSkylight(nquery.CellIndex);

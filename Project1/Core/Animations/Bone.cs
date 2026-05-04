@@ -583,7 +583,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         gd.SetRenderTarget(texture);
         gd.Clear(Color.Transparent);
 
-        var fx = Game1.Instance.Content.Load<Effect>("blur");
+        var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
         var mysb = new MySpriteBatch(gd);
         fx.CurrentTechnique = fx.Techniques["EntitiesFog"];
         fx.Parameters["Viewport"].SetValue(new Vector2(rect.Width, rect.Height));
@@ -613,7 +613,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         gd.SetRenderTarget(renderTarget);
         gd.Clear(Color.Transparent);
 
-        var fx = Game1.Instance.Content.Load<Effect>("blur");
+        var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
 
 
         var mysb = new MySpriteBatch(gd);
@@ -652,7 +652,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         var rect = texture.Bounds;
         gd.SetRenderTarget(texture);
         gd.Clear(Color.Transparent);
-        var fx = Game1.Instance.Content.Load<Effect>("blur");
+        var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
         var mysb = new MySpriteBatch(gd);
         fx.CurrentTechnique = fx.Techniques["EntitiesFog"];
         fx.Parameters["Viewport"].SetValue(new Vector2(rect.Width, rect.Height));
@@ -680,7 +680,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         var rect = texture.Bounds;
         gd.SetRenderTarget(texture);
         gd.Clear(Color.Transparent);
-        var fx = Game1.Instance.Content.Load<Effect>("blur");
+        var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
         var mysb = new MySpriteBatch(gd);
         fx.CurrentTechnique = fx.Techniques["EntitiesFog"];
         fx.Parameters["Viewport"].SetValue(new Vector2(rect.Width, rect.Height));

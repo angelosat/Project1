@@ -77,8 +77,8 @@ public sealed class BlockRendererObservable
         r.PrepareShader(ctx.View);
         view.Rotate(0, 0, out int rotx, out int roty);
         var world = Matrix.CreateTranslation(new Vector3(0, 0, (rotx + roty) * Chunk.Size));
-        r.Effect.Parameters["World"].SetValue(world);
-        r.Effect.CurrentTechnique.Passes["Pass1"].Apply();
+        Renderer.Effect.Parameters["World"].SetValue(world);
+        Renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();
 
         foreach (var slice in this.Slices)
             if (slice.Key <= ctx.View.Settings.DrawLevel)

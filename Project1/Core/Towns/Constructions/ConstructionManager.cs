@@ -235,8 +235,7 @@ namespace Project1.Core.Towns.Constructions
                     Vector3.Zero));
             }
         }
-        GroupBox _pendingDesignationLabel;
-        GroupBox PendingDesignationLabel => this._pendingDesignationLabel ??= new GroupBox();
+        GroupBox PendingDesignationLabel => field ??= new GroupBox();
         GroupBox UpdatePendingDesignationLabel(ConstructionParams pending)
         {
             this.PendingDesignationLabel.ClearControls();

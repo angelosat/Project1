@@ -1093,7 +1093,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         GraphicsDevice gd = Game1.Instance.GraphicsDevice;
         var sprite = body.Sprite;
         var loc = new Vector2(0, 0);
-        Effect fx = Game1.Instance.Content.Load<Effect>("blur");
+        Effect fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
         MySpriteBatch mysb = new MySpriteBatch(gd);
         fx.CurrentTechnique = fx.Techniques["EntitiesFog"];
         fx.Parameters["Viewport"].SetValue(new Vector2(w, h));

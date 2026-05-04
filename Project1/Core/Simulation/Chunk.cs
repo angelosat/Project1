@@ -54,7 +54,15 @@ public sealed class Chunk : Inspectable
     public const int SizeSquared = Size * Size;
     public static readonly int Volume = Size * Size * MapBase.MaxHeight;
     public Light[] Light = new Light[Volume];
-    public readonly Dictionary<IntVec3Local, LightToken> LightCache = [];
+    readonly Dictionary<IntVec3Local, LightToken> LightCache = [];
+    public bool TryGetCachedLight(IntVec3Local local, out LightToken token)
+    {
+        return this.LightCache.TryGetValue(local, out token);
+    }
+    public void CacheLight(IntVec3Local local, LightToken token)
+    {
+        this.LightCache[local] = token;
+    }
     [InspectorHidden]
     public Cell[] Cells;
     [InspectorHidden]
@@ -386,6 +394,7 @@ public sealed class Chunk : Inspectable
         bool hit = false;
         var oldValue = this.HeightMap[localx][localy];
         int minVal = 0, maxVal = this.Map.GetMaxHeight();
+        List<PositionQuery> positionsForLightUpdate = new();
         while (z >= 0)
         {
 
@@ -417,13 +426,15 @@ public sealed class Chunk : Inspectable
                 }
             }
 
-            if (found && (minVal < z && z <= maxVal)) // if a new heightmap value found, invalidate cells inbetween the old and the new one
-                //this.InvalidateCell(new IntVec3(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
+            if (found && (minVal <= z && z <= maxVal)) // if a new heightmap value found, invalidate cells inbetween the old and the new one
+            {
                 this.InvalidateCell(new IntVec3Local(localx, localy, z)); // why did i have this commented out? it caused slice meshes not getting updated light
-
+                positionsForLightUpdate.Add(this.QueryPosition(new IntVec3Local(localx, localy, z)));
+            }
+            // todo need to call lighting engine for all cells that have been darkened
             z--;
         }
-
+        this.Map.LightingEngine.HandleImmediate(positionsForLightUpdate);
         if (!found)
             this.HeightMap[localx][localy] = 0;
     }
@@ -542,7 +553,9 @@ public sealed class Chunk : Inspectable
     {
         if (z >= this.Map.GetMaxHeight())
             return 15;
-        return this.Light[GetCellIndex(x, y, z)].Sky;
+        var index = GetCellIndex(x, y, z);
+        var token = this.Light[index];
+        return token.Sky;
     }
 
     public void SetSkylight(IntVec3Local local, byte value)
@@ -557,6 +570,7 @@ public sealed class Chunk : Inspectable
     public void SetSkylight(PositionQuery pos, byte value)
     {
         this.Light[pos.CellIndex].Sky = value;
+        //var light = this.GetSkylight(pos.Global);
         this.InvalidateLight(pos.Global);
     }
     public void SetSkylight(CellId index, byte value)
@@ -613,20 +627,6 @@ public sealed class Chunk : Inspectable
     void InvalidateLightCache(IntVec3Local local)
         => this.LightCache.Remove(local);
 
-    public bool InvalidateLightOld(IntVec3 global)
-    {
-        this.LightCache.Clear();
-        if (this.Slices.Length != 0)
-        {
-            var z = global.Z;
-            if (z > 0)
-                this.InvalidateSlice(z - 1);
-            this.InvalidateSlice(z);
-            if (z < this.Map.GetMaxHeight() - 1)
-                this.InvalidateSlice(z + 1);
-        }
-        return true;
-    }
     public static bool TryGetFinalLight(MapBase map, IntVec3 global, out byte sky, out byte block)
         => TryGetFinalLight(map, global.X, global.Y, global.Z, out sky, out block);
 
@@ -1344,8 +1344,7 @@ public sealed class Chunk : Inspectable
 
     public void BuildSliceNew(Slice slice, RenderContext ctx, int z, (int x, int y) frontCells)
     {
-        var camera = ctx.Camera;
-        var map = ctx.Map;
+        var map = this.Map;
         var renderer = ctx.Renderer;
         var view = ctx.View;
 

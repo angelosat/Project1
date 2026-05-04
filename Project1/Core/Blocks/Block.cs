@@ -781,7 +781,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {
         var gd = Game1.Instance.GraphicsDevice;
         var token = this.GetDefault();
-        var fx = Game1.Instance.Content.Load<Effect>("blur");
+        var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
         var mysb = new MySpriteBatch(gd);
         fx.CurrentTechnique = fx.Techniques["Combined"];
         fx.Parameters["Viewport"].SetValue(new Vector2(width, height));
@@ -805,7 +805,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
         var renderTarget = new RenderTarget2D(gd, w, h);
         gd.SetRenderTarget(renderTarget);
         gd.Clear(Color.Transparent);
-        var fx = Game1.Instance.Content.Load<Effect>("blur");
+        var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
         var mysb = new MySpriteBatch(gd);
         fx.CurrentTechnique = fx.Techniques["Combined"];
         fx.Parameters["Viewport"].SetValue(new Vector2(w, h));

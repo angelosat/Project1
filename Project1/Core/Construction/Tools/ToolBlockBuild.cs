@@ -168,7 +168,7 @@ public abstract class ToolBlockBuild : ToolManagement, INamed
         var map = ctx.Map;
         var view = ctx.View;
         var atlastoken = this.Block.GetDefault();
-        atlastoken.Atlas.Begin(renderer.Effect);
+        atlastoken.Atlas.Begin(Renderer.Effect);
         foreach (var pos in this.ToolDef.Worker.GetPositions(this.Begin, this.EndFinal).Where(map.IsValidBuildSpot))
             this.Block.DrawPreview(sb, pos, view, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();

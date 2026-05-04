@@ -57,7 +57,7 @@ namespace Project1.Core.UI.Blocks
                     var token = tag.Block.GetDefault();
                     var rect = new Rectangle(3, 3, this.Width - 6, this.Height - 6);
                     var loc = new Vector2(rect.X, rect.Y);
-                    var fx = Game1.Instance.Content.Load<Effect>("blur");
+                    var fx = Renderer.Effect;// Game1.Instance.Content.Load<Effect>("blur");
                     var mysb = new MySpriteBatch(gd);
                     fx.CurrentTechnique = fx.Techniques["Combined"];
                     fx.Parameters["Viewport"].SetValue(new Vector2(slot.Width, slot.Height));

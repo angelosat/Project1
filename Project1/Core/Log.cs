@@ -206,13 +206,13 @@ List of available commands:
                     }
                     break;
                
-                case "hour":
-                case "time":
-                    int t = int.Parse(words.Dequeue());
-                    foreach (var ch in Ingame.Net.MainView.Map.GetActiveChunks())
-                        ch.Value.LightCache.Clear();
-                    Enqueue(EntryTypes.System, "Hour set to " + t);
-                    break;
+                //case "hour":
+                //case "time":
+                //    int t = int.Parse(words.Dequeue());
+                //    foreach (var ch in Ingame.Net.MainView.Map.GetActiveChunks())
+                //        ch.Value.LightCache.Clear();
+                //    Enqueue(EntryTypes.System, "Hour set to " + t);
+                //    break;
                 
                 default:
                     Log.Enqueue(EntryTypes.System, "Invalid command");

@@ -913,13 +913,13 @@ public sealed class Client : NetEndpoint
                 //ScreenManager.CurrentScreen.Renderer.OnDeviceLost();
                 return;
 
-            case "rebuildchunks":
-                foreach (var chunk in Instance.MainView.Map.GetActiveChunks().Values)
-                {
-                    chunk.LightCache.Clear();
-                    chunk.InvalidateMesh();
-                }
-                return;
+            //case "rebuildchunks":
+            //    foreach (var chunk in Instance.MainView.Map.GetActiveChunks().Values)
+            //    {
+            //        chunk.LightCache.Clear();
+            //        chunk.InvalidateMesh();
+            //    }
+            //    return;
 
             default:
                 break;

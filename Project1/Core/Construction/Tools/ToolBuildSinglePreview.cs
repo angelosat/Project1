@@ -79,7 +79,7 @@ class ToolBuildSinglePreview : ToolBlockBuild
 
         var atlastoken = this.Block.GetDefault();
         var global = this.Enabled ? this.Begin : (IntVec3)this.Target.FaceGlobal;
-        atlastoken.Atlas.Begin(renderer.Effect);
+        atlastoken.Atlas.Begin(Renderer.Effect);
         this.Block.DrawPreview(sb, global, view, this.State, this.Material, this.Variation, this.Orientation);
         sb.Flush();
 

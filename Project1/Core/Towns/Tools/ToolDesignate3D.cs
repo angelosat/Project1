@@ -165,7 +165,7 @@ class ToolDesignate3D : ToolManagement
     }
     internal override void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx)
     {
-        Block.Atlas.Begin(ctx.Renderer.Effect);
+        Block.Atlas.Begin(Renderer.Effect);
         this.DrawGrid(sb, ctx);
         sb.Flush();
         base.DrawBeforeWorld(sb, ctx);
@@ -187,7 +187,7 @@ class ToolDesignate3D : ToolManagement
         int dy = (int)Math.Abs(this.Begin.Y - this.End.Y);
         int dz = (int)Math.Abs(this.Begin.Z - this.End.Z);
 
-        Block.Atlas.Begin(renderer.Effect);
+        Block.Atlas.Begin(Renderer.Effect);
         var minBegin = new Vector3(x, y, z);
         for (int i = 0; i <= dx; i++)
         {

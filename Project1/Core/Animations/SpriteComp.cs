@@ -297,7 +297,7 @@ public sealed class SpriteComp : EntityComp
         this.Body.DrawTreeAnimationDeltas(parent as Entity, this.Customization, this.Animations.Values, sb, loc + (this.Body.OriginGroundOffset) * camera.Zoom, Color.White, Color.White, mouseovertint, Color.Transparent, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, .99f);
 
         // TODO: handle case where root bone doesn't have a sprite, or draw whole bone tree instead
-        ctx.Renderer.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
+        Renderer.Effect.Parameters["s"].SetValue(Sprite.Atlas.Texture);
         sb.Flush();
     }
 

@@ -1,5 +1,6 @@
 # todo 2025
 ## immediate
+- when building chunks, renderer.drawblock accepts the block as an arg, but drawcell requeries the chunk for block for no reason. i can cache them and pass them
 - actors remember how much social need was satisfied from each other actor they have talked to, and it will influence their decision on who to talk to
 - unknown block selection not revealing material in selection panel
 - change entity materials from per-bone to a materialcomp, which defines whether the item has material at all, etc

@@ -108,8 +108,8 @@ namespace Project1.Core.Input.CellRendering
             renderer.PrepareShader(view);
             view.Rotate(0, 0, out int rotx, out int roty);
             var world = Matrix.CreateTranslation(new Vector3(0, 0, (rotx + roty) * Chunk.Size));
-            renderer.Effect.Parameters["World"].SetValue(world);
-            renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();
+            Renderer.Effect.Parameters["World"].SetValue(world);
+            Renderer.Effect.CurrentTechnique.Passes["Pass1"].Apply();
             foreach (var slice in this.Slices)
                 if (slice.Key <= ctx.View.Settings.DrawLevel)
                     slice.Value.Draw();

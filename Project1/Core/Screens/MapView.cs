@@ -43,7 +43,7 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
     public int LastZTarget;
     public const int FogZOffset = 2, FogFadeLength = 8;
     internal InteractionTarget Mouseover = Controller.Instance.Mouseover.Target;
-    internal Vector2 Origin => this.Camera.Coordinates - new Vector2(this.Width, this.Height) / 2 / this.Camera.Zoom;
+    internal Vector2 Origin => this.Camera.Position - new Vector2(this.Width, this.Height) / 2 / this.Camera.Zoom;
     internal void Update(int gameSpeed)
     {
         this.UpdateFog(gameSpeed);
@@ -58,6 +58,8 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
     public float Zoom => this.Camera.Zoom;
 
     public int Rotation => (int)this.Camera.Rotation;
+
+    public Vector2 Position => this.Camera.Position;
 
     internal void SnapToMapCenter()
     {
@@ -104,7 +106,7 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
         if (!SmoothCentering || forceSnap)
         {
             this.Iso(global.X, global.Y, global.Z, out int xx, out int yy);
-            this.Camera.Coordinates = new Vector2(xx, yy);
+            this.Camera.Position = new Vector2(xx, yy);
         }
         this.Settings.DrawLevel = (int)Math.Max(this.Settings.DrawLevel, global.Z + 1);
         //if (!SmoothCentering || forceSnap)
@@ -118,7 +120,7 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
         this.Following = null;
 
         this.Camera.Center = null;
-        this.Camera.Coordinates = coords;
+        this.Camera.Position = coords;
     }
     public void Follow()
     {
@@ -193,7 +195,7 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
         var old = this.Settings.DrawLevel;
         this.Settings.DrawLevel = v;
         if (InputState.IsKeyDown(Keys.LMenu))
-            this.Move(this.Camera.Coordinates - new Vector2(0, Block.BlockHeight * (v - old)));
+            this.Move(this.Camera.Position - new Vector2(0, Block.BlockHeight * (v - old)));
     }
 
     int _previousDrawLevel = -1;

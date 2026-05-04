@@ -158,7 +158,7 @@ public class ToolManagement : DefaultTool
         delta *= minL;
 
         delta *= .01f;
-        Ingame.MainView.Move(Ingame.MainView.Camera.Coordinates += delta * 4);
+        Ingame.MainView.Move(Ingame.MainView.Camera.Position += delta * 4);
 
     }
     private void MouseDrag()
@@ -199,7 +199,7 @@ public class ToolManagement : DefaultTool
             nextStep.Normalize();
 
             var speed = HotkeyCameraFaster.ShortcutKeys.Any(k => InputState.IsKeyDown(k)) ? 3 : 1;
-            Ingame.MainView.Move(cam.Coordinates += new Vector2(xx, yy) * 4 * speed);
+            Ingame.MainView.Move(cam.Position += new Vector2(xx, yy) * 4 * speed);
         }
     }
     public override void HandleKeyDown(KeyEventArgs e)
@@ -283,7 +283,7 @@ public class ToolManagement : DefaultTool
         this.MouseScrollOrigin = UIManager.Mouse;
         var map = Ingame.MainView.Map;
         var cam = Ingame.MainView.Camera;
-        this.CameraCoordinatesOrigin = cam.Coordinates;
+        this.CameraCoordinatesOrigin = cam.Position;
         return Messages.Default;
     }
     public override Messages MouseMiddleUp(HandledMouseEventArgs e)

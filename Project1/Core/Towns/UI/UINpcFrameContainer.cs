@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Rendering;
 using Project1.Core.Simulation;
 using Project1.Framework.UI;
 using System.Collections.Generic;

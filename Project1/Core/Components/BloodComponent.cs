@@ -2,6 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.Graphics.Particles;
+using Project1.Core.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 

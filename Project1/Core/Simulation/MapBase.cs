@@ -10,6 +10,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Map;
 using Project1.Core.Networking;
 using Project1.Core.Networking.Simulation;
+using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Simulation.Lighting;
 using Project1.Core.Simulation.Physics;

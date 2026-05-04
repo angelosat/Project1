@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Rendering;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework.UI;
 using Project1.Framework.UI.Primitives;

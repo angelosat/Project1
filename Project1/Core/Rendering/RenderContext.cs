@@ -4,7 +4,7 @@ using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using System;
 
-namespace Project1.Core;
+namespace Project1.Core.Rendering;
 
 public record struct Viewport(int Width, int Height);
 public struct RenderContext

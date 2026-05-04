@@ -40,6 +40,7 @@ using System.Linq;
 using Project1.Core.Systems.Crafting;
 using Project1.Core.Screens;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Rendering;
 
 namespace Project1.Core.Towns;
 

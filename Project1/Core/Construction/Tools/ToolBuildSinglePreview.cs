@@ -4,6 +4,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Networking;
+using Project1.Core.Rendering;
 using Project1.Core.Serialization;
 using Project1.Framework;
 using Project1.Framework.Serialization;

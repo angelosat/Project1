@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
 using Project1.Core.Helpers;
+using Project1.Core.Rendering;
 using Project1.Framework;
 using System;
 

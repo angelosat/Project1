@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Project1.Core;
+namespace Project1.Core.Rendering;
 
 interface IDrawContext
 {
@@ -89,8 +89,9 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
     public Renderer()
         : this(Game1.Bounds.Width, Game1.Bounds.Height)
     {
-        this.WaterSpriteBatch = new MySpriteBatch(Game1.Instance.GraphicsDevice);
-        this.SpriteBatch = new MySpriteBatch(Game1.Instance.GraphicsDevice);
+        this.WaterSpriteBatch = new(Game1.Instance.GraphicsDevice);
+        this.SpriteBatch = new(Game1.Instance.GraphicsDevice);
+        this.UISpritebatch = new(Game1.Instance.GraphicsDevice);
     }
     public Renderer(int width, int height, float x = 0, float y = 0, float z = 0, float zoom = 2, int rotation = 0)
     {
@@ -441,151 +442,28 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
     }
     private void NewDraw(MapView view, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager, UIManager ui)
     {
+        var frame = SetupFrame(view, gd, a, scene, toolManager);
+        //var fogColor = frame.FogColor;
         var map = view.Map;
-        var camera = view.Camera;
-        var zoom = view.Zoom;
-        var cameraPos = view.Position;
-        var w = view.Width;
-        var h = view.Height;
-        RenderContext ctx = BeginContext(view);
-        var viewportDimensions = new Vector2(w, h);
-        var fx = Effect;
         DrawnOnce = true;
-        var fogtxt = this.FogTexture;
-
-        SetupGlobalShaderParams(zoom, viewportDimensions, fx);
-        SetupOutlines(zoom, w, h, fx);
-        SetupFogAndLight(toolManager, map, cameraPos, ctx, fx, out Vector4 fogColor, out float fog, out Vector2 fogoffset);
-        SetupFollowingEntityParams(view, camera, w, h, fx, out double rotCos, out double rotSin);
-        SetupVisibility(view, zoom);
-
-        gd.DepthStencilState = DepthStencilState.Default;
-
-        gd.SamplerStates[0] = SamplerState.PointClamp;
-        gd.SamplerStates[1] = SamplerState.PointClamp;
-        gd.SamplerStates[2] = SamplerState.PointClamp;
-        gd.SamplerStates[3] = SamplerState.PointClamp;
-        gd.SamplerStates[5] = SamplerState.PointClamp;
-
-        EnsureSpritebatches(gd);
-
-        var clearcol = new Color(1f, 1f, 1f, 0); // if i put 1 for the alpha than tsansparent blocks will be shaded white  // (old comment) i put 1 again because i dont draw water on the fog texture after all
-
-        SetupRenderTargets(gd, clearcol);
-
-        // use new technique to draw both color and light in one pass in multiple rendertargets
-        //fx.CurrentTechnique = fx.Techniques["Combined"];
-        //fx.CurrentTechnique.Passes["Pass1"].Apply();
-        this.SetBlockTextures();
-
-        this.DepthNear = float.MinValue;
-        this.DepthFar = float.MaxValue;
-
-        Effect.Parameters["RotCos"].SetValue((float)rotCos);
-        Effect.Parameters["RotSin"].SetValue((float)rotSin);
-
-        this.SetupPlayerShaderParams(map, view, fx, ctx);
-
-        this.PrepareShaderNew(view, "Chunks");
-        var visibleChunks = GetVisibleChunks(view, map);
-        this.DrawOpaquePass(ctx, visibleChunks);
-
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        this.SpriteBatch.Flush();
-
-        var visibleEntities = this.CullEntities(ctx, map.Entities);
-        this.SortEntities(ctx.View, visibleEntities);
-
-        this.DrawWorldOverlayStage(toolManager, ui, map, ctx, visibleEntities);
-
-        this.SpriteBatch.Flush();
-
-        this.DrawTransparentPass(gd, view, ctx, visibleChunks, clearcol);
-        this.ComposeMapPass(gd, view, fogColor, fogoffset);
-        this.ComposeWaterPass(gd, view);
-
-        this.DrawEntityStage(gd, map, ctx, scene, visibleEntities);
-        this.DrawParticleStage(map, ctx);
-
-        // draw block mouseover highlight, here or after fog?
-        // set textures here or in tool draw method?
-        // DRAW here things such as entity previews for debug spawning
-        fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-        fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
-
-        fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
-        //gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = true }; // this broke depth on block highlights
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        toolManager.DrawAfterWorld(this.SpriteBatch, ctx);
-
-        this.SpriteBatch.Flush();
-
-        // draw entity mouseover highlight
-        fx.CurrentTechnique = fx.Techniques["EntityMouseover"];
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        if (toolManager.ActiveTool?.Target?.Object is GameObject mouseover && mouseover.Exists)
-            mouseover.DrawMouseover(this.SpriteBatch, ctx);
-
-        this.SpriteBatch.Flush();
-        this.DrawFinalCompositionStage(gd, fogColor, fogtxt);
-
-        ///test
-        ///i moved this here from ingame.cs's draw method
-        var sb = new SpriteBatch(gd);
-        gd.SetRenderTarget(this.FinalScene);
-
-        sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.DepthRead, RasterizerState.CullNone);
-        map.DrawInterface(sb, view);
-        sb.End();
-        ///
-
-        // draw final scene to backbuffer
-        RenderTarget2D[] targets = [
-            this.FinalScene,
-            this.MapNormals,
-            this.RenderBeforeFog,
-            this.FogBeforeFog,
-            this.WaterRender,
-            this.WaterDepth,
-            this.WaterLight,
-            this.WaterFog,
-            this.WaterComposite,
-            this.MapRender,
-            this.MapDepth,
-            this.MapLight,
-            this.TextureFogWater ];
-        this.RenderTargets = [.. targets];
-        gd.SetRenderTarget(null);
-
-
-        fx.Parameters["s"].SetValue(this.RenderTargets[this.RenderIndex]);
-        fx.CurrentTechnique = fx.Techniques["Normal"];
-
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        //this.SpriteBatch.Draw(this.FinalScene, this.FinalScene.Bounds, gd.Viewport.Bounds, Color.White);
-        var vp = gd.Viewport.Bounds;
-        //vp.Width = (int)(vp.Width / this.Zoom);
-        //vp.Height = (int)(vp.Height / this.Zoom);
-        var fc = this.FinalScene.Bounds;
-        //fc.Width = (int)(fc.Width / 4);
-        //fc.Height = (int)(fc.Height / 4);
-        this.SpriteBatch.Draw(this.FinalScene, fc, vp, Color.White);
-
-        /// added this here to draw the final scene with depth, but i have to change the shader to read depth from the depth texture
-        //gd.DepthStencilState = DepthStencilState.Default;
-
-        this.SpriteBatch.Flush();
-
-        // draw ui and other elements
-        map.DrawWorld(this.SpriteBatch, view);
-        this.SpriteBatch.Flush();
+        //var fogtxt = this.FogTexture;
+        this.DrawOpaqueStage(gd, frame, view);
+        this.DrawOverlayStage(toolManager, ui, map, frame);
+        this.DrawTransparentStage(gd, frame, view);
+        this.DrawCompositionStage(gd, frame, view);
+        this.DrawEntityStage(gd, map, frame, scene);
+        this.DrawParticleStage(frame);
+        this.DrawHighlightStage(toolManager, frame);
+        this.DrawFinalCompositionStage(gd, frame);//, fogColor, fogtxt);
+        this.DrawUI(view, gd);
+        this.PresentStage(gd, view, frame);
     }
 
-    private void DrawFinalCompositionStage(GraphicsDevice gd, Vector4 fogColor, Texture2D fogtxt)
+    private void DrawFinalCompositionStage(GraphicsDevice gd, FrameData frame)//, Vector4 fogColor, Texture2D fogtxt)
     {
-        this.DrawMapPreFogStage(gd, fogColor);
+        this.DrawMapPreFogStage(gd, frame);//, fogColor);
         this.ComposeWaterPreFogStage(gd);
-        this.ApplyFinalFogStage(gd, fogColor, fogtxt);
+        this.ApplyFinalFogStage(gd, frame);//, fogColor, fogtxt);
     }
 
     private void DrawWorldOverlayStage(ToolManager toolManager, UIManager ui, MapBase map, RenderContext ctx, List<Entity> entities)
@@ -601,10 +479,11 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
             entity.DrawAfter(this.SpriteBatch, ctx); // cull non visible entities
     }
 
-    private void ApplyFinalFogStage(GraphicsDevice gd, Vector4 fogColor, Texture2D fogtxt)
+    private void ApplyFinalFogStage(GraphicsDevice gd, FrameData frame)//, Vector4 fogColor, Texture2D fogtxt)
     {
         var fx = Effect;
-
+        var fogtxt = this.FogTexture;
+        var fogColor = frame.FogColor;
         gd.SetRenderTargets(this.FinalScene);
         gd.Clear(new Color(fogColor));
 
@@ -636,11 +515,11 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         this.SpriteBatch.Flush();
     }
 
-    private void DrawMapPreFogStage(GraphicsDevice gd, Vector4 fogColor)
+    private void DrawMapPreFogStage(GraphicsDevice gd, FrameData frame)//, Vector4 fogColor)
     {
         var fx = Effect;
         var fogtxt = this.FogTexture;
-
+        var fogColor = frame.FogColor;
         gd.SetRenderTargets(this.RenderBeforeFog, this.FogBeforeFog);
         gd.Clear(new Color(fogColor));
         gd.Clear(ClearOptions.DepthBuffer, Color.White, 1, 1);
@@ -916,7 +795,6 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         this.ParticlesSpriteBatch.Flush();
     }
     private static List<Chunk> GetVisibleChunks(MapView view, MapBase map)
-        //return (from ch in map.GetActiveChunks().Values where view.Viewport.Intersects(ch.GetScreenBounds(view)) select ch);
         => [.. map.GetActiveChunks().Values.Where(ch=> view.Viewport.Intersects(ch.GetScreenBounds(view)))];
     
 
@@ -1514,22 +1392,8 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         }
     }
     private void SortEntities(MapView view, List<Entity> entities)
-    {
-        //objs.Sort((o1, o2) =>
-        //{
-        //    float d1 = view.GetDrawDepth(o1.Global);
-        //    float d2 = view.GetDrawDepth(o2.Global);
-        //    if (d1 < d2)
-        //        return -1;
-        //    else if (d1 == d2)
-        //        return 0;
-        //    else
-        //        return 1;
-        //});
-
-        entities.Sort((a, b) =>
+        => entities.Sort((a, b) =>
             view.GetDrawDepth(a.Global).CompareTo(view.GetDrawDepth(b.Global)));
-    }
     public void NewDraw(RenderTarget2D target, MapView viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager)
     {
 
@@ -1967,5 +1831,246 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
     public void HandleLButtonDoubleClick(HandledMouseEventArgs e)
     {
+    }
+
+    private FrameData SetupFrame(
+    MapView view,
+    GraphicsDevice gd,
+    EngineArgs a,
+    SceneState scene,
+    ToolManager toolManager)
+    {
+        var map = view.Map;
+        var camera = view.Camera;
+        var zoom = view.Zoom;
+        var cameraPos = view.Position;
+        var w = view.Width;
+        var h = view.Height;
+
+        RenderContext ctx = BeginContext(view);
+
+        var fx = Effect;
+
+        var viewportDimensions = new Vector2(w, h);
+
+        SetupGlobalShaderParams(zoom, viewportDimensions, fx);
+        SetupOutlines(zoom, w, h, fx);
+
+        SetupFogAndLight(toolManager, map, cameraPos, ctx, fx,
+            out Vector4 fogColor,
+            out float fog,
+            out Vector2 fogOffset);
+
+        SetupFollowingEntityParams(view, camera, w, h, fx,
+            out double rotCos,
+            out double rotSin);
+
+        SetupVisibility(view, zoom);
+
+        gd.DepthStencilState = DepthStencilState.Default;
+
+        gd.SamplerStates[0] = SamplerState.PointClamp;
+        gd.SamplerStates[1] = SamplerState.PointClamp;
+        gd.SamplerStates[2] = SamplerState.PointClamp;
+        gd.SamplerStates[3] = SamplerState.PointClamp;
+        gd.SamplerStates[5] = SamplerState.PointClamp;
+
+        EnsureSpritebatches(gd);
+
+        var clearcol = new Color(1f, 1f, 1f, 0);
+
+        SetupRenderTargets(gd, clearcol);
+
+        SetBlockTextures();
+
+        DepthNear = float.MinValue;
+        DepthFar = float.MaxValue;
+
+        fx.Parameters["RotCos"].SetValue((float)rotCos);
+        fx.Parameters["RotSin"].SetValue((float)rotSin);
+
+        SetupPlayerShaderParams(map, view, fx, ctx);
+
+        var visibleChunks = GetVisibleChunks(view, map);
+
+        var visibleEntities = CullEntities(ctx, map.Entities);
+        SortEntities(ctx.View, visibleEntities);
+
+        return new FrameData
+        {
+            Ctx = ctx,
+            VisibleChunks = visibleChunks,
+            VisibleEntities = visibleEntities,
+            FogColor = fogColor,
+            FogOffset = fogOffset,
+            Fog = fog,
+            RotCos = (float)rotCos,
+            RotSin = (float)rotSin,
+            ClearColor = clearcol
+        };
+    }
+    private void DrawOpaqueStage(GraphicsDevice gd, FrameData frame, MapView view)
+    {
+        var map = view.Map;
+        var fx = Effect;
+
+        PrepareShaderNew(view, "Chunks");
+
+        var visibleChunks = GetVisibleChunks(view, map);
+
+        DrawOpaquePass(frame.Ctx, visibleChunks);
+
+        fx.CurrentTechnique.Passes["Pass1"].Apply();
+        SpriteBatch.Flush();
+    }
+
+    private void DrawOverlayStage(
+    ToolManager toolManager,
+    UIManager ui,
+    MapBase map,
+    FrameData frame)
+    {
+        DrawWorldOverlayStage(
+            toolManager,
+            ui,
+            map,
+            frame.Ctx,
+            frame.VisibleEntities
+        );
+
+        SpriteBatch.Flush();
+    }
+
+    private void DrawTransparentStage(
+    GraphicsDevice gd,
+    FrameData frame,
+    MapView view)
+    {
+        var map = view.Map;
+
+        DrawTransparentPass(
+            gd,
+            view,
+            frame.Ctx,
+            frame.VisibleChunks,
+            frame.ClearColor);
+
+        SpriteBatch.Flush();
+    }
+    private void DrawCompositionStage(
+        GraphicsDevice gd,
+        FrameData frame,
+        MapView view)
+    {
+        var fogColor = frame.FogColor;
+        var fogOffset = frame.FogOffset;
+
+        ComposeMapPass(gd, view, fogColor, fogOffset);
+        ComposeWaterPass(gd, view);
+    }
+
+    private void DrawEntityStage(
+    GraphicsDevice gd,
+    MapBase map,
+    FrameData frame,
+    SceneState scene)
+    {
+        DrawEntityStage(gd, map, frame.Ctx, scene, frame.VisibleEntities);
+
+        SpriteBatch.Flush();
+    }
+
+    private void DrawParticleStage(FrameData frame)
+    {
+        DrawParticleStage(frame.Ctx.Map, frame.Ctx);
+
+        SpriteBatch.Flush();
+    }
+
+    private void DrawHighlightStage(
+    ToolManager toolManager,
+    FrameData frame)
+    {
+        var fx = Effect;
+        var sb = SpriteBatch;
+
+        // Block highlight
+        fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
+        fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
+
+        fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
+        fx.CurrentTechnique.Passes["Pass1"].Apply();
+
+        toolManager.DrawAfterWorld(sb, frame.Ctx);
+        sb.Flush();
+
+        // Entity mouseover highlight
+        fx.CurrentTechnique = fx.Techniques["EntityMouseover"];
+        fx.CurrentTechnique.Passes["Pass1"].Apply();
+
+        if (toolManager.ActiveTool?.Target?.Object is GameObject mouseover && mouseover.Exists)
+            mouseover.DrawMouseover(sb, frame.Ctx);
+
+        sb.Flush();
+    }
+    SpriteBatch UISpritebatch;
+    private void DrawUI(MapView view, GraphicsDevice gd)
+    {
+        var sb = this.UISpritebatch;// new SpriteBatch(gd);
+
+        gd.SetRenderTarget(this.FinalScene);
+
+        sb.Begin(
+            SpriteSortMode.Deferred,
+            BlendState.AlphaBlend,
+            SamplerState.PointClamp,
+            DepthStencilState.DepthRead,
+            RasterizerState.CullNone);
+
+        view.Map.DrawInterface(sb, view);
+
+        sb.End();
+    }
+
+    private void PresentStage(
+    GraphicsDevice gd,
+    MapView view,
+    FrameData frame)
+    {
+        var fx = Effect;
+        var map = view.Map;
+
+        RenderTarget2D[] targets =
+        {
+        this.FinalScene,
+        this.MapNormals,
+        this.RenderBeforeFog,
+        this.FogBeforeFog,
+        this.WaterRender,
+        this.WaterDepth,
+        this.WaterLight,
+        this.WaterFog,
+        this.WaterComposite,
+        this.MapRender,
+        this.MapDepth,
+        this.MapLight,
+        this.TextureFogWater
+    };
+
+        this.RenderTargets = targets;
+        gd.SetRenderTarget(null);
+
+        fx.Parameters["s"].SetValue(this.RenderTargets[this.RenderIndex]);
+        fx.CurrentTechnique = fx.Techniques["Normal"];
+        fx.CurrentTechnique.Passes["Pass1"].Apply();
+
+        var vp = gd.Viewport.Bounds;
+        var fc = this.FinalScene.Bounds;
+
+        this.SpriteBatch.Draw(this.FinalScene, fc, vp, Color.White);
+        this.SpriteBatch.Flush();
+
+        map.DrawWorld(this.SpriteBatch, view);
+        this.SpriteBatch.Flush();
     }
 }

@@ -11,6 +11,7 @@ using Project1.Core.Legacy;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
 using Project1.Core.Networking;
+using Project1.Core.Rendering;
 using Project1.Core.Rooms;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;

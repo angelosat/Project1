@@ -4,6 +4,7 @@ using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
+using Project1.Core.Rendering;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;

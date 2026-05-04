@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Graphics;
+using Project1.Core.Rendering;
 using System;
 using System.Windows.Forms;
 

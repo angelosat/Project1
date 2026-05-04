@@ -6,6 +6,7 @@ using Project1.Core.Entities;
 using Project1.Core.Graphics;
 using Project1.Core.UI;
 using Project1.Core.Screens;
+using Project1.Core.Rendering;
 
 namespace Project1.Core.Input;
 

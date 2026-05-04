@@ -29,7 +29,7 @@ namespace Project1.Core.Graphics
             yield return this.NonOpaque.vertices;
             yield return this.Designations.vertices;
             yield return this.WallHidable.vertices;
-            yield return this.Designations.vertices;
+            //yield return this.Designations.vertices;
         }
     }
 }

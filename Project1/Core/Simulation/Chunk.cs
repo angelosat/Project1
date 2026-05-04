@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace Project1.Core.Simulation;
 
@@ -1136,40 +1137,27 @@ public sealed class Chunk : Inspectable
         this.Valid = true;
     }
 
-    public void DrawOpaqueLayers(Renderer renderer, MapView view, Effect effect)
+    public void DrawOpaqueLayers(MapView view)
     {
-        //Coords.Iso(camera, this.MapCoords.X * Chunk.Size, this.MapCoords.Y * Chunk.Size, 0, out float x, out float y);
-        //Coords.Rotate(camera, this.MapCoords.X, this.MapCoords.Y, out int rotx, out int roty);
-        view.Iso(this.MapCoords.X * Chunk.Size, this.MapCoords.Y * Chunk.Size, 0, out float x, out float y);
-        view.Rotate(this.MapCoords.X, this.MapCoords.Y, out int rotx, out int roty);
-        var world = Matrix.CreateTranslation(new Vector3(x, y, ((rotx + roty) * Chunk.Size)));
-        effect.Parameters["World"].SetValue(world);
-        effect.CurrentTechnique.Passes["Pass1"].Apply();
-        EffectParameter effectHideWalls = effect.Parameters["HideWalls"];
-        effectHideWalls.SetValue(Engine.HideWalls);
-        effect.CurrentTechnique.Passes["Pass1"].Apply();
         int foglvel = view.FogLevel;
-        for (int i = foglvel; i <= renderer.MaxDrawZ; i++)
+        var drawlevel = view.GetMaxDrawLevel();
+        var topslice = view.DrawTopSlice;
+        var hideWalls = view.HideWalls;
+        for (int i = foglvel; i <= drawlevel; i++)
         {
             var slice = this.Slices[i];
             slice.Canvas.Opaque.Draw();
-            if (i == renderer.MaxDrawZ && renderer.DrawTopSlice)
+            if (i == drawlevel && topslice)
                 slice.Cover.Opaque.Draw();
-            if (!renderer.HideWalls)
+            if (!hideWalls)
                 slice.Canvas.WallHidable.Draw();
-        }
-        effectHideWalls.SetValue(false);
-        effect.CurrentTechnique.Passes["Pass1"].Apply();
-        for (int i = foglvel; i <= renderer.MaxDrawZ; i++)
-        {
-            var slice = this.Slices[i];
             slice.Canvas.NonOpaque.Draw();
-            if (i == renderer.MaxDrawZ && renderer.DrawTopSlice)
+            if (i == drawlevel && topslice)
                 slice.Cover.NonOpaque.Draw();
         }
 
-        foreach (var blockentity in this.BlockEntitiesByPosition)
-            blockentity.Value.Draw(renderer, view.Camera, blockentity.Key.ToGlobal(this));
+        //foreach (var blockentity in this.BlockEntitiesByPosition)
+        //    blockentity.Value.Draw(renderer, view.Camera, blockentity.Key.ToGlobal(this));
     }
     public void DrawTransparentLayers(Renderer renderer, MapView view, Effect effect)
     {
@@ -1404,7 +1392,6 @@ public sealed class Chunk : Inspectable
 
         foreach (var cell in mysterious)
             renderer.DrawUnknown(topCover, view, this, cell);//);
-
 
         foreach (var cell in visible)
             renderer.DrawCell(canvas, view, this, cell);//, cell.LocalCoords.ToGlobal(this));

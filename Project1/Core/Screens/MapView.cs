@@ -24,6 +24,9 @@ sealed class ViewSettings
     internal bool MysteriousBlocks;
     internal int FogLevel;
     internal bool DrawZones = true;
+    internal bool DrawTopSlice = true;
+
+    internal bool HideWalls => Engine.HideWalls;
 }
 public sealed class MapView(int width, int height, MapBase map, Camera camera)//, Renderer renderer)
 {
@@ -56,10 +59,13 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
         => (int)Math.Max(0, this.LastZTarget - FogZOffset - FogFadeLength);
 
     public float Zoom => this.Camera.Zoom;
+    public bool HideWalls => this.Settings.HideWalls;
 
     public int Rotation => (int)this.Camera.Rotation;
 
     public Vector2 Position => this.Camera.Position;
+
+    public bool DrawTopSlice => this.Settings.DrawTopSlice;
 
     internal void SnapToMapCenter()
     {

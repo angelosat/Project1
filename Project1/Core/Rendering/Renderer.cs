@@ -609,16 +609,18 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
     }
     private void DrawOpaquePass(RenderContext ctx, IEnumerable<Chunk> visibleChunks)
     {
+        Effect.Parameters["HideWalls"].SetValue(ctx.View.HideWalls);
         foreach (var chunk in visibleChunks)
         {
             // TODO: DONT BUILD TOP SLICE TWICE!
             if (!chunk.Valid)
                 chunk.Build(ctx);
+            this.ApplyChunkTransform(chunk, ctx.View);
+ 
+            Effect.CurrentTechnique.Passes["Pass1"].Apply();
 
-            chunk.DrawOpaqueLayers(this, ctx.View, Effect); // TODO: is it faster to pass only the effectparameters?
-            continue;
+            chunk.DrawOpaqueLayers(ctx.View); // TODO: is it faster to pass only the effectparameters?
         }
-
     }
     private void DrawTransparentPass(
     GraphicsDevice gd,
@@ -1915,7 +1917,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         var fx = Effect;
 
         PrepareShaderNew(view, "Chunks");
-
+        //Effect.Parameters["HideWalls"].SetValue(Engine.HideWalls);
         var visibleChunks = GetVisibleChunks(view, map);
 
         DrawOpaquePass(frame.Ctx, visibleChunks);
@@ -2072,5 +2074,27 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
         map.DrawWorld(this.SpriteBatch, view);
         this.SpriteBatch.Flush();
+    }
+
+    public void ApplyChunkTransform(Chunk chunk, MapView view)
+    {
+        view.Iso(
+            chunk.MapCoords.X * Chunk.Size,
+            chunk.MapCoords.Y * Chunk.Size,
+            0,
+            out float x,
+            out float y);
+
+        view.Rotate(
+            chunk.MapCoords.X,
+            chunk.MapCoords.Y,
+            out int rotx,
+            out int roty);
+
+        var world = Matrix.CreateTranslation(
+            new Vector3(x, y, (rotx + roty) * Chunk.Size)
+        );
+
+        Effect.Parameters["World"].SetValue(world);
     }
 }

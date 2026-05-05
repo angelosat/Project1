@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Microsoft.VisualBasic.Logging;
+using Microsoft.Xna.Framework;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
@@ -8,6 +9,7 @@ using Project1.Core.UI.Settings;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Input;
+using Project1.Framework.UI;
 using System;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -25,6 +27,7 @@ sealed class ViewSettings
     internal int FogLevel;
     internal bool DrawZones = true;
     internal bool DrawTopSlice = true;
+    internal bool Fog = true;
 
     internal bool HideWalls => Engine.HideWalls;
 }
@@ -51,8 +54,8 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
     {
         this.UpdateFog(gameSpeed);
         this.Follow();
-        if (this.Mouseover is not null)
-            this.LastZTarget = (int)this.Mouseover.Global.Z;
+        //if (this.Mouseover is not null)
+        //    this.LastZTarget = (int)this.Mouseover.Global.Z;
     }
 
     public int FogLevel
@@ -386,4 +389,43 @@ public sealed class MapView(int width, int height, MapBase map, Camera camera)//
     {
         this.Camera.Iso(x, y, z, out xx, out yy);
     }
+
+    public Color GetFogColorNew(int z)
+    {
+        if (!this.Settings.Fog)
+            return Color.Transparent;
+        if (this.LastZTarget > 1)
+        {
+            if (z < this.LastZTarget - FogZOffset)
+            {
+                var d = (float)Math.Abs(z - this.LastZTarget + FogZOffset);
+                d = MathHelper.Clamp(d, 0, FogFadeLength) / FogFadeLength;
+                var fog = Color.Lerp(Color.White, Color.DarkSlateBlue, d);
+                var val = (byte)(d * 255);
+                var finalFogColor = new Color(fog.R, fog.G, fog.B, val);
+                return finalFogColor;
+            }
+        }
+
+        return Color.Transparent;
+    }
+
+    internal bool IsCompletelyHiddenByFog(float z)
+    {
+        return z < this.LastZTarget - FogZOffset - FogFadeLength + 1;
+    }
+
+    internal void MousePicking(bool targetOnlyBlocks)
+    {
+        var result = this.Picker.MousePicking(this, UIManager.Mouse);
+        if (!result.HasValue)
+            return;
+        this.Picker.CreateMouseover(this, result.Value);
+        this.LastZTarget = (int)result.Value.Global.Z;
+    }
+
+    //internal void CreateMouseover(MapView viewport, PickerResult result)
+    //{
+    //    this.Picker.CreateMouseover(viewport, result);
+    //}
 }

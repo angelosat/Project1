@@ -66,11 +66,11 @@ public class ControlTool : IInputEventHandler
     public virtual void Update()
     {
         var viewport = Ingame.MainView;
-        var cam = viewport.Camera;
         //cam.MousePicking(Ingame.DrawServer ? Server.Instance.Map : Client.Instance.Map);
-        var result = viewport.Picker.MousePicking(viewport, UIManager.Mouse);
-        if (result.HasValue)
-            viewport.Picker.CreateMouseover(viewport, result.Value);
+        viewport.MousePicking(this.TargetOnlyBlocks);
+        //var result = viewport.MousePicking(viewport, UIManager.Mouse);
+        //if (result.HasValue)
+        //    viewport.CreateMouseover(viewport, result.Value);
 
         UpdateTarget();
 

@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Simulation;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Project1.Core.Rendering;
 

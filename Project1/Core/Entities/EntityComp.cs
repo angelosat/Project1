@@ -56,7 +56,7 @@ public abstract class EntityComp : Inspectable
     //internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
     internal virtual void ApplyQuality(Entity parent, QualityDef quality) { }
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
-    public virtual void Draw(MySpriteBatch sb, RenderContext ctx) { }
+    //public virtual void Draw(MySpriteBatch sb, RenderContext ctx) { }
     public virtual void DrawMouseover(MySpriteBatch sb, RenderContext ctx) { }
     public virtual void DrawUI(SpriteBatch sb, MapView viewport) { }
     public virtual void DrawAfter(MySpriteBatch sb, RenderContext ctx) { }

@@ -164,7 +164,7 @@ public class Game1 : Game
         spriteBatch = new SpriteBatch(Game1.Instance.GraphicsDevice);
         UIManager.LoadContent();
         ScreenManager.LoadContent();
-        Effect = Game1.Instance.Content.Load<Effect>("Effect3");
+        //Effect = Game1.Instance.Content.Load<Effect>("Effect3");
         MapBase.Initialize();
         // TODO: use this.Content to load your game content here
 

@@ -948,7 +948,12 @@ MyPixelOutput MyChunkPixelShader(MyVertexOutput input)
 	output.Depth = depthToWrite + float4(0, 0, 0, 1);
 	output.DepthBuffer = depthToWrite;
 
-	float4 lightcolor = sunlight * AmbientLight + float4(blocklight, blocklight, blocklight, 1);
+    float4 finalSkyLight = sunlight * AmbientLight;
+    float4 finalBlockLight = float4(blocklight, blocklight, blocklight, 1);
+    float4 finalLight = float4(max(finalSkyLight.r, finalBlockLight.r), max(finalSkyLight.g, finalBlockLight.g), max(finalSkyLight.b, finalBlockLight.b), 1);
+	
+	//float4 lightcolor = sunlight * AmbientLight + float4(blocklight, blocklight, blocklight, 1);
+    float4 lightcolor = finalLight; // sunlight * AmbientLight + float4(blocklight, blocklight, blocklight, 1);
 	output.Light = lightcolor;
     output.Normal = face;
 	return output;

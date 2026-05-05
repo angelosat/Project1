@@ -693,6 +693,7 @@ public sealed class Chunk : Inspectable
             this.UpdateHeightMapColumnWithLightSmart(pos.X, pos.Y);
         this.DirtyHeightmapColumns.Clear();
     }
+
     public void Tick()
     {
         this.TickEntities();
@@ -700,11 +701,13 @@ public sealed class Chunk : Inspectable
         this.TickBlockTokens();
         this.TickControllers();
     }
+
     void TickControllers()
     {
         foreach (var c in this.Controllers)
             c.Tick();
     }
+
     void TickBlockTokens()
         => this.BlockDamageSystem.Tick();
 
@@ -713,6 +716,7 @@ public sealed class Chunk : Inspectable
         foreach (var blockentity in this.BlockEntitiesByPosition.ToList())
             blockentity.Value.Tick(this.Map, blockentity.Key.ToGlobal(this));
     }
+
     private void TickEntities()
     {
         var objectList = this.Entities.ToArray();
@@ -725,61 +729,7 @@ public sealed class Chunk : Inspectable
         }
     }
     #endregion
-
-    #region Drawing
-    public void DrawObjects(MySpriteBatch sb, RenderContext ctx, Controller controller, SceneState scene)
-    {
-        var map = ctx.Map;
-        var camera = ctx.Camera;
-        var renderer = ctx.Renderer;
-        var view = ctx.View;
-        var actor = map.Net.GetPlayer().ControllingEntity;
-
-        foreach (var obj in this.Entities) //make a copy of the list first because currently the player character might be added while drawing
-        {
-            Vector3 global = obj.Global;
-            if (global.Z > ctx.View.Settings.DrawLevel + 1)// - 1)
-                continue;
-            if (renderer.HideTerrainAbovePlayer && actor is not null)
-                if (global.Z > actor.Transform.Global.Z + 2)// - 1)
-                    continue;
-
-            if (!map.TryGetCell(global, out Cell cell))
-                continue;
-            var local = obj.Cell.ToLocal();
-            int x = local.X, y = local.Y, z = local.Z;
-            // TODO: figure out a way to get depth from actual precise global coords instead of cell coords
-            view.Rotate(x, y, out float rx, out float ry);
-            Vector3 rotated = new(rx, ry, z);
-
-            if (!obj.TryGetComponent<SpriteComp>(out var spriteComp))
-                continue;
-
-            Sprite sprite = spriteComp.Sprite;
-            Rectangle spriteBounds = sprite.GetBounds();
-            //Rectangle screenBounds = camera.GetScreenBounds(global, spriteBounds);
-            Rectangle screenBounds = view.GetScreenBounds(global, spriteBounds);
-            screenBounds.X -= BordersEffect.Thickness;
-            screenBounds.Y -= BordersEffect.Thickness;
-            if (!view.Intersects(screenBounds))
-                continue;
-            //float cd = global.GetDrawDepth(map, camera);
-            float cd = view.GetDrawDepth(global);
-            //var local = cell.LocalCoords;
-            byte light = Math.Max((byte)(this.GetSkylight(local) - map.GetSkyDarkness()), this.GetBlockLight(local));
-            float l = (light + 1) / 16f;
-            Color color = new Color(l, l, l, 1);
-            Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
-
-            obj.Draw(sb, new DrawObjectArgs(renderer, controller, map, this, cell, spriteBounds, screenBounds, obj, color, cd));
-            SpriteComp.DrawShadow(ctx, spriteBounds, map, obj, cd, cd);
-
-            if (scene.ObjectsDrawn.Contains(obj))
-                throw new Exception();
-            scene.ObjectsDrawn.Add(obj);
-            scene.ObjectBounds.Add(obj, screenBounds);
-        }
-    }
+    
     public void DrawInterface(SpriteBatch sb, MapView viewport)
     {
         foreach (var obj in this.Entities)
@@ -792,25 +742,14 @@ public sealed class Chunk : Inspectable
     private void DrawBlockTokens(SpriteBatch sb, MapView viewport)
     {
         this.BlockDamageSystem.DrawBlockTokens(sb, viewport);
-        //return;
-        //if (camera.Zoom < 1)
-        //    return;
-        //foreach(var (pos, token) in this.BlockTokens)
-        //    if(token.Lifetime < BlockTokenDrawThreshold)
-        //        Bar.Draw(sb, camera, pos.ToGlobal(this), "Block HitPoints", token.HealthPercentage, camera.Zoom * .2f);
     }
-
-    public void DrawHighlight(SpriteBatch sb, Rectangle bounds)
-    {
-        sb.Draw(UIManager.Highlight, bounds, null, Color.Lerp(Color.White, Color.Transparent, 0.5f), 0, Vector2.Zero, SpriteEffects.None, 0);
-    }
-    #endregion
 
     #region Saving and Loading
     public string GetDirectoryPath()
     {
         return this.Map.GetFullPath() + "/chunks/" + this.DirectoryName;
     }
+
     internal void SaveToFile()
     {
         Chunk copy = this.Clone();
@@ -1169,7 +1108,7 @@ public sealed class Chunk : Inspectable
         effect.Parameters["World"].SetValue(world);
         effect.CurrentTechnique.Passes["Pass1"].Apply();
         // no need to apply pass?
-        int foglvel = (int)Math.Max(0, renderer.LastZTarget - Renderer.FogZOffset - Renderer.FogFadeLength);
+        int foglvel = (int)Math.Max(0, view.LastZTarget - Renderer.FogZOffset - Renderer.FogFadeLength);
         for (int i = foglvel; i <= renderer.MaxDrawZ; i++)
         {
             var slice = this.Slices[i];

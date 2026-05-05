@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Animations;
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Graphics;
-using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Lighting;
-using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Graphics;
 using Project1.Framework.Input;
@@ -60,10 +57,10 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
 
     public static bool BlockTargeting = true;
-    public static bool Fog = true;
+    //public static bool Fog = true;
     public bool HideUnderground;
     public bool BorderShading;
-    public float FogLevel = 0;
+    //public float FogLevel = 0;
     public int MaxDrawZ;
     public int RenderIndex = 0;
     public RenderTarget2D MapRender,
@@ -76,8 +73,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
     public float LastZTarget;
     float DepthFar, DepthNear;
-    public MySpriteBatch SpriteBatch;
-    public MySpriteBatch WaterSpriteBatch, // waterspritebatch is not used!?
+    public MySpriteBatch SpriteBatch, ShadowsSpriteBatch, WaterSpriteBatch, // waterspritebatch is not used!?
         ParticlesSpriteBatch, BlockParticlesSpriteBatch, TransparentBlocksSpriteBatch;
     //float FogT = 0;
     public static Effect Effect = Game1.Instance.Content.Load<Effect>("blur");
@@ -92,31 +88,24 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         this.WaterSpriteBatch = new(Game1.Instance.GraphicsDevice);
         this.SpriteBatch = new(Game1.Instance.GraphicsDevice);
         this.UISpritebatch = new(Game1.Instance.GraphicsDevice);
+        this.ShadowsSpriteBatch = new(Game1.Instance.GraphicsDevice);
     }
     public Renderer(int width, int height, float x = 0, float y = 0, float z = 0, float zoom = 2, int rotation = 0)
     {
         this._lastWidth = width;
         this._lastHeight = height;
-        //this.Width = width;
-        //this.Height = height;
-        //this.ViewPort = new Rectangle(0, 0, this.Width, this.Height);
-        //this.Zoom = zoom;
-        //this.ZoomNext = zoom;
-        //this.Rotation = rotation;
-        //this.CenterOn(new Vector3(x, y, z));
         Game1.Instance.graphics.DeviceReset += this.gfx_DeviceReset;
         this.RecreateRenderTargets();
-        //Effect = Game1.Instance.Content.Load<Effect>("blur");
         this.WaterTexture = Game1.Instance.Content.Load<Texture2D>("Graphics/watersmallpixely");
         this.FogTexture = Game1.Instance.Content.Load<Texture2D>("Graphics/Fog04");
         this.SetInvariants();
     }
   
-    void OnRotationChanged()
-    {
-        Ingame.MainViewportMap.OnCameraRotated(this);
-        SelectionManager.Instance.OnCameraRotated(this);
-    }
+    //void OnRotationChanged()
+    //{
+    //    Ingame.MainViewportMap.OnCameraRotated(this);
+    //    SelectionManager.Instance.OnCameraRotated(this);
+    //}
     void gfx_DeviceReset(object sender, EventArgs e)
     {
         //this.Width = Game1.Bounds.Width;
@@ -209,26 +198,26 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         return true;
     }
     
-    public Color GetFogColorNew(int z)
-    {
-        if (!Fog)
-            return Color.Transparent;
+    //public Color GetFogColorNew(int z)
+    //{
+    //    if (!Fog)
+    //        return Color.Transparent;
 
-        if (this.LastZTarget > 1)
-        {
-            if (z < this.LastZTarget - FogZOffset)
-            {
-                var d = Math.Abs(z - this.LastZTarget + FogZOffset);
-                d = MathHelper.Clamp(d, 0, FogFadeLength) / FogFadeLength;
-                var fog = Color.Lerp(Color.White, Color.DarkSlateBlue, d);
-                var val = (byte)(d * 255);
-                var finalFogColor = new Color(fog.R, fog.G, fog.B, val);
-                return finalFogColor;
-            }
-        }
+    //    if (this.LastZTarget > 1)
+    //    {
+    //        if (z < this.LastZTarget - FogZOffset)
+    //        {
+    //            var d = Math.Abs(z - this.LastZTarget + FogZOffset);
+    //            d = MathHelper.Clamp(d, 0, FogFadeLength) / FogFadeLength;
+    //            var fog = Color.Lerp(Color.White, Color.DarkSlateBlue, d);
+    //            var val = (byte)(d * 255);
+    //            var finalFogColor = new Color(fog.R, fog.G, fog.B, val);
+    //            return finalFogColor;
+    //        }
+    //    }
 
-        return Color.Transparent;
-    }
+    //    return Color.Transparent;
+    //}
 
     internal void DrawChunk(MySpriteBatch sb, MapBase map, Chunk chunk, Vector3? playerGlobal, List<Rectangle> hiddenRects, EngineArgs a)
     {
@@ -319,43 +308,43 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         Effect.Parameters["OutlineThreshold"].SetValue(1 / depthDiff);
     }
 
-    public void PrepareShaderTransparent(MapView viewport)
-    {
-        var camera = viewport.Camera;
-        var zoom = camera.Zoom;
-        var coordinates = camera.Position;
-        var w = viewport.Width;
-        var h = viewport.Height;
-        var view =
-            new Matrix(
-               1.0f, 0.0f, 0.0f, 0.0f,
-               0.0f, -1.0f, 0.0f, 0.0f,
-               0.0f, 0.0f, 1.0f, 0.0f,
-               0.0f, 0.0f, 0.0f, 1.0f);
-        float camerax = coordinates.X;
-        float cameray = coordinates.Y;
-        view = view * Matrix.CreateTranslation(new Vector3(-camerax, cameray, 0)) * Matrix.CreateScale(zoom) * Matrix.CreateTranslation(new Vector3(w / 2, -h / 2, 0));
+    //public void PrepareShaderTransparent(MapView viewport)
+    //{
+    //    var camera = viewport.Camera;
+    //    var zoom = camera.Zoom;
+    //    var coordinates = camera.Position;
+    //    var w = viewport.Width;
+    //    var h = viewport.Height;
+    //    var view =
+    //        new Matrix(
+    //           1.0f, 0.0f, 0.0f, 0.0f,
+    //           0.0f, -1.0f, 0.0f, 0.0f,
+    //           0.0f, 0.0f, 1.0f, 0.0f,
+    //           0.0f, 0.0f, 0.0f, 1.0f);
+    //    float camerax = coordinates.X;
+    //    float cameray = coordinates.Y;
+    //    view = view * Matrix.CreateTranslation(new Vector3(-camerax, cameray, 0)) * Matrix.CreateScale(zoom) * Matrix.CreateTranslation(new Vector3(w / 2, -h / 2, 0));
         
-        var near = viewport.GetNearDepth();
-        var far = viewport.GetFarDepth();
+    //    var near = viewport.GetNearDepth();
+    //    var far = viewport.GetFarDepth();
 
-        var nearScaled = -far * zoom;
-        var farScaled = -near * zoom;
-        var projection = Matrix.CreateOrthographicOffCenter(
-            0, w, -h, 0, nearScaled, farScaled);
-        Effect.CurrentTechnique = Effect.Techniques["CombinedWater"];
-        Effect.Parameters["View"].SetValue(view);
-        Effect.Parameters["Projection"].SetValue(projection);
+    //    var nearScaled = -far * zoom;
+    //    var farScaled = -near * zoom;
+    //    var projection = Matrix.CreateOrthographicOffCenter(
+    //        0, w, -h, 0, nearScaled, farScaled);
+    //    Effect.CurrentTechnique = Effect.Techniques["CombinedWater"];
+    //    Effect.Parameters["View"].SetValue(view);
+    //    Effect.Parameters["Projection"].SetValue(projection);
 
-        this.DepthNear = near;
-        this.DepthFar = far;
-        Effect.Parameters["FarDepth"].SetValue(this.DepthFar);
-        Effect.Parameters["NearDepth"].SetValue(this.DepthNear);
-        var depthD = this.DepthNear - this.DepthFar;
-        Effect.Parameters["DepthResolution"].SetValue(2 / depthD);
-        Effect.Parameters["OutlineThreshold"].SetValue(1 / depthD);
+    //    this.DepthNear = near;
+    //    this.DepthFar = far;
+    //    Effect.Parameters["FarDepth"].SetValue(this.DepthFar);
+    //    Effect.Parameters["NearDepth"].SetValue(this.DepthNear);
+    //    var depthD = this.DepthNear - this.DepthFar;
+    //    Effect.Parameters["DepthResolution"].SetValue(2 / depthD);
+    //    Effect.Parameters["OutlineThreshold"].SetValue(1 / depthD);
 
-    }
+    //}
     public static LightToken GetFinalLight(MapView view, Chunk chunk, IntVec3 global)
     {
         if (chunk.TryGetCachedLight(global, out LightToken cached))
@@ -443,15 +432,13 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
     private void NewDraw(MapView view, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager, UIManager ui)
     {
         var frame = SetupFrame(view, gd, a, scene, toolManager);
-        //var fogColor = frame.FogColor;
         var map = view.Map;
         DrawnOnce = true;
-        //var fogtxt = this.FogTexture;
         this.DrawOpaqueStage(gd, frame, view);
         this.DrawOverlayStage(toolManager, ui, map, frame);
         this.DrawTransparentStage(gd, frame, view);
         this.DrawCompositionStage(gd, frame, view);
-        this.DrawEntityStage(gd, map, frame, scene);
+        this.DrawEntityStage(gd, frame, scene);
         this.DrawParticleStage(frame);
         this.DrawHighlightStage(toolManager, frame);
         this.DrawFinalCompositionStage(gd, frame);//, fogColor, fogtxt);
@@ -541,17 +528,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         this.SpriteBatch.Draw(this.MapComposite, this.MapComposite.Bounds, gd.Viewport.Bounds, Color.White);
         this.SpriteBatch.Flush();
     }
-    private void DrawEntityStage(GraphicsDevice gd, MapBase map, RenderContext ctx, SceneState scene, List<Entity> entities)
-    {
-        //SortEntities(ctx.View, this._visibleEntities);
-        var fx = Effect;
-        fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-        fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
-        DrawEntityShadowsNew(gd, ctx);
-        //DrawEntitiesOnly(ctx, scene, objs);
-        DrawEntitiesInternal(ctx, scene, entities);
-        ApplyEntityFogPass(gd);
-    }
+  
     private void ApplyEntityFogPass(GraphicsDevice gd)
     {
         var fx = Effect;
@@ -562,19 +539,17 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         gd.SetRenderTargets(this.MapComposite, this.TextureFogWater, this.MapDepth);
         this.SpriteBatch.Flush();
     }
-    private void DrawEntityShadowsNew(GraphicsDevice gd, RenderContext ctx)
+    private void DrawEntityShadowsNew(GraphicsDevice gd, FrameData frame)
     {
-        MySpriteBatch shadowsSB = new MySpriteBatch(gd);
-
         Effect.CurrentTechnique = Effect.Techniques["EntityShadows"];
         gd.DepthStencilState = new DepthStencilState { DepthBufferWriteEnable = false };
 
         Effect.CurrentTechnique.Passes["Pass1"].Apply();
-
-        SpriteComp.DrawShadows(shadowsSB, ctx);
+        foreach(var entity in frame.VisibleEntities)
+            this.RenderEntityShadow(entity, frame.Ctx);
 
         gd.SetRenderTarget(this.MapComposite);
-        shadowsSB.Flush();
+        this.ShadowsSpriteBatch.Flush();
     }
     private void SetupPlayerShaderParams(
     MapBase map,
@@ -730,57 +705,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
         this.SpriteBatch.Flush();
     }
-
-    //private void DrawEntityAndOverlayPass(
-    //MapView view,
-    //RenderContext ctx,
-    //SceneState scene,
-    //ToolManager toolManager,
-    //UIManager ui)
-    //{
-    //    var map = view.Map;
-    //    var objs = map.Entities.ToList();
-
-    //    // keep deterministic ordering
-    //    this.SortEntities(view);
-
-    //    // pre-world tool effects (ghost placement, previews)
-    //    toolManager.DrawBeforeWorld(this.SpriteBatch, ctx);
-
-    //    // world-space UI overlays (selection boxes, etc.)
-    //    ui.DrawWorld(this.SpriteBatch, ctx);
-
-    //    // map-level pre entity overlays
-    //    map.DrawBeforeWorld(this.SpriteBatch, ctx);
-
-    //    // main entity draw
-    //    foreach (var entity in objs)
-    //    {
-    //        if (entity.Global.Z > this.MaxDrawZ + 1)
-    //            continue;
-
-    //        var bounds = entity.GetScreenBounds(ctx);
-
-    //        if (!ctx.Viewport.Intersects(bounds))
-    //            continue;
-
-    //        entity.Draw(this.SpriteBatch, ctx);
-    //        scene.ObjectsDrawn.Add(entity);
-    //    }
-
-    //    this.SpriteBatch.Flush();
-
-    //    // post-world tool rendering
-    //    toolManager.DrawAfterWorld(this.SpriteBatch, ctx);
-
-    //    // mouseover highlight (final overlay)
-    //    if (toolManager.ActiveTool?.Target?.Object is GameObject mouseover && mouseover.Exists)
-    //    {
-    //        mouseover.DrawMouseover(this.SpriteBatch, ctx);
-    //    }
-
-    //    this.SpriteBatch.Flush();
-    //}
+    
     private void DrawParticleStage(MapBase map, RenderContext ctx)
     {
         map.DrawParticles(ctx);
@@ -887,445 +812,12 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         fx.Parameters["FogOffset"].SetValue(fogoffset - cameraPos / 1000f);
         if (toolManager.ActiveTool.Target != null && toolManager.ActiveTool.Target.Type != TargetType.Null)
         {
-            this.LastZTarget = toolManager.ActiveTool.Target.Global.Z;
+            //this.LastZTarget = toolManager.ActiveTool.Target.Global.Z;
             fx.Parameters["FogZ"].SetValue(toolManager.ActiveTool.Target.Global.Z - FogZOffset);
         }
-        fx.Parameters["FogEnabled"].SetValue(Fog);
-        fx.Parameters["FogLevel"].SetValue(this.FogLevel);
+        fx.Parameters["FogEnabled"].SetValue(ctx.View.Settings.Fog);
+        //fx.Parameters["FogLevel"].SetValue(this.FogLevel);
     }
-
-
-    //private void NewDraw(MapView viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager, UIManager ui)
-    //{
-    //    var map = viewport.Map;
-    //    var camera = viewport.Camera;
-    //    var zoom = camera.Zoom;
-    //    var coordinates = camera.Coordinates;
-    //    var w = viewport.Width;
-    //    var h = viewport.Height;
-    //    RenderContext ctx = BeginContext(viewport);
-
-    //    DrawnOnce = true;
-    //    Effect fx = Game1.Instance.Content.Load<Effect>("blur");
-    //    this.Effect = fx;
-
-
-    //    var world = Matrix.Identity;
-    //    var view =
-    //        new Matrix(
-    //           1.0f, 0.0f, 0.0f, 0.0f,
-    //           0.0f, -1.0f, 0.0f, 0.0f,
-    //           0.0f, 0.0f, -1.0f, 0.0f,
-    //           0.0f, 0.0f, 0.0f, 1.0f);
-    //    var projection = Matrix.CreateOrthographicOffCenter(
-    //        0, w, -h, 0, 0, 1);
-
-    //    fx.Parameters["World"].SetValue(Matrix.Identity);
-
-    //    fx.Parameters["BlockWidth"].SetValue(Block.Width);
-    //    fx.Parameters["BlockHeight"].SetValue(Block.Height);
-    //    fx.Parameters["AtlasWidth"].SetValue(Block.Atlas.Texture.Width);
-    //    fx.Parameters["AtlasHeight"].SetValue(Block.Atlas.Texture.Height);
-    //    fx.Parameters["Viewport"].SetValue(new Vector2(gd.Viewport.Width, gd.Viewport.Height));
-    //    fx.Parameters["ViewportW"].SetValue(new Vector2(1, gd.Viewport.Width / (float)gd.Viewport.Height));
-    //    fx.Parameters["TileVertEnsureDraw"].SetValue(Block.Depth / (float)Block.Height);
-    //    fx.Parameters["Zoom"].SetValue(zoom);
-    //    float borderPx = 1;
-    //    fx.Parameters["BorderResolution"].SetValue(new Vector2(borderPx / gd.Viewport.Width, borderPx / gd.Viewport.Height) * zoom);
-    //    var nightAmount = (float)map.GetDayTimeNormal();
-    //    Color ambientColor = Color.Lerp(Color.White, map.GetAmbientColor(), nightAmount);
-    //    ambientColor = map.GetAmbientColor();
-
-    //    Vector4 ambient = ambientColor.ToVector4();
-    //    fx.Parameters["AmbientLight"].SetValue(ambient);
-    //    var fogColor = this.FogColor;
-    //    // choose between ambient or black background color
-    //    fogColor = Color.Lerp(new Color(fogColor), Color.Black, nightAmount).ToVector4();
-    //    fx.Parameters["FogColor"].SetValue(fogColor);
-    //    fx.Parameters["FogDistance"].SetValue(FogFadeLength);
-
-    //    var fog = ctx.View.FogT;
-    //    var fogoffset = new Vector2(fog / 100f, 0);
-    //    fx.Parameters["FogOffset"].SetValue(fogoffset - coordinates / 1000f);
-    //    if (toolManager.ActiveTool.Target != null && toolManager.ActiveTool.Target.Type != TargetType.Null)
-    //    {
-    //        this.LastZTarget = toolManager.ActiveTool.Target.Global.Z;
-    //        fx.Parameters["FogZ"].SetValue(toolManager.ActiveTool.Target.Global.Z - FogZOffset);
-    //    }
-    //    fx.Parameters["FogEnabled"].SetValue(Fog);
-
-    //    var rotCos = camera.RotCos;
-    //    var rotSin = camera.RotSin;
-    //    var followTarget = viewport.Following;
-    //    fx.Parameters["PlayerOcclusion"].SetValue(followTarget != null);
-    //    fx.Parameters["PlayerGlobal"].SetValue(followTarget != null ? followTarget.Global : Vector3.Zero);
-    //    if (followTarget != null)
-    //    {
-    //        fx.Parameters["PlayerRotXY"].SetValue((float)(
-    //            followTarget.Global.X * rotCos - followTarget.Global.Y * rotSin +
-    //            followTarget.Global.X * rotSin + followTarget.Global.Y * rotCos));
-    //        fx.Parameters["PlayerCenterOffset"].SetValue(
-    //            //camera.GetScreenPositionFloat(followTarget.Global + followTarget.Physics.Height * Vector3.UnitZ / 2) / new Vector2(w, h) - Vector2.One * .5f);
-    //            viewport.GetScreenPositionFloat(followTarget.Global + followTarget.Physics.Height * Vector3.UnitZ / 2) / new Vector2(w, h) - Vector2.One * .5f);
-    //    }
-
-    //    fx.Parameters["FogLevel"].SetValue(this.FogLevel);
-    //    this.MaxDrawZ = viewport.GetMaxDrawLevel();
-    //    this.Effect.Parameters["FogEnabled"].SetValue(Fog);
-    //    this.Effect.Parameters["MaxDrawLevel"].SetValue(this.MaxDrawZ);
-    //    this.Effect.Parameters["HideWalls"].SetValue(Engine.HideWalls);
-    //    this.Effect.Parameters["OcclusionRadius"].SetValue(.01f * zoom * zoom);
-
-    //    gd.DepthStencilState = DepthStencilState.Default;
-
-    //    gd.SamplerStates[0] = SamplerState.PointClamp;
-    //    gd.SamplerStates[1] = SamplerState.PointClamp;
-    //    gd.SamplerStates[2] = SamplerState.PointClamp;
-    //    gd.SamplerStates[3] = SamplerState.PointClamp;
-
-    //    if (this.SpriteBatch == null)
-    //        this.SpriteBatch = new MySpriteBatch(gd);
-
-    //    if (this.WaterSpriteBatch == null)
-    //        this.WaterSpriteBatch = new MySpriteBatch(gd);
-
-    //    if (this.ParticlesSpriteBatch == null)
-    //        this.ParticlesSpriteBatch = new MySpriteBatch(gd);
-
-    //    if (this.TransparentBlocksSpriteBatch == null)
-    //        this.TransparentBlocksSpriteBatch = new MySpriteBatch(gd);
-
-    //    if (this.BlockParticlesSpriteBatch == null)
-    //        this.BlockParticlesSpriteBatch = new MySpriteBatch(gd);
-
-    //    var clearcol = new Color(1f, 1f, 1f, 0); // if i put 1 for the alpha than tsansparent blocks will be shaded white  // (old comment) i put 1 again because i dont draw water on the fog texture after all
-    //    //var clearcol = new Color(1f, 1f, 1f, 1f); // causes unhandled white background
-
-    //    gd.SetRenderTargets(this.TextureFogWater);
-    //    gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Transparent, 1, 1);
-    //    // PROBLEM clearing the texturefogwater with the same parameters as the other rendertargets, causes the problem with the background being drawn over the toolmanager preview blocks
-    //    gd.SetRenderTargets(this.MapRender, this.MapLight, this.MapDepth);
-    //    //var clearcol = new Color(1f, 1f, 0, 0); // 3rd component is 0 in order to not draw water on background
-    //    gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, clearcol, 1, 1);
-
-    //    // after clearing each target with the appropriate parameters for each one, set them all together
-    //    gd.SetRenderTargets(this.MapRender, this.MapLight, this.MapDepth, this.TextureFogWater);
-
-    //    // use new technique to draw both color and light in one pass in multiple rendertargets
-    //    fx.CurrentTechnique = fx.Techniques["Combined"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    SetBlockTextures(fx);
-
-    //    this.DepthNear = float.MinValue;
-    //    this.DepthFar = float.MaxValue;
-
-    //    this.Effect.Parameters["RotCos"].SetValue((float)rotCos);
-    //    this.Effect.Parameters["RotSin"].SetValue((float)rotSin);
-
-    //    var actor = map.Net.GetPlayer()?.ControllingEntity;
-    //    if (actor != null)
-    //    {
-    //        if (actor.Exists)
-    //        {
-    //            var sprite = actor.GetSprite();
-    //            var spriteBounds = sprite.GetBounds();
-    //            //Rectangle screenBounds = camera.GetScreenBounds(actor.Global, spriteBounds);
-    //            var screenBounds = ctx.View.GetScreenBounds(actor.Global, spriteBounds);
-    //            var xxx = screenBounds.X / (float)w - .5f;
-    //            var yyy = screenBounds.Y / (float)h - .5f;
-    //            var www = (screenBounds.X + screenBounds.Width) / (float)w - .5f;
-    //            var hhh = (screenBounds.Y + screenBounds.Height) / (float)h - .5f;
-    //            xxx = -.1f * zoom;
-    //            yyy = -.15f * zoom;
-    //            www = .1f * zoom;
-    //            hhh = .15f * zoom;
-    //            var box = new Vector4(xxx, yyy, www, hhh);
-    //            this.Effect.Parameters["PlayerBoundingBox"].SetValue(box);
-    //            //var d = actor.Global.GetDrawDepth(map, camera);
-    //            var d = ctx.View.GetDrawDepth(actor.Global);
-    //            this.Effect.Parameters["PlayerDepth"].SetValue(d);
-    //        }
-    //    }
-
-    //    this.PrepareShader(viewport);
-
-    //    var visibleChunks = (from ch in map.GetActiveChunks().Values where viewport.Viewport.Intersects(ch.GetScreenBounds(viewport)) select ch);
-
-    //    foreach (var chunk in visibleChunks)
-    //    {
-    //        // TODO: DONT BUILD TOP SLICE TWICE!
-    //        if (!chunk.Valid)
-    //            chunk.Build(ctx);
-
-    //        chunk.DrawOpaqueLayers(this, ctx.View, this.Effect); // TODO: is it faster to pass only the effectparameters?
-    //        continue;
-    //    }
-    //    //this.TopSliceChanged = false;
-
-    //    // TODO: these temporarily only work with static maps
-    //    this.DepthNear = viewport.GetNearDepth();
-    //    this.DepthFar = viewport.GetFarDepth();
-
-    //    fx.Parameters["FarDepth"].SetValue(this.DepthFar);
-    //    fx.Parameters["NearDepth"].SetValue(this.DepthNear);
-    //    var dd = this.DepthNear - this.DepthFar;
-    //    fx.Parameters["DepthResolution"].SetValue(2 / dd);
-    //    fx.Parameters["OutlineThreshold"].SetValue(1 / dd);
-
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    this.SpriteBatch.Flush();
-
-    //    //var objs = map.GetEntities().ToList();
-    //    var objs = map.Entities.ToList();
-
-    //    fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
-    //    //gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = true }; // this broke depth on block highlights
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-
-    //    toolManager.DrawBeforeWorld(this.SpriteBatch, ctx);
-
-    //    fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    ui.DrawWorld(this.SpriteBatch, ctx);
-    //    map.DrawBeforeWorld(this.SpriteBatch, ctx); // should i move this to draw right after the regular map drawing (specifically drawtransparent layers)
-    //                                                     // so that designation manager can draw designations with correct transparency?
-    //    foreach (var entity in objs)
-    //        entity.DrawAfter(this.SpriteBatch, ctx); // cull non visible entities
-
-    //    this.SpriteBatch.Flush();
-
-    //    SetBlockTextures(fx);
-    //    fx.CurrentTechnique = fx.Techniques["CombinedWater"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-
-    //    gd.SetRenderTargets(this.WaterRender, this.WaterLight, this.WaterDepth, this.WaterFog);
-    //    gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, clearcol, 1, 1);
-
-    //    this.PrepareShaderTransparent(viewport);
-
-    //    foreach (var chunk in visibleChunks)
-    //    {
-    //        if (!chunk.Valid)
-    //            continue;
-    //        chunk.DrawTransparentLayers(this, ctx.View, this.Effect);
-    //    }
-
-    //    // combine scenes and apply ambient light
-    //    gd.SetRenderTarget(this.MapComposite);
-
-    //    gd.Clear(new Color(fogColor));
-
-    //    fx.Parameters["s"].SetValue(this.MapRender);
-    //    fx.Parameters["s1"].SetValue(this.MapLight);
-    //    fx.Parameters["s2"].SetValue(this.MapDepth);
-    //    fx.Parameters["s3"].SetValue(this.TextureFogWater);
-
-    //    var watertxt = Game1.Instance.Content.Load<Texture2D>("Graphics/watersmallpixely");
-    //    fx.Parameters["s4"].SetValue(watertxt);
-
-    //    gd.SamplerStates[4] = SamplerState.PointWrap;
-    //    fx.Parameters["WaterTextureSize"].SetValue(new Vector2(watertxt.Width, watertxt.Height));
-
-    //    //var offset2 = new Vector2(0, .5f + this.FogT / 100f);
-    //    var offset2 = new Vector2(0, .5f + fog / 100f);
-
-    //    var wateroffset = (coordinates / (watertxt.Width)).ToFloored() * (watertxt.Width);
-    //    wateroffset = (coordinates - wateroffset) / (watertxt.Width);
-    //    fx.Parameters["WaterOffset"].SetValue(fogoffset - wateroffset);
-
-    //    var wateroffset2 = (coordinates / (watertxt.Height)).ToFloored() * (watertxt.Height);
-    //    wateroffset = (coordinates - wateroffset) / (watertxt.Height);
-    //    fx.Parameters["WaterOffset2"].SetValue(offset2 - wateroffset);
-
-    //    this.SpriteBatch.Draw(this.MapRender, this.MapRender.Bounds, gd.Viewport.Bounds, Color.White);
-    //    fx.CurrentTechnique = fx.Techniques["FinalInsideBorders"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    this.SpriteBatch.Flush();
-
-    //    gd.SetRenderTarget(this.WaterComposite);
-    //    gd.Clear(Color.Transparent);
-
-    //    fx.Parameters["s"].SetValue(this.WaterRender);
-    //    fx.Parameters["s1"].SetValue(this.WaterLight);
-    //    fx.Parameters["s2"].SetValue(this.WaterDepth);
-    //    fx.Parameters["s3"].SetValue(this.WaterFog); //it's pink/purple before in the shader i write both red values for the fog and blue values for the water
-
-    //    fx.Parameters["s4"].SetValue(watertxt);
-
-    //    gd.SamplerStates[4] = SamplerState.PointWrap;
-    //    fx.Parameters["WaterTextureSize"].SetValue(new Vector2(watertxt.Width, watertxt.Height));
-    //    this.SpriteBatch.Draw(this.WaterRender, this.WaterRender.Bounds, gd.Viewport.Bounds, Color.White);
-    //    // TODO: Must draw entities before final composition, so fog is applied over them accordingly
-    //    fx.CurrentTechnique = fx.Techniques["CompositeWater"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-
-    //    this.SpriteBatch.Flush();
-
-    //    //sort objects back to front for proper semitraspanrent rendering
-    //    // TODO: culling
-    //    this.SortEntities(ctx.View, objs);
-    //    // TODO: have the particle manager set textures because different emitters might use different atlases (blocks vs entities)
-    //    fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-    //    fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
-
-    //    this.DrawEntities(ctx, scene, objs);
-    //    //map.DrawParticles(this);
-    //    //  // draw entity shadows
-    //    MySpriteBatch shadowsSB = new MySpriteBatch(gd);
-    //    fx.CurrentTechnique = fx.Techniques["EntityShadows"];
-    //    gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = false };
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    SpriteComp.DrawShadows(shadowsSB, ctx);
-    //    gd.SetRenderTarget(this.MapComposite);
-    //    shadowsSB.Flush();
-
-    //    // flush entity spritebatch after shadows so they get drawn above them
-    //    fx.CurrentTechnique = fx.Techniques["EntitiesFog"];
-    //    gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = true };
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    gd.SetRenderTargets(this.MapComposite, this.TextureFogWater, this.MapDepth);
-    //    this.SpriteBatch.Flush();
-
-    //    //  draw particles drawn by entities
-    //    map.DrawParticles(ctx);
-    //    fx.CurrentTechnique = fx.Techniques["Particles"];
-    //    //fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    fx.Parameters["s"].SetValue(Block.Atlas.Texture);
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-
-    //    this.BlockParticlesSpriteBatch.Flush();
-    //    fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-
-    //    this.ParticlesSpriteBatch.Flush();
-
-    //    // draw block mouseover highlight, here or after fog?
-    //    // set textures here or in tool draw method?
-    //    // DRAW here things such as entity previews for debug spawning
-    //    fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-    //    fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
-
-    //    fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
-    //    //gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = true }; // this broke depth on block highlights
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    toolManager.DrawAfterWorld(this.SpriteBatch, ctx);
-
-    //    this.SpriteBatch.Flush();
-
-    //    // draw entity mouseover highlight
-    //    fx.CurrentTechnique = fx.Techniques["EntityMouseover"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    if (toolManager.ActiveTool is not null)
-    //        if (toolManager.ActiveTool.Target is not null)
-    //            if (toolManager.ActiveTool.Target.Object is GameObject mouseover && mouseover.Exists)
-    //                mouseover.DrawMouseover(this.SpriteBatch, ctx);
-
-    //    this.SpriteBatch.Flush();
-
-    //    // draw non-water on pre-final texture
-    //    gd.SetRenderTargets(this.RenderBeforeFog, this.FogBeforeFog);
-    //    gd.Clear(new Color(fogColor));
-    //    gd.Clear(ClearOptions.DepthBuffer, Color.White, 1, 1);
-    //    fx.CurrentTechnique = fx.Techniques["RenderMapWithoutFog"];
-    //    var fogtxt = Game1.Instance.Content.Load<Texture2D>("Graphics/Fog04");
-    //    fx.Parameters["FogTextureSize"].SetValue(new Vector2(fogtxt.Width, fogtxt.Height));
-    //    gd.SamplerStates[2] = SamplerState.PointWrap;
-
-    //    fx.Parameters["s"].SetValue(this.MapComposite);
-    //    fx.Parameters["s1"].SetValue(this.TextureFogWater);
-    //    fx.Parameters["s2"].SetValue(fogtxt);
-    //    fx.Parameters["s3"].SetValue(this.MapDepth);
-
-    //    this.SpriteBatch.Draw(this.MapComposite, this.MapComposite.Bounds, gd.Viewport.Bounds, Color.White);
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    gd.DepthStencilState = DepthStencilState.Default;
-    //    this.SpriteBatch.Flush();
-
-    //    // draw water on pre-final texture
-
-    //    fx.Parameters["s"].SetValue(this.WaterComposite);
-    //    fx.Parameters["s1"].SetValue(this.WaterFog);
-    //    fx.Parameters["s2"].SetValue(fogtxt);
-    //    fx.Parameters["s3"].SetValue(this.WaterDepth);
-
-    //    this.SpriteBatch.Draw(this.WaterComposite, this.WaterComposite.Bounds, gd.Viewport.Bounds, Color.White);
-    //    fx.CurrentTechnique = fx.Techniques["Water"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    this.SpriteBatch.Flush();
-
-    //    // draw block highlight now so it's correctly placed over water according to depth
-    //    fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-    //    fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
-    //    // which textures to use???
-    //    fx.Parameters["s"].SetValue(Block.Atlas.Texture);
-    //    fx.Parameters["s1"].SetValue(Block.Atlas.DepthTexture);
-    //    // apply fog to the pre-final texture render(that contains map + water)
-    //    gd.SetRenderTargets(this.FinalScene);
-    //    gd.Clear(new Color(fogColor));
-
-    //    fx.Parameters["s"].SetValue(this.RenderBeforeFog);
-    //    fx.Parameters["s1"].SetValue(this.FogBeforeFog);
-    //    fx.Parameters["s2"].SetValue(fogtxt);
-    //    fx.Parameters["s3"].SetValue(this.MapDepth);
-
-    //    this.SpriteBatch.Draw(this.RenderBeforeFog, this.RenderBeforeFog.Bounds, gd.Viewport.Bounds, Color.White);
-    //    fx.CurrentTechnique = fx.Techniques["ApplyFog"];
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    this.SpriteBatch.Flush();
-
-    //    ///test
-    //    ///i moved this here from ingame.cs's draw method
-    //    var sb = new SpriteBatch(gd);
-    //    gd.SetRenderTarget(this.FinalScene);
-
-    //    sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.DepthRead, RasterizerState.CullNone);
-    //    map.DrawInterface(sb, viewport);
-    //    sb.End();
-    //    ///
-
-    //    // draw final scene to backbuffer
-    //    RenderTarget2D[] targets = new RenderTarget2D[] {
-    //        this.FinalScene,
-    //        this.RenderBeforeFog,
-    //        this.FogBeforeFog,
-    //        this.WaterRender,
-    //        this.WaterDepth,
-    //        this.WaterLight,
-    //        this.WaterFog,
-    //        this.WaterComposite,
-    //        this.MapRender,
-    //        this.MapDepth,
-    //        this.MapLight,
-    //        this.TextureFogWater };
-    //    this.RenderTargets = targets.ToArray();
-    //    gd.SetRenderTarget(null);
-
-
-    //    fx.Parameters["s"].SetValue(this.RenderTargets[this.RenderIndex]);
-    //    fx.CurrentTechnique = fx.Techniques["Normal"];
-
-    //    fx.CurrentTechnique.Passes["Pass1"].Apply();
-    //    //this.SpriteBatch.Draw(this.FinalScene, this.FinalScene.Bounds, gd.Viewport.Bounds, Color.White);
-    //    var vp = gd.Viewport.Bounds;
-    //    //vp.Width = (int)(vp.Width / this.Zoom);
-    //    //vp.Height = (int)(vp.Height / this.Zoom);
-    //    var fc = this.FinalScene.Bounds;
-    //    //fc.Width = (int)(fc.Width / 4);
-    //    //fc.Height = (int)(fc.Height / 4);
-    //    this.SpriteBatch.Draw(this.FinalScene, fc, vp, Color.White);
-
-    //    /// added this here to draw the final scene with depth, but i have to change the shader to read depth from the depth texture
-    //    //gd.DepthStencilState = DepthStencilState.Default;
-
-    //    this.SpriteBatch.Flush();
-
-    //    // draw ui and other elements
-    //    map.DrawWorld(this.SpriteBatch, viewport);
-    //    this.SpriteBatch.Flush();
-    //}
-
-
-
 
     RenderContext _currentCtx;
     private RenderContext BeginContext(MapView viewport)
@@ -1385,143 +877,17 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
         return result;
     }
-    private void DrawEntitiesInternal(RenderContext ctx, SceneState scene, List<Entity> entities)
+    private void DrawEntitiesInternal(MapView view, SceneState scene, List<Entity> entities)
     {
         foreach (var obj in entities)
         {
-            obj.Draw(this.SpriteBatch, ctx);
+            this.RenderEntity(obj, view);
             scene.ObjectsDrawn.Add(obj);
         }
     }
-    private void SortEntities(MapView view, List<Entity> entities)
+    private static void SortEntities(MapView view, List<Entity> entities)
         => entities.Sort((a, b) =>
             view.GetDrawDepth(a.Global).CompareTo(view.GetDrawDepth(b.Global)));
-    public void NewDraw(RenderTarget2D target, MapView viewport, GraphicsDevice gd, EngineArgs a, SceneState scene, ToolManager toolManager)
-    {
-
-
-        this.MapRender ??= new RenderTarget2D(gd, target.Width, target.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
-        this.MapDepth ??= new RenderTarget2D(gd, target.Width, target.Height, false, SurfaceFormat.Rg32, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
-        this.MapLight ??= new RenderTarget2D(gd, target.Width, target.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
-        //this.MapNormals ??= new RenderTarget2D(gd, target.Width, target.Height, false, SurfaceFormat.Color, DepthFormat.Depth16, 0, RenderTargetUsage.DiscardContents);
-
-        var fx = Effect;// Game1.Instance.Content.Load<Effect>("blur");
-        var map = viewport.Map;
-        var camera = viewport.Camera;
-        var zoom = camera.Zoom;
-
-        var ctx = BeginContext(viewport);
-
-        fx.Parameters["BlockWidth"].SetValue(Block.Width + 2 * BordersEffect.Thickness);
-        fx.Parameters["BlockHeight"].SetValue(Block.Height + 2 * BordersEffect.Thickness);
-        fx.Parameters["AtlasWidth"].SetValue(Block.Atlas.Texture.Width);
-        fx.Parameters["AtlasHeight"].SetValue(Block.Atlas.Texture.Height);
-        fx.Parameters["Viewport"].SetValue(new Vector2(target.Width, target.Height));
-        fx.Parameters["TileVertEnsureDraw"].SetValue(Block.Depth / (float)Block.Height);
-        fx.Parameters["Zoom"].SetValue(zoom);
-        float borderPx = 1;
-        fx.Parameters["BorderResolution"].SetValue(new Vector2(borderPx / target.Width, borderPx / target.Height) * zoom);
-        Color ambientColor = Color.Lerp(Color.White, map.GetAmbientColor(), 0);
-        Vector4 ambient = ambientColor.ToVector4();
-        fx.Parameters["AmbientLight"].SetValue(ambient);
-
-        gd.DepthStencilState = DepthStencilState.Default;
-
-        gd.SamplerStates[0] = SamplerState.PointClamp;
-        gd.SamplerStates[1] = SamplerState.PointClamp;
-        gd.SamplerStates[2] = SamplerState.PointClamp;
-        gd.SamplerStates[3] = SamplerState.PointClamp;
-        gd.SamplerStates[4] = SamplerState.PointClamp;
-
-        MySpriteBatch mySB = new MySpriteBatch(gd);
-
-        // use new technique to draw both color and light in one pass in multiple rendertargets
-        this.DrawBlocks(ctx, gd, a, fx, mySB);
-
-        // combine scenes
-        gd.SetRenderTarget(target);
-        this.DrawScene(target, gd, fx, mySB);
-
-        // draw objects
-        this.DrawEntities(ctx, gd, scene, fx, mySB);
-
-        // draw entity shadows
-        this.DrawEntityShadows(gd, fx, mySB);
-
-        // draw block selection, using shadow shader for projected textures
-        this.DrawBlockSelection(toolManager, fx, mySB);
-
-        this.DrawMouseoverEntity(ctx, fx, mySB);
-    }
-
-    private void DrawBlocks(RenderContext ctx, GraphicsDevice gd, EngineArgs a, Effect fx, MySpriteBatch mySB)
-    {
-        gd.SetRenderTargets(this.MapRender, this.MapLight, this.MapDepth);
-        gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(1f, 1f, 1f, 0), 1, 1);
-        fx.CurrentTechnique = fx.Techniques["Combined"];
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        this.SetBlockTextures();
-        this.DepthNear = float.MinValue;
-        this.DepthFar = float.MaxValue;
-        ctx.Map.DrawBlocks(mySB, ctx, a);
-        fx.Parameters["FarDepth"].SetValue(this.DepthFar);
-        fx.Parameters["NearDepth"].SetValue(this.DepthNear);
-        fx.Parameters["DepthResolution"].SetValue((2) / (this.DepthNear - this.DepthFar));
-        fx.Parameters["OutlineThreshold"].SetValue((1) / (this.DepthNear - this.DepthFar));
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        mySB.Flush();
-    }
-    private void DrawScene(RenderTarget2D target, GraphicsDevice gd, Effect fx, MySpriteBatch mySB)
-    {
-        gd.Clear(Color.Transparent);
-        SetMapTextures(fx);
-
-        mySB.Draw(this.MapRender, this.MapRender.Bounds, target.Bounds, Color.White);
-        fx.CurrentTechnique = fx.Techniques["FinalInsideBorders"];
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        mySB.Flush();
-    }
-
-    private void SetMapTextures(Effect fx)
-    {
-        fx.Parameters["s"].SetValue(this.MapRender);
-        fx.Parameters["s1"].SetValue(this.MapLight);
-        fx.Parameters["s2"].SetValue(this.MapDepth);
-    }
-
-    private void DrawEntities(RenderContext ctx, GraphicsDevice gd, SceneState scene, Effect fx, MySpriteBatch mySB)
-    {
-        fx.CurrentTechnique = fx.Techniques["Entities"];
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
-        fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
-        ctx.Map.DrawObjects(mySB, ctx, scene);
-        mySB.Flush();
-    }
-    private void DrawMouseoverEntity(RenderContext ctx, Effect fx, MySpriteBatch mySB)
-    {
-        GameObject mouseover = Controller.Instance.Mouseover.Object as GameObject;
-        fx.CurrentTechnique = fx.Techniques["Default"];
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        if (mouseover is not null)
-            mouseover.DrawMouseover(mySB, ctx);
-        mySB.Flush();
-    }
-    private void DrawBlockSelection(ToolManager toolManager, Effect fx, MySpriteBatch mySB)
-    {
-        fx.CurrentTechnique = fx.Techniques["BlockHighlight"];
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        toolManager.DrawBeforeWorld(mySB, this._currentCtx);
-        mySB.Flush();
-    }
-    private void DrawEntityShadows(GraphicsDevice gd, Effect fx, MySpriteBatch mySB)
-    {
-        fx.CurrentTechnique = fx.Techniques["EntityShadows"];
-        gd.DepthStencilState = new DepthStencilState() { DepthBufferWriteEnable = false };
-        fx.CurrentTechnique.Passes["Pass1"].Apply();
-        SpriteComp.DrawShadows(mySB, this._currentCtx);
-        mySB.Flush();
-    }
 
     public void HandleKeyUp(KeyEventArgs e)
     {
@@ -1537,72 +903,12 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         }
     }
 
-    //public void ZoomIncrease()
-    //{
-    //    this.ZoomNext *= 2;
-    //    this.ZoomNext = MathHelper.Clamp(this.ZoomNext, this.ZoomMin, this.ZoomMax);
-
-    //}
-    //public void ZoomDecrease()
-    //{
-    //    this.ZoomNext /= 2;
-    //    this.ZoomNext = MathHelper.Clamp(this.ZoomNext, this.ZoomMin, this.ZoomMax);
-    //}
-    //public void ZoomReset()
-    //{
-    //    this.ZoomNext = InitialZoom;
-    //}
-
-    //public float GetFarDepth(MapBase map)
-    //{
-    //    var size = map.GetSizeInChunks() * Chunk.Size;// -1;
-    //    return (int)this.Rotation switch
-    //    {
-    //        0 => Vector3.Zero.GetDrawDepth(map, this),
-    //        1 => new Vector3(0, size, 0).GetDrawDepth(map, this),
-    //        2 => new Vector3(size, size, 0).GetDrawDepth(map, this),
-    //        3 => new Vector3(size, 0, 0).GetDrawDepth(map, this),
-    //        _ => 0,
-    //    };
-    //}
-    //public float GetNearDepth(MapBase map)
-    //{
-    //    var size = map.GetSizeInChunks() * Chunk.Size;// -1;
-    //    return (int)this.Rotation switch
-    //    {
-    //        0 => new Vector3(size, size, 0).GetDrawDepth(map, this),
-    //        1 => new Vector3(size, 0, 0).GetDrawDepth(map, this),
-    //        2 => Vector3.Zero.GetDrawDepth(map, this),
-    //        3 => new Vector3(0, size, 0).GetDrawDepth(map, this),
-    //        _ => 0,
-    //    };
-    //}
-
-    //public void UpdateMaxDrawLevel(MapBase map)
-    //{
-    //    this.MaxDrawZ = this.GetMaxDrawLevel(map);
-    //}
-    //public int GetMaxDrawLevel(MapBase map)
-    //{
-    //    var actor = map.Net.GetPlayer()?.ControllingEntity;
-    //    var value = (this.HideTerrainAbovePlayer && (actor is not null)) ? (int)actor.Transform.Global.RoundXY().Z + 2 + this.HideTerrainAbovePlayerOffset : this.DrawLevel;
-    //    value = Math.Min(MapBase.MaxHeight - 1, Math.Max(0, value));
-    //    return value;
-    //}
     internal void ToggleHideBlocksAbove()
     {
         this.HideTerrainAbovePlayer = !this.HideTerrainAbovePlayer;
         if (this.HideTerrainAbovePlayer)
             this.HideTerrainAbovePlayerOffset = 0;
     }
-
-    //internal void AdjustDrawLevel(int p)
-    //{
-    //    if (!this.HideTerrainAbovePlayer)
-    //        this.DrawLevel = Math.Min(MapBase.MaxHeight - 1, Math.Max(0, this.DrawLevel + p));
-    //    else
-    //        this.HideTerrainAbovePlayerOffset += p;
-    //}
 
     public void RecreateRenderTargets()
     {
@@ -1684,10 +990,10 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
             this.DrawGridBlock(sb, col, pos);
         sb.Flush();
     }
-    public void DrawCellHighlights(AtlasDepthNormals.Node.Token sprite, IEnumerable<IntVec3> positions, Color col)
-    {
-        this.DrawCellHighlights(this.SpriteBatch, sprite, positions, col);
-    }
+    //public void DrawCellHighlights(AtlasDepthNormals.Node.Token sprite, IEnumerable<IntVec3> positions, Color col)
+    //{
+    //    this.DrawCellHighlights(this.SpriteBatch, sprite, positions, col);
+    //}
     public void DrawCellHighlights(MySpriteBatch sb, AtlasDepthNormals.Node.Token sprite, IEnumerable<IntVec3> positions, Color col)
     {
         if (!positions.Any())
@@ -1706,7 +1012,6 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         var ctx = this._currentCtx;
         if (global.Z > ctx.View.Settings.DrawLevel)
             return;
-        var map = ctx.Map;
         var camera = ctx.Camera;
         var view = ctx.View;
         var bounds = Block.Bounds;
@@ -1786,10 +1091,10 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
    
 
-    internal bool IsCompletelyHiddenByFog(float z)
-    {
-        return z < this.LastZTarget - FogZOffset - FogFadeLength + 1;
-    }
+    //internal bool IsCompletelyHiddenByFog(float z)
+    //{
+    //    return z < this.LastZTarget - FogZOffset - FogFadeLength + 1;
+    //}
 
     public void HandleKeyPress(KeyPressEventArgs e)
     {
@@ -1948,8 +1253,6 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
     FrameData frame,
     MapView view)
     {
-        var map = view.Map;
-
         DrawTransparentPass(
             gd,
             view,
@@ -1973,12 +1276,15 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
     private void DrawEntityStage(
     GraphicsDevice gd,
-    MapBase map,
     FrameData frame,
     SceneState scene)
     {
-        DrawEntityStage(gd, map, frame.Ctx, scene, frame.VisibleEntities);
-
+        var fx = Effect;
+        fx.Parameters["s"].SetValue(Sprite.Atlas.Texture);
+        fx.Parameters["s1"].SetValue(Sprite.Atlas.DepthTexture);
+        DrawEntityShadowsNew(gd, frame);
+        DrawEntitiesInternal(frame.Ctx.View, scene, frame.VisibleEntities);
+        ApplyEntityFogPass(gd);
         SpriteBatch.Flush();
     }
 
@@ -2096,5 +1402,56 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         );
 
         Effect.Parameters["World"].SetValue(world);
+    }
+
+    public void RenderEntity(
+        Entity entity,
+        MapView view
+        )
+    {
+        var comp = entity.SpriteComp;
+        if (comp.Hidden)
+            return;
+        var parent = entity;
+        var global = parent.Transform.Global;
+        var map = parent.Map;
+        var tint = comp.Tint;
+        var angle = comp._Angle;
+        var zoom = view.Zoom;
+        var rot = view.Rotation;
+
+        var depth = view.GetDrawDepth(global);
+        var body = comp.Body;
+        var direction = parent.Transform.Direction;
+        var finalDir = view.Rotate(direction);
+        var sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+        parent.Map.GetLight(parent.Global.RoundXY(), out byte skylight, out byte blocklight);
+        var skyColor = map.GetAmbientColor() * ((skylight + 1) / 16f); //((skylight) / 15f);
+        skyColor.A = 255;
+        var blockColor = Color.Lerp(Color.Black, Color.White, blocklight / 15f);
+        var fog = view.GetFogColorNew(parent.Cell.Z);
+        var test = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
+        var finalpos = new Vector2(test.X, test.Y) + (body.OriginGroundOffset * view.Zoom);
+        body.DrawTreeAnimationDeltas(parent, comp.Customization, comp.Animations.Values, this.SpriteBatch, finalpos, skyColor, blockColor, tint, fog, angle, zoom, rot, sprfx, 1f, depth);
+    }
+    public void RenderEntityShadow(Entity entity, RenderContext ctx)
+    {
+        var parent = entity;
+        var global = parent.Global;
+        var map = parent.Map;
+        int n = (int)global.RoundXY().Z;
+        bool drawn = false;
+        while (n >= 0 && !drawn)
+        {
+            var globalcheck = new Vector3(global.X, global.Y, n);
+            if (map.TryGetCell(globalcheck, out Cell cellShadow) && cellShadow.Block.IsSolid(cellShadow))
+            {
+                var blockheight = Block.GetBlockHeight(map, globalcheck);
+                var shadow = new Shadow(parent, new Vector3(global.X, global.Y, n + blockheight));
+                shadow.Draw(this.ShadowsSpriteBatch, ctx.View);
+                drawn = true;
+            }
+            n--;
+        }
     }
 }

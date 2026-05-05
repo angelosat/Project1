@@ -19,7 +19,7 @@ sealed class UICameraSettings : Panel
             new CheckBoxNew("Hide Walls", () => Engine.HideWalls = !Engine.HideWalls, () => Engine.HideWalls) { HoverText = "Hides blocks obscuring an entity when the camera is following it" },
             new CheckBoxNew("Hide Terrain", camera.ToggleHideBlocksAbove, () => camera.HideTerrainAbovePlayer),
             //new CheckBoxNew("Block Outlines", () => Engine.BlockOutlines = !Engine.BlockOutlines, () => Engine.BlockOutlines),
-            new CheckBoxNew("Fog", () => Renderer.Fog = !Renderer.Fog, () => Renderer.Fog) { HoverText = "Toggles drawing fog at lower elevation levels than the one under the mouse cursor" },
+            //new CheckBoxNew("Fog", () => Renderer.Fog = !Renderer.Fog, () => Renderer.Fog) { HoverText = "Toggles drawing fog at lower elevation levels than the one under the mouse cursor" },
             new CheckBoxNew("Hide blocks", () => camera.MysteriousBlocks = !camera.MysteriousBlocks, () => camera.MysteriousBlocks) { HoverText = "Toggles blocks not exposed to air being drawn as unknown blocks" },
             new CheckBoxNew("Map boundaries", () => camera.DrawTopSlice = !camera.DrawTopSlice, () => camera.DrawTopSlice) { HoverText = "Draws blocks at the boundaries of the map" },
             new CheckBoxNew("Designations", () => camera.DrawZones = !camera.DrawZones, () => camera.DrawZones) { HoverText = "Toggles drawing of designated zones" },
@@ -39,10 +39,10 @@ sealed class UICameraSettings : Panel
         this.Camera.HideUnderground = !this.Camera.HideUnderground;
     }
 
-    void Fog_Click(object sender, EventArgs e)
-    {
-        Renderer.Fog = !Renderer.Fog;
-    }
+    //void Fog_Click(object sender, EventArgs e)
+    //{
+    //    Renderer.Fog = !Renderer.Fog;
+    //}
 
     public override void Reposition(Vector2 ratio)
     {

@@ -26,11 +26,11 @@ namespace Project1.Core.Graphics.Particles
             foreach (var emitter in this.Emitters)
                 emitter.Update(parent.Map, parent.Global);
         }
-        public override void Draw(MySpriteBatch sb, RenderContext ctx)
-        {
-            var pos = this.Owner.Global;
-            foreach (var emitter in this.Emitters)
-                emitter.Draw(ctx, pos);
-        }
+        //public override void Draw(MySpriteBatch sb, RenderContext ctx)
+        //{
+        //    var pos = this.Owner.Global;
+        //    foreach (var emitter in this.Emitters)
+        //        emitter.Draw(ctx, pos);
+        //}
     }
 }

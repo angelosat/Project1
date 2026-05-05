@@ -634,11 +634,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     //    map.SyncSpawn(this, global, Vector3.Zero);
     //}
 
-    public virtual void Draw(MySpriteBatch sb, RenderContext ctx)
-    {
-        foreach (var comp in this.Components.Values)
-            comp.Draw(sb, ctx);
-    }
+    //public virtual void Draw(MySpriteBatch sb, RenderContext ctx)
+    //{
+    //    foreach (var comp in this.Components.Values)
+    //        comp.Draw(sb, ctx);
+    //}
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e)
     {
         foreach (var comp in this.Components.Values)

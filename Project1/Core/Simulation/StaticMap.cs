@@ -214,18 +214,18 @@ public sealed class StaticMap : MapBase, ITooltippable
         }
     }
 
-    public override void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene)
-    {
-        var camera = ctx.Camera;
-        var view = ctx.View;
-        foreach (var chunk in this.ActiveChunks)
-        {
-            //var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
-            var chunkBounds = view.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
-            if (view.Intersects(chunkBounds))
-                chunk.Value.DrawObjects(sb, ctx, Controller.Instance, scene);
-        }
-    }
+    //public override void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene)
+    //{
+    //    var camera = ctx.Camera;
+    //    var view = ctx.View;
+    //    foreach (var chunk in this.ActiveChunks)
+    //    {
+    //        //var chunkBounds = camera.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
+    //        var chunkBounds = view.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);
+    //        if (view.Intersects(chunkBounds))
+    //            chunk.Value.DrawObjects(sb, ctx, Controller.Instance, scene);
+    //    }
+    //}
 
     public override void DrawInterface(SpriteBatch sb, MapView viewport)
     {
@@ -237,9 +237,9 @@ public sealed class StaticMap : MapBase, ITooltippable
             var chunkBounds = viewport.GetScreenBounds(chunk.Value.Start.X + Chunk.Size / 2, chunk.Value.Start.Y + Chunk.Size / 2, MaxHeight / 2, Chunk.Bounds);  //chunk.Value.GetBounds(camera);
             if (viewport.Viewport.Intersects(chunkBounds))
                 chunk.Value.DrawInterface(sb, viewport);
-            Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
+            //Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
         }
-        Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
+        //Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
         this.Town.DrawUI(sb, viewport);
     }
 

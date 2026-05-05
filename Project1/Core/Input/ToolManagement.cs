@@ -64,7 +64,8 @@ public class ToolManagement : DefaultTool
     {
         var map = Ingame.MainViewportMap;
         var cam = Ingame.MainView.Camera;
-        Ingame.MainView.Picker.Perform(Ingame.MainView, this.TargetOnlyBlocks);
+        //Ingame.MainView.Picker.Perform(Ingame.MainView, this.TargetOnlyBlocks);
+        Ingame.MainView.MousePicking(this.TargetOnlyBlocks);
 
         this.UpdateTargetNew();
 

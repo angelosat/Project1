@@ -778,7 +778,7 @@ public abstract class MapBase : Inspectable
     public abstract string GetFullPath();
     public abstract void UpdateLight(IEnumerable<IntVec3> positions);
     public abstract void DrawBlocks(MySpriteBatch sb, RenderContext ctx, EngineArgs a);
-    public abstract void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene);
+    //public abstract void DrawObjects(MySpriteBatch sb, RenderContext ctx, SceneState scene);
     public abstract void DrawInterface(SpriteBatch sb, MapView viewport);
     public abstract void DrawWorld(MySpriteBatch sb, MapView viewport);
     public abstract void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx);

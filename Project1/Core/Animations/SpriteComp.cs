@@ -1,15 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
-using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -19,7 +16,6 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Animations;
 
@@ -32,7 +28,7 @@ public sealed class SpriteComp : EntityComp
     static public bool ShadowsEnabled = true;
     readonly static List<Shadow> ShadowList = new();
     public Bone Body, DefaultBody;
-    Dictionary<AnimationDef, Animation> Animations = [];
+    internal Dictionary<AnimationDef, Animation> Animations = [];
     public Sprite Sprite;
     public int Variation;
     public int Orientation;
@@ -214,71 +210,6 @@ public sealed class SpriteComp : EntityComp
     }
 
     public float _Angle;
-    public override void Draw(
-        MySpriteBatch sb,
-        RenderContext ctx
-        )
-    {
-        //this.Body.Sprite = ItemContent.AxeFull;
-        if (this.Hidden)
-            return;
-        var parent = this.Owner;
-        var camera = ctx.Camera;
-        var spriteBounds = this.Sprite.GetBounds(); // TODO: cache this
-        var global = parent.Transform.Global;
-        //Rectangle bounds = camera.GetScreenBounds(global, spriteBounds);
-        var map = parent.Map;
-        var view = ctx.View;
-        var source = Sprite.AtlasToken.Rectangle;
-        var shaderRect = new Vector4(source.X / (float)Sprite.Texture.Width, source.Y / (float)Sprite.Texture.Height, source.Width / (float)Sprite.Texture.Width, source.Height / (float)Sprite.Texture.Height);
-        Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(shaderRect);
-
-        //float depth = global.GetDrawDepth(map, camera);
-        float depth = view.GetDrawDepth(global);
-        var body = this.Body;
-        // TODO: slow?
-        if (Flash)
-        {
-            Game1.Instance.Effect.Parameters["Overlay"].SetValue(new Vector4(10, 0, 0, 0.5f));
-            Game1.Instance.Effect.Parameters["Overlay"].SetValue(new Vector4(1, 1, 1, 1));
-            Flash = false;
-        }
-        else
-        {
-            Vector2 direction = parent.Transform.Direction;
-            //Vector2 finalDir = Coords.Rotate(camera, direction);
-            var finalDir = view.Rotate(direction);
-            SpriteEffects sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            parent.Map.GetLight(parent.Global.RoundXY(), out byte skylight, out byte blocklight);
-            var skyColor = map.GetAmbientColor() * ((skylight + 1) / 16f); //((skylight) / 15f);
-            skyColor.A = 255;
-            var blockColor = Color.Lerp(Color.Black, Color.White, (blocklight) / 15f);
-            var fog = ctx.Renderer.GetFogColorNew((int)parent.Global.Z);
-            var test = ctx.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
-            var finalpos = new Vector2(test.X, test.Y) + (body.OriginGroundOffset * camera.Zoom);
-            body.DrawTreeAnimationDeltas(parent, this.Customization, this.Animations.Values, sb, finalpos, skyColor, blockColor, this.Tint, fog, this._Angle, camera.Zoom, (int)camera.Rotation, sprfx, 1f, depth);
-        }
-
-        // DRAW SHADOW
-        Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
-
-        this.RegisterShadow(ctx, spriteBounds, parent);
-    }
-
-    //static public void DrawPreview(SpriteBatch sb, MapView viewport, Vector3 global, GameObject obj)
-    //{
-    //    if (!obj.TryGetComponent<SpriteComp>("Sprite", out var spriteComp))
-    //        return;
-    //    Rectangle bounds;
-    //    Vector2 screenLoc;
-    //    bounds = viewport.Camera.GetScreenBounds(global, spriteComp.Sprite.GetBounds());
-    //    screenLoc = new Vector2(bounds.X, bounds.Y);
-
-    //    sb.Draw(spriteComp.Sprite.Texture, screenLoc,
-    //        spriteComp.Sprite.SourceRects[0][spriteComp.Orientation], Color.White * 0.5f,
-    //        0, Vector2.Zero, viewport.Camera.Zoom, SpriteEffects.None, 0);
-    //    Game1.Instance.Effect.Parameters["SourceRectangle"].SetValue(new Vector4(0, 0, 1, 1));
-    //}
 
     public override void DrawMouseover(MySpriteBatch sb, RenderContext ctx)
     {
@@ -371,57 +302,6 @@ public sealed class SpriteComp : EntityComp
     public override string ToString()
     {
         return this.Body.ToString();
-    }
-
-    public void RegisterShadow(RenderContext ctx, Rectangle spriteBounds, Entity parent)
-    {
-        var global = parent.Global;
-        var map = parent.Map;
-        int n = (int)global.RoundXY().Z;
-        bool drawn = false;
-        while (n >= 0 && !drawn)
-        {
-            var globalcheck = new Vector3(global.X, global.Y, n);
-            if (map.TryGetCell(globalcheck, out Cell cellShadow) && cellShadow.Block.IsSolid(cellShadow))
-            {
-                var blockheight = Block.GetBlockHeight(map, globalcheck);
-                if (ctx.View.CullingCheck(global.X, global.Y, n + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out Rectangle shadowBounds))
-                    ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, n + blockheight)));
-
-                drawn = true;
-            }
-            n--;
-        }
-    }
-    public static void DrawShadow(RenderContext ctx, Rectangle spriteBounds, MapBase map, GameObject parent, float depthNear, float depthFar)
-    {
-        var global = parent.Global;
-        int z = (int)global.RoundXY().Z; //(int)global.Z; // 
-        bool drawn = false;
-        while (z >= 0 && !drawn)
-        {
-            if (map.TryGetCell(new Vector3(global.X, global.Y, z), out var cellShadow) && cellShadow.Block != BlockDefOf.Air.Block)
-            {
-                if (ctx.View.CullingCheck(global.X, global.Y, z + 1, new Rectangle(-spriteBounds.Width / 2, -spriteBounds.Width / 4, spriteBounds.Width, spriteBounds.Width / 2), out _))
-                    ShadowList.Add(new Shadow(parent, new Vector3(global.X, global.Y, z + 1)));
-                drawn = true;
-            }
-            z--;
-        }
-    }
-    static public void DrawShadows(MySpriteBatch sb, RenderContext ctx)
-    {
-        if (ShadowsEnabled)
-        {
-            var map = ctx.Map;
-            var camera = ctx.Camera;
-            var view = ctx.View;
-            //foreach (Shadow shadow in ShadowList.OrderBy(foo => foo.Global.GetDrawDepth(map, camera)))
-            foreach (Shadow shadow in ShadowList.OrderBy(foo => view.GetDrawDepth(foo.Global)))
-                shadow.Draw(sb, ctx);
-        }
-          
-        ShadowList.Clear();
     }
   
     internal override void CopyFrom(EntityComp comp)

@@ -64,9 +64,9 @@ class BloodComponent : EntityComp
         return true;
     }
 
-    public override void Draw(MySpriteBatch sb, RenderContext ctx)
-    {
-        foreach (var e in this.Emitters)
-            e.Draw(ctx, e.Source);
-    }
+    //public override void Draw(MySpriteBatch sb, RenderContext ctx)
+    //{
+    //    foreach (var e in this.Emitters)
+    //        e.Draw(ctx, e.Source);
+    //}
 }

@@ -54,7 +54,7 @@ public class Slot : ButtonBase, IDropTarget, ITooltippable, IContextable
         var body = this.Tag.Object.Body;
         var scale = 1;
         loc += sprite.OriginGround;
-        body.DrawGhost(this.Tag.Object, mysb, loc * scale, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+        body.DrawGhost(this.Tag.Object, mysb, loc * scale, Vector4.One, Vector4.One, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
         mysb.Flush();
         UIManager.DrawStringOutlined(sb, CornerTextFunc(Tag), new Vector2(Slot.DefaultHeight), Vector2.One, UIManager.FontBold);
     }

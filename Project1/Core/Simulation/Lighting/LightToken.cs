@@ -1,21 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Project1.Core.Simulation.Lighting
-{
-    /// <summary>
-    ///  TODO convert sun field to vector4 as well
-    /// </summary>
-    public class LightToken
-    {
-        public Vector3 Global;
-        public Color Sun;
-        public Vector4 Block;
+namespace Project1.Core.Simulation.Lighting;
 
-        public LightToken(Vector3 global, Color sun, Vector4 block)
-        {
-            this.Global = global;
-            this.Sun = sun;
-            this.Block = block;
-        }
+/// <summary>
+///  TODO convert sun field to vector4 as well
+/// </summary>
+public class LightToken
+{
+    public Vector3 Global;
+    public Vector4 Sun, Block;
+
+    public LightToken(Vector3 global, Vector4 sun, Vector4 block)
+    {
+        this.Global = global;
+        this.Sun = sun;
+        this.Block = block;
     }
 }

@@ -76,7 +76,7 @@ class BlockRoof : Block
     {
         base.OnPlaced(map, global, material, GetData(orientation), variation, orientation, notify);
     }
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         if (this == BlockDefOf.Air.Block)
             return null;

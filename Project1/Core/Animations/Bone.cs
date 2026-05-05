@@ -369,7 +369,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
     /// <param name="sprFx"></param>
     /// <param name="alpha"></param>
     /// <param name="depth"></param>
-    public void DrawGhost(MySpriteBatch sb, Vector2 screenLoc, Color sky, Color block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
+    public void DrawGhost(MySpriteBatch sb, Vector2 screenLoc, Vector4 sky, Vector4 block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
     {
         Sprite sprite = SpriteSlot == null ? this.GetSprite(orientation) : (SpriteSlot.HasValue ? SpriteSlot.Object.Body.Sprite : null);
         var nextangle = this.Angle;
@@ -401,7 +401,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         }
     }
 
-    public void DrawTreeAnimationDeltas(Entity parent, CharacterColors customization, IEnumerable<Animation> animations, MySpriteBatch sb, Vector2 screenLoc, Color sky, Color block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
+    public void DrawTreeAnimationDeltas(Entity parent, CharacterColors customization, IEnumerable<Animation> animations, MySpriteBatch sb, Vector2 screenLoc, Vector4 sky, Vector4 block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
     {
         var material = this.Material;
         Sprite sprite = SpriteSlot == null ? this.GetSprite(orientation) : (SpriteSlot.HasValue ? SpriteSlot.Object.Body.Sprite : null);
@@ -434,7 +434,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
             next.DrawTreeAnimationDeltas(parent, customization, animations, sb, finalpos + nextLoc * scale, sky, block, tint, fog, finalAngle + childAngle, scale, orientation, sprFx, alpha, finalDepth); // - Vector2.One*2*Graphics.Borders.Thickness
         }
     }
-    public void DrawGhost(GameObject parent, MySpriteBatch sb, Vector2 screenLoc, Color sky, Color block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
+    public void DrawGhost(GameObject parent, MySpriteBatch sb, Vector2 screenLoc, Vector4 sky, Vector4 block, Color tint, Color fog, float angle, float zoom, int orientation, SpriteEffects sprFx, float alpha, float depth)
     {
         Sprite sprite = SpriteSlot == null ? this.GetSprite(orientation) : (SpriteSlot.HasValue ? SpriteSlot.Object.Body.Sprite : null);
 
@@ -598,7 +598,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         var scale = 1;
         var loc = new Vector2((int)((rect.Width) / 2), texture.Height / 2);
         loc *= scale;
-        body.DrawGhost(parent, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+        body.DrawGhost(parent, mysb, loc, Vector4.One, Vector4.One, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
 
         mysb.Flush();
     }
@@ -635,7 +635,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
         var customization = parent.GetComponent<SpriteComp>().Customization;
         var grounddistancefromcenter = renderTarget.Height / 2 + OriginGroundOffset.Y * scale;
         var loc = new Vector2(renderTarget.Width / 2, renderTarget.Height / 2 + grounddistancefromcenter);
-        body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+        body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Vector4.One, Vector4.One, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
 
         mysb.Flush();
         var texture = new Texture2D(gd, w, h);
@@ -670,7 +670,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
 
         var grounddistancefromcenter = rect.Height / 2 + OriginGroundOffset.Y * scale;
         var loc = new Vector2(rect.Width / 2, rect.Height / 2 + grounddistancefromcenter);
-        body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+        body.DrawTreeAnimationDeltas(parent, customization, new List<Animation>() { new Animation(AnimationDefOf.Null) }, mysb, loc, Vector4.One, Vector4.One, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
 
         mysb.Flush();
     }
@@ -696,7 +696,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
 
         var loc = new Vector2((int)((rect.Width) / 2), (int)((rect.Height - minrect.Height) / 2)) + new Vector2(0, this.Sprite.OriginGround.Y) - this.OriginGroundOffset * 2;
         loc *= scale;
-        body.DrawGhost(parent, mysb, loc, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+        body.DrawGhost(parent, mysb, loc, Vector4.One, Vector4.One, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
 
         mysb.Flush();
     }

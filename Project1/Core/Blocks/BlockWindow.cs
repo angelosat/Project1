@@ -72,11 +72,11 @@ class BlockWindow : Block
         var orientationindex = (int)(orientation + view.Rotation) % 2;
         var bottom = this.PartsSeparate[0][orientationindex][0];
         var top = this.PartsSeparate[1][orientationindex][0];
-        sb.DrawBlock(Block.Atlas.Texture, global, bottom, view, Color.Transparent, Color.White * 0.5f, Color.White, Vector4.One);
-        sb.DrawBlock(Block.Atlas.Texture, global + IntVec3.UnitZ, top, view, Color.Transparent, Color.White * 0.5f, Color.White, Vector4.One);
+        sb.DrawBlock(Block.Atlas.Texture, global, bottom, view, Color.Transparent, Color.White * 0.5f, Vector4.One, Vector4.One);
+        sb.DrawBlock(Block.Atlas.Texture, global + IntVec3.UnitZ, top, view, Color.Transparent, Color.White * 0.5f, Vector4.One, Vector4.One);
     }
 
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         //15 18 65
         //sunlight 255 16 239(159?) 255

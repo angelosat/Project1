@@ -95,8 +95,10 @@ struct MyVertexInput
 	float4 TexCoord : TEXCOORD0;
 	float4 Fog : COLOR0;
 	float4 Color : COLOR1;
-	float4 Light : COLOR2;
-	float4 BlockLight : COLOR3;// COLOR2;
+	//float4 Light : COLOR2;
+	//float4 BlockLight : COLOR3;// COLOR2;
+    float4 Light : TEXCOORD1;
+    float4 BlockLight : TEXCOORD2; // COLOR2;
 	float4 Water : COLOR4;
 	float4 Material : COLOR5;
 	float3 BlockCoords : TEXCOORD3;
@@ -106,15 +108,25 @@ struct MyVertexOutput
 {
 	float4 TexCoord : TEXCOORD0;
 	float4 Position : SV_Position0; // POSITION0;
-	float4 Fog : TEXCOORD4;
+	float4 Fog : TEXCOORD5;
 	float4 Color : COLOR0;
-	float4 Light : COLOR1;
-	float4 BlockLight : TEXCOORD2;// COLOR2;
-	float Depth : TEXCOORD1;
-	float4 ScreenPosition : TEXCOORD3;
-	float4 Water : TEXCOORD5;
-	float4 Material : TEXCOORD6;
-	float3 BlockCoords : TEXCOORD7;
+	//float4 Light : COLOR1;
+	//float4 BlockLight : TEXCOORD2;// COLOR2;
+	//float Depth : TEXCOORD1;
+	//float4 ScreenPosition : TEXCOORD3;
+	//float4 Water : TEXCOORD5;
+	//float4 Material : TEXCOORD6;
+	//float3 BlockCoords : TEXCOORD7;
+    float4 Light : TEXCOORD2;
+    float4 BlockLight : TEXCOORD3; // COLOR2;
+    float Depth : TEXCOORD1;
+    float4 ScreenPosition : TEXCOORD4;
+    float4 Water : TEXCOORD6;
+    float4 Material : TEXCOORD7;
+    float3 BlockCoords : TEXCOORD8;
+	
+	
+	
 	//float2 BlockRotXY : TEXCOORD8;
 
 	// TODO: add vertex shader outputs such as colors and texture
@@ -932,8 +944,8 @@ MyPixelOutput MyChunkPixelShader(MyVertexOutput input)
 	float blocklight;
 	
 	// which is faster???
-	sunlight = input.Light.b * face.r + input.Light.g * face.g + input.Light.r * face.b;
-	blocklight = input.BlockLight.b * face.r + input.BlockLight.g * face.g + input.BlockLight.r* face.b;
+    sunlight = input.Light.b * face.r + input.Light.g * face.g + input.Light.r * face.b;
+    blocklight = input.BlockLight.b * face.r + input.BlockLight.g * face.g + input.BlockLight.r * face.b;
 	
 	// prevent total blackness for unlit cells
     sunlight = lerp(0.1, 1, sunlight);

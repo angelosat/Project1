@@ -677,7 +677,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         //var depth = global.GetDrawDepth(view.Camera);
         var depth = view.GetDrawDepth(global);
 
-        body.DrawGhost(this, sb, pos, Color.White, Color.White, tint, Color.Transparent, 0, view.Zoom, 0, SpriteEffects.None, 0.5f, depth);
+        body.DrawGhost(this, sb, pos, Vector4.One, Vector4.One, tint, Color.Transparent, 0, view.Zoom, 0, SpriteEffects.None, 0.5f, depth);
     }
 
     public virtual void GetTooltipInfo(Control tooltip)
@@ -1100,7 +1100,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         Sprite.Atlas.Begin(fx);
         fx.CurrentTechnique.Passes["Pass1"].Apply();
         loc += sprite.OriginGround;
-        body.DrawGhost(mysb, loc * scale, Color.White, Color.White, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
+        body.DrawGhost(mysb, loc * scale, Vector4.One, Vector4.One, Color.White, Color.Transparent, 0, scale, 0, SpriteEffects.None, 1f, 0.5f);
         mysb.Flush();
     }
 

@@ -535,7 +535,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
             this.Variations.Add(token);
         }
     }
-    public virtual void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+    public virtual void Draw(MySpriteBatch sb, Rectangle screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
     {
         if (this == BlockDefOf.Air.Block)
             return;
@@ -543,14 +543,14 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
         sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth);
     }
   
-    public virtual void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+    public virtual void Draw(MySpriteBatch sb, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
     {
         if (this == BlockDefOf.Air.Block)
             return;
 
         sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[Math.Min(cell.Variation, this.Variations.Count - 1)], zoom, fog, tint, sunlight, blocklight, depth, this);
     }
-    public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, float zoom, int rotation, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, float zoom, int rotation, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         if (this == BlockDefOf.Air.Block)
             return null;
@@ -563,7 +563,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
             zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, blockCoordinates);
 
     }
-    public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public virtual MyVertex[] Draw(MySpriteBatch sb, Vector3 blockCoordinates, Camera camera, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         if (this == BlockDefOf.Air.Block)
             return null;
@@ -576,7 +576,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
             camera.Zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, blockCoordinates);
 
     }
-    public virtual MyVertex[] Draw(Chunk chunk, IntVec3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public virtual MyVertex[] Draw(Chunk chunk, IntVec3 blockCoordinates, Camera camera, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         if (this == BlockDefOf.Air.Block)
             return null;
@@ -589,20 +589,20 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
             token,
             camera.Zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, blockCoordinates);
     }
-    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 vector3, MapView view, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth, Cell cell)
+    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 vector3, MapView view, Vector4 screenBoundsVector4, Vector4 sun, Vector4 block, Color finalFogColor, Color tint, int depth, Cell cell)
     {
         this.Draw(canvas, chunk, vector3, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
         if (cell.Damage > 0)
             DrawCracks(canvas.Opaque, vector3, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
     }
-    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBoundsVector4, Color sun, Vector4 block, Color finalFogColor, Color tint, int depth)
+    internal void Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBoundsVector4, Vector4 sun, Vector4 block, Color finalFogColor, Color tint, int depth)
     {
         var cell = chunk.GetLocalCell(global);
         this.Draw(canvas, chunk, global, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Variation, cell.Orientation, cell.BlockData, cell.Material);
         if (cell.Damage > 0)
             DrawCracks(canvas.Opaque, global, view, screenBoundsVector4, sun, block, finalFogColor, tint, depth, cell.Damage);
     }
-    public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public virtual MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         if (this == BlockDefOf.Air.Block)
             return null;
@@ -622,7 +622,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
             token,
             view.Zoom, fog, tint, material, sunlight, blocklight, Vector4.Zero, depth, this, global);
     }
-    public virtual void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
+    public virtual void Draw(MySpriteBatch sb, Vector2 screenPos, Vector4 sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
     {
         if (this == BlockDefOf.Air.Block)
             return;
@@ -640,13 +640,13 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
         var materialcolor = this.DrawMaterialColor ? mat.Color : Color.White;// this.GetColor(data);
         var token = this.GetPreviewToken(variation, orientation, (int)view.Rotation, data); // change the method to accept double so i don't have to cast the camera rotation to int?
         var bounds = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, Bounds, Vector2.Zero);
-        sb.DrawBlock(Atlas.Texture, bounds, token, view.Zoom, Color.Transparent, tint, materialcolor, Color.White, Vector4.One, Vector4.Zero, depth, this);
+        sb.DrawBlock(Atlas.Texture, bounds, token, view.Zoom, Color.Transparent, tint, materialcolor, Vector4.One, Vector4.One, Vector4.Zero, depth, this);
     }
-    protected static void DrawShadow(MySpriteBatch nonopaquemesh, IntVec3 blockCoordinates, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth)
+    protected static void DrawShadow(MySpriteBatch nonopaquemesh, IntVec3 blockCoordinates, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth)
     {
         nonopaquemesh.DrawBlock(Atlas.Texture, screenBounds, BlockShadow, view.Zoom, fog, tint, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
     }
-    protected static void DrawCracks(MySpriteBatch opaquemesh, IntVec3 blockCoordinates, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int damage)
+    protected static void DrawCracks(MySpriteBatch opaquemesh, IntVec3 blockCoordinates, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int damage)
     {
         var cracksTexture = Cracks[damage - 1];
         opaquemesh.DrawBlock(Atlas.Texture, screenBounds, cracksTexture, view.Zoom, fog, Color.White, Color.White, sunlight, blocklight, Vector4.Zero, depth, null, blockCoordinates);
@@ -755,7 +755,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
 
     static readonly AtlasDepthNormals.Node.Token Token = Atlas.Load("blocks/blockunknown", BlockDepthMap, NormalMap);
 
-    public static MyVertex[] DrawUnknown(MySpriteBatch opaquemesh, Vector3 blockCoordinates, Camera camera, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth)
+    public static MyVertex[] DrawUnknown(MySpriteBatch opaquemesh, Vector3 blockCoordinates, Camera camera, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth)
     {
         return opaquemesh.DrawBlock(Atlas.Texture, screenBounds,
             Token,
@@ -794,7 +794,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
         //{
         //    SpriteBatch = mysb
         //};
-        this.Draw(mysb, Vector3.Zero, 1, 0, bounds, Color.White, Vector4.One, Color.Transparent, Color.White, 0.5f, 0, 0, data, mat ?? MaterialDefOf.Air);
+        this.Draw(mysb, Vector3.Zero, 1, 0, bounds, Vector4.One, Vector4.One, Color.Transparent, Color.White, 0.5f, 0, 0, data, mat ?? MaterialDefOf.Air);
         mysb.Flush();
     }
     public RenderTarget2D PaintIcon(byte data, MaterialDef mat)
@@ -818,7 +818,7 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
         //{
         //    SpriteBatch = mysb
         //};
-        this.Draw(mysb, Vector3.Zero, 1, 0, bounds, Color.White, Vector4.One, Color.Transparent, Color.White, 0.5f, 0, 0, data, mat);
+        this.Draw(mysb, Vector3.Zero, 1, 0, bounds, Vector4.One, Vector4.One, Color.Transparent, Color.White, 0.5f, 0, 0, data, mat);
         mysb.Flush();
         gd.SetRenderTarget(null);
         return renderTarget;

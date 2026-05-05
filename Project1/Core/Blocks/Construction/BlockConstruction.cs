@@ -24,7 +24,7 @@ sealed class BlockConstruction : Block
             throw new InvalidOperationException("Missing or unexpected block entity in construction block placement");
         return null;
     }
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         var block = chunk.Map.GetBlockComp<BlockConstructionComp>(global).Block;
         block = BlockDefOf.Construction.Block;

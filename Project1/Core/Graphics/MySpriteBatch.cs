@@ -4,9 +4,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Blocks;
-using Project1.Core.Helpers;
 using Project1.Core.Screens;
-using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Graphics;
 using System;
@@ -101,8 +99,8 @@ public sealed class MySpriteBatch
         indices[indexCount++] = vertexCount + 2;
         indices[indexCount++] = vertexCount + 3;
 
-        Color skylight = Color.White;
-        Vector4 blocklight = Vector4.One;
+        var skylight = Vector4.One;// Color.White;
+        var blocklight = Vector4.One;
         vertices[vertexCount++] = new MyVertex(
             new Vector3(tl, depth)
             , color, skylight, blocklight, GetUV(srcRectangle.Left, srcRectangle.Top));
@@ -116,7 +114,7 @@ public sealed class MySpriteBatch
             new Vector3(bl, depth)
             , color, skylight, blocklight, GetUV(srcRectangle.Left, srcRectangle.Bottom));
     }
-    public void Draw(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float rotation, Vector2 origin, Vector2 scale, Color sky, Color block, Color color, Color fog, SpriteEffects sprFx, float depth)
+    public void Draw(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float rotation, Vector2 origin, Vector2 scale, Vector4 sky, Vector4 block, Color color, Color fog, SpriteEffects sprFx, float depth)
     {
         Matrix flip;
         if (sprFx == SpriteEffects.FlipHorizontally)
@@ -153,7 +151,7 @@ public sealed class MySpriteBatch
         indices[indexCount++] = vertexCount + 1;
         indices[indexCount++] = vertexCount + 2;
         indices[indexCount++] = vertexCount + 3;
-        var blockvec4 = block.ToVector4();
+        var blockvec4 = block;//.ToVector4();
         vertices[vertexCount++] = new MyVertex(
             new Vector3(tl, depth)
             , fog, color, sky, blockvec4, GetUV(srcRectangle.Left, srcRectangle.Top));
@@ -167,58 +165,58 @@ public sealed class MySpriteBatch
             new Vector3(bl, depth)
             , fog, color, sky, blockvec4, GetUV(srcRectangle.Left, srcRectangle.Bottom));
     }
-    public void Draw(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float rotation, Vector2 origin, Vector2 scale, Color sky, Vector4 block, Color color, Color fog, SpriteEffects sprFx, float depth)
-    {
-        Matrix flip;
-        if (sprFx == SpriteEffects.FlipHorizontally)
-        {
-            float flipOffset = (float)Math.Floor(srcRectangle.Width / 2f);
-            float flipOffset2 = (float)Math.Ceiling(srcRectangle.Width / 2f);
-            flip = Matrix.CreateTranslation(new Vector3(-flipOffset, 0, 0)) * Matrix.CreateScale(new Vector3(-1, 1, 1)) * Matrix.CreateTranslation(new Vector3(flipOffset2, 0, 0));
-        }
-        else flip = Matrix.CreateScale(1);
-        Matrix rotate = Matrix.CreateRotationZ(rotation);
-        Matrix toScreen = Matrix.CreateTranslation(new Vector3(screenPos, 0));
-        Matrix toOrigin = Matrix.CreateTranslation(new Vector3(-origin, 0));
-        Matrix toScale = Matrix.CreateScale(scale.X, scale.Y, 1);
-        Matrix final = flip * toOrigin * toScale * rotate * toScreen;
-        Vector2 tl = new(0, 0);
-        Vector2 tr = new(srcRectangle.Width, 0);
-        Vector2 bl = new(0, srcRectangle.Height);
-        Vector2 br = new(srcRectangle.Width, srcRectangle.Height);
-        tl = Vector2.Transform(tl, final);
-        tr = Vector2.Transform(tr, final);
-        bl = Vector2.Transform(bl, final);
-        br = Vector2.Transform(br, final);
-        if (this.texture != null && this.texture != texture)
-            this.Flush();
-        this.texture = texture;
+    //public void DrawOther(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float rotation, Vector2 origin, Vector2 scale, Vector4 sky, Vector4 block, Color color, Color fog, SpriteEffects sprFx, float depth)
+    //{
+    //    Matrix flip;
+    //    if (sprFx == SpriteEffects.FlipHorizontally)
+    //    {
+    //        float flipOffset = (float)Math.Floor(srcRectangle.Width / 2f);
+    //        float flipOffset2 = (float)Math.Ceiling(srcRectangle.Width / 2f);
+    //        flip = Matrix.CreateTranslation(new Vector3(-flipOffset, 0, 0)) * Matrix.CreateScale(new Vector3(-1, 1, 1)) * Matrix.CreateTranslation(new Vector3(flipOffset2, 0, 0));
+    //    }
+    //    else flip = Matrix.CreateScale(1);
+    //    Matrix rotate = Matrix.CreateRotationZ(rotation);
+    //    Matrix toScreen = Matrix.CreateTranslation(new Vector3(screenPos, 0));
+    //    Matrix toOrigin = Matrix.CreateTranslation(new Vector3(-origin, 0));
+    //    Matrix toScale = Matrix.CreateScale(scale.X, scale.Y, 1);
+    //    Matrix final = flip * toOrigin * toScale * rotate * toScreen;
+    //    Vector2 tl = new(0, 0);
+    //    Vector2 tr = new(srcRectangle.Width, 0);
+    //    Vector2 bl = new(0, srcRectangle.Height);
+    //    Vector2 br = new(srcRectangle.Width, srcRectangle.Height);
+    //    tl = Vector2.Transform(tl, final);
+    //    tr = Vector2.Transform(tr, final);
+    //    bl = Vector2.Transform(bl, final);
+    //    br = Vector2.Transform(br, final);
+    //    if (this.texture != null && this.texture != texture)
+    //        this.Flush();
+    //    this.texture = texture;
 
-        //  ensure space for my vertices and indices.
-        this.EnsureSpace(6, 4);
+    //    //  ensure space for my vertices and indices.
+    //    this.EnsureSpace(6, 4);
 
-        //  add the new indices
-        indices[indexCount++] = vertexCount + 0;
-        indices[indexCount++] = vertexCount + 1;
-        indices[indexCount++] = vertexCount + 3;
-        indices[indexCount++] = vertexCount + 1;
-        indices[indexCount++] = vertexCount + 2;
-        indices[indexCount++] = vertexCount + 3;
+    //    //  add the new indices
+    //    indices[indexCount++] = vertexCount + 0;
+    //    indices[indexCount++] = vertexCount + 1;
+    //    indices[indexCount++] = vertexCount + 3;
+    //    indices[indexCount++] = vertexCount + 1;
+    //    indices[indexCount++] = vertexCount + 2;
+    //    indices[indexCount++] = vertexCount + 3;
 
-        vertices[vertexCount++] = new MyVertex(
-            new Vector3(tl, depth)
-            , fog, color, sky, block, GetUV(srcRectangle.Left, srcRectangle.Top));
-        vertices[vertexCount++] = new MyVertex(
-            new Vector3(tr, depth)
-            , fog, color, sky, block, GetUV(srcRectangle.Right, srcRectangle.Top));
-        vertices[vertexCount++] = new MyVertex(
-            new Vector3(br, depth)
-            , fog, color, sky, block, GetUV(srcRectangle.Right, srcRectangle.Bottom));
-        vertices[vertexCount++] = new MyVertex(
-            new Vector3(bl, depth)
-            , fog, color, sky, block, GetUV(srcRectangle.Left, srcRectangle.Bottom));
-    }
-    public void Draw(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float rotation, Vector2 origin, Vector2 scale, Color sky, Color block, Color material, Color tint, Color fog, SpriteEffects sprFx, float depth)
+    //    vertices[vertexCount++] = new MyVertex(
+    //        new Vector3(tl, depth)
+    //        , fog, color, sky, block, GetUV(srcRectangle.Left, srcRectangle.Top));
+    //    vertices[vertexCount++] = new MyVertex(
+    //        new Vector3(tr, depth)
+    //        , fog, color, sky, block, GetUV(srcRectangle.Right, srcRectangle.Top));
+    //    vertices[vertexCount++] = new MyVertex(
+    //        new Vector3(br, depth)
+    //        , fog, color, sky, block, GetUV(srcRectangle.Right, srcRectangle.Bottom));
+    //    vertices[vertexCount++] = new MyVertex(
+    //        new Vector3(bl, depth)
+    //        , fog, color, sky, block, GetUV(srcRectangle.Left, srcRectangle.Bottom));
+    //}
+    public void Draw(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float rotation, Vector2 origin, Vector2 scale, Vector4 sky, Vector4 block, Color material, Color tint, Color fog, SpriteEffects sprFx, float depth)
     {
         Matrix flip;
         if (sprFx == SpriteEffects.FlipHorizontally)
@@ -255,7 +253,7 @@ public sealed class MySpriteBatch
         indices[indexCount++] = vertexCount + 1;
         indices[indexCount++] = vertexCount + 2;
         indices[indexCount++] = vertexCount + 3;
-        var blocVec4 = block.ToVector4();
+        var blocVec4 = block;//.ToVector4();
         vertices[vertexCount++] = new MyVertex(
             new Vector3(tl, depth)
             , fog, tint, material, sky, blocVec4, Vector4.Zero, GetUV(srcRectangle.Left, srcRectangle.Top));
@@ -269,6 +267,9 @@ public sealed class MySpriteBatch
             new Vector3(bl, depth)
             , fog, tint, material, sky, blocVec4, Vector4.Zero, GetUV(srcRectangle.Left, srcRectangle.Bottom));
     }
+    
+    
+    
     public void Draw(Texture2D texture, Rectangle srcRectangle, Rectangle dstRectangle, Color color)
     {
         //  if the texture changes, we flush all queued sprites.
@@ -287,8 +288,8 @@ public sealed class MySpriteBatch
         indices[indexCount++] = vertexCount + 2;
         indices[indexCount++] = vertexCount + 3;
 
-        Color light = Color.White;
-        Vector4 blocklight = Vector4.One;
+        var light = Vector4.One;
+        var blocklight = Vector4.One;
         // add the new vertices
         vertices[vertexCount++] = new MyVertex(
             new Vector3(dstRectangle.Left, dstRectangle.Top, 0)
@@ -303,12 +304,12 @@ public sealed class MySpriteBatch
             new Vector3(dstRectangle.Left, dstRectangle.Bottom, 0)
             , color, light, blocklight, GetUV(srcRectangle.Left, srcRectangle.Bottom));
     }
-    public void DrawBlock(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float scale, Color tint, Color sunLight, Vector4 blockLight, float depth)
+    public void DrawBlock(Texture2D texture, Vector2 screenPos, Rectangle srcRectangle, float scale, Color tint, Vector4 sunLight, Vector4 blockLight, float depth)
     {
         Vector4 destRectangle = new Vector4(screenPos.X, screenPos.Y, screenPos.X + scale * srcRectangle.Width, screenPos.Y + scale * srcRectangle.Height);
         this.DrawBlock(texture, srcRectangle, destRectangle, tint, sunLight, blockLight, depth);
     }
-    public void DrawBlock(Texture2D texture, Rectangle srcRectangle, Vector4 dstRectangle, Color tint, Color sunLight, Vector4 blockLight, float depth)
+    public void DrawBlock(Texture2D texture, Rectangle srcRectangle, Vector4 dstRectangle, Color tint, Vector4 sunLight, Vector4 blockLight, float depth)
     {
         if (this.texture != null && this.texture != texture)
             this.Flush();
@@ -342,7 +343,7 @@ public sealed class MySpriteBatch
             new Vector3(dstRectangle.X, dstRectangle.W, depth)
             , tint, sunLight, blockLight, GetUV(srcRectangle.Left, srcRectangle.Bottom));
     }
-    public void DrawBlock(Texture2D texture, Rectangle screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color sunLight, Vector4 blockLight, float depth)
+    public void DrawBlock(Texture2D texture, Rectangle screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Vector4 sunLight, Vector4 blockLight, float depth)
     {
         if (this.texture != null && this.texture != texture)
             this.Flush();
@@ -376,14 +377,14 @@ public sealed class MySpriteBatch
             new Vector3(screenBounds.X, screenBounds.Y + screenBounds.Height, depth)
             , fog, tint, sunLight, blockLight, token.BottomLeftUV);
     }
-    public void DrawBlock(Texture2D texture, Vector3 global, IAtlasNodeToken token, MapView view, Color fog, Color tint, Color sunLight, Vector4 blockLight)
+    public void DrawBlock(Texture2D texture, Vector3 global, IAtlasNodeToken token, MapView view, Color fog, Color tint, Vector4 sunLight, Vector4 blockLight)
     {
         //float depth = global.GetDrawDepth(map, view.Camera);
         float depth = view.GetDrawDepth(global);
         var dstRectangle = view.GetScreenBounds(global, Block.Bounds);
         this.DrawBlock(texture, dstRectangle, token, view.Zoom, fog, tint, sunLight, blockLight, depth);
     }
-    public void DrawBlock(Texture2D texture, Rectangle screenBounds, IAtlasNodeToken token, float scale, Color tint, Color sunLight, Vector4 blockLight, float depth)
+    public void DrawBlock(Texture2D texture, Rectangle screenBounds, IAtlasNodeToken token, float scale, Color tint, Vector4 sunLight, Vector4 blockLight, float depth)
     {
         if (this.texture != null && this.texture != texture)
             this.Flush();
@@ -417,7 +418,7 @@ public sealed class MySpriteBatch
             new Vector3(screenBounds.X, screenBounds.Y + screenBounds.Height, depth)
             , tint, sunLight, blockLight, token.BottomLeftUV);
     }
-    public void DrawBlock(Texture2D texture, Vector2 screenPos, IAtlasNodeToken token, float scale, Color tint, Color sunLight, Vector4 blockLight, float depth)
+    public void DrawBlock(Texture2D texture, Vector2 screenPos, IAtlasNodeToken token, float scale, Color tint, Vector4 sunLight, Vector4 blockLight, float depth)
     {
         Vector4 dstRectangle = new Vector4(screenPos.X, screenPos.Y, screenPos.X + scale * token.Rectangle.Width, screenPos.Y + scale * token.Rectangle.Height);
         if (this.texture != null && this.texture != texture)
@@ -452,23 +453,23 @@ public sealed class MySpriteBatch
             new Vector3(dstRectangle.X, dstRectangle.W, depth)
             , tint, sunLight, blockLight, token.BottomLeftUV);
     }
-    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color sunLight, Vector4 blockLight, float depth, Block block)
+    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Vector4 sunLight, Vector4 blockLight, float depth, Block block)
     {
         return this.DrawBlock(texture, screenBounds, token, scale, fog, tint, Color.White, sunLight, blockLight, Color.Transparent.ToVector4(), depth, block);
     }
-    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color sunLight, Vector4 blockLight, float depth, Block block, Vector3 blockcoords)
+    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Vector4 sunLight, Vector4 blockLight, float depth, Block block, Vector3 blockcoords)
     {
         return this.DrawBlock(texture, screenBounds, token, scale, fog, tint, Color.White, sunLight, blockLight, Color.Transparent.ToVector4(), depth, block, blockcoords);
     }
-    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color material, Color sunLight, Vector4 blockLight, Vector4 water, float depth, Block block)
+    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color material, Vector4 sunLight, Vector4 blockLight, Vector4 water, float depth, Block block)
     {
         return this.DrawBlock(texture, screenBounds, token, scale, fog, tint, material.ToVector4(), sunLight, blockLight, water, depth, block, Vector3.Zero);
     }
-    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color material, Color sunLight, Vector4 blockLight, Vector4 water, float depth, Block block, IntVec3 blockcoords)
+    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Color material, Vector4 sunLight, Vector4 blockLight, Vector4 water, float depth, Block block, IntVec3 blockcoords)
     {
         return this.DrawBlock(texture, screenBounds, token, scale, fog, tint, material.ToVector4(), sunLight, blockLight, water, depth, block, blockcoords);
     }
-    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Vector4 material, Color sunLight, Vector4 blockLight, Vector4 water, float depth, Block block, IntVec3 blockCoords)
+    public MyVertex[] DrawBlock(Texture2D texture, Vector4 screenBounds, IAtlasNodeToken token, float scale, Color fog, Color tint, Vector4 material, Vector4 sunLight, Vector4 blockLight, Vector4 water, float depth, Block block, IntVec3 blockCoords)
     {
         if (this.texture != null && this.texture != texture)
             this.Flush();

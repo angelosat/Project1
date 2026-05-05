@@ -67,7 +67,7 @@ namespace Project1.Core.UI.Blocks
                     fx.CurrentTechnique.Passes["Pass1"].Apply();
                     var material = tag.Material;
                     var bounds = new Vector4(3, 3 - Block.Depth / 2, token.Texture.Bounds.Width, token.Texture.Bounds.Height);
-                    tag.Block.Draw(mysb, Vector3.Zero, 1, 0, bounds, Color.White, Vector4.One, Color.Transparent, Color.White, 0.5f, 0, 0, tag.BlockData, material);
+                    tag.Block.Draw(mysb, Vector3.Zero, 1, 0, bounds, Vector4.One, Vector4.One, Color.Transparent, Color.White, 0.5f, 0, 0, tag.BlockData, material);
                     mysb.Flush();
                 };
                 slot.CustomTooltip = true;

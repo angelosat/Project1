@@ -59,7 +59,7 @@ namespace Project1.Core.Blocks
             return Def.Get<MaterialDef>().Where(mat => mat.Type == MaterialTypeDefOf.Wood);
         }
        
-        public override void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
+        public override void Draw(MySpriteBatch sb, Vector2 screenPos, Vector4 sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
         {
             var sourceRect = this.GrayScale.Rectangle;
             var mat = cell.Material;
@@ -67,13 +67,13 @@ namespace Project1.Core.Blocks
             sb.DrawBlock(Block.Atlas.Texture, screenPos, this.GrayScale.Rectangle, zoom, tint, sunlight, blocklight, depth);
         }
 
-        public override void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+        public override void Draw(MySpriteBatch sb, Rectangle screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             var mat = cell.Material;
             var finaltint = mat.Color;
             sb.DrawBlock(Block.Atlas.Texture, screenBounds, this.GrayScale, zoom, fog, finaltint.Multiply(tint), sunlight, blocklight, depth);
         }
-        public override void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+        public override void Draw(MySpriteBatch sb, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             var mat = cell.Material;
             var finaltint = mat.Color;

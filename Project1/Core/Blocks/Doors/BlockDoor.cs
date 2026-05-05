@@ -203,20 +203,20 @@ public sealed class BlockDoor : Block
         }
     }
     protected override Rectangle ParticleTextureRect => Orientations[0].Rectangle;
-    public override void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+    public override void Draw(MySpriteBatch sb, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
     {
         Read(cell.BlockData, out bool locked, out bool open, out int part);
         int ori = (cell.Orientation + (open ? 1 : 0)) % 4; // FASTER???
         sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[ori], zoom, fog, Color.White, sunlight, blocklight, depth, this);
     }
-    public override void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+    public override void Draw(MySpriteBatch sb, Rectangle screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
     {
         Read(cell.BlockData, out bool locked, out bool open, out int part);
         int ori = (cell.Orientation + (open ? 1 : 0)) % 4; // FASTER???
         sb.DrawBlock(Atlas.Texture, screenBounds, this.Variations[ori], zoom, fog, Color.White, sunlight, blocklight, depth);
     }
 
-    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
+    public override MyVertex[] Draw(Canvas canvas, Chunk chunk, IntVec3 global, MapView view, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float depth, int variation, int orientation, byte data, MaterialDef mat)
     {
         Read(data, out bool locked, out bool open, out int part);
         int ori = orientation - view.Rotation + (open ? 1 : 0); // FASTER???
@@ -229,8 +229,8 @@ public sealed class BlockDoor : Block
     public override void DrawPreview(MySpriteBatch sb, IntVec3 global, MapView view, Color tint, byte data, MaterialDef material, int variation = 0, int orientation = 0)
     {
         var token = Orientations[orientation];
-        sb.DrawBlock(Atlas.Texture, global, token, view, Color.Transparent, tint, Color.White, Vector4.One);
-        sb.DrawBlock(Atlas.Texture, global + IntVec3.UnitZ, token, view, Color.Transparent, tint, Color.White, Vector4.One);
-        sb.DrawBlock(Atlas.Texture, global + IntVec3.UnitZ, token, view, Color.Transparent, tint, Color.White, Vector4.One);
+        sb.DrawBlock(Atlas.Texture, global, token, view, Color.Transparent, tint, Vector4.One, Vector4.One);
+        sb.DrawBlock(Atlas.Texture, global + IntVec3.UnitZ, token, view, Color.Transparent, tint, Vector4.One, Vector4.One);
+        sb.DrawBlock(Atlas.Texture, global + IntVec3.UnitZ, token, view, Color.Transparent, tint, Vector4.One, Vector4.One);
     }
 }

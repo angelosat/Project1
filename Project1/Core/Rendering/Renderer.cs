@@ -175,7 +175,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
         sb.DrawBlock(Block.Atlas.Texture, screenBoundsVector4,
             texToken,
-            view.Zoom, Color.Transparent, tint, Color.White, Color.White, Vector4.One, Vector4.Zero, depth, null, global);
+            view.Zoom, Color.Transparent, tint, Color.White, Vector4.One, Vector4.One, Vector4.Zero, depth, null, global);
     }
     
     public bool DrawUnknown(Canvas canvas, MapView view, Chunk chunk, IntVec3Local local)
@@ -374,7 +374,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         //Color sun = new((suneast + 1) / 16f, (sunsouth + 1) / 16f, (suntop + 1) / 16f, (sunCenter + 1) / 16f);
         //Vector4 block = new((blockeast + 1) / 16f, (blocksouth + 1) / 16f, (blocktop + 1) / 16f, (blockCenter + 1) / 16f);// 1f);
 
-        var sun = new Color(suneast / 15f, sunsouth / 15f, suntop / 15f, sunCenter / 15f);
+        var sun = new Vector4(suneast / 15f, sunsouth / 15f, suntop / 15f, sunCenter / 15f);
         var block = new Vector4(blockeast / 15f, blocksouth / 15f, blocktop / 15f, blockCenter / 15f);// 1f);
 
         var light = new LightToken(global, sun, block);
@@ -1026,7 +1026,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         var c = color * .5f;
         var zoom = new Vector2(camera.Zoom);
         sb.Draw(Block.Atlas.Texture, screenLoc, Block.BlockHighlightBack.Rectangle, 0, Vector2.Zero, zoom,
-            Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);
+            Vector4.One, Vector4.One, c, Color.Transparent, SpriteEffects.None, cd);
 
         /// this code draw individual faces instead of the whole highlight
         //sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[-IntVec3.UnitX].Rectangle, 0, Vector2.Zero, zoom,
@@ -1038,7 +1038,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
 
 
         sb.Draw(Block.Atlas.Texture, screenLoc, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, zoom,
-            Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);
+            Vector4.One, Vector4.One, c, Color.Transparent, SpriteEffects.None, cd);
         sb.Flush(); // flush here because i might have to switch textures in an overriden tool draw call
     }
     public void DrawBlockMouseover(MySpriteBatch sb, InteractionTarget target, Color color)
@@ -1077,7 +1077,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         //              Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, global.Below().GetDrawDepth(map, this));
 
         sb.Draw(Block.Atlas.Texture, screenLoc, Block.FaceHighlights[target.Face].Rectangle, 0, Vector2.Zero, zoom,
-        Color.White, Color.White, c, Color.Transparent, SpriteEffects.None, cd);// (global + target.Face).GetDrawDepth(map, this));
+        Vector4.One, Vector4.One, c, Color.Transparent, SpriteEffects.None, cd);// (global + target.Face).GetDrawDepth(map, this));
 
         // this draws the front faces highlight
         //sb.Draw(Block.Atlas.Texture, screenLoc, Block.BlockHighlight.Rectangle, 0, Vector2.Zero, zoom,
@@ -1432,7 +1432,7 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         var fog = view.GetFogColorNew(parent.Cell.Z);
         var test = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
         var finalpos = new Vector2(test.X, test.Y) + (body.OriginGroundOffset * view.Zoom);
-        body.DrawTreeAnimationDeltas(parent, comp.Customization, comp.Animations.Values, this.SpriteBatch, finalpos, skyColor, blockColor, tint, fog, angle, zoom, rot, sprfx, 1f, depth);
+        body.DrawTreeAnimationDeltas(parent, comp.Customization, comp.Animations.Values, this.SpriteBatch, finalpos, skyColor.ToVector4(), blockColor.ToVector4(), tint, fog, angle, zoom, rot, sprfx, 1f, depth);
     }
     public void RenderEntityShadow(Entity entity, RenderContext ctx)
     {

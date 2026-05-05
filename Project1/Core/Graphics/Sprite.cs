@@ -351,7 +351,7 @@ namespace Project1.Core.Graphics
             foreach (var ol in this.Overlays.Values)
                 ol.Draw(sb, screenPos, color, rotation, origin, scale, sprFx, depth);
         }
-        public void Draw(MySpriteBatch sb, Vector2 screenPos, Color sky, Color block, Color tint, Color fog, float rotation, Vector2 origin, float scale, SpriteEffects sprFx, float depth)
+        public void Draw(MySpriteBatch sb, Vector2 screenPos, Vector4 sky, Vector4 block, Color tint, Color fog, float rotation, Vector2 origin, float scale, SpriteEffects sprFx, float depth)
         {
             var matcol = this.Material != null ? new Color(this.Material.Color.R, this.Material.Color.G, this.Material.Color.B, (byte)(this.Material.Type.Shininess * 255)) : new Color(1f,1f,1f,0f);
             var t = tint;
@@ -361,7 +361,7 @@ namespace Project1.Core.Graphics
             foreach (var ol in this.Overlays.Values)
                 ol.Draw(sb, screenPos, sky, block, tint, fog, rotation, origin, scale, sprFx, depth);
         }
-        public void Draw(MySpriteBatch sb, Vector2 screenPos, MaterialDef material, Color sky, Color block, Color tint, Color fog, float rotation, Vector2 origin, float scale, SpriteEffects sprFx, float depth)
+        public void Draw(MySpriteBatch sb, Vector2 screenPos, MaterialDef material, Vector4 sky, Vector4 block, Color tint, Color fog, float rotation, Vector2 origin, float scale, SpriteEffects sprFx, float depth)
         {
             if (material == null) // TEMPORARY UNTIL I REMOVE MATERIAL FROM SPRITE
                 material = this.Material;
@@ -372,10 +372,9 @@ namespace Project1.Core.Graphics
             foreach (var ol in this.Overlays.Values)
                 ol.Draw(sb, screenPos, sky, block, tint, fog, rotation, origin, scale, sprFx, depth);
         }
-        public void Draw(MySpriteBatch sb, CharacterColors overlayColors, Vector2 screenPos, MaterialDef material, Color sky, Color block, Color tint, Color fog, float rotation, Vector2 origin, float scale, SpriteEffects sprFx, float depth)
+        public void Draw(MySpriteBatch sb, CharacterColors overlayColors, Vector2 screenPos, MaterialDef material, Vector4 sky, Vector4 block, Color tint, Color fog, float rotation, Vector2 origin, float scale, SpriteEffects sprFx, float depth)
         {
-            if (material == null) // TEMPORARY UNTIL I REMOVE MATERIAL FROM SPRITE
-                material = this.Material;
+            material ??= this.Material;
             var matcol = material != null ? new Color(material.Color.R, material.Color.G, material.Color.B, (byte)(material.Shine * 255)) : new Color(1f, 1f, 1f, 0f);
             overlayColors.TryGetColor(this.OverlayName, ref matcol); 
             var t = tint;

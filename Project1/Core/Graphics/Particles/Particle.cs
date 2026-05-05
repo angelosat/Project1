@@ -46,6 +46,7 @@ public sealed class Particle
         map.GetLight(transformedGlobal, out byte skylight, out byte blocklight);
         var skyColor = map.GetAmbientColor() * ((skylight + 1) / 16f);
         skyColor.A = 255;
+        var skyColorr = skyColor.ToVector4();
         var blockColorVector = Vector4.Lerp(new Vector4(0, 0, 0, 1), Vector4.One, (blocklight) / 15f);
 
         var screenpos = view.GetScreenPositionFloat(transformedGlobal);
@@ -60,7 +61,7 @@ public sealed class Particle
         sb.Draw(
             this.Texture, screenpos, this.SourceRectangle,
             0, origin, finalscale,
-            skyColor, blockColorVector,
+            skyColorr, blockColorVector,
             finalcolor, Color.Transparent,
             SpriteEffects.None, depth);
     }

@@ -39,16 +39,16 @@ namespace Project1.Core.Blocks
             this.LoadVariations("stone5height19");
         }
 
-        public override void Draw(MySpriteBatch sb, Vector2 screenPos, Color sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
+        public override void Draw(MySpriteBatch sb, Vector2 screenPos, Vector4 sunlight, Vector4 blocklight, Color tint, float zoom, float depth, Cell cell)
         {
             base.Draw(sb, screenPos, sunlight, blocklight, cell.Material.Color.Multiply(tint), zoom, depth, cell);
         }
 
-        public override void Draw(MySpriteBatch sb, Rectangle screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+        public override void Draw(MySpriteBatch sb, Rectangle screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             base.Draw(sb, screenBounds, sunlight, blocklight, fog, cell.Material.Color.Multiply(tint), zoom, depth, cell);
         }
-        public override void Draw(MySpriteBatch sb, Vector4 screenBounds, Color sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
+        public override void Draw(MySpriteBatch sb, Vector4 screenBounds, Vector4 sunlight, Vector4 blocklight, Color fog, Color tint, float zoom, float depth, Cell cell)
         {
             base.Draw(sb, screenBounds, sunlight, blocklight, fog, cell.Material.Color.Multiply(tint), zoom, depth, cell);
         }

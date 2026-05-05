@@ -95,7 +95,7 @@ sealed class EntityTextManager : Control
             var rt = StackSizes[o];
             //var depth = camera.GetDrawDepth(o);
             var depth = view.GetDrawDepth(o.Global);
-            sb.Draw(rt, Vector2.Zero, rt.Bounds, 0, Vector2.Zero, Vector2.One, Color.White, Color.White, Color.White, Color.White, Color.Transparent, SpriteEffects.None, depth); 
+            sb.Draw(rt, Vector2.Zero, rt.Bounds, 0, Vector2.Zero, Vector2.One, Vector4.One, Vector4.One, Color.White, Color.White, Color.Transparent, SpriteEffects.None, depth); 
         }
     }
 }

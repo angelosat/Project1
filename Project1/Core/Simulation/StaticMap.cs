@@ -140,8 +140,9 @@ public sealed class StaticMap : MapBase, ITooltippable
         IconOffset = (float)Math.Sin(this.Net.CurrentTick / Ticks.PerSecond);
         this.Sunlight = 1 - (float)this.GetDayTimeNormal();
         this.TryPerformQueuedRandomBlockUpdates();
-        this.CachedAmbientColor = this.UpdateAmbientColor();
-
+        //this.CachedAmbientColor = this.UpdateAmbientColor();
+        //this.Ambient = this.CachedAmbientColor.ToVector4();
+        this.CalculateAmbientColor();
         foreach (var chunk in this.ActiveChunks.Values.ToList())
             chunk.Validate();
 
@@ -828,6 +829,22 @@ public sealed class StaticMap : MapBase, ITooltippable
     public override Color GetAmbientColor()
     {
         return this.CachedAmbientColor;
+    }
+    void CalculateAmbientColor()
+    {
+        var col = this.UpdateAmbientColor();
+        this.CachedAmbientColor = col;
+        this.Ambient = col.ToVector4();
+        this.RebuildAmbientLut();
+    }
+    public void RebuildAmbientLut()
+    {
+        for (int i = 0; i < 16; i++)
+        {
+            var col = this.Ambient * LightLutFloat[i];
+            col.W = 1f;
+            _ambientLightLut[i] = col;
+        }
     }
     private Color UpdateAmbientColor()
     {

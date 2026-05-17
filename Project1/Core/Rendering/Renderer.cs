@@ -40,6 +40,12 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
             Ingame.MainViewportMap.InvalidateChunks();
         }
     }
+    static readonly Vector4[] LightLut = [.. Enumerable.Range(0, 16)
+        .Select(i =>
+        {
+            float v = i / 15f;
+            return new Vector4(v, v, v, 1f);
+        })];
     bool _drawTopSlice = true;
     public bool DrawTopSlice
     {
@@ -1412,27 +1418,27 @@ public sealed class Renderer : IDrawContext, IInputEventHandler
         var comp = entity.SpriteComp;
         if (comp.Hidden)
             return;
-        var parent = entity;
-        var global = parent.Transform.Global;
-        var map = parent.Map;
+        var global = entity.Transform.Global;
+        var map = entity.Map;
         var tint = comp.Tint;
         var angle = comp._Angle;
         var zoom = view.Zoom;
         var rot = view.Rotation;
+        var cell = entity.Cell;
 
         var depth = view.GetDrawDepth(global);
         var body = comp.Body;
-        var direction = parent.Transform.Direction;
+        var direction = entity.Transform.Direction;
         var finalDir = view.Rotate(direction);
         var sprfx = (finalDir.X - finalDir.Y) < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-        parent.Map.GetLight(parent.Global.RoundXY(), out byte skylight, out byte blocklight);
-        var skyColor = map.GetAmbientColor() * ((skylight + 1) / 16f); //((skylight) / 15f);
-        skyColor.A = 255;
-        var blockColor = Color.Lerp(Color.Black, Color.White, blocklight / 15f);
-        var fog = view.GetFogColorNew(parent.Cell.Z);
-        var test = view.GetScreenBoundsVector4(global.X, global.Y, global.Z, new Rectangle(0, 0, 0, 0), Vector2.Zero);
+        //map.GetLight(entity.Global.RoundXY(), out byte skylight, out byte blocklight);
+        map.GetLight(cell, out byte skylight, out byte blocklight);
+        var skyColor = map.GetAmbientLight(skylight);
+        var blockColor = LightLut[blocklight];
+        var fog = view.GetFogColorNew(cell.Z);
+        var test = view.GetScreenPositionFloat(global);
         var finalpos = new Vector2(test.X, test.Y) + (body.OriginGroundOffset * view.Zoom);
-        body.DrawTreeAnimationDeltas(parent, comp.Customization, comp.Animations.Values, this.SpriteBatch, finalpos, skyColor.ToVector4(), blockColor.ToVector4(), tint, fog, angle, zoom, rot, sprfx, 1f, depth);
+        body.DrawTreeAnimationDeltas(entity, comp.Customization, comp.Animations.Values, this.SpriteBatch, finalpos, skyColor, blockColor, tint, fog, angle, zoom, rot, sprfx, 1f, depth);
     }
     public void RenderEntityShadow(Entity entity, RenderContext ctx)
     {

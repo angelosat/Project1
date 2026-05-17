@@ -1073,7 +1073,25 @@ public abstract class MapBase : Inspectable
     public IEnumerable<Entity> Haulables => this.Entities.Where(e => e.Def.IsHaulable);
 
     public IEnumerable<Entity> Entities => this.ActiveChunks.Values.SelectMany(c => c.Entities);
-   
+  
+    public Vector4 Ambient { get; protected set; }
+
+    protected Vector4[] _ambientLightLut = new Vector4[16];
+    static protected readonly Vector4[] LightLutVec4 = [.. Enumerable.Range(0, 16)
+        .Select(i =>
+        {
+            float v = i / 15f;
+            return new Vector4(v, v, v, 1f);
+        })];
+    static protected readonly float[] LightLutFloat = [.. Enumerable.Range(0, 16).Select(i => (i + 1) / 16f)];
+    public Vector4 GetAmbientLight(byte skylight)
+    {
+        return _ambientLightLut[skylight];
+        var col = this.Ambient * ((skylight + 1) / 16f);
+        col.W = 1;
+        return col;
+    }
+
     internal bool IsVisible(IntVec3 global)
     {
         if (global.Z == MaxHeight - 1)

@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Systems.Materials;
 
@@ -47,6 +48,8 @@ public class MaterialSystem
         => RefinemenetsByTier[tier][refinement];
     public static IReadOnlySet<MaterialDef> GetMaterialsByType(MaterialTypeDef typeDef)
         => typeDef is null ? [] : MaterialsByType[typeDef];
+    public static IEnumerable<MaterialDef> TryGetMaterialsByType(MaterialTypeDef typeDef)
+        => MaterialsByType.TryGetValue(typeDef, out var list) ? list : [];
     static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
     {
         return Create(profile, material, [], stackSize);

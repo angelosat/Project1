@@ -19,10 +19,10 @@ namespace Project1.Core.UI
 
             var items = GameObject.Templates;
 
-            var list = new ListBoxNoScroll<int, Label>(id =>
+            var list = new ListBoxNoScroll<int, LabelNew>(id =>
             {
                 var obj = items[id];
-                return new Label(obj.Name, () => ScreenManager.CurrentScreen.ToolManager.ActiveTool = new ObjectSpawnToolFromTemplate(obj, id));
+                return new LabelNew(obj.Name, () => ScreenManager.CurrentScreen.ToolManager.ActiveTool = new ObjectSpawnToolFromTemplate(obj, id));
             });
             list.AddItems(items.Keys);
             var box = new ScrollableBoxNewNewNew(list, 200, 400, ScrollModes.Vertical) { SmallStep = UIManager.DefaultLabelHeight + list.Spacing };

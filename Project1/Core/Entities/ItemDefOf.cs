@@ -11,6 +11,7 @@ using Project1.Core.Legacy.Storage;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Equipment;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Quality;
@@ -128,6 +129,17 @@ static class ItemDefOf
         DefaultMaterial = MaterialDefOf.Iron,
         Comps = [typeof(OwnershipComponent)],
         CompDefs = [EntityCompDefOf.Ownership],
+        Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
+    };
+    static public readonly ItemDef Gear = new ItemDef("Gear", typeof(Entity))
+    {
+        BaseValue = 5,
+        QualityLevels = true,
+        Category = ItemCategoryDefOf.Wearables,
+        DefaultSprite = ItemContent.HelmetFull,
+        MadeFromMaterials = true,
+        Comps = [typeof(OwnershipComponent), typeof(EquipComponent)],
+        CompDefs = [EntityCompDefOf.Ownership, EntityCompDefOf.Equip],
         Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
     };
 

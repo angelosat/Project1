@@ -22,6 +22,7 @@ using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Consumables.Scrolls;
+using Project1.Core.Systems.Equipment;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Ownership;
@@ -116,6 +117,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
         AddTemplates(PotionSystem.GenerateTemplates());
         AddTemplates(ScrollSystem.GenerateTemplates());
+        AddTemplates(EquipmentSystem.GenerateTemplates());
 
         AddTemplate(ItemDefOf.Coins.Create());
     }

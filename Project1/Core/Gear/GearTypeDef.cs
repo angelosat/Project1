@@ -1,6 +1,5 @@
-﻿namespace Project1.Core.Gear
+﻿namespace Project1.Core.Gear;
+
+public sealed class GearTypeDef(string name) : Def(name)
 {
-    public sealed class GearTypeDef(string name) : Def(name)
-    {
-    }
 }

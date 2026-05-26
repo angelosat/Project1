@@ -58,7 +58,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Blood = new("Blood", typeof(BloodComponent));
         public static readonly EntityCompDef Bomb = new("Bomb", typeof(BombComponent));
         public static readonly EntityCompDef Block = new("Block", typeof(BlockingComponent));
-        public static readonly EntityCompDef Equip = new("Equip", typeof(EquipComponent));
+        public static readonly EntityCompDef Equip = new("Equip", typeof(EquipmentComp));
         public static readonly EntityCompDef Particles = new("Particles", typeof(ParticlesComponent));
         public static readonly EntityCompDef Tree = new("Tree", typeof(TreeComponent));
         public static readonly EntityCompDef Relationships = new("Relationships", typeof(RelationshipsComp));

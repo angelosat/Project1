@@ -2,11 +2,7 @@
 using Project1.Core.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime;
-using System.Text;
 
 namespace Project1.Core.Systems.Equipment;
 
@@ -16,6 +12,11 @@ internal static class EquipmentSystem
     {
         var gear = ItemDefOf.Gear.Create(profile: eqType);
         gear.Name = $"{material.LabelReadable} {eqType.LabelReadable}";
+        //var comp = gear.GetComponent<EquipmentComp>();
+        //var tier = material.Tier;
+        //comp.Armor = (int)tier;
+        gear.Body.Material = material;
+        gear.ResolveReferences();
         return gear;
     }
     static public IEnumerable<Entity> GenerateTemplates()
@@ -24,7 +25,13 @@ internal static class EquipmentSystem
         foreach (var slot in gearSlots)
             foreach (var mat in MaterialSystem.TryGetMaterialsByType(slot.MaterialType))
                 yield return Create(slot, mat);
-        //return gearSlots.Select(Create);
+    }
+
+    static public void Validate(EquipmentComp comp)
+    {
+        var material = comp.Owner.PrimaryMaterial;
+        var tier = material.Tier;
+        comp.Armor = (int)tier;
     }
 }
 

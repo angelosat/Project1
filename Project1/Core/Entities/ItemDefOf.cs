@@ -138,7 +138,7 @@ static class ItemDefOf
         Category = ItemCategoryDefOf.Wearables,
         DefaultSprite = ItemContent.HelmetFull,
         MadeFromMaterials = true,
-        Comps = [typeof(OwnershipComponent), typeof(EquipComponent)],
+        Comps = [typeof(OwnershipComponent), typeof(EquipmentComp)],
         CompDefs = [EntityCompDefOf.Ownership, EntityCompDefOf.Equip],
         Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
     };

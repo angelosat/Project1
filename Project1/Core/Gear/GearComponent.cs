@@ -145,6 +145,9 @@ public sealed class GearComponent : EntityComp
             this.ArmorTotal += i.Def.ApparelProperties?.ArmorValue ?? 0;
         }
     }
+
+ 
+
     public new class Spec : Spec<GearComponent>
     {
         public GearTypeDef[] Slots;

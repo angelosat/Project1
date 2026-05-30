@@ -1,13 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
+using Project1.Core.Gear;
 using Project1.Core.Resources;
-using Project1.Core.Systems.Equipment;
-using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 
-namespace Project1.Core.Gear;
+namespace Project1.Core.Systems.Equipment;
 
 class EquipmentComp : EntityComp
 {
@@ -53,9 +52,6 @@ class EquipmentComp : EntityComp
     
     internal override void Validate()
     {
-        //var material = this.Owner.PrimaryMaterial;
-        //var tier = material.Tier;
-        //this.Armor = (int)tier;
         EquipmentSystem.Validate(this);
     }
 

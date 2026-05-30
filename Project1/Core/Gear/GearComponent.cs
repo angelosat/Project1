@@ -73,13 +73,15 @@ public sealed class GearComponent : EntityComp
     {
         compTag.TryGetTag("Equipment", tag => this.Equipment.Load(tag));
     }
-    public Entity GetGear(GearTypeDef type) => this.Gear.GetSlotContent(type);
+    public Entity? GetGear(GearTypeDef slot) 
+        => this.Gear.GetSlotContent(slot);
     public GameObjectSlot GetSlot(GearTypeDef type) => this.Gear.GetSlot(type);
     public GameObjectSlot GetSlot(GameObject item)
     {
         var slot = this.Gear.GetSlot(item);
         return slot;
     }
+
     internal override IEnumerable<GameObjectSlot> GetSlots()
     {
         foreach (var slot in this.Gear.AllSlots)

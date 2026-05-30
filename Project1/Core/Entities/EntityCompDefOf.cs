@@ -16,6 +16,7 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Abilities;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Equipment;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.MentalState;
 using Project1.Core.Systems.Plants;

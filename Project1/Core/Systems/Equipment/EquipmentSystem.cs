@@ -1,7 +1,9 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Equipment;
@@ -32,6 +34,13 @@ internal static class EquipmentSystem
         var material = comp.Owner.PrimaryMaterial;
         var tier = material.Tier;
         comp.Armor = (int)tier;
+    }
+
+    internal static int GetArmor(Actor actor, GearTypeDef slot)
+    {
+        var actorGear = actor.GetComponent<GearComponent>();
+        var currentSlotGear = actorGear.GetGear(slot);
+        return currentSlotGear?.GetComponent<EquipmentComp>().Armor ?? 0;
     }
 }
 

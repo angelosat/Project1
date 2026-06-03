@@ -44,7 +44,7 @@ internal static class ToolSystem
     public static IEnumerable<CraftingRules> GetRules() => Rules.Values;
     static public Entity Create(ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
     {
-        var item = ItemDefOf.Tool.Create();//.Initialize();
+        var item = ItemDefOf.Tool.Create();
         item.Profile = profile;
         item.ToolComponent.ToolDef = profile;
 
@@ -83,12 +83,10 @@ internal static class ToolSystem
         var comp = item.GetComponent<UnfinishedItemComp>();
         comp.Initialize(author, order, [handleMaterial ,headMaterial]);
 
+        // temp debugging
         var assembly = item.Resources.ViewOld(ResourceDefOf.Assembly);
         assembly.Value = 0;
         assembly.Max = 110;
-
-        //item.Resources.SetValue(ResourceDefOf.Assembly, 0);
-        //item.Resources.SetMax(ResourceDefOf.Assembly, 110);
 
         item.Initialize();
         item.SetName($"{profile.LabelReadable} (unfinished)");
@@ -122,14 +120,6 @@ internal static class ToolSystem
 
     internal static Entity CreateRandom(Random rand, Tier tier)
     {
-        //var refinemenets = MaterialSystem.ByTier(tier);
-        ////var handleRef = Rules[BoneDefOf.ToolHandle].Types.SelectRandom(rand);
-        //var handleRef = refinemenets.SelectRandom(rand);
-        //var handleMat = MaterialSystem.GetMaterialsByType(tier, handleRef);
-
-        ////var edgeRef = Rules[BoneDefOf.ToolHead].Types.SelectRandom(rand);
-        //var edgeRef = refinemenets.SelectRandom(rand);
-        //var edgeMat = MaterialSystem.ByTierAndType(tier, edgeRef);
         var mats = MaterialSystem.ByTier(tier);
 
         return Create(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));

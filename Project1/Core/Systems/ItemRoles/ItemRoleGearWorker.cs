@@ -19,7 +19,7 @@ sealed class ItemRoleGearWorker : ItemRoleWorker
     }
 
     public override IEnumerable<Def> GetValidTargetDefs()
-        => Def.Get<GearTypeDef>();
+        => Def.Get<GearSlotDef>();
     //public override IEnumerable<ItemRoleKey> GenerateKeys()
     //{
     //    yield return new ItemRoleKey_Gear();

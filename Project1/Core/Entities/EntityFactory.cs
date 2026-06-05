@@ -21,7 +21,7 @@ namespace Project1.Core.Entities
                 MaterialRefinementDef => MaterialSystem.Create(req),
                 ActorDnaDef => ActorSystem.Create(req),
                 PlantSpeciesDef => PlantSystem.Create(req),
-                ToolProfileDef => ToolSystem.Create(req),
+                GearProfileDef => ToolSystem.Create(req),
                 ConsumableDef => ConsumableSystem.Create(req),
                 _ => throw new InvalidOperationException($"No system claims {req.Context.GetType().Name}"),
             };

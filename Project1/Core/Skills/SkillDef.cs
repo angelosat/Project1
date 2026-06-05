@@ -13,7 +13,7 @@ namespace Project1.Core.Skills
         public Icon Icon;
         public Func<Interaction> WorkFactory;
         public List<StatDef> AffectedStats = [];
-        public ToolProfileDef RelevantTool;
+        public GearProfileDef RelevantTool;
         public ToolUseDef RelevantWorkType;
     }
 }

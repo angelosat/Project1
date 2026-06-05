@@ -18,7 +18,7 @@ public sealed class ActorDnaDef(string name) : Def(name)
     public SkillDef[] Skills;
     public TraitDef[] Traits;
     public ResourceDef[] Resources;
-    public GearTypeDef[] Gear;
+    public GearSlotDef[] Gear;
     public MaterialTypeDef[] Diet;
     public Behavior Behavior;
 

@@ -30,7 +30,7 @@ namespace Project1.Core.Systems.Crafting
         static public readonly WorkstationCapabilityDef ToolMaking = new("ToolMaking", typeof(WorkstationCapability_ToolMaking), DutyDefOf.Craftsman)
         {
             OrderType = typeof(AddOrderRequest),
-            Output = typeof(ToolProfileDef),
+            Output = typeof(GearProfileDef),
             Plan = PlanDefOf.Crafting
         };
         static public readonly WorkstationCapabilityDef Repairing = new("Repairing", typeof(WorkstationCapability_Repairing), DutyDefOf.Craftsman)

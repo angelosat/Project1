@@ -2,9 +2,9 @@
 {
     public class ApparelDef
     {
-        public GearTypeDef GearType;
+        public GearSlotDef GearType;
         public int ArmorValue;
-        public ApparelDef(GearTypeDef gearType, int armorValue)
+        public ApparelDef(GearSlotDef gearType, int armorValue)
         {
             this.GearType = gearType;
             this.ArmorValue = armorValue;

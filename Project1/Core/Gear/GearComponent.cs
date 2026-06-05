@@ -18,7 +18,7 @@ public sealed class GearComponent : EntityComp
     public Container Equipment = new() { Name = "Equipment" };
     public float ArmorTotal;
     public override string Name { get; } = "Gear";
-    public Entity this[GearTypeDef gearDef] => this.Gear.GetSlot(gearDef).Object as Entity;
+    public Entity this[GearSlotDef gearDef] => this.Gear.GetSlot(gearDef).Object as Entity;
     public override void OnObjectLoaded(GameObject parent)
     {
         base.OnObjectLoaded(parent);
@@ -73,9 +73,9 @@ public sealed class GearComponent : EntityComp
     {
         compTag.TryGetTag("Equipment", tag => this.Equipment.Load(tag));
     }
-    public Entity? GetGear(GearTypeDef slot) 
+    public Entity? GetGear(GearSlotDef slot) 
         => this.Gear.GetSlotContent(slot);
-    public GameObjectSlot GetSlot(GearTypeDef type) => this.Gear.GetSlot(type);
+    public GameObjectSlot GetSlot(GearSlotDef type) => this.Gear.GetSlot(type);
     public GameObjectSlot GetSlot(GameObject item)
     {
         var slot = this.Gear.GetSlot(item);
@@ -104,7 +104,7 @@ public sealed class GearComponent : EntityComp
         this.RefreshStats();
         this.Owner.World.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
     }
-    internal void Unequip(GearTypeDef slotType)
+    internal void Unequip(GearSlotDef slotType)
     {
         var actor = this.Owner as Actor;
         var slot = this.GetSlot(slotType);
@@ -152,8 +152,8 @@ public sealed class GearComponent : EntityComp
 
     public new class Spec : Spec<GearComponent>
     {
-        public GearTypeDef[] Slots;
-        public Spec(params GearTypeDef[] defs)
+        public GearSlotDef[] Slots;
+        public Spec(params GearSlotDef[] defs)
         {
             this.Slots = defs;
         }

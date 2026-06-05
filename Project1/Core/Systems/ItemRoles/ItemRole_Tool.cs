@@ -32,7 +32,7 @@ sealed class ItemRole_Tool : ItemRoleWorker
     {
         if (item.Def != ItemDefOf.Tool)
             return -1;
-        if (item.Profile is not ToolProfileDef toolProfile)
+        if (item.Profile is not GearProfileDef toolProfile)
             return -1;
         if (toolProfile.ToolUse != role.Def)
             return -1;

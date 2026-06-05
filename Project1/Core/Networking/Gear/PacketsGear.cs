@@ -23,7 +23,7 @@ namespace Project1.Core.Gear
                 .Write(actor.RefId)
                 .Write(item.RefId);
         }
-        static internal void SendUnequip(Actor actor, GearTypeDef slot)
+        static internal void SendUnequip(Actor actor, GearSlotDef slot)
         {
             var server = actor.Net as Server;
             server.BeginPacket(_packetTypeIdUnequip)
@@ -43,7 +43,7 @@ namespace Project1.Core.Gear
             var client = net as Client;
             var r = packet.PacketReader;
             var actor = net.World.Get(r.ReadEntityRefId()) as Actor;
-            var slot = r.ReadDef<GearTypeDef>();
+            var slot = r.ReadDef<GearSlotDef>();
             actor.Gear.Unequip(slot);
         }
     }

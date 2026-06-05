@@ -93,7 +93,7 @@ internal static class IngredientGroupBuilder
         List<(ItemDef item, Dictionary<Def, IEnumerable<MaterialDef>> mappings)> categories =
         [
             (ItemDefOf.Ingredient, Def.Get<MaterialRefinementDef>().ToDictionary(r=>r as Def, r => Def.Get<MaterialDef>().Where(m => m.Type == r.MaterialType))),
-            (ItemDefOf.Tool, Def.Get<ToolProfileDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>())),
+            (ItemDefOf.Tool, Def.Get<GearProfileDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>())),
             (ItemDefOf.Seeds, Def.Get<PlantSpeciesDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>())),
             (ItemDefOf.Consumable, Def.Get<ConsumableDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>()))
         ];
@@ -137,7 +137,7 @@ internal static class IngredientGroupBuilder
         List<(ItemDef item, Dictionary<Def, IEnumerable<MaterialDef>> mappings)> categories =
         [
             (ItemDefOf.Ingredient, Def.Get<MaterialRefinementDef>().ToDictionary(r=>r as Def, r => Def.Get<MaterialDef>().Where(m => m.Type == r.MaterialType))),
-            (ItemDefOf.Tool, Def.Get<ToolProfileDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>())),
+            (ItemDefOf.Tool, Def.Get<GearProfileDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>())),
             (ItemDefOf.Seeds, Def.Get<PlantSpeciesDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>())),
             (ItemDefOf.Consumable, Def.Get<ConsumableDef>().ToDictionary(r=>r as Def, r=>Enumerable.Empty<MaterialDef>()))
         ];
@@ -181,7 +181,7 @@ internal static class IngredientGroupBuilder
         List<(ItemDef item, IEnumerable<Def> profiles, IEnumerable<MaterialDef> materials)> categories =
         [
             (ItemDefOf.Ingredient, Def.Get<MaterialRefinementDef>(), Def.Get<MaterialDef>()),
-            (ItemDefOf.Tool, Def.Get<ToolProfileDef>(), Enumerable.Empty<MaterialDef>()),
+            (ItemDefOf.Tool, Def.Get<GearProfileDef>(), Enumerable.Empty<MaterialDef>()),
             (ItemDefOf.Seeds, Def.Get<PlantSpeciesDef>(), Enumerable.Empty<MaterialDef>()),
         ];
         IngredientGroup group = new();

@@ -29,7 +29,7 @@ sealed class BlockShelfComp_Gui : SelectionBoundControl
     BlockShelfComp? Comp;
     static BlockShelfComp_Gui()
     {
-        foreach (var def in Def.Get<ToolProfileDef>())
+        foreach (var def in Def.Get<GearProfileDef>())
             ValidProfiles.Add(def);
         foreach (var def in Def.Get<ConsumableDef>())
             ValidProfiles.Add(def);

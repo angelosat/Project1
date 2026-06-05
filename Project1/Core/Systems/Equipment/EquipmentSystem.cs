@@ -36,7 +36,7 @@ internal static class EquipmentSystem
         comp.Armor = (int)tier;
     }
 
-    internal static int GetArmor(Actor actor, GearTypeDef slot)
+    internal static int GetArmor(Actor actor, GearSlotDef slot)
     {
         var actorGear = actor.GetComponent<GearComponent>();
         var currentSlotGear = actorGear.GetGear(slot);
@@ -44,23 +44,23 @@ internal static class EquipmentSystem
     }
 }
 
-public sealed class EquipmentDef(string name, GearTypeDef slot, MaterialTypeDef materialType) : Def(name)
+public sealed class EquipmentDef(string name, GearSlotDef slot, MaterialTypeDef materialType) : Def(name)
 {
-    public GearTypeDef Slot = slot;
+    public GearSlotDef Slot = slot;
     public MaterialTypeDef MaterialType = materialType;
 }
 
 [EnsureStaticCtorCall]
 public static class EquipmentDefOf
 {
-    public static readonly EquipmentDef Pants = new("Pants", GearTypeDefOf.Legs, MaterialTypeDefOf.Skin);
-    public static readonly EquipmentDef Leggings = new("Leggings", GearTypeDefOf.Legs, MaterialTypeDefOf.Metal);
-    public static readonly EquipmentDef Hat = new("Hat", GearTypeDefOf.Head, MaterialTypeDefOf.Skin);
-    public static readonly EquipmentDef Helmet = new("Helmet", GearTypeDefOf.Head, MaterialTypeDefOf.Metal);
-    public static readonly EquipmentDef Shoes = new("Shoes", GearTypeDefOf.Feet, MaterialTypeDefOf.Skin); 
-    public static readonly EquipmentDef Boots = new("Boots", GearTypeDefOf.Feet, MaterialTypeDefOf.Metal);
-    public static readonly EquipmentDef Shirt = new("Shirt", GearTypeDefOf.Chest, MaterialTypeDefOf.Skin);
-    public static readonly EquipmentDef Chestguard = new("Chestguard", GearTypeDefOf.Chest, MaterialTypeDefOf.Metal);
+    public static readonly EquipmentDef Pants = new("Pants", GearSlotDefOf.Legs, MaterialTypeDefOf.Skin);
+    public static readonly EquipmentDef Leggings = new("Leggings", GearSlotDefOf.Legs, MaterialTypeDefOf.Metal);
+    public static readonly EquipmentDef Hat = new("Hat", GearSlotDefOf.Head, MaterialTypeDefOf.Skin);
+    public static readonly EquipmentDef Helmet = new("Helmet", GearSlotDefOf.Head, MaterialTypeDefOf.Metal);
+    public static readonly EquipmentDef Shoes = new("Shoes", GearSlotDefOf.Feet, MaterialTypeDefOf.Skin); 
+    public static readonly EquipmentDef Boots = new("Boots", GearSlotDefOf.Feet, MaterialTypeDefOf.Metal);
+    public static readonly EquipmentDef Shirt = new("Shirt", GearSlotDefOf.Chest, MaterialTypeDefOf.Skin);
+    public static readonly EquipmentDef Chestguard = new("Chestguard", GearSlotDefOf.Chest, MaterialTypeDefOf.Metal);
 
     static EquipmentDefOf()
     {

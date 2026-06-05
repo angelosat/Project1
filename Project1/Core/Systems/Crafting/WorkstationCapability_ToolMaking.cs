@@ -18,7 +18,7 @@ public sealed class WorkstationCapability_ToolMaking : WorkstationCapabilityWork
 
     public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
     {
-        return Def.Get<ToolProfileDef>()
+        return Def.Get<GearProfileDef>()
             .Select(def => new AddOrderRequest(this.CapabilityDef, def)
                 .AddCondition(new CraftingOrderModuleReq(2)));
     }

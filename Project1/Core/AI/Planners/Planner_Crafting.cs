@@ -270,7 +270,7 @@ sealed class Planner_Crafting : Planner
         if (actor.Hauled is Entity hauled && isRepairable(hauled))
             return new Plan(PlanDefOf.GoPlace, new InteractionTarget(map, benchCell.Above)) { TargetB = new InteractionTarget(workstation.Parent) };
 
-        if (actor.Gear[GearTypeDefOf.Mainhand] is Entity repairableGear && isRepairable(repairableGear))
+        if (actor.Gear[GearSlotDefOf.Mainhand] is Entity repairableGear && isRepairable(repairableGear))
             return new Plan(PlanDefOf.Unequip, repairableGear);
 
         if (actor.Inventory.Contents.FirstOrDefault(isRepairable) is Entity repairableInvItem)

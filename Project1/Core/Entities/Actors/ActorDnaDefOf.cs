@@ -46,13 +46,13 @@ public class ActorDnaDefOf
             AlchemyDefOf.Skill
             ],
         Gear = [
-            GearTypeDefOf.Mainhand,
-            GearTypeDefOf.Offhand,
-            GearTypeDefOf.Head,
-            GearTypeDefOf.Chest,
-            GearTypeDefOf.Feet,
-            GearTypeDefOf.Hands,
-            GearTypeDefOf.Legs ],
+            GearSlotDefOf.Mainhand,
+            GearSlotDefOf.Offhand,
+            GearSlotDefOf.Head,
+            GearSlotDefOf.Chest,
+            GearSlotDefOf.Feet,
+            GearSlotDefOf.Hands,
+            GearSlotDefOf.Legs ],
         Traits = [
             TraitDefOf.Focus,
             TraitDefOf.Temperament,

@@ -34,7 +34,7 @@ public sealed class ItemDef : Def
     public ApparelDef ApparelProperties;
     public CraftingProperties CraftingProperties;
     public RecipeProperties RecipeProperties;
-    public GearTypeDef GearType;
+    public GearSlotDef GearType;
     public Func<ItemDef, GameObject> Randomizer;
     public bool QualityLevels;
     internal IEnumerable<IItemDefVariator> StorageFilterVariations;

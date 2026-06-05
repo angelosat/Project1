@@ -57,7 +57,7 @@ public sealed class Actor : Entity
     public Trait this[TraitDef trait] => this.GetTrait(trait);
 
     [InspectorHidden]
-    public Entity this[GearTypeDef slot] => this.GetEquipmentSlot(slot);
+    public Entity this[GearSlotDef slot] => this.GetEquipmentSlot(slot);
 
 
     public MoodComp Mood => field ??= this.GetComponent<MoodComp>();
@@ -416,7 +416,7 @@ public sealed class Actor : Entity
         return this.GetPossesions().Contains(item);
     }
 
-    internal GearTypeDef[] GetGearTypes()
+    internal GearSlotDef[] GetGearTypes()
     {
         var profile = this.Profile as ActorDnaDef;
         return profile.Gear;
@@ -425,7 +425,7 @@ public sealed class Actor : Entity
     {
         return this.GetComponent<GearComponent>().Equipment.Slots.Where(sl => sl.Object != null).Select(sl => sl.Object as Entity).ToArray();
     }
-    internal Entity GetEquipmentSlot(GearTypeDef type)
+    internal Entity GetEquipmentSlot(GearSlotDef type)
     {
         return this.Gear.GetSlot(type).Object as Entity;
     }

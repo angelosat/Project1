@@ -1,7 +1,10 @@
-﻿using Project1.Core.Assets;
+﻿using Project1.Core.Animations;
+using Project1.Core.Assets;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Gear;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -10,9 +13,9 @@ using System.Linq;
 namespace Project1.Core.Systems.Tools;
 
 [EnsureStaticCtorCall]
-static class ToolProfileDefOf
+static class GearProfileDefOf
 {
-    public static readonly ToolProfileDef Shovel = new("Shovel")
+    public static readonly GearProfileDef Shovel = new("Shovel", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool)
     {
         Description = "Used to dig out grainy material like soil dirt and sand.",
         SpriteHandle = ItemContent.ShovelHandle,
@@ -20,10 +23,14 @@ static class ToolProfileDefOf
         ToolUse = ToolUseDefOf.Digging,
         Damage = DamageDefOf.Digging,
         Skill = SkillDefOf.Digging,
-        AssociatedJobs = new() { DutyDefOf.Digger }
+        BoneSprites = 
+        { 
+            { BoneDefOf.ToolHandle, ItemContent.ShovelHandle}, 
+            { BoneDefOf.ToolHead, ItemContent.ShovelHead } 
+        }
     };
 
-    public static readonly ToolProfileDef Hammer = new("Hammer")
+    public static readonly GearProfileDef Hammer = new("Hammer", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool)
     {
         Description = "Used for building.",
         SpriteHandle = ItemContent.HammerHandle,
@@ -31,9 +38,13 @@ static class ToolProfileDefOf
         ToolUse = ToolUseDefOf.Building,
         Damage = DamageDefOf.Blunt,
         Skill = SkillDefOf.Construction,
-        AssociatedJobs = new() { DutyDefOf.Builder }
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.HammerHandle},
+            { BoneDefOf.ToolHead, ItemContent.HammerHead }
+        }
     };
-    public static readonly ToolProfileDef Pickaxe = new("Pickaxe")
+    public static readonly GearProfileDef Pickaxe = new("Pickaxe", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool)
     {
         Description = "Used for mining.",
         SpriteHandle = ItemContent.PickaxeHandle,
@@ -41,9 +52,13 @@ static class ToolProfileDefOf
         ToolUse = ToolUseDefOf.Mining,
         Damage = DamageDefOf.Mining,
         Skill = SkillDefOf.Mining,
-        AssociatedJobs = new() { DutyDefOf.Miner }
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.PickaxeHandle},
+            { BoneDefOf.ToolHead, ItemContent.PickaxeHead }
+        }
     };
-    public static readonly ToolProfileDef Handsaw = new("Handsaw")
+    public static readonly GearProfileDef Handsaw = new("Handsaw", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool)
     {
         Description = "Used for carpentry.",
         SpriteHandle = ItemContent.HandsawHandle,
@@ -51,9 +66,13 @@ static class ToolProfileDefOf
         ToolUse = ToolUseDefOf.Carpentry,
         Damage = DamageDefOf.Sawing,
         Skill = SkillDefOf.Carpentry,
-        AssociatedJobs = new() { DutyDefOf.Carpenter }
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.HandsawHandle},
+            { BoneDefOf.ToolHead, ItemContent.HandsawHead }
+        }
     };
-    public static readonly ToolProfileDef Hoe = new("Hoe")
+    public static readonly GearProfileDef Hoe = new("Hoe", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool)
     {
         Description = "Used to prepare soil for planting by converting it into farmland.",
         SpriteHandle = ItemContent.HoeHandle,
@@ -61,10 +80,14 @@ static class ToolProfileDefOf
         ToolUse = ToolUseDefOf.Argiculture,
         Damage = DamageDefOf.Tilling,
         Skill = SkillDefOf.Argiculture,
-        AssociatedJobs = new() { DutyDefOf.Farmer }
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.HoeHandle},
+            { BoneDefOf.ToolHead, ItemContent.HoeHead }
+        }
     };
 
-    public static readonly ToolProfileDef Axe = new("Axe")
+    public static readonly GearProfileDef Axe = new("Axe", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool)
     {
         Description = "Chops down trees.",
         SpriteHandle = ItemContent.AxeHandle,
@@ -72,7 +95,19 @@ static class ToolProfileDefOf
         ToolUse = ToolUseDefOf.Chopping,
         Damage = DamageDefOf.Chopping,
         Skill = SkillDefOf.Plantcutting,
-        AssociatedJobs = new() { DutyDefOf.Lumberjack }
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.AxeHandle},
+            { BoneDefOf.ToolHead, ItemContent.AxeHead }
+        }
+    };
+
+    public static readonly GearProfileDef Helmet = new("Helmet", slot: GearSlotDefOf.Head, bones: BoneStructureDefOf.Armor)
+    {
+        BoneSprites =
+        {
+            { BoneDefOf.Item, ItemContent.HelmetFull}
+        }
     };
 
     //public static readonly ItemVariantDef AxeNew = new ItemVariantDef(ItemDefOf.Tool, "AxeNew")
@@ -81,9 +116,9 @@ static class ToolProfileDefOf
     //    .AddSpec(new ToolComp.Spec(ToolUseDefOf.Chopping))
     //    ;
 
-    static ToolProfileDefOf()
+    static GearProfileDefOf()
     {
-        Def.Register(typeof(ToolProfileDefOf));
+        Def.Register(typeof(GearProfileDefOf));
 
         
 
@@ -92,7 +127,7 @@ static class ToolProfileDefOf
 
     private static void GenerateRecipesNew()
     {
-        var defs = Def.Database.Values.OfType<ToolProfileDef>().ToList();
+        var defs = Def.Database.Values.OfType<GearProfileDef>().ToList();
         foreach (var toolDef in defs)
         {
             var reagents = new List<Reaction.Reagent>();
@@ -105,7 +140,7 @@ static class ToolProfileDefOf
                 Reaction.CanBeMadeAt(IsWorkstation.Types.None, IsWorkstation.Types.Workbench),
                 reagents,
                 new List<Reaction.Product>() {
-                    new Reaction.Product(dic=>ToolSystem.Create(toolDef, dic["Handle"].Body.Material, dic["Head"].Body.Material)) },
+                    new Reaction.Product(dic=>ToolSystem.CreateToolOld(toolDef, dic["Handle"].Body.Material, dic["Head"].Body.Material)) },
                     //new Reaction.Product(dic=>ItemFamilyDefOf.Tool.System.Create(toolDef, new ToolSystem.Args(dic["Handle"].Body.Material, dic["Head"].Body.Material))) },
                 SkillDefOf.Crafting,
                 DutyDefOf.Craftsman)

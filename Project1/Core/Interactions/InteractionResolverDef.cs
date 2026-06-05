@@ -19,7 +19,7 @@ namespace Project1.Core.Interactions
     {
         internal override float Resolve(Actor actor)
         {
-            var tool = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand);
+            var tool = actor.GetEquipmentSlot(GearSlotDefOf.Mainhand);
             var toolspeed = tool?.Stats[StatDefOf.ToolSpeed] ?? 0;
 
             var speed = 1 + toolspeed;

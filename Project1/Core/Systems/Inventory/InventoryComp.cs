@@ -211,7 +211,7 @@ public sealed class InventoryComp : EntityComp
         var slot = (this.Owner as Entity).Gear.GetSlot(item);
         return this.Receive(slot);
     }
-    public bool Unequip(GearTypeDef gearDef)
+    public bool Unequip(GearSlotDef gearDef)
     {
         return this.Receive(this.Owner.Gear.GetSlot(gearDef));
     }

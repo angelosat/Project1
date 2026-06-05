@@ -13,7 +13,7 @@ class EquipmentComp : EntityComp
     public override EntityCompDef CompDef => EntityCompDefOf.Equip;
     public override string Name { get; } = "Equippable";
       
-    public GearTypeDef Type;
+    public GearSlotDef Type;
     public ResourceRuntime Durability;
     internal int Armor;
 
@@ -29,7 +29,7 @@ class EquipmentComp : EntityComp
     //    this.Armor = comp.Armor;
     //}
 
-    public EquipmentComp Initialize(GearTypeDef slot)
+    public EquipmentComp Initialize(GearSlotDef slot)
     {
         this.Type = slot;
         return this;

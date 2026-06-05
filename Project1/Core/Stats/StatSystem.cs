@@ -11,13 +11,13 @@ namespace Project1.Core.Entities.Stats;
 public static class StatSystem
 {
     static readonly Dictionary<SkillDef, ToolUseDef> _skillsToTools = [];
-    static readonly Dictionary<ToolUseDef, ToolProfileDef> _useToProfile = [];
+    static readonly Dictionary<ToolUseDef, GearProfileDef> _useToProfile = [];
     static readonly Dictionary<SkillDef, InteractionDef> _skillToInteraction = [];
     static readonly Dictionary<ToolUseDef, InteractionDef> _toolToInteraction = [];
 
     static readonly Dictionary<Type, List<StatDef>> _statsByCompType = [];
     static public IReadOnlyDictionary<SkillDef, ToolUseDef> SkillsToTools => _skillsToTools;
-    static public IReadOnlyDictionary<ToolUseDef, ToolProfileDef> UseToProfile => _useToProfile;
+    static public IReadOnlyDictionary<ToolUseDef, GearProfileDef> UseToProfile => _useToProfile;
     static public IReadOnlyDictionary<SkillDef, InteractionDef> SkillToInteraction => _skillToInteraction;
     static public IReadOnlyDictionary<ToolUseDef, InteractionDef> ToolToInteraction => _toolToInteraction;
     static StatSystem()
@@ -27,7 +27,7 @@ public static class StatSystem
             if(def.Skill is not null)
             _skillsToTools[def.Skill] = def;
 
-        var toolprofiles = Def.Get<ToolProfileDef>();
+        var toolprofiles = Def.Get<GearProfileDef>();
         foreach (var profile in toolprofiles)
             if(profile.ToolUse is not null)
             _useToProfile[profile.ToolUse] = profile;

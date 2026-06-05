@@ -21,7 +21,7 @@ namespace Project1.Core.Systems.Tools;
 internal static class ToolSystem
 {
     public static Dictionary<BoneDef, CraftingRules> Rules = [];
-    static HashSet<ToolProfileDef> _allDefs;
+    static readonly HashSet<GearProfileDef> _allDefs;
     static ToolSystem()
     {
         CreateRuleFor(BoneDefOf.ToolHandle)
@@ -29,7 +29,7 @@ internal static class ToolSystem
         CreateRuleFor(BoneDefOf.ToolHead)
             .Allow(MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Chunk);
 
-        _allDefs = [.. Def.Get<ToolProfileDef>()];
+        _allDefs = [.. Def.Get<GearProfileDef>()];
     }
     public static CraftingRules CreateRuleFor(BoneDef bone)
     {
@@ -42,7 +42,7 @@ internal static class ToolSystem
         return Rules[bone];
     }
     public static IEnumerable<CraftingRules> GetRules() => Rules.Values;
-    static public Entity Create(ToolProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
+    static public Entity CreateToolOld(GearProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
     {
         var item = ItemDefOf.Tool.Create();
         item.Profile = profile;
@@ -62,7 +62,34 @@ internal static class ToolSystem
         item.Initialize();
         return item;
     }
-    
+
+    static public Entity Create(GearProfileDef profile, params (BoneDef bone, MaterialDef)[] materialBindings)
+    {
+        var item = ItemDefOf.Tool.Create();
+        item.Profile = profile;
+        item.ToolComponent.ToolDef = profile;
+
+        foreach(var bone in materialBindings)
+        {
+            var bone = item.Body.finen
+        }
+
+        var handle = item.Body.FindBone(BoneDefOf.ToolHandle);
+        handle.Sprite = profile.SpriteHandle;
+        handle.Material = headMaterial;
+
+        var head = item.Body.FindBone(BoneDefOf.ToolHead);
+        head.Sprite = profile.SpriteHead;
+        head.Material = handleMaterial;
+
+        item.Name = profile.LabelReadable;
+
+        BakeStats(item);
+        item.Initialize();
+        return item;
+    }
+
+
     static internal void BakeStats(Entity tool)
     {
         var comp = tool.GetComponent<StatsComp>();
@@ -72,7 +99,7 @@ internal static class ToolSystem
 
     internal static Entity Create(EntityCreationRequest req)
     {
-        return Create(req.Context as ToolProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
+        return CreateToolOld(req.Context as GearProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
     }
 
     internal static Entity CreateUnfinishedItem(Actor author, CraftingOrder order, MaterialDef handleMaterial, MaterialDef headMaterial)
@@ -122,6 +149,6 @@ internal static class ToolSystem
     {
         var mats = MaterialSystem.ByTier(tier);
 
-        return Create(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
+        return CreateToolOld(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
     }
 }

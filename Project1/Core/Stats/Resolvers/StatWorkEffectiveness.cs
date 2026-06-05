@@ -10,7 +10,7 @@ sealed class StatWorkEffectiveness : StatResolver
     public override float CalculateStat(Entity obj)
     {
         var actor = obj as Actor;
-        var val = actor.GetEquipmentSlot(GearTypeDefOf.Mainhand)?.GetStat(StatDefOf.ToolEffectiveness) ?? actor.GetMaterial(BoneDefOf.RightHand).Density;
+        var val = actor.GetEquipmentSlot(GearSlotDefOf.Mainhand)?.GetStat(StatDefOf.ToolEffectiveness) ?? actor.GetMaterial(BoneDefOf.RightHand).Density;
         return val;
     }
 }

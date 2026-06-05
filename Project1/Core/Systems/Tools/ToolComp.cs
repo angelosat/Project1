@@ -27,9 +27,9 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         }
     }
     public override string Name { get; } = "Tool";
-    ToolProfileDef Profile => this.Owner.Profile as ToolProfileDef;
+    GearProfileDef Profile => this.Owner.Profile as GearProfileDef;
     public ToolUseDef ToolUse;
-    public ToolProfileDef ToolDef;
+    public GearProfileDef ToolDef;
     readonly List<ToolUseDef> Skills = [];
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
@@ -113,7 +113,12 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         box.AddControlsBottomLeft(new Label(StatSystem.ToolToInteraction[this.Profile.ToolUse]));
         return box;
     }
-
+    internal override IEnumerable<Control> GetTooltipControls()
+    {
+        var profile = this.Owner.Profile as GearProfileDef;
+        var slot = profile.Slot;
+        yield return new LabelNew($"Slot: {slot.LabelReadable}");
+    }
     internal float? GetWorkValue(ToolUseDef toolUse)
     {
         if (this.Profile.ToolUse != toolUse)

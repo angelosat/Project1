@@ -10,7 +10,7 @@ sealed class StatWorkSpeed : StatResolver
     public override float CalculateStat(Entity obj)
     {
         var actor = obj as Actor;
-        var toolspeed = actor.Gear.GetGear(GearTypeDefOf.Mainhand)?.GetStat(StatDefOf.ToolSpeed) ?? 0;
+        var toolspeed = actor.Gear.GetGear(GearSlotDefOf.Mainhand)?.GetStat(StatDefOf.ToolSpeed) ?? 0;
         var speed = 1 + toolspeed;
 
         var stamina = obj.Resources.ViewOld(ResourceDefOf.Stamina);

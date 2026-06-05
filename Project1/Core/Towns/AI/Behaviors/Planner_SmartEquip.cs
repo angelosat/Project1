@@ -13,11 +13,11 @@ internal class Planner_SmartEquip : Planner
     protected override Plan TryPlan(Actor actor)
     {
         var manager = actor.ItemPreferences;
-        Dictionary<GearTypeDef, (GearTypeDef slot, Entity currentItem, Entity newItem, int score)> mostImpactfulPerSlot = [];
-        Dictionary<GearTypeDef, (GearTypeDef slot, Entity item, int score)> currentPerSlot = [];
+        Dictionary<GearSlotDef, (GearSlotDef slot, Entity currentItem, Entity newItem, int score)> mostImpactfulPerSlot = [];
+        Dictionary<GearSlotDef, (GearSlotDef slot, Entity item, int score)> currentPerSlot = [];
         foreach (var gt in actor.GetGearTypes())
         {
-            (GearTypeDef slot, Entity item, int score) mostImpactfulInSlot = (null, null, 0);
+            (GearSlotDef slot, Entity item, int score) mostImpactfulInSlot = (null, null, 0);
 
             var current = actor.GetEquipmentSlot(gt);
             var currentItemScore = current is not null ? manager.GetTotalSituationalScoreFor(current) : 0;

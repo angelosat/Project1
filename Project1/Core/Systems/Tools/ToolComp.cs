@@ -116,7 +116,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     internal override IEnumerable<Control> GetTooltipControls()
     {
         var profile = this.Owner.Profile as GearProfileDef;
-        var slot = profile.Slot;
+        var slot = profile.Role.Slot;
         yield return new LabelNew($"Slot: {slot.LabelReadable}");
     }
     internal float? GetWorkValue(ToolUseDef toolUse)
@@ -127,32 +127,32 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     }
     public override void Randomize(GameObject parent, RandomThreaded random)
     {
-        var r = new Random();
-        int durabilityMax = 0;
-        //var rules = CraftingSystem.GetCraftingRules(this.Profile);
-        //foreach(var (bone, validRefinements, quantity) in rules)
+        ToolSystem.Randomize(this.Owner);
+
+        //var r = new Random();
+        //int durabilityMax = 0;
+        ////var rules = CraftingSystem.GetCraftingRules(this.Profile);
+        ////foreach(var (bone, validRefinements, quantity) in rules)
+        ////{
+        ////    var entityBone = this.Owner.Body.FindBone(bone);
+        ////    var matTypes = validRefinements.Select(r => r.MaterialType);
+        ////    var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
+        ////    var mat = mats.SelectRandom(r);
+        ////    entityBone.Material = mat;
+        ////    durabilityMax += mat.Density;
+        ////}
+        ////var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
+        //var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(this.Profile);
+        //foreach (var rule in rules)
         //{
-        //    var entityBone = this.Owner.Body.FindBone(bone);
-        //    var matTypes = validRefinements.Select(r => r.MaterialType);
-        //    var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
+        //    var entityBone = this.Owner.Body.FindBone(rule.Bone);
+        //    var matTypes = rule.MaterialTypes;// validRefinements.Select(r => r.MaterialType);
+        //    var mats = matTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
         //    var mat = mats.SelectRandom(r);
         //    entityBone.Material = mat;
         //    durabilityMax += mat.Density;
         //}
-        //var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
-        var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(this.Profile);
-        foreach (var rule in rules)
-        {
-            var entityBone = this.Owner.Body.FindBone(rule.Bone);
-            var matTypes = rule.MaterialTypes;// validRefinements.Select(r => r.MaterialType);
-            var mats = matTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
-            var mat = mats.SelectRandom(r);
-            entityBone.Material = mat;
-            durabilityMax += mat.Density;
-        }
-        var durability = this.Owner.Resources.ViewOld(ResourceDefOf.Durability);
-        durability.Value = durability.Max = durabilityMax;
+        //var durability = this.Owner.Resources.ViewOld(ResourceDefOf.Durability);
+        //durability.Value = durability.Max = durabilityMax;
     }
-
-    
 }

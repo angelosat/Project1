@@ -42,7 +42,7 @@ internal static class ToolSystem
         return Rules[bone];
     }
     public static IEnumerable<CraftingRules> GetRules() => Rules.Values;
-    static public Entity CreateToolOld(GearProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
+    static public Entity CreateToolOrWeapon(GearProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
     {
         var item = ItemDefOf.Tool.Create();
         item.Profile = profile;
@@ -62,25 +62,33 @@ internal static class ToolSystem
         item.Initialize();
         return item;
     }
+    static public Entity CreateArmor(GearProfileDef profile, MaterialDef material)
+    {
+        var item = ItemDefOf.Tool.Create();
+        item.Profile = profile;
 
+        item.Body.SetMaterial(material);
+
+        item.Name = profile.LabelReadable;
+
+        BakeStats(item);
+        item.Initialize();
+        return item;
+    }
     static public Entity Create(GearProfileDef profile, params (BoneDef bone, MaterialDef)[] materialBindings)
     {
         var item = ItemDefOf.Tool.Create();
         item.Profile = profile;
-        item.ToolComponent.ToolDef = profile;
 
-        foreach(var bone in materialBindings)
+        item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
+
+        foreach (var (bonedef, material) in materialBindings)
         {
-            var bone = item.Body.finen
+            //item.Body.FindBone(bone).SetMaterial(material);
+            var bone = item.Body.FindBone(bonedef);
+            bone.SetMaterial(material);
+            bone.SetSprite(profile.BoneSprites[bonedef]);
         }
-
-        var handle = item.Body.FindBone(BoneDefOf.ToolHandle);
-        handle.Sprite = profile.SpriteHandle;
-        handle.Material = headMaterial;
-
-        var head = item.Body.FindBone(BoneDefOf.ToolHead);
-        head.Sprite = profile.SpriteHead;
-        head.Material = handleMaterial;
 
         item.Name = profile.LabelReadable;
 
@@ -88,7 +96,6 @@ internal static class ToolSystem
         item.Initialize();
         return item;
     }
-
 
     static internal void BakeStats(Entity tool)
     {
@@ -99,7 +106,7 @@ internal static class ToolSystem
 
     internal static Entity Create(EntityCreationRequest req)
     {
-        return CreateToolOld(req.Context as GearProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
+        return CreateToolOrWeapon(req.Context as GearProfileDef, req.MaterialBindings[BoneDefOf.ToolHandle], req.MaterialBindings[BoneDefOf.ToolHead]);
     }
 
     internal static Entity CreateUnfinishedItem(Actor author, CraftingOrder order, MaterialDef handleMaterial, MaterialDef headMaterial)
@@ -149,6 +156,51 @@ internal static class ToolSystem
     {
         var mats = MaterialSystem.ByTier(tier);
 
-        return CreateToolOld(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
+        return CreateToolOrWeapon(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
+    }
+
+    internal static IEnumerable<GameObject> GenerateTemplates()
+    {
+        foreach (var toolProp in Def.Get<GearProfileDef>())
+        {
+            //var obj = CreateToolOrWeapon(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
+            var bones = toolProp.Role.Bones.Bones;
+            var bonesMats = bones
+                .Select(b => (b, MaterialDefOf.LightWood))
+                .ToArray();
+            var obj = Create(toolProp, bonesMats);
+            yield return obj;
+        }
+
+    }
+    public static void Randomize(Entity obj)
+    {
+        var r = new Random();
+        int durabilityMax = 0;
+        var profile = (GearProfileDef)obj.Profile;
+        //var rules = CraftingSystem.GetCraftingRules(this.Profile);
+        //foreach(var (bone, validRefinements, quantity) in rules)
+        //{
+        //    var entityBone = this.Owner.Body.FindBone(bone);
+        //    var matTypes = validRefinements.Select(r => r.MaterialType);
+        //    var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
+        //    var mat = mats.SelectRandom(r);
+        //    entityBone.Material = mat;
+        //    durabilityMax += mat.Density;
+        //}
+        //var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
+        var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(profile);
+        foreach (var rule in rules)
+        {
+            var entityBone = obj.Body.FindBone(rule.Bone);
+            var matTypes = rule.MaterialTypes;// validRefinements.Select(r => r.MaterialType);
+            var mats = matTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
+            var mat = mats.SelectRandom(r);
+            entityBone.Material = mat;
+            durabilityMax += mat.Density;
+        }
+        var durability = obj.Resources.ViewOld(ResourceDefOf.Durability);
+        durability.Value = durability.Max = durabilityMax;
+
     }
 }

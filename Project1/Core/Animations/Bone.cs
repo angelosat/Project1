@@ -63,6 +63,8 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
 
     public Bone Parent;
     public MaterialDef Material;
+    public void SetMaterial(MaterialDef material)
+        => this.Material = material;
 
     public Color? TintΟverride;// = Color.White;
 

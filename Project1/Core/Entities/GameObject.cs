@@ -109,15 +109,15 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         foreach (var t in MaterialSystem.GenerateTemplates().Where(t => t is not null))
             AddTemplate(t);
 
-        foreach (var toolProp in Core.Def.Get<GearProfileDef>())
-        {
-            var obj = ToolSystem.CreateToolOld(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
-            AddTemplate(obj);
-        }
+        //foreach (var toolProp in Core.Def.Get<GearProfileDef>())
+        //{
+        //    var obj = ToolSystem.CreateToolOrWeapon(toolProp, MaterialDefOf.LightWood, MaterialDefOf.LightWood);
+        //    AddTemplate(obj);
+        //}
 
         AddTemplates(PotionSystem.GenerateTemplates());
         AddTemplates(ScrollSystem.GenerateTemplates());
-        AddTemplates(EquipmentSystem.GenerateTemplates());
+        AddTemplates(ToolSystem.GenerateTemplates());
 
         AddTemplate(ItemDefOf.Coins.Create());
     }

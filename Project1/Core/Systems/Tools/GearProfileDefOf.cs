@@ -3,6 +3,8 @@ using Project1.Core.Assets;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Gear;
+using Project1.Core.Systems.Materials;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -27,7 +29,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.ToolHandle, ItemContent.ShovelHandle},
             { BoneDefOf.ToolHead, ItemContent.ShovelHead }
-        }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
     };
 
     public static readonly GearProfileDef Hammer = new("Hammer", GearRoleDefOf.Tool)
@@ -42,7 +45,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.ToolHandle, ItemContent.HammerHandle},
             { BoneDefOf.ToolHead, ItemContent.HammerHead }
-        }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
     };
     public static readonly GearProfileDef Pickaxe = new("Pickaxe", GearRoleDefOf.Tool)
     {
@@ -56,7 +60,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.ToolHandle, ItemContent.PickaxeHandle},
             { BoneDefOf.ToolHead, ItemContent.PickaxeHead }
-        }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
     };
     public static readonly GearProfileDef Handsaw = new("Handsaw", GearRoleDefOf.Tool)
     {
@@ -70,7 +75,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.ToolHandle, ItemContent.HandsawHandle},
             { BoneDefOf.ToolHead, ItemContent.HandsawHead }
-        }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
     };
     public static readonly GearProfileDef Hoe = new("Hoe", GearRoleDefOf.Tool)
     {
@@ -84,7 +90,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.ToolHandle, ItemContent.HoeHandle},
             { BoneDefOf.ToolHead, ItemContent.HoeHead }
-        }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
     };
 
     public static readonly GearProfileDef Axe = new("Axe", GearRoleDefOf.Tool)
@@ -99,7 +106,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.ToolHandle, ItemContent.AxeHandle},
             { BoneDefOf.ToolHead, ItemContent.AxeHead }
-        }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
     };
 
     public static readonly GearProfileDef Helmet = new("Helmet", GearRoleDefOf.Head)
@@ -107,7 +115,8 @@ static class GearProfileDefOf
         BoneSprites =
         {
             { BoneDefOf.Item, ItemContent.HelmetFull}
-        }
+        },
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
     };
 
     //public static readonly ItemVariantDef AxeNew = new ItemVariantDef(ItemDefOf.Tool, "AxeNew")

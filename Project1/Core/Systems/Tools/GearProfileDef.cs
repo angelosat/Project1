@@ -5,6 +5,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Legacy;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Gear;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Tools;
@@ -18,6 +19,7 @@ public class GearProfileDef(string name, GearRoleDef role /*GearSlotDef slot, Bo
     public DamageDef Damage;
     public Sprite SpriteHandle, SpriteHead;
     public readonly Dictionary<BoneDef, Sprite> BoneSprites = [];
+    public BoneMaterialSet BoneMaterials;
     public SkillDef Skill;
     public string Description;
     public BoneDef ExampleBone;

@@ -42,6 +42,11 @@ internal static class ToolSystem
         return Rules[bone];
     }
     public static IEnumerable<CraftingRules> GetRules() => Rules.Values;
+    public static IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
+    {
+        foreach (var rule in GetRules())
+            yield return new(rule.Bone, ItemDefOf.Ingredient, rule.Profiles, [.. rule.Profiles.Select(mr => ((MaterialRefinementDef)mr).MaterialType)], 1);
+    }
     static public Entity CreateToolOrWeapon(GearProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
     {
         var item = ItemDefOf.Tool.Create();
@@ -189,7 +194,8 @@ internal static class ToolSystem
         //    durabilityMax += mat.Density;
         //}
         //var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
-        var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(profile);
+        //var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(profile);
+        var rules = GetCraftingRulesStruct(profile);
         foreach (var rule in rules)
         {
             var entityBone = obj.Body.FindBone(rule.Bone);

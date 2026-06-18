@@ -4,6 +4,7 @@ using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
+using Project1.Core.Helpers;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Materials;
@@ -777,6 +778,7 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
 
     public void Write(IDataWriter w)
     {
+        w.Write(this.Def);
         w.Write(this.Material?.Name ?? "");
         w.Write(this.Sprite?.Name ?? "");
         foreach (var j in this.Joints.Values)
@@ -785,6 +787,9 @@ public partial class Bone : Inspectable, ISaveable, ISerializableNew<Bone>
 
     public Bone Read(IDataReader r)
     {
+        var bonedef = r.ReadDef<BoneDef>();
+        if (bonedef != this.Def)
+            throw new Exception();
         if (r.ReadString() is string matName && !matName.IsNullEmptyOrWhiteSpace())
             this.Material = Core.Def.Get<MaterialDef>(matName);
 

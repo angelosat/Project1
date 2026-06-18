@@ -27,7 +27,7 @@ static class GearProfileDefOf
         ExampleBone = BoneDefOf.ToolHandle,
         BoneSprites =
         {
-            { BoneDefOf.ToolHandle, ItemContent.ShovelHandle},
+            { BoneDefOf.ToolHandle, ItemContent.ShovelHandle },
             { BoneDefOf.ToolHead, ItemContent.ShovelHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
@@ -43,7 +43,7 @@ static class GearProfileDefOf
         Skill = SkillDefOf.Construction,
         BoneSprites =
         {
-            { BoneDefOf.ToolHandle, ItemContent.HammerHandle},
+            { BoneDefOf.ToolHandle, ItemContent.HammerHandle },
             { BoneDefOf.ToolHead, ItemContent.HammerHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
@@ -58,7 +58,7 @@ static class GearProfileDefOf
         Skill = SkillDefOf.Mining,
         BoneSprites =
         {
-            { BoneDefOf.ToolHandle, ItemContent.PickaxeHandle},
+            { BoneDefOf.ToolHandle, ItemContent.PickaxeHandle },
             { BoneDefOf.ToolHead, ItemContent.PickaxeHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
@@ -73,7 +73,7 @@ static class GearProfileDefOf
         Skill = SkillDefOf.Carpentry,
         BoneSprites =
         {
-            { BoneDefOf.ToolHandle, ItemContent.HandsawHandle},
+            { BoneDefOf.ToolHandle, ItemContent.HandsawHandle },
             { BoneDefOf.ToolHead, ItemContent.HandsawHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
@@ -88,7 +88,7 @@ static class GearProfileDefOf
         Skill = SkillDefOf.Argiculture,
         BoneSprites =
         {
-            { BoneDefOf.ToolHandle, ItemContent.HoeHandle},
+            { BoneDefOf.ToolHandle, ItemContent.HoeHandle },
             { BoneDefOf.ToolHead, ItemContent.HoeHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
@@ -104,7 +104,7 @@ static class GearProfileDefOf
         Skill = SkillDefOf.Plantcutting,
         BoneSprites =
         {
-            { BoneDefOf.ToolHandle, ItemContent.AxeHandle},
+            { BoneDefOf.ToolHandle, ItemContent.AxeHandle },
             { BoneDefOf.ToolHead, ItemContent.AxeHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
@@ -114,7 +114,7 @@ static class GearProfileDefOf
     {
         BoneSprites =
         {
-            { BoneDefOf.Item, ItemContent.HelmetFull}
+            { BoneDefOf.Item, ItemContent.HelmetFull }
         },
         BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
     };

@@ -12,6 +12,7 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 
@@ -86,6 +87,7 @@ internal static class ToolSystem
         item.Profile = profile;
 
         item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
+        item.SpriteComp.BodyDef = profile.Role.Bones;
 
         foreach (var (bonedef, material) in materialBindings)
         {
@@ -178,7 +180,7 @@ internal static class ToolSystem
         }
 
     }
-    public static void Randomize(Entity obj)
+    public static void RandomizeOld(Entity obj)
     {
         var r = new Random();
         int durabilityMax = 0;
@@ -208,5 +210,26 @@ internal static class ToolSystem
         var durability = obj.Resources.ViewOld(ResourceDefOf.Durability);
         durability.Value = durability.Max = durabilityMax;
 
+    }
+
+    public static void Randomize(Entity obj)
+    {
+        var r = new Random();
+        int durabilityMax = 0;
+        var profile = (GearProfileDef)obj.Profile;
+        var role = profile.Role;
+        var boneMats = profile.BoneMaterials;
+        foreach(var set in boneMats.Inner)
+        {
+            var bone = set.Key;
+            var filter = set.Value;
+            var entityBone = obj.Body.FindBone(bone);
+            var mats = filter.MaterialTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
+            var mat = mats.SelectRandom(r);
+            entityBone.SetMaterial(mat);
+            durabilityMax += mat.Density;
+        }
+        var durability = obj.Resources.ViewOld(ResourceDefOf.Durability);
+        durability.Value = durability.Max = durabilityMax;
     }
 }

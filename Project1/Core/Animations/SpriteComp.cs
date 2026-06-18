@@ -4,9 +4,11 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.ColorCustomization;
 using Project1.Core.Graphics;
+using Project1.Core.Helpers;
 using Project1.Core.Input;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -28,6 +30,7 @@ public sealed class SpriteComp : EntityComp
     static public bool ShadowsEnabled = true;
     readonly static List<Shadow> ShadowList = new();
     public Bone Body, DefaultBody;
+    internal BoneStructureDef BodyDef;
     internal Dictionary<AnimationDef, Animation> Animations = [];
     public Sprite Sprite;
     public int Variation;
@@ -39,6 +42,7 @@ public sealed class SpriteComp : EntityComp
     public Sprite FullSprite;
     public bool Hidden;
     Rectangle CachedMinimumRectangle;
+
     public Rectangle GetSpriteBounds()
     {
         var offset = new Vector2(CachedMinimumRectangle.Width / 2, CachedMinimumRectangle.Height - this.Body.Sprite.OriginY);
@@ -147,9 +151,10 @@ public sealed class SpriteComp : EntityComp
 
     internal override void Resolve()
     {
-
         var def = this.Owner.Def;
         this.Body = this.DefaultBody = def.Body.Clone();
+        if(this.BodyDef is not null)
+            this.Body = this.DefaultBody = this.BodyDef.Body.Clone();
         this.Body.MakeChildOf(this.Owner);
         this.Body.Material = def.DefaultMaterial;
         this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
@@ -159,7 +164,7 @@ public sealed class SpriteComp : EntityComp
 
         var queue = new Queue<Bone>();
         queue.Enqueue(this.Body);
-        while (queue.Any())
+        while (queue.Count != 0)
         {
             var current = queue.Dequeue();
             this.SetMaterial(current.Def, def.DefaultMaterial);
@@ -168,11 +173,9 @@ public sealed class SpriteComp : EntityComp
                     queue.Enqueue(j.Bone);
         }
 
-
         this.Customization = new CharacterColors(this.Body).Randomize();
         Variation = 0;
         Orientation = 0;
-
     }
     
     public override void SetMaterial(MaterialDef mat)
@@ -309,6 +312,7 @@ public sealed class SpriteComp : EntityComp
         var source = comp as SpriteComp;
         this.Sprite = source.Body.Sprite;
         this.Body = source.Body.Clone();
+        this.BodyDef = source.BodyDef;
         this.DefaultBody = this.Body;
         this.CachedMinimumRectangle = this.Body.GetMinimumRectangle();
         this.Customization = new CharacterColors(this.Body).Randomize();
@@ -367,12 +371,16 @@ public sealed class SpriteComp : EntityComp
     }
     public override void Write(IDataWriter w)
     {
+        w.Write(this.BodyDef);
         this.Customization.Write(w);
         this.Body.Write(w);
         w.WriteValues(this.Animations);
     }
     public override void Read(IDataReader r)
     {
+        this.BodyDef = r.ReadDef<BoneStructureDef>();
+        if(this.BodyDef is not null)
+            this.Body = this.BodyDef.Body.Clone();
         this.Customization = new CharacterColors(r);
         this.Body.Read(r);
         r.ReadValuesWithInferredKeys(this.Animations, a => a.Def);

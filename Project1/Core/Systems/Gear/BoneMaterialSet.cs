@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Systems.Materials;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Gear;
@@ -7,6 +8,7 @@ namespace Project1.Core.Systems.Gear;
 public class BoneMaterialSet
 {
     readonly Dictionary<BoneDef, MaterialFilter> Set = [];
+    public IReadOnlyDictionary<BoneDef, MaterialFilter> Inner => this.Set; 
 
     public BoneMaterialSet Allow(BoneDef bone, MaterialFilter filter)
     {

@@ -4,6 +4,7 @@ using Project1.Core.Gear;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
+
 sealed class ItemRoleGearWorker : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)

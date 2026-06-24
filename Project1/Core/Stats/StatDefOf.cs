@@ -42,7 +42,7 @@ public static class StatDefOf
         Description = "Capacity for patience.",
     };
 
-    public static readonly StatDef Armor = new("Armor", typeof(StatArmor), typeof(GearComponent))
+    public static readonly StatDef Armor = new("Armor", typeof(StatArmor), typeof(GearComp))
     {
         Description = "Protection against damage.",
         Type = StatDef.Types.Scalar

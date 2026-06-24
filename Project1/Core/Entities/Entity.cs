@@ -34,7 +34,7 @@ public class Entity : GameObject
     /// </summary>
     public ToolComp ToolComponent => field ??= this.GetComponent<ToolComp>();
 
-    public GearComponent Gear => field ??= this.GetComponent<GearComponent>();
+    public GearComp Gear => field ??= this.GetComponent<GearComp>();
 
     public OwnershipComponent Ownership => field ??= this.GetComponent<OwnershipComponent>();
     public Actor Author

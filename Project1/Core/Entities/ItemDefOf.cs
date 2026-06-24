@@ -131,7 +131,7 @@ static class ItemDefOf
         CompDefs = [EntityCompDefOf.Ownership],
         Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
     };
-    static public readonly ItemDef Gear = new ItemDef("Gear", typeof(Entity))
+    static public readonly ItemDef GearOld = new ItemDef("Gear", typeof(Entity))
     {
         BaseValue = 5,
         QualityLevels = true,
@@ -143,7 +143,7 @@ static class ItemDefOf
         Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
     };
 
-    static public readonly ItemDef Tool = new ItemDef("Tool", typeof(Entity))
+    static public readonly ItemDef Gear = new ItemDef("Tool", typeof(Entity))
     {
         QualityLevels = true,
         Category = ItemCategoryDefOf.Equipment,

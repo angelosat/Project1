@@ -27,7 +27,7 @@ public sealed class ActorDnaDef(string name) : Def(name)
         yield return new NeedsComp.Spec(Needs);
         yield return new AttributesComponent.Spec(Attributes);
         yield return new ResourcesComp.Spec(Resources);
-        yield return new GearComponent.Spec(Gear);
+        yield return new GearComp.Spec(Gear);
         yield return new SkillsComponent.Spec(Skills);
         yield return new PersonalityComponent.Spec(Traits);
         yield return new AIComp.Spec(Behavior);

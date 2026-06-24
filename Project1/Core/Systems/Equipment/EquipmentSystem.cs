@@ -12,7 +12,7 @@ internal static class EquipmentSystem
 {
     static public Entity Create(EquipmentDef eqType, MaterialDef material)
     {
-        var gear = ItemDefOf.Gear.Create(profile: eqType);
+        var gear = ItemDefOf.GearOld.Create(profile: eqType);
         gear.Name = $"{material.LabelReadable} {eqType.LabelReadable}";
         //var comp = gear.GetComponent<EquipmentComp>();
         //var tier = material.Tier;
@@ -38,7 +38,7 @@ internal static class EquipmentSystem
 
     internal static int GetArmor(Actor actor, GearSlotDef slot)
     {
-        var actorGear = actor.GetComponent<GearComponent>();
+        var actorGear = actor.GetComponent<GearComp>();
         var currentSlotGear = actorGear.GetGear(slot);
         return currentSlotGear?.GetComponent<EquipmentComp>().Armor ?? 0;
     }

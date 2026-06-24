@@ -548,6 +548,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
 
     public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
     {
+        // TODO: maybe filter out items that are not in inventory??
         var potential = this.ItemsToPrefs
                 .Where(e => filter(e.Key))
                 .SelectMany(e => e.Value);

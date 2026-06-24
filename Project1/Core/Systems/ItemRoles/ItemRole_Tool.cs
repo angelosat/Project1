@@ -30,7 +30,7 @@ sealed class ItemRole_Tool : ItemRoleWorker
     
     public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
     {
-        if (item.Def != ItemDefOf.Tool)
+        if (item.Def != ItemDefOf.Gear)
             return -1;
         if (item.Profile is not GearProfileDef toolProfile)
             return -1;

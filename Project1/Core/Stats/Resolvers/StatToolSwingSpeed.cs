@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Animations;
+using Project1.Core.Stats;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
+using System;
 
 
 namespace Project1.Core.Entities.Stats.Resolvers;
@@ -9,7 +11,7 @@ sealed class StatToolSwingSpeed : StatResolver
 {
     public override float CalculateStat(Entity obj)
     {
-        var tool = obj as Entity;
+        var tool = obj;
         var material = tool?.GetMaterial(BoneDefOf.ToolHandle);
         if (material is null)
             return 1;

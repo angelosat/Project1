@@ -26,6 +26,6 @@ public class GearProfileDef(string name, GearRoleDef role /*GearSlotDef slot, Bo
    
     public StorageFilterNewNew GetFilter()
     {
-        return new(this.LabelReadable, ItemDefOf.Tool, this);
+        return new(this.LabelReadable, ItemDefOf.Gear, this);
     }
 }

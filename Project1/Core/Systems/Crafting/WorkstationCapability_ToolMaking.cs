@@ -12,9 +12,10 @@ namespace Project1.Core.Systems.Crafting;
 public sealed class WorkstationCapability_ToolMaking : WorkstationCapabilityWorker
 {
     public override WorkstationCapabilityDef CapabilityDef => WorkstationCapabilityDefOf.ToolMaking;
-    public override bool CreatesUnfinished => true;
-    public override SkillDef CraftingSkill => SkillDefOf.Crafting;
 
+    public override bool CreatesUnfinished => true;
+
+    public override SkillDef CraftingSkill => SkillDefOf.Crafting;
 
     public override IEnumerable<AddOrderRequest> GetAddOrderRequests(BlockWorkstationComp comp)
     {

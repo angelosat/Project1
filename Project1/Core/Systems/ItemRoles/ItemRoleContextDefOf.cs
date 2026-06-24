@@ -3,6 +3,7 @@ using Project1.Core.Needs;
 using Project1.Core.Systems.Tools;
 using Project1.Core.Resources;
 using Project1.Core.Systems.Equipment;
+using Project1.Core.Entities.Stats;
 
 namespace Project1.Core.Systems.ItemRoles;
 
@@ -10,6 +11,7 @@ namespace Project1.Core.Systems.ItemRoles;
 internal class ItemRoleContextDefOf
 {
     public static readonly ItemRoleContextDef Tool = new("Tool", typeof(ToolUseDef), typeof(ItemRole_Tool));
+    public static readonly ItemRoleContextDef Gear = new("Gear", typeof(StatDef), typeof(ItemRole_Gear));
     public static readonly ItemRoleContextDef Equipment = new("Equipment", typeof(EquipmentDef), typeof(ItemRole_Equipment));
     public static readonly ItemRoleContextDef Need = new("Need", typeof(NeedDef), typeof(ItemRoleNeedWorker));
     public static readonly ItemRoleContextDef Nutrition = new("Nutrition", null, typeof(ItemRoleNutritionWorker));

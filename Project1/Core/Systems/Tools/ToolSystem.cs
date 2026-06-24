@@ -50,7 +50,7 @@ internal static class ToolSystem
     }
     static public Entity CreateToolOrWeapon(GearProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
     {
-        var item = ItemDefOf.Tool.Create();
+        var item = ItemDefOf.Gear.Create();
         item.Profile = profile;
         item.ToolComponent.ToolDef = profile;
 
@@ -70,7 +70,7 @@ internal static class ToolSystem
     }
     static public Entity CreateArmor(GearProfileDef profile, MaterialDef material)
     {
-        var item = ItemDefOf.Tool.Create();
+        var item = ItemDefOf.Gear.Create();
         item.Profile = profile;
 
         item.Body.SetMaterial(material);
@@ -83,7 +83,7 @@ internal static class ToolSystem
     }
     static public Entity Create(GearProfileDef profile, params (BoneDef bone, MaterialDef)[] materialBindings)
     {
-        var item = ItemDefOf.Tool.Create();
+        var item = ItemDefOf.Gear.Create();
         item.Profile = profile;
 
         item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
@@ -231,5 +231,13 @@ internal static class ToolSystem
         }
         var durability = obj.Resources.ViewOld(ResourceDefOf.Durability);
         durability.Value = durability.Max = durabilityMax;
+    }
+
+    public static float? CalculateStat(Entity item, StatDef stat)
+    {
+        var profile = (GearProfileDef)item.Profile;
+        if (!profile.Role.Stats.Contains(stat))
+            return null;
+        return (int)stat.CalculateFor(item);
     }
 }

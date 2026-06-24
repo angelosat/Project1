@@ -49,7 +49,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Possessions = new("Possesions", typeof(PossessionsComponent));
         public static readonly EntityCompDef Mobile = new("Mobile", typeof(MobileComponent));
         public static readonly EntityCompDef Mood = new("Mood", typeof(MoodComp));
-        public static readonly EntityCompDef Gear = new("Gear", typeof(GearComponent));
+        public static readonly EntityCompDef Gear = new("Gear", typeof(GearComp));
         public static readonly EntityCompDef Effects = new("Effects", typeof(EffectsComp));
         public static readonly EntityCompDef Personality = new("Personality", typeof(PersonalityComponent));
         public static readonly EntityCompDef Npc = new("Npc", typeof(NpcComponent));

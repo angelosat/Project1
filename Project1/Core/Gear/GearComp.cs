@@ -1,7 +1,10 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.Tools;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -11,12 +14,15 @@ using System.Linq;
 namespace Project1.Core.Gear;
 
 [EnsureStaticCtorCall]
-public sealed class GearComponent : EntityComp
+public sealed class GearComp : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Gear;
     GearContainer Gear;
     public Container Equipment = new() { Name = "Equipment" };
     public float ArmorTotal;
+    readonly Dictionary<StatDef, float> Cache = [];
+    bool StatsDirty = true;
+
     public override string Name { get; } = "Gear";
     public Entity this[GearSlotDef gearDef] => this.Gear.GetSlot(gearDef).Object as Entity;
     public override void OnObjectLoaded(GameObject parent)
@@ -33,7 +39,7 @@ public sealed class GearComponent : EntityComp
         this.Owner.RegisterContainer(this.Equipment);
     }
 
-    public GearComponent()
+    public GearComp()
     {
     }
     public override IEnumerable<Entity> GetChildren()
@@ -87,22 +93,31 @@ public sealed class GearComponent : EntityComp
         foreach (var slot in this.Gear.AllSlots)
             yield return slot;
     }
+
+    internal IEnumerable<Entity> GetGear()
+        => this.Gear.AllSlots.Where(s => s.HasValue).Select(s => s.Object as Entity);
+
     internal void Equip(Entity item)
     {
         if (!this.Owner.Inventory.Contains(item))
             throw new Exception();
-        var slotType = item.Def.GearType;
+        //var slotType = item.Def.GearType;
+        var gearProfile = (GearProfileDef)item.Profile;
+        var gearRole = gearProfile.Role;
+        var slotType = gearRole.Slot;
         var slot = this.GetSlot(slotType);
 
         // the slot implictly removes the new item from the inventory or despawns it from the map and outputs the previous item that occupied the slot
         slot.Assign(item, out var previousItem);
 
         // the previousItem is currently detached from a parent but still exists, so we have to explicitly insert it in the inventory
-        if(previousItem != null)
+        if(previousItem is not null)
             this.Owner.Inventory.Insert(previousItem);
 
         this.RefreshStats();
         this.Owner.World.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
+
+        this.StatsDirty = true;
     }
     internal void Unequip(GearSlotDef slotType)
     {
@@ -114,13 +129,18 @@ public sealed class GearComponent : EntityComp
         actor.Inventory.Insert(item);
         this.RefreshStats();
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
+
+        this.StatsDirty = true;
     }
     public bool EquipToggle(Entity item)
     {
         ArgumentNullException.ThrowIfNull(item);
 
         var actor = this.Owner as Actor;
-        var slotType = item.Def.GearType;
+        var gearProfile = (GearProfileDef)item.Profile;
+        var gearRole = gearProfile.Role;
+        var slotType = gearRole.Slot;
+        //var slotType = item.Def.GearType;
         var gearSlot = actor.Gear.GetSlot(slotType);
         var previousItem = gearSlot.Object as Entity;
 
@@ -148,16 +168,32 @@ public sealed class GearComponent : EntityComp
         }
     }
 
- 
+    void RebuildStats()
+    {
+        if (!this.StatsDirty)
+            return;
+        this.StatsDirty = false;
+        this.Cache.Clear();
+        foreach(var gear in this.GetGear())
+        {
+            var gearProf = gear.Profile as GearProfileDef;
+            var gearRole = gearProf.Role;
+            foreach(var stat in gearRole.Stats)
+            {
+                var statValue = ToolSystem.CalculateStat(gear, stat).Value;
+                this.Cache.AddOrUpdate(stat, statValue, existing => existing + statValue);
+            }
+        }
+    }
 
-    public new class Spec : Spec<GearComponent>
+    public new class Spec : Spec<GearComp>
     {
         public GearSlotDef[] Slots;
         public Spec(params GearSlotDef[] defs)
         {
             this.Slots = defs;
         }
-        protected override void ApplyDefaultsTo(GearComponent comp)
+        protected override void ApplyDefaultsTo(GearComp comp)
         {
         }
     }

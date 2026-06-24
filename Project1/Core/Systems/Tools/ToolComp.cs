@@ -1,17 +1,12 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
-using Project1.Core.Networking;
-using Project1.Core.Resources;
 using Project1.Core.Stats;
-using Project1.Core.Systems.Crafting;
-using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -47,6 +42,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         this.baseSpeed = null;
         this.baseWork = null;
     }
+
     float CalculateBaseSpeed()
     {
         var tool = this.Owner;
@@ -58,27 +54,30 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         total = StatDefOf.ToolSpeed.Worker.CalculateStat(this.Owner);
         return total;
     }
+
     float CalculateBaseWorkAmount()
     {
         var tool = this.Owner;
         var material = tool.GetMaterial(BoneDefOf.ToolHead);
         return material.Density * tool.QualityComp.Tier.Multiplier;
     }
-    public ToolComp()
-    {
 
-    }
+    //public ToolComp()
+    //{
+
+    //}
     
-    public ToolComp(params ToolUseDef[] skills)
-    {
+    //public ToolComp(params ToolUseDef[] skills)
+    //{
 
-    }
-    public ToolComp Initialize(params ToolUseDef[] skills)
-    {
-        return this;
-    }
+    //}
 
-    public ToolUseDef Skill { get { return this.Skills.FirstOrDefault(); } }
+    //public ToolComp Initialize(params ToolUseDef[] skills)
+    //{
+    //    return this;
+    //}
+
+    //public ToolUseDef Skill { get { return this.Skills.FirstOrDefault(); } }
 
     internal override void CopyFrom(EntityComp source)
     {
@@ -90,6 +89,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         foreach (var sk in comp.Skills)
             this.Skills.Add(sk);
     }
+
     public override string ToString()
     {
         if (this.Skills.Count == 0)
@@ -104,55 +104,37 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     {
         tooltip.AddControlsBottomLeft(this.GetUI());
     }
+
     GroupBox GetUI()
     {
         var box = new GroupBox();
-        box.AddControlsBottomLeft(new Label(this.ToolUse));
-        box.AddControlsBottomLeft(new Label($"Speed: {this.BaseSpeed:0.00}"));
-        box.AddControlsBottomLeft(new Label($"{this.Profile.ToolUse.LabelReadable} Effectiveness: {this.BaseWork:0}"));
-        box.AddControlsBottomLeft(new Label(StatSystem.ToolToInteraction[this.Profile.ToolUse]));
+        //box.AddControlsBottomLeft(new Label(this.ToolUse));
+        //box.AddControlsBottomLeft(new Label($"Speed: {this.BaseSpeed:0.00}"));
+        //box.AddControlsBottomLeft(new Label($"{this.Profile.ToolUse.LabelReadable} Effectiveness: {this.BaseWork:0}"));
+        //box.AddControlsBottomLeft(new Label(StatSystem.ToolToInteraction[this.Profile.ToolUse]));
+        
         return box;
     }
+
     internal override IEnumerable<Control> GetTooltipControls()
     {
         var profile = this.Owner.Profile as GearProfileDef;
         var slot = profile.Role.Slot;
         yield return new LabelNew($"Slot: {slot.LabelReadable}");
+        foreach (var stat in this.Profile.Role.Stats)
+        {
+            var value = stat.Worker.CalculateStat(this.Owner);
+            yield return new LabelNew($"{stat}: {value}");
+        }
     }
+
     internal float? GetWorkValue(ToolUseDef toolUse)
     {
         if (this.Profile.ToolUse != toolUse)
             return null;
         return this.BaseWork;
     }
-    public override void Randomize(GameObject parent, RandomThreaded random)
-    {
-        ToolSystem.Randomize(this.Owner);
 
-        //var r = new Random();
-        //int durabilityMax = 0;
-        ////var rules = CraftingSystem.GetCraftingRules(this.Profile);
-        ////foreach(var (bone, validRefinements, quantity) in rules)
-        ////{
-        ////    var entityBone = this.Owner.Body.FindBone(bone);
-        ////    var matTypes = validRefinements.Select(r => r.MaterialType);
-        ////    var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
-        ////    var mat = mats.SelectRandom(r);
-        ////    entityBone.Material = mat;
-        ////    durabilityMax += mat.Density;
-        ////}
-        ////var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
-        //var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(this.Profile);
-        //foreach (var rule in rules)
-        //{
-        //    var entityBone = this.Owner.Body.FindBone(rule.Bone);
-        //    var matTypes = rule.MaterialTypes;// validRefinements.Select(r => r.MaterialType);
-        //    var mats = matTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
-        //    var mat = mats.SelectRandom(r);
-        //    entityBone.Material = mat;
-        //    durabilityMax += mat.Density;
-        //}
-        //var durability = this.Owner.Resources.ViewOld(ResourceDefOf.Durability);
-        //durability.Value = durability.Max = durabilityMax;
-    }
+    public override void Randomize(GameObject parent, RandomThreaded random)
+        => ToolSystem.Randomize(this.Owner);
 }

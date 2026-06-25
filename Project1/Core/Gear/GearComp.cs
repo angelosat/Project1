@@ -21,7 +21,7 @@ public sealed class GearComp : EntityComp
     public Container Equipment = new() { Name = "Equipment" };
     public float ArmorTotal;
     readonly Dictionary<StatDef, float> Cache = [];
-    bool StatsDirty = true;
+    public bool StatsDirty { get; private set; } = true;
 
     public override string Name { get; } = "Gear";
     public Entity this[GearSlotDef gearDef] => this.Gear.GetSlot(gearDef).Object as Entity;
@@ -176,14 +176,24 @@ public sealed class GearComp : EntityComp
         this.Cache.Clear();
         foreach(var gear in this.GetGear())
         {
-            var gearProf = gear.Profile as GearProfileDef;
-            var gearRole = gearProf.Role;
-            foreach(var stat in gearRole.Stats)
+            //var gearProf = gear.Profile as GearProfileDef;
+            //var gearRole = gearProf.Role;
+            //foreach(var stat in gearRole.Stats)
+            foreach(var (stat, value) in ToolSystem.GetStats(gear))
             {
-                var statValue = ToolSystem.CalculateStat(gear, stat).Value;
-                this.Cache.AddOrUpdate(stat, statValue, existing => existing + statValue);
+                //var statValue = ToolSystem.CalculateStat(gear, stat).Value;
+                //this.Cache.AddOrUpdate(stat, statValue, existing => existing + statValue);
+                this.Cache.AddOrUpdate(stat, value, existing => existing + value);
             }
         }
+    }
+
+    public IEnumerable<(StatDef def, float value)> GetCachedStats()
+    {
+        if (this.StatsDirty)
+            this.RebuildStats();
+        foreach (var k in this.Cache)
+            yield return (k.Key, k.Value);
     }
 
     public new class Spec : Spec<GearComp>

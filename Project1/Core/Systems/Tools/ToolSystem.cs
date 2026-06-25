@@ -240,4 +240,21 @@ internal static class ToolSystem
             return null;
         return (int)stat.CalculateFor(item);
     }
+
+    public static IEnumerable<StatDef> GetSupportedStats(Entity item)
+    {
+        var gearProf = item.Profile as GearProfileDef;
+        var gearRole = gearProf.Role;
+        return gearRole.Stats;
+    }
+    public static IEnumerable<(StatDef def, float value)> GetStats(Entity item)
+    {
+        var gearProf = item.Profile as GearProfileDef;
+        var gearRole = gearProf.Role;
+        foreach(var stat in gearRole.Stats)
+        {
+            var value = CalculateStat(item, stat).Value;
+            yield return (stat, value);
+        }
+    }
 }

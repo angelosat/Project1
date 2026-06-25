@@ -888,7 +888,8 @@ public sealed class UIManager : IDisposable, IInputEventHandler
         else
         {
             var control = (SelectionBoundControl)Activator.CreateInstance(type);// new T();
-            control.Bind(selectable);
+            //control.Bind(selectable);
+            BindAllSelectionBound(control, selectable);
             var window = new Window { Movable = true, AutoSize = true, Title = $"{title} ({selectable.Name})" };
             window.Client.AddControls(control);
             window.SmartPosition();

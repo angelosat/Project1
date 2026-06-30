@@ -37,6 +37,13 @@ public sealed class GearComp : EntityComp
         foreach (var slot in profile.Gear)
             this.Gear.Register(slot);
         this.Owner.RegisterContainer(this.Equipment);
+        foreach(var slot in this.GetSlots())
+            slot.Subscribe(OnSlotItemChanged);
+    }
+
+    private void OnSlotItemChanged()
+    {
+        this.StatsDirty = true;
     }
 
     public GearComp()

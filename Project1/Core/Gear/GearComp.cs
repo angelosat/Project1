@@ -2,6 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -21,6 +22,7 @@ public sealed class GearComp : EntityComp
     public Container Equipment = new() { Name = "Equipment" };
     public float ArmorTotal;
     readonly Dictionary<StatDef, float> Cache = [];
+    readonly Dictionary<StatDef, StatRuntime> StatsCache = [];
     public bool StatsDirty { get; private set; } = true;
 
     public override string Name { get; } = "Gear";
@@ -39,6 +41,13 @@ public sealed class GearComp : EntityComp
         this.Owner.RegisterContainer(this.Equipment);
         foreach(var slot in this.GetSlots())
             slot.Subscribe(OnSlotItemChanged);
+        this.InitStats();
+    }
+
+    void InitStats()
+    {
+        foreach (var stat in StatSystem.AllStats)
+            this.StatsCache.Add(stat, new StatRuntime(stat));
     }
 
     private void OnSlotItemChanged()
@@ -191,6 +200,7 @@ public sealed class GearComp : EntityComp
                 //var statValue = ToolSystem.CalculateStat(gear, stat).Value;
                 //this.Cache.AddOrUpdate(stat, statValue, existing => existing + statValue);
                 this.Cache.AddOrUpdate(stat, value, existing => existing + value);
+                this.StatsCache[stat].Value += value;
             }
         }
     }
@@ -202,7 +212,13 @@ public sealed class GearComp : EntityComp
         foreach (var k in this.Cache)
             yield return (k.Key, k.Value);
     }
-
+    public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()
+    {
+        if (this.StatsDirty)
+            this.RebuildStats();
+        foreach (var k in this.StatsCache)
+            yield return (k.Key, k.Value.Value);
+    }
     public new class Spec : Spec<GearComp>
     {
         public GearSlotDef[] Slots;

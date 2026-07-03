@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -115,6 +116,7 @@ namespace Project1.Framework.UI
                 child.Layout(w, h);
         }
 
+        [Obsolete]
         internal Control ToScrollableBox(int boundsW, int boundsH)
         {
             if (this.Width <= boundsW && this.Height <= boundsH)

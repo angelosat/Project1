@@ -994,7 +994,7 @@ public sealed class UIManager : IDisposable, IInputEventHandler
         if (root is SelectionBoundControl bound)
             bound.Bind(selection);
 
-        foreach (var child in root.Controls)
+        foreach (var child in root.Controls.ToArray())
             BindAllSelectionBound(child, selection);
     }
 

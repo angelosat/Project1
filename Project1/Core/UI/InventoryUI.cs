@@ -6,9 +6,8 @@ using Project1.Framework.UI;
 
 namespace Project1.Core.UI;
 
-class InventoryUI : SelectionBoundControl// GroupBox, ISelectionBound
+class InventoryUI : SelectionBoundControl
 {
-    //GroupBox BoxSlots;
     GuiCharacterCustomization colorsui;
 
     protected internal override void OnBind(ISelectable selectable)
@@ -23,10 +22,8 @@ class InventoryUI : SelectionBoundControl// GroupBox, ISelectionBound
 
         var panelSlots = new Panel(PanelWithVerticalTabs.DefaultSize);
         var invgui = new Gui_ActorInventory();
-        //this.BoxSlots = new(panelSlots.ClientSize.Width, panelSlots.ClientSize.Height);
         var BoxSlots = ScrollableBoxNewNewNew.FromWidth(invgui, invgui.RowWidth, panelSlots.ClientSize.Height);
         invgui.Build(actor);
-        //BoxSlots.AddControls(invgui);
 
         panelSlots.AddControls(BoxSlots);
         var customizationClient = new GroupBox();
@@ -42,22 +39,16 @@ class InventoryUI : SelectionBoundControl// GroupBox, ISelectionBound
         var btnprefs = new Button("Item Preferences", () => actor.ItemPreferences.Gui.Toggle(), 128);
         boxbtns.AddControlsVertically(btncolors, btnprefs);
 
-        var gearStats = new GearStatsPanel
-        {
-            AutoSize = false,
-            Width = 100,
-            Height = gearGui.Height
-        };
-        var gearStatsPanel = gearStats.ToPanelLabeled("Stats");
+        var gearStats = new GearStatsPanel();
+   
+        var gearStatsPanel = new ScrollableBoxNewNewNew(gearStats, 100, gearGui.Height, mode: ScrollModes.Vertical)
+            .ToPanelLabeled("Stats");
 
         var boxGearStats = new GroupBox();
         boxGearStats.AddControlsHorizontally(gearPanel, gearStatsPanel);
 
         this.AddControlsVertically(
-            //gearPanel,
-            //gearStatsPanel,
             boxGearStats,
-            //panelSlots,
         BoxSlots.ToPanel(),
             boxbtns);
         colorsui.SetTag(actor);
@@ -80,10 +71,9 @@ class GearStatsPanel : SelectionBoundControl
         this.Controls.Clear();
         this.Comp = actor.GetComponent<GearComp>();
 
-        var statsCache = this.Comp.GetCachedStats();
+        var statsCache = this.Comp.GetCachedStatsNew();
         foreach (var (stat, value) in statsCache)
-            this.AddControls(new LabelNew($"{stat}: {value}"));
-
+            this.AddControls(new LabelNew($"{stat.LabelReadable}: {value}"));
         this.AlignTopToBottom();
     }
 

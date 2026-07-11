@@ -12,6 +12,7 @@ using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Equipment;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Quality;
@@ -32,6 +33,7 @@ static class ItemDefOf
         Description = "Used as an input for crafting final products",
         Category = ItemCategoryDefOf.RawMaterials,
         Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
+        DefaultBoneStruct = BoneStructureDefOf.Default,
         ProfileType = typeof(MaterialRefinementDef)
     };
     static public readonly ItemDef UnfinishedItem = new ItemDef("UnfinishedItem", typeof(Entity))
@@ -113,7 +115,8 @@ static class ItemDefOf
         DefaultMaterial = MaterialDefOf.Gold,
         BaseValue = 1,
         Weight = .01f,
-        Body = new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale)
+        Body = new Bone(BoneDefOf.Item, ItemContent.BarsGrayscale),
+        DefaultBoneStruct = BoneStructureDefOf.Default
     };
 
     static public readonly ItemDef Helmet = new ItemDef("ItemHelmet", typeof(Entity))

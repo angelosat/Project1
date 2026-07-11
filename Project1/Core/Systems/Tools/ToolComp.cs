@@ -34,7 +34,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         ToolSystem.BakeStats(this.Owner);
         this.RefreshStats();
 
-        this.Owner.SetName($"{this.Owner.Body.FindBone(BoneDefOf.ToolHead).Material.LabelReadable} {this.Owner.Profile.LabelReadable} (Handle: {this.Owner.Body.FindBone(BoneDefOf.ToolHandle).Material.LabelReadable})");
+        //this.Owner.SetName($"{this.Owner.Body.FindBone(BoneDefOf.ToolHead).Material.LabelReadable} {this.Owner.Profile.LabelReadable} (Handle: {this.Owner.Body.FindBone(BoneDefOf.ToolHandle).Material.LabelReadable})");
+        this.Owner.SetName($"{this.Owner.Body.Material.LabelReadable} {this.Owner.Profile.LabelReadable}");
     }
 
     private void RefreshStats()

@@ -10,6 +10,7 @@ using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Plants;
 using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -348,13 +349,29 @@ public sealed class SpriteComp : EntityComp
     {
         tag.Add(new SaveTag(SaveTag.Types.Int, "Variation", (int)Variation));
         tag.Add(new SaveTag(SaveTag.Types.Int, "Orientation", (int)Orientation));
+
+        if(this.BodyDef is not null)
+            tag.Save("BodyDef", this.BodyDef);
+        else
+            tag.Save("BodyDef", this.Owner.Def.DefaultBoneStruct); // HACK
+
         tag.Add(this.Body.Save("Body"));
         tag.Add(this.Animations.SaveValues("Animations"));
     }
     internal override void Load(GameObject parent, SaveTag compTag)
     {
         this.Customization = new CharacterColors(this.Body).Randomize();
-
+        //this.BodyDef = compTag.LoadDef<BoneStructureDef>("BodyDef");
+        if (compTag.TryLoadDef<BoneStructureDef>("BodyDef", out var bdef))
+            this.BodyDef = bdef;
+        else
+            this.BodyDef = this.Owner.Def.DefaultBoneStruct; // HACK
+        //{
+            //if (parent.Def == ActorDefOf.Npc)
+            //    this.BodyDef = BoneStructureDefOf.Npc;
+        //}
+        if (this.BodyDef is not null)
+            this.Body = this.BodyDef.Body.Clone();
         compTag.TryGetTag("Body", t =>
         {
             this.Body.Load(t);

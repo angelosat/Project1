@@ -15,6 +15,7 @@ using Project1.Core.Systems.Abilities;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.MentalState;
 using Project1.Core.Systems.Recipes;
+using Project1.Core.Systems.Gear;
 
 namespace Project1.Core.Entities.Actors
 {
@@ -26,6 +27,7 @@ namespace Project1.Core.Entities.Actors
             Height = 1.5f,
             Weight = 50,
             Body = BodyDef.NpcNew,
+            DefaultBoneStruct = BoneStructureDefOf.Npc,
             DefaultMaterial = MaterialDefOf.Human,
             IsHaulable = false,
             Size = ObjectSize.Haulable,

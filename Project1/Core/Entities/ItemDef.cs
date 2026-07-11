@@ -6,6 +6,7 @@ using Project1.Core.Legacy.Storage;
 using Project1.Core.Legacy.Storage.New;
 using Project1.Core.Simulation;
 using Project1.Core.Simulation.Physics;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Plants;
 using Project1.Framework;
@@ -48,6 +49,7 @@ public sealed class ItemDef : Def
     internal EntityCompDef[] CompDefs = [];
     public readonly List<EntityComp.Spec> Specs = [];// [new SpriteComp.Props()];
     public Bone Body;
+    public BoneStructureDef DefaultBoneStruct;
     public readonly Type ItemClass;
     public float Weight = 1;
     public float Height = 1;

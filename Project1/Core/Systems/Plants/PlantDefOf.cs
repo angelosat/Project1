@@ -5,6 +5,7 @@ using Project1.Core.Legacy.Crafting;
 using Project1.Core.Resources;
 using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace Project1.Core.Systems.Plants
             IsHaulable = false,
             DefaultMaterial = MaterialDefOf.LightWood,
             Body = new Bone(BoneDefOf.TreeTrunk, ItemContent.TreeFull).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
+            DefaultBoneStruct = BoneStructureDefOf.Tree,
             Size = ObjectSize.Haulable,
             Comps = [typeof(PlantComponent), typeof(ResourcesComp)],
             CompDefs = [EntityCompDefOf.Plant, EntityCompDefOf.Resources]
@@ -37,6 +39,7 @@ namespace Project1.Core.Systems.Plants
             IsHaulable = false,
             DefaultMaterial = MaterialDefOf.ShrubStem,
             Body = new Bone(BoneDefOf.PlantStem, ItemContent.BerryBushGrowing).AddJoint(new Bone(BoneDefOf.PlantFruit) { DrawMaterialColor = true }),
+            DefaultBoneStruct = BoneStructureDefOf.Bush,
             Size = ObjectSize.Haulable,
             Comps = [typeof(PlantComponent), typeof(ResourcesComp)],
             CompDefs = [EntityCompDefOf.Plant, EntityCompDefOf.Resources]

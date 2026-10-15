@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
-using Project1.Core.Entities.Stats;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Quality;
 using Project1.Framework.Helpers;
@@ -35,7 +34,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         this.RefreshStats();
 
         //this.Owner.SetName($"{this.Owner.Body.FindBone(BoneDefOf.ToolHead).Material.LabelReadable} {this.Owner.Profile.LabelReadable} (Handle: {this.Owner.Body.FindBone(BoneDefOf.ToolHandle).Material.LabelReadable})");
-        this.Owner.SetName($"{this.Owner.Body.Material.LabelReadable} {this.Owner.Profile.LabelReadable}");
+        //this.Owner.SetName($"{this.Owner.Body.Material.LabelReadable} {this.Owner.Profile.LabelReadable}");
+        ToolSystem.Validate(this.Owner);
     }
 
     private void RefreshStats()

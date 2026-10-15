@@ -212,25 +212,26 @@ internal static class ToolSystem
 
     }
 
-    public static void Randomize(Entity obj)
+    public static void Randomize(Entity item)
     {
         var r = new Random();
         int durabilityMax = 0;
-        var profile = (GearProfileDef)obj.Profile;
+        var profile = (GearProfileDef)item.Profile;
         var role = profile.Role;
         var boneMats = profile.BoneMaterials;
         foreach(var set in boneMats.Inner)
         {
             var bone = set.Key;
             var filter = set.Value;
-            var entityBone = obj.Body.FindBone(bone);
+            var entityBone = item.Body.FindBone(bone);
             var mats = filter.MaterialTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
             var mat = mats.SelectRandom(r);
             entityBone.SetMaterial(mat);
             durabilityMax += mat.Density;
         }
-        var durability = obj.Resources.ViewOld(ResourceDefOf.Durability);
+        var durability = item.Resources.ViewOld(ResourceDefOf.Durability);
         durability.Value = durability.Max = durabilityMax;
+        Validate(item);
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)
@@ -256,5 +257,12 @@ internal static class ToolSystem
             var value = CalculateStat(item, stat).Value;
             yield return (stat, value);
         }
+    }
+
+    internal static void Validate(Entity item)
+    {
+        var mat = item.Body.Material;
+        var prof = item.Profile;
+        item.SetName($"{mat.LabelReadable} {prof.LabelReadable}");
     }
 }

@@ -10,6 +10,9 @@ static class GearRoleDefOf
 {
     public static readonly GearRoleDef Tool = new("Tool", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness]);
     public static readonly GearRoleDef Head = new("Head", slot: GearSlotDefOf.Head, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor]);
+    public static readonly GearRoleDef Feet = new("Feet", slot: GearSlotDefOf.Feet, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor]);
+    public static readonly GearRoleDef Torso = new("Torso", slot: GearSlotDefOf.Chest, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor]);
+    public static readonly GearRoleDef Legs = new("Legs", slot: GearSlotDefOf.Legs, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor]);
 
     static GearRoleDefOf()
     {

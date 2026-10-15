@@ -366,10 +366,7 @@ public sealed class SpriteComp : EntityComp
             this.BodyDef = bdef;
         else
             this.BodyDef = this.Owner.Def.DefaultBoneStruct; // HACK
-        //{
-            //if (parent.Def == ActorDefOf.Npc)
-            //    this.BodyDef = BoneStructureDefOf.Npc;
-        //}
+      
         if (this.BodyDef is not null)
             this.Body = this.BodyDef.Body.Clone();
         compTag.TryGetTag("Body", t =>

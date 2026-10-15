@@ -12,7 +12,6 @@ using System.Linq;
 
 namespace Project1.Core.Systems.Tools;
 
-
 [EnsureStaticCtorCall]
 static class GearProfileDefOf
 {
@@ -119,19 +118,45 @@ static class GearProfileDefOf
         BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
     };
 
-    //public static readonly ItemVariantDef AxeNew = new ItemVariantDef(ItemDefOf.Tool, "AxeNew")
-    //{ Description = "Chops down trees." }
-    //    .AddSpec(new SpriteComp.Spec() { Overrides = [(BoneDefOf.ToolHandle, ItemContent.AxeHandle), (BoneDefOf.ToolHead, ItemContent.AxeHead)] })
-    //    .AddSpec(new ToolComp.Spec(ToolUseDefOf.Chopping))
-    //    ;
+    public static readonly GearProfileDef Boots = new("Boots", GearRoleDefOf.Feet)
+    {
+        BoneSprites =
+        {
+            { BoneDefOf.Item, ItemContent.HelmetFull }
+        },
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+    };
+
+    public static readonly GearProfileDef Shoes = new("Shoes", GearRoleDefOf.Feet)
+    {
+        BoneSprites =
+        {
+            { BoneDefOf.Item, ItemContent.HelmetFull }
+        },
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+    };
+
+    public static readonly GearProfileDef Shirt = new("Shirt", GearRoleDefOf.Torso)
+    {
+        BoneSprites =
+        {
+            { BoneDefOf.Item, ItemContent.HelmetFull }
+        },
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+    };
+
+    public static readonly GearProfileDef Pants = new("Pants", GearRoleDefOf.Legs)
+    {
+        BoneSprites =
+        {
+            { BoneDefOf.Item, ItemContent.HelmetFull }
+        },
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+    };
 
     static GearProfileDefOf()
     {
         Def.Register(typeof(GearProfileDefOf));
-
-        
-
-        //GenerateRecipesNew();
     }
 
     private static void GenerateRecipesNew()

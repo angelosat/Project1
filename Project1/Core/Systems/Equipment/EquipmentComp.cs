@@ -23,17 +23,12 @@ class EquipmentComp : EntityComp
         this.Durability = new ResourceRuntime(ResourceDefOf.Durability);
     }
 
-    //internal override void CopyFrom(EntityComp source)
-    //{
-    //    var comp = (EquipmentComp)source;
-    //    this.Armor = comp.Armor;
-    //}
-
     public EquipmentComp Initialize(GearSlotDef slot)
     {
         this.Type = slot;
         return this;
     }
+
     public override void OnTooltipCreated(Control tooltip)
     {
         tooltip.Controls.Add(new Label(this.Durability.ToString())

@@ -173,7 +173,6 @@ public sealed class GearComp : EntityComp
     }
 
     public override GroupBox GetGUI() => this.Gear.GetGui();
-    
 
     public void RefreshStats()
     {

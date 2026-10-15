@@ -134,6 +134,7 @@ static class ItemDefOf
         CompDefs = [EntityCompDefOf.Ownership],
         Body = new Bone(BoneDefOf.Item, ItemContent.HelmetFull)
     };
+    
     static public readonly ItemDef GearOld = new ItemDef("Gear", typeof(Entity))
     {
         BaseValue = 5,

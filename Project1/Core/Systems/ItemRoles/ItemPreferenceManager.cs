@@ -312,13 +312,16 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     }
     internal int GetExistingScore(ItemRoleDef role)
         => this.PrefsInternal.TryGetValue(role, out var pref) ? pref.InventoryScore : 0;
+
+    [Obsolete]
     internal (ItemRoleDef role, int score) FindBestRole(Entity item)
     {
         var allRoles = this.Evaluate(item);
         return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
 
     }
-    internal Entity GetExistingPreference(ItemRoleDef role, out int score)
+
+    internal Entity? GetExistingPreference(ItemRoleDef role, out int score)
     {
         if (this.PrefsInternal.TryGetValue(role, out var existing))
         {
@@ -328,6 +331,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         score = 0;
         return null;
     }
+
     internal IEnumerable<(ItemRoleDef role, Entity item, int score)> TryGetPotential()
     {
         if (this.IsScanning)

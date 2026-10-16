@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Quality;
 using Project1.Framework.Helpers;
@@ -125,7 +126,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         foreach (var stat in this.Profile.Role.Stats)
         {
             var value = stat.Worker.CalculateStat(this.Owner);
-            yield return new LabelNew($"{stat}: {value}");
+            //yield return new LabelNew($"{stat}: +{value}");
+            yield return new LabelNew($"{stat}: +{StatSystem.Format(stat, value)}");
         }
     }
 

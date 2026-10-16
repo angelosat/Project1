@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
 using Project1.Framework.UI;
 
@@ -22,7 +23,7 @@ class GearStatsPanel : SelectionBoundControl
 
         var statsCache = this.Comp.GetCachedStatsNew();
         foreach (var (stat, value) in statsCache)
-            AddControls(new LabelNew($"{stat.LabelReadable}: {value}"));
+            AddControls(new LabelNew($"{stat.LabelReadable}: {StatSystem.Format(stat, value)}"));
         AlignTopToBottom();
     }
 

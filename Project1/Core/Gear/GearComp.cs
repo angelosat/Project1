@@ -186,7 +186,7 @@ public sealed class GearComp : EntityComp
             return;
         this.StatsDirty = false;
         foreach (var (stat, _) in this.StatsCache)
-            this.StatsCache[stat].Value = 0;
+            this.StatsCache[stat].Value = stat.BaseValue;
         foreach (var gear in this.GetGear())
             foreach(var (stat, value) in ToolSystem.GetStats(gear))
                 this.StatsCache[stat].Value += value;
@@ -199,6 +199,14 @@ public sealed class GearComp : EntityComp
         foreach (var k in this.StatsCache)
             yield return (k.Key, k.Value.Value);
     }
+    //public IEnumerable<(StatDef def, string value)> GetCachedStatsNewNew()
+    //{
+    //    if (this.StatsDirty)
+    //        this.RebuildStats();
+    //    foreach (var k in this.StatsCache)
+    //        //yield return (k.Key, k.Value);
+    //        yield return (k.Key, StatSystem.Format(k.Key, k.Value.Value));
+    //}
 
     public float GetStat(StatDef statDef)
     {

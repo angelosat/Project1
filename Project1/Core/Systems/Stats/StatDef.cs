@@ -2,7 +2,6 @@
 using Project1.Core.Entities.Stats.Resolvers;
 using Project1.Core.Stats;
 using Project1.Framework.Helpers;
-using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
@@ -40,28 +39,28 @@ namespace Project1.Core.Entities.Stats
                     value = mod.Def.Mod(parent, value);
             return value;
         }
-        public float CalculateFor(Entity parent)
+        public float CalculateFor(Entity item)
         {
-            var value = this.Worker.CalculateStat(parent);
+            var value = this.Worker.CalculateStat(item);
 
             if (this.Type == Types.Scalar)
             {
-                var modified = this.ApplyModifiers(parent, value);
-                return this.BaseValue + modified;
+                var modified = this.ApplyModifiers(item, value);
+                return /*this.BaseValue + */modified;
             }
             else if (this.Type == Types.Percentile)
             {
-                return this.ApplyModifiers(parent, value);
+                return /*this.BaseValue * */this.ApplyModifiers(item, value);
             }
             else throw new Exception();
         }
-        public Control GetControl(Entity parent)
-        {
-            return new Label()
-            {
-                TextFunc = () => $"{this.Name}: {this.CalculateFor(parent)}",
-            };
-        }
+        //public Control GetControl(Entity parent)
+        //{
+        //    return new Label()
+        //    {
+        //        TextFunc = () => $"{this.Name}: {this.CalculateFor(parent)}",
+        //    };
+        //}
 
         public abstract class ValueBuilder : Def
         {

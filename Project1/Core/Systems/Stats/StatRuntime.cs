@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Stats;
+using System.Diagnostics;
 
 namespace Project1.Core.Systems.Stats;
 
@@ -12,4 +13,6 @@ internal class StatRuntime
     {
         this.Def = def;
     }
+
+   
 }

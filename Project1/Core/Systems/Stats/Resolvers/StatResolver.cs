@@ -16,4 +16,5 @@ public abstract class StatResolver
 {
     public abstract float CalculateStat(Entity obj);
     public virtual float CalculateStat(Skill skill) => skill.Level;
+
 }

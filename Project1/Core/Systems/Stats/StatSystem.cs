@@ -4,7 +4,7 @@ using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 
 namespace Project1.Core.Entities.Stats;
 
@@ -76,5 +76,14 @@ public static class StatSystem
         foreach (var result in GetToolUsesFor(skill))
             foreach (var r in GetInteractionsFor(result))
                 yield return r;
+    }
+
+    static public string Format(StatDef def, float value)
+    {
+        if (def.Type == StatDef.Types.Scalar)
+            return $"{value}";
+        else if (def.Type == StatDef.Types.Percentile)
+            return $"{value:P0}";
+        throw new UnreachableException();
     }
 }

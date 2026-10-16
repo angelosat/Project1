@@ -24,7 +24,8 @@ public static class StatDefOf
     public static readonly StatDef WalkSpeed = new("Walk Speed", typeof(StatWalkSpeed), typeof(MobileComponent))
     {
         Description = "Speed of walking",
-        Type = StatDef.Types.Percentile
+        Type = StatDef.Types.Percentile,
+        BaseValue = 1f,
     };
 
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))

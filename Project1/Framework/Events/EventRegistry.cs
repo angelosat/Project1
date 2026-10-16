@@ -25,8 +25,6 @@ namespace Project1.Framework.Events
 
         internal int Register(Type t)
         {
-            if (t == typeof(InventoryItemAddedEvent))
-                "ASDASD".ToConsole();
             if (this._registry.TryGetValue(t, out var existing))
                 return existing;
             var id = this._registry.Count;

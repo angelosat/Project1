@@ -42,15 +42,16 @@ namespace Project1.Core.Entities.Stats
         }
         public float CalculateFor(Entity parent)
         {
+            var value = this.Worker.CalculateStat(parent);
+
             if (this.Type == Types.Scalar)
             {
-                var value = this.Worker.CalculateStat(parent);
                 var modified = this.ApplyModifiers(parent, value);
                 return this.BaseValue + modified;
             }
             else if (this.Type == Types.Percentile)
             {
-                return this.ApplyModifiers(parent, 1);
+                return this.ApplyModifiers(parent, value);
             }
             else throw new Exception();
         }

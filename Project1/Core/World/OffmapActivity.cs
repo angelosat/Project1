@@ -7,5 +7,4 @@ internal abstract class OffmapActivity
 {
     internal abstract void Tick(FrontierWrapper frontier, Actor actor);
     internal abstract int GetWeight(FrontierWrapper frontier, Actor actor);
-        //=> 1;
 }

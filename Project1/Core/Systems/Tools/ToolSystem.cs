@@ -56,11 +56,11 @@ internal static class ToolSystem
 
         var handle = item.Body.FindBone(BoneDefOf.ToolHandle);
         handle.Sprite = profile.SpriteHandle;
-        handle.Material = headMaterial;
+        handle.Material = handleMaterial;
 
         var head = item.Body.FindBone(BoneDefOf.ToolHead);
         head.Sprite = profile.SpriteHead;
-        head.Material = handleMaterial;
+        head.Material = headMaterial;
 
         item.Name = profile.LabelReadable;
 
@@ -239,7 +239,7 @@ internal static class ToolSystem
         var profile = (GearProfileDef)item.Profile;
         if (!profile.Role.Stats.Contains(stat))
             return null;
-        return (int)stat.CalculateFor(item);
+        return stat.CalculateFor(item);
     }
 
     public static IEnumerable<StatDef> GetSupportedStats(Entity item)

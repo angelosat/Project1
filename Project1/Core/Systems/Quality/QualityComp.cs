@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities;
 using Project1.Core.Helpers;
+using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
-using Project1.Framework.UI.Primitives;
 using System;
 using System.Collections.Generic;
 
@@ -50,5 +50,16 @@ public class QualityComp : EntityComp
     {
         this.LevelInt.Read(r);
         this.Tier = r.ReadDef<QualityDef>();
+    }
+
+    internal override void SaveExtra(SaveTag tag)
+    {
+        tag.Save("Tier", this.Tier);
+    }
+
+    internal override void LoadExtra(SaveTag tag)
+    {
+        if (tag.TryLoadDef<QualityDef>("Tier", out var tier))
+            this.Tier = tier;
     }
 }

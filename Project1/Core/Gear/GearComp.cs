@@ -5,7 +5,6 @@ using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
-using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
@@ -21,7 +20,6 @@ public sealed class GearComp : EntityComp
     GearContainer Gear;
     public Container Equipment = new() { Name = "Equipment" };
     public float ArmorTotal;
-    readonly Dictionary<StatDef, float> Cache = [];
     readonly Dictionary<StatDef, StatRuntime> StatsCache = [];
     public bool StatsDirty { get; private set; } = true;
 
@@ -117,7 +115,6 @@ public sealed class GearComp : EntityComp
     {
         if (!this.Owner.Inventory.Contains(item))
             throw new Exception();
-        //var slotType = item.Def.GearType;
         var gearProfile = (GearProfileDef)item.Profile;
         var gearRole = gearProfile.Role;
         var slotType = gearRole.Slot;
@@ -188,35 +185,26 @@ public sealed class GearComp : EntityComp
         if (!this.StatsDirty)
             return;
         this.StatsDirty = false;
-        this.Cache.Clear();
-        foreach(var gear in this.GetGear())
-        {
-            //var gearProf = gear.Profile as GearProfileDef;
-            //var gearRole = gearProf.Role;
-            //foreach(var stat in gearRole.Stats)
+        foreach (var (stat, _) in this.StatsCache)
+            this.StatsCache[stat].Value = 0;
+        foreach (var gear in this.GetGear())
             foreach(var (stat, value) in ToolSystem.GetStats(gear))
-            {
-                //var statValue = ToolSystem.CalculateStat(gear, stat).Value;
-                //this.Cache.AddOrUpdate(stat, statValue, existing => existing + statValue);
-                this.Cache.AddOrUpdate(stat, value, existing => existing + value);
                 this.StatsCache[stat].Value += value;
-            }
-        }
     }
 
-    public IEnumerable<(StatDef def, float value)> GetCachedStats()
-    {
-        if (this.StatsDirty)
-            this.RebuildStats();
-        foreach (var k in this.Cache)
-            yield return (k.Key, k.Value);
-    }
     public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()
     {
         if (this.StatsDirty)
             this.RebuildStats();
         foreach (var k in this.StatsCache)
             yield return (k.Key, k.Value.Value);
+    }
+
+    public float GetStat(StatDef statDef)
+    {
+        if (this.StatsDirty)
+            this.RebuildStats();
+        return this.StatsCache[statDef].Value;
     }
     public new class Spec : Spec<GearComp>
     {

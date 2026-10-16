@@ -41,7 +41,7 @@ class InventoryUI : SelectionBoundControl
 
         var gearStats = new GearStatsPanel();
    
-        var gearStatsPanel = new ScrollableBoxNewNewNew(gearStats, 100, gearGui.Height, mode: ScrollModes.Vertical)
+        var gearStatsPanel = new ScrollableBoxNewNewNew(gearStats, 150, gearGui.Height, mode: ScrollModes.Vertical)
             .ToPanelLabeled("Stats");
 
         var boxGearStats = new GroupBox();
@@ -52,37 +52,5 @@ class InventoryUI : SelectionBoundControl
         BoxSlots.ToPanel(),
             boxbtns);
         colorsui.SetTag(actor);
-    }
-}
-
-class GearStatsPanel : SelectionBoundControl
-{
-    GearComp Comp;
-
-    protected internal override void OnBind(ISelectable selectable)
-    {
-        if (selectable is not Actor actor)
-            return;
-        Build(actor);
-    }
-
-    private void Build(Actor actor)
-    {
-        this.Controls.Clear();
-        this.Comp = actor.GetComponent<GearComp>();
-
-        var statsCache = this.Comp.GetCachedStatsNew();
-        foreach (var (stat, value) in statsCache)
-            this.AddControls(new LabelNew($"{stat.LabelReadable}: {value}"));
-        this.AlignTopToBottom();
-    }
-
-    public override void Update()
-    {
-        base.Update();
-        if (this.Comp is null)
-            return;
-        if (this.Comp.StatsDirty)
-            this.Build(this.Comp.Owner as Actor);
     }
 }

@@ -53,8 +53,8 @@ public class FrontierWrapper
         }
         var exploration = actor.Skills.GetLevel(SkillDefOf.Exploration);
         var chance = 10 + exploration;
-        var roll = rand.Roll100(chance);
-        if (!roll)
+        var success = rand.Roll100(chance);
+        if (!success)
         {
             treasure = null;
             return false;

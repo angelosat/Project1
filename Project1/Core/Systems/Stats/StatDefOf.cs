@@ -21,7 +21,7 @@ public static class StatDefOf
         Description = "Being encumbered affects walking speed.",
     };
 
-    public static readonly StatDef WalkSpeed = new("Walk Speed", null, typeof(MobileComponent))
+    public static readonly StatDef WalkSpeed = new("Walk Speed", typeof(StatWalkSpeed), typeof(MobileComponent))
     {
         Description = "Speed of walking",
         Type = StatDef.Types.Percentile

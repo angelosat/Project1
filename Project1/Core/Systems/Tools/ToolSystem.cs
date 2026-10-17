@@ -260,10 +260,12 @@ internal static class ToolSystem
 
 
         var bonus = AllBonusDefs.SelectRandom(r);
-        if (r.Roll(.5f))
-            AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
-        if (r.Roll(.5f))
-            AllAffixDefs.SelectRandom(r).Worker.Apply(item);
+        if (AllSuffixDefs.Length != 0)
+            if (r.Roll(.5f))
+                AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
+        if(AllAffixDefs.Length != 0)
+            if (r.Roll(.5f))
+                AllAffixDefs.SelectRandom(r).Worker.Apply(item);
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

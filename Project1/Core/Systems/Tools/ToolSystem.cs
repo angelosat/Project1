@@ -242,7 +242,7 @@ internal static class ToolSystem
         var profile = (GearProfileDef)item.Profile;
         var role = profile.Role;
         var boneMats = profile.BoneMaterials;
-        foreach(var set in boneMats.Inner)
+        foreach (var set in boneMats.Inner)
         {
             var bone = set.Key;
             var filter = set.Value;
@@ -262,10 +262,18 @@ internal static class ToolSystem
         var bonus = AllBonusDefs.SelectRandom(r);
         if (AllSuffixDefs.Length != 0)
             if (r.Roll(.5f))
-                AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
-        if(AllAffixDefs.Length != 0)
+            //AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
+            {
+                var def = AllSuffixDefs.SelectRandom(r);
+                def.Worker.Apply(item, def);
+            }
+        if (AllAffixDefs.Length != 0)
             if (r.Roll(.5f))
-                AllAffixDefs.SelectRandom(r).Worker.Apply(item);
+            {
+                var def = AllAffixDefs.SelectRandom(r);
+                AllAffixDefs.SelectRandom(r).Worker.Apply(item, def);
+                def.Worker.Apply(item, def);
+            }
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

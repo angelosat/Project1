@@ -1,9 +1,13 @@
-﻿using Project1.Core.Animations;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Helpers;
 using Project1.Core.Stats;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Quality;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
@@ -13,6 +17,7 @@ namespace Project1.Core.Systems.Tools;
 public sealed class ToolComp : EntityComp<ToolComp.Spec>
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Tool;
+    
     public new class Spec : Spec<SpriteComp>
     {
         public readonly ToolUseDef ToolUse;
@@ -26,6 +31,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     public ToolUseDef ToolUse;
     public GearProfileDef ToolDef;
     readonly List<ToolUseDef> Skills = [];
+    readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
+    readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
     public float BaseWork => this.baseWork ??= this.CalculateBaseWorkAmount();
@@ -129,6 +136,11 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
             //yield return new LabelNew($"{stat}: +{value}");
             yield return new LabelNew($"{stat}: +{StatSystem.Format(stat, value)}");
         }
+
+        foreach(var (def, value) in this.ActorEnhancements)
+        {
+            yield return new LabelNew($"+{value:#} {def.TargetDef.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+        }
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)
@@ -138,6 +150,33 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         return this.BaseWork;
     }
 
+    public void AddActorEnhancement(StatBonusDef targetDef, float value)
+        => this.ActorEnhancements.Add(targetDef, value);
+
+    public void AddItemEnhancement(StatBonusDef targetDef, float value)
+        => this.ItemEnhancements.Add(targetDef, value);
+
     public override void Randomize(GameObject parent, RandomThreaded random)
         => ToolSystem.Randomize(this.Owner);
+
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.ActorEnhancements.Count);
+        foreach(var b in this.ActorEnhancements)
+        {
+            w.Write(b.Key);
+            w.Write(b.Value);
+        }
+    }
+
+    public override void Read(IDataReader r)
+    {
+        var count = r.ReadInt32();
+        for (int i = 0; i < count; i++)
+        {
+            var def = r.ReadDef<StatBonusDef>();
+            var value = r.ReadSingle();
+            this.ActorEnhancements.Add(def, value);
+        }
+    }
 }

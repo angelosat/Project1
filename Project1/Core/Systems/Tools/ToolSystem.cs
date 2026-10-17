@@ -7,6 +7,7 @@ using Project1.Core.Loot;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Crafting;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -21,6 +22,9 @@ namespace Project1.Core.Systems.Tools;
 [EnsureStaticCtorCall]
 internal static class ToolSystem
 {
+    static readonly StatBonusDef[] AllBonusDefs;
+    static readonly StatBonusDef[] AllSuffixDefs, AllAffixDefs;
+
     public static Dictionary<BoneDef, CraftingRules> Rules = [];
     static readonly HashSet<GearProfileDef> _allDefs;
     static ToolSystem()
@@ -31,6 +35,25 @@ internal static class ToolSystem
             .Allow(MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Chunk);
 
         _allDefs = [.. Def.Get<GearProfileDef>()];
+
+        AllBonusDefs = [.. Def.Get<StatBonusDef>()];
+        AllAffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
+        AllSuffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Actor)];
+        //foreach (var b in AllBonusDefs)
+        //{
+        //    switch (b.Worker)
+        //    {
+        //        case StatBonusWorker_Affix:
+        //            AllAffixDefs.
+        //            break;
+
+        //        case StatBonusWorker_Suffix:
+        //            break;
+
+        //        default:
+        //            throw new UnreachableException();
+        //    }
+        //}
     }
     public static CraftingRules CreateRuleFor(BoneDef bone)
     {
@@ -231,7 +254,16 @@ internal static class ToolSystem
         }
         var durability = item.Resources.ViewOld(ResourceDefOf.Durability);
         durability.Value = durability.Max = durabilityMax;
+
+
         Validate(item);
+
+
+        var bonus = AllBonusDefs.SelectRandom(r);
+        if (r.Roll(.5f))
+            AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
+        if (r.Roll(.5f))
+            AllAffixDefs.SelectRandom(r).Worker.Apply(item);
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

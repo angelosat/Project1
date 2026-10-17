@@ -1,3 +1,10 @@
+# todo 2026
+## Future: Multi-specialist crafting pipeline
+- Blacksmith crafts the base item using materials, techniques, and skill; these determine inherent stats and base quality.
+- Specialized craftsmen (e.g. enchanters, jewelsmiths) can further enhance finished items.
+- Each specialist's skill affects their contribution and potentially the item's final quality.
+- Define how base-item quality and subsequent enhancements interact, including limits, replacement, and stacking.
+- Preserve each enhancement's origin so final stats can be derived from construction and applied enhancements.
 # todo 2025
 ## immediate
 - maybe have crafting skill only affect durability?

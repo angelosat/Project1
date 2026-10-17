@@ -30,6 +30,8 @@ public class PhysicsComp : EntityComp
     public bool MidAir { get => this.Owner.Velocity.Z != 0; private set => this._midair = value; } // => this.Parent.Velocity.Z != 0;// HACK because checking velocity.z == 0 returns true at the peak of the jump 
     public const int KnockbackMagnitude = 3;
     public Vector3 Force;
+    private float WeightMod;
+
     public BoundingBox CurrentAABB { get; private set; }
     public BoundingBox NextAABB { get; private set; }
     public void Enable()
@@ -564,5 +566,10 @@ public class PhysicsComp : EntityComp
     {
         if (r.ReadBoolean())
             this._weight = r.ReadSingle();
+    }
+
+    internal void AddWeightModifier(float v)
+    {
+        this.WeightMod += v;
     }
 }

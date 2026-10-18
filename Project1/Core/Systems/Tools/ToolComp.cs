@@ -31,7 +31,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     //public ToolUseDef ToolUse;
     public GearProfileDef ToolDef;
     readonly List<ToolUseDef> Skills = [];
-    readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
+    public readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
@@ -133,6 +133,10 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         if (profile.Damage is DamageDef damage)
             //yield return new LabelNew($"Damage: {damage.LabelReadable}");
             yield return new LabelNew($"{this.BaseWork} {damage.LabelReadable} damage");
+        if(profile.ToolUses is var uses)
+            foreach(var use in uses)
+                yield return new LabelNew($"{this.BaseWork} {use.LabelReadable} effectiveness");
+
         foreach (var stat in this.Profile.Role.Stats)
         {
             var value = stat.Worker.CalculateStat(this.Owner);

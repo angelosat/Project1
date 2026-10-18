@@ -3,36 +3,34 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Project1.Framework
+namespace Project1.Framework;
+
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public class EnsureStaticCtorCall : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class EnsureStaticCtorCall : Attribute
+}
+[AttributeUsage(AttributeTargets.Class, Inherited = false)]
+public class ImportConfig : Attribute
+{
+}
+[AttributeUsage(AttributeTargets.Field)]
+public class PlayerSettings : Attribute
+{
+}
+public static class EnsureInitHelper
+{ 
+    static Type[] CachedTypes;
+    public static void Init()
     {
+        CachedTypes ??= Assembly.GetExecutingAssembly().GetTypes();
+        var ensured = CachedTypes.Where(t => t.GetCustomAttribute<EnsureStaticCtorCall>() is not null).OrderBy(c => c.FullName); // for more determinism
+        foreach (var tt in ensured)
+            RuntimeHelpers.RunClassConstructor(tt.TypeHandle);
     }
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class ImportConfig : Attribute
+    public static void ImportConfig()
     {
-    }
-    [AttributeUsage(AttributeTargets.Field)]
-    public class PlayerSettings : Attribute
-    {
-    }
-    public static class EnsureInitHelper
-    { 
-        static Type[] CachedTypes;
-        public static void Init()
-        {
-            CachedTypes ??= Assembly.GetExecutingAssembly().GetTypes();
-            foreach (var tt in CachedTypes.Where(t => t.GetCustomAttribute<EnsureStaticCtorCall>() is not null)
-                .OrderBy(c => c.FullName) // for more determinism
-                )
-                RuntimeHelpers.RunClassConstructor(tt.TypeHandle);
-        }
-        public static void ImportConfig()
-        {
-            CachedTypes ??= Assembly.GetExecutingAssembly().GetTypes();
-            foreach (var tt in CachedTypes.Where(t => t.GetCustomAttribute<ImportConfig>() is not null))
-                tt.GetMethod("Import", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
-        }
+        CachedTypes ??= Assembly.GetExecutingAssembly().GetTypes();
+        foreach (var tt in CachedTypes.Where(t => t.GetCustomAttribute<ImportConfig>() is not null))
+            tt.GetMethod("Import", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
     }
 }

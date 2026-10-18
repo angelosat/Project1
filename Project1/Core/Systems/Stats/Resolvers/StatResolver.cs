@@ -1,19 +1,11 @@
-﻿using Project1.Core.Skills;
+﻿using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Entities.Stats.Resolvers;
 
-//public abstract class ActorStatResolver : StatResolver
-//{
-//    //public float CalculateStat(Actor obj)
-//    //{
-//    //    throw new System.NotImplementedException();
-//    //}
-
-//}
 public abstract class StatResolver
 {
-    public abstract float CalculateStat(Entity obj);
-    public virtual float CalculateStat(Skill skill) => skill.Level;
+    public abstract float CalculateStat(Entity item);
+    public virtual float CalculateStatActor(StatDef def, Actor actor) => def.BaseValue;
 
     internal virtual string Format(StatDef def, Entity item)
         => def.LabelReadable;

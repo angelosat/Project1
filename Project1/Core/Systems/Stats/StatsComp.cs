@@ -32,7 +32,7 @@ class StatsComp : EntityComp, IGuiNew
     internal List<StatNewModifier> GetModifiers(StatDef statNewDef)
     {
         this.Modifiers.TryGetValue(statNewDef, out var item);
-        return item ?? new List<StatNewModifier>();
+        return item ?? [];
     }
     public void AddModifier(StatNewModifier mod)
     {

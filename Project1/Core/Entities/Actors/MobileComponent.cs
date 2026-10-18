@@ -282,52 +282,52 @@ public class MobileComponent : EntityComp
         //    walkY = walkX = 0;
     }
 
-    private static ParticleEmitterSphere CreateDust(GameObject parent)
-    {
-        var emitter = new ParticleEmitterSphere()
-        {
-            Lifetime = Ticks.PerSecond / 2f,
-            Offset = Vector3.Zero,
-            Rate = 0,
-            ParticleWeight = 0f,//1f,
-            ColorEnd = Color.White * .5f,
-            ColorBegin = Color.White,
-            SizeEnd = 1,
-            SizeBegin = 3,
-            Force = .01f
-        };
-        return emitter;
-    }
-    private static ParticleEmitterSphere CreateDirt(GameObject parent)
-    {
-        var block = parent.Map.GetBlock(parent.Global - Vector3.UnitZ * 0.1f);
-        var dustcolor = block.DirtColor;
-        var emitter = new ParticleEmitterSphere()
-        {
-            Lifetime = Ticks.PerSecond / 2f,
-            Offset = Vector3.Zero,
-            Rate = 0,
-            ParticleWeight = 1f,
-            ColorEnd = dustcolor * .5f,
-            ColorBegin = dustcolor,
-            SizeEnd = 1,
-            SizeBegin = 1,
-            Force = .05f
-        };
-        return emitter;
-    }
-    static readonly ParticleEmitterSphere DustEmitter = new ParticleEmitterSphere()
-    {
-        Lifetime = Ticks.PerSecond,
-        Offset = Vector3.Zero,
-        Rate = 0,
-        ParticleWeight = 1f,
-        ColorEnd = Color.SaddleBrown,
-        ColorBegin = Color.SaddleBrown,
-        SizeEnd = 1,
-        SizeBegin = 1,
-        Force = .05f
-    };
+    //private static ParticleEmitterSphere CreateDust(GameObject parent)
+    //{
+    //    var emitter = new ParticleEmitterSphere()
+    //    {
+    //        Lifetime = Ticks.PerSecond / 2f,
+    //        Offset = Vector3.Zero,
+    //        Rate = 0,
+    //        ParticleWeight = 0f,//1f,
+    //        ColorEnd = Color.White * .5f,
+    //        ColorBegin = Color.White,
+    //        SizeEnd = 1,
+    //        SizeBegin = 3,
+    //        Force = .01f
+    //    };
+    //    return emitter;
+    //}
+    //private static ParticleEmitterSphere CreateDirt(GameObject parent)
+    //{
+    //    var block = parent.Map.GetBlock(parent.Global - Vector3.UnitZ * 0.1f);
+    //    var dustcolor = block.DirtColor;
+    //    var emitter = new ParticleEmitterSphere()
+    //    {
+    //        Lifetime = Ticks.PerSecond / 2f,
+    //        Offset = Vector3.Zero,
+    //        Rate = 0,
+    //        ParticleWeight = 1f,
+    //        ColorEnd = dustcolor * .5f,
+    //        ColorBegin = dustcolor,
+    //        SizeEnd = 1,
+    //        SizeBegin = 1,
+    //        Force = .05f
+    //    };
+    //    return emitter;
+    //}
+    //static readonly ParticleEmitterSphere DustEmitter = new ParticleEmitterSphere()
+    //{
+    //    Lifetime = Ticks.PerSecond,
+    //    Offset = Vector3.Zero,
+    //    Rate = 0,
+    //    ParticleWeight = 1f,
+    //    ColorEnd = Color.SaddleBrown,
+    //    ColorBegin = Color.SaddleBrown,
+    //    SizeEnd = 1,
+    //    SizeBegin = 1,
+    //    Force = .05f
+    //};
 
     public override void Write(IDataWriter w)
     {

@@ -170,6 +170,7 @@ public class Game1 : Game
 
         /// def init
         EnsureInitHelper.Init();
+        DefOfHelper.Init();
         PresentationSystem.Init();
 
         GameObject.LoadTemplates();

@@ -3,7 +3,7 @@ using Project1.Framework.Events;
 
 namespace Project1.Core.Skills
 {
-    internal record struct SkillAdjustedEvent(Actor Actor, Skill Skill) : IEventPayload { }
-    internal record struct SkillLevelUpEvent(Actor Actor, Skill Skill) : IEventPayload { }
+    internal record struct SkillAdjustedEvent(Actor Actor, SkillRuntime Skill) : IEventPayload { }
+    internal record struct SkillLevelUpEvent(Actor Actor, SkillRuntime Skill) : IEventPayload { }
 
 }

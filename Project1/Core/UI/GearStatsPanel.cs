@@ -7,7 +7,7 @@ namespace Project1.Core.UI;
 
 class GearStatsPanel : SelectionBoundControl
 {
-    GearComp Comp;
+    GearComp Gear;
 
     protected internal override void OnBind(ISelectable selectable)
     {
@@ -19,9 +19,9 @@ class GearStatsPanel : SelectionBoundControl
     private void Build(Actor actor)
     {
         this.Controls.Clear();
-        this.Comp = actor.GetComponent<GearComp>();
+        this.Gear = actor.GetComponent<GearComp>();
 
-        var statsCache = this.Comp.GetCachedStatsNew();
+        var statsCache = this.Gear.GetCachedStatsNew();
         foreach (var (stat, value) in statsCache)
             AddControls(new LabelNew($"{stat.LabelReadable}: {StatSystem.Format(stat, value)}"));
         AlignTopToBottom();
@@ -30,9 +30,9 @@ class GearStatsPanel : SelectionBoundControl
     public override void Update()
     {
         base.Update();
-        if (this.Comp is null)
+        if (this.Gear is null)
             return;
-        if (this.Comp.StatsDirty)
-            Build(Comp.Owner as Actor);
+        if (this.Gear.StatsDirty)
+            Build(Gear.Owner as Actor);
     }
 }

@@ -23,7 +23,7 @@ namespace Project1.Core.Systems.Tools;
 internal static class ToolSystem
 {
     static readonly StatBonusDef[] AllBonusDefs;
-    static readonly StatBonusDef[] AllSuffixDefs, AllAffixDefs;
+    static readonly StatBonusDef[] AllSuffixDefs, AllPrefixDefs;
 
     public static Dictionary<BoneDef, CraftingRules> Rules = [];
     static readonly HashSet<GearProfileDef> _allDefs;
@@ -37,7 +37,7 @@ internal static class ToolSystem
         _allDefs = [.. Def.Get<GearProfileDef>()];
 
         AllBonusDefs = [.. Def.Get<StatBonusDef>()];
-        AllAffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
+        AllPrefixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
         AllSuffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Actor)];
         //foreach (var b in AllBonusDefs)
         //{
@@ -267,11 +267,11 @@ internal static class ToolSystem
                 var def = AllSuffixDefs.SelectRandom(r);
                 def.Worker.Apply(item, def);
             }
-        if (AllAffixDefs.Length != 0)
+        if (AllPrefixDefs.Length != 0)
             if (r.Roll(.5f))
             {
-                var def = AllAffixDefs.SelectRandom(r);
-                AllAffixDefs.SelectRandom(r).Worker.Apply(item, def);
+                var def = AllPrefixDefs.SelectRandom(r);
+                AllPrefixDefs.SelectRandom(r).Worker.Apply(item, def);
                 def.Worker.Apply(item, def);
             }
     }
@@ -300,7 +300,18 @@ internal static class ToolSystem
             yield return (stat, value);
         }
     }
-
+    public static IEnumerable<(Def def, float value)> GetStatsNew(Entity item)
+    {
+        var gearProf = item.Profile as GearProfileDef;
+        var gearRole = gearProf.Role;
+        foreach (var stat in gearRole.Stats)
+        {
+            var value = CalculateStat(item, stat).Value;
+            yield return (stat, value);
+        }
+        foreach (var (bonusDef, bonusVal) in item.ToolComponent.ActorEnhancements)
+            yield return (bonusDef, bonusVal);
+    }
     internal static void Validate(Entity item)
     {
         var mat = item.Body.Material;

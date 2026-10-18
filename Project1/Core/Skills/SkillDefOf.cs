@@ -16,7 +16,7 @@ public static class SkillDefOf
     {
         Description = "Efficiency when digging soil, gravel, mud, and sand.",
         Icon = new Icon(UIManager.Icons32, 12, 32),
-        AffectedStats = [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness],
+        //AffectedStats = [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness],
     };
     static public readonly SkillDef Mining = new("Mining")
     {

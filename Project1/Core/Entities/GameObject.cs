@@ -1219,7 +1219,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         return this.HasComponent<PlantComponent>();
     }
 
-    internal Skill GetSkill(SkillDef skill)
+    internal SkillRuntime GetSkill(SkillDef skill)
     {
         return this.GetComponent<SkillsComponent>().GetSkill(skill);
     }

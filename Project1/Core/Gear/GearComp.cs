@@ -16,6 +16,7 @@ namespace Project1.Core.Gear;
 [EnsureStaticCtorCall]
 public sealed class GearComp : EntityComp
 {
+    Actor Actor => field ??= this.Owner as Actor;
     public override EntityCompDef CompDef => EntityCompDefOf.Gear;
     GearContainer Gear;
     public Container Equipment = new() { Name = "Equipment" };
@@ -185,11 +186,22 @@ public sealed class GearComp : EntityComp
         if (!this.StatsDirty)
             return;
         this.StatsDirty = false;
+     
+        this.Actor.Bonuses.Clear();
+        var gearAll = this.GetGear();
+
+        foreach (var gear in gearAll)
+            foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
+                this.Actor.Bonuses[bonusDef.TargetDef] = bonusVal;
+
         foreach (var (stat, _) in this.StatsCache)
-            this.StatsCache[stat].Value = stat.BaseValue;
-        foreach (var gear in this.GetGear())
-            foreach(var (stat, value) in ToolSystem.GetStats(gear))
+            this.StatsCache[stat].Value = stat.Worker.CalculateStatActor(stat, this.Actor);// stat.BaseValue;
+
+        foreach (var gear in gearAll)
+        {
+            foreach (var (stat, value) in ToolSystem.GetStats(gear))
                 this.StatsCache[stat].Value += value;
+        }
     }
 
     public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()

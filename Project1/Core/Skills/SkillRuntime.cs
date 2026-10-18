@@ -9,11 +9,12 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using Project1.Framework.UI.Primitives;
 using System;
+using System.Collections.Generic;
 
 
 namespace Project1.Core.Skills;
 
-public partial class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<SkillDef>, ISerializableNew<Skill>, INamed, IListable
+public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, IDefWrapper<SkillDef>, ISerializableNew<SkillRuntime>, INamed, IListable
 {
     public SkillsComponent Comp;
     public SkillDef SkillDef;
@@ -21,17 +22,19 @@ public partial class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<Sk
     int _level = 1;
     public int Level
     {
-        get => this._level;
+        get => this._level + this.TotalBonus;
         set
         {
             this._level = Math.Max(1, value);
             this.LvlProgress.SetMax(GetNextLvlXp(this._level));
         }
     }
+    public int TotalBonus;
+    Dictionary<object, int> BonusSources = [];
     public readonly ProgressInt LvlProgress = new(10);
     const int XpToLevelBase = 10;
-    public Skill() { }
-    public Skill(SkillsComponent owner, SkillDef def)
+    public SkillRuntime() { }
+    public SkillRuntime(SkillsComponent owner, SkillDef def)
     {
         this.Comp = owner;
         this.SkillDef = def;
@@ -134,7 +137,7 @@ public partial class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<Sk
         w.Write(this.LvlProgress.Value);
     }
 
-    public Skill Read(IDataReader r)
+    public SkillRuntime Read(IDataReader r)
     {
         this.SkillDef = r.ReadDef<SkillDef>();
         this.Level = r.ReadInt32();
@@ -147,11 +150,11 @@ public partial class Skill : Inspectable, ISaveableNewNew<Skill>, IDefWrapper<Sk
         return $"{this.SkillDef.LabelReadable}: {this.Level} ({this.CurrentXP} / {this.XpToLevel})";
     }
 
-    public static Skill Create(IDataReader r) => new Skill().Read(r);
+    public static SkillRuntime Create(IDataReader r) => new SkillRuntime().Read(r);
 
-    public static Skill Create(SaveTag tag)
+    public static SkillRuntime Create(SaveTag tag)
     {
-        var skill = new Skill();
+        var skill = new SkillRuntime();
         skill.SkillDef = tag.LoadDef<SkillDef>("Def");
         //tag.TryGetTagValueOrDefault("Level", out skill._level);
         skill.Level = tag.LoadInt("Level");

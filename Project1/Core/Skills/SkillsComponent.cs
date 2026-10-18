@@ -15,7 +15,7 @@ namespace Project1.Core.Skills
     public class SkillsComponent : EntityComp, IGui
     {
         public override EntityCompDef CompDef => EntityCompDefOf.Skills;
-        public Dictionary<SkillDef, Skill> SkillsNew = [];
+        public Dictionary<SkillDef, SkillRuntime> SkillsNew = [];
         static public Panel UI = new Panel(new Rectangle(0, 0, 500, 400));
 
         public SkillsComponent()
@@ -30,10 +30,10 @@ namespace Project1.Core.Skills
                 this.Add(s.SkillDef);
             this.Randomize();
         }
-        public IEnumerable<Skill> All => this.SkillsNew.Values;
+        public IEnumerable<SkillRuntime> All => this.SkillsNew.Values;
         public void Add(SkillDef def)
         {
-            this.SkillsNew.Add(def, new Skill(this, def) { Comp = this });
+            this.SkillsNew.Add(def, new SkillRuntime(this, def) { Comp = this });
         }
         internal override void Resolve()
         {
@@ -43,11 +43,11 @@ namespace Project1.Core.Skills
         public override string Name { get; } = "Npc Skills";
 
         [InspectorHidden]
-        internal Skill this[SkillDef skill] => this.GetSkill(skill);
+        internal SkillRuntime this[SkillDef skill] => this.GetSkill(skill);
       
         public Control GetCreationGui()
         {
-            var table = new TableScrollableCompact<Skill>()
+            var table = new TableScrollableCompact<SkillRuntime>()
                 .AddColumn(null, "name", 80, s => new Label(s.SkillDef.LabelReadable), 0)
                 .AddColumn(null, "value", 16, s => new Label() { TextFunc = () => s.Level.ToString() }, 0);
 
@@ -60,7 +60,7 @@ namespace Project1.Core.Skills
             GuiList.AddItems(this.SkillsNew.Values);
             box.AddControls(GuiList);
         }
-        internal Skill GetSkill(SkillDef skill)
+        internal SkillRuntime GetSkill(SkillDef skill)
             => this.SkillsNew[skill];
         internal int GetLevel(SkillDef skill)
             => this.SkillsNew[skill].Level;
@@ -92,7 +92,7 @@ namespace Project1.Core.Skills
                 this.Add(skilldef);
 
             // actually load in previous saved values
-            var saved = tag.LoadDefWrappers<SkillDef, Skill>("Skills");
+            var saved = tag.LoadDefWrappers<SkillDef, SkillRuntime>("Skills");
             foreach (var s in saved)
                 if(this.SkillsNew.ContainsKey(s.Key))
                     this.SkillsNew[s.Key] = s.Value;
@@ -105,7 +105,7 @@ namespace Project1.Core.Skills
         public override void Read(IDataReader r)
         {
             //r.ReadDefWrappers(this.SkillsNew);
-            var skillsLoaded = r.ReadList<Skill>();//.Where(s => s.Def is not null);
+            var skillsLoaded = r.ReadList<SkillRuntime>();//.Where(s => s.Def is not null);
             this.SkillsNew = skillsLoaded.Where(s=>s.Def is not null).ToDictionary(s => s.Def);
             //foreach(var skill in skillsLoaded)
             //{
@@ -129,7 +129,7 @@ namespace Project1.Core.Skills
             var s = this.SkillsNew[skill];
             var result = s.AwardInt(xp);
             actor.World.Events.Post(new SkillAdjustedEvent(actor, s));
-            if(result == Skill.SkillXpAwardResult.LevelUp)
+            if(result == SkillRuntime.SkillXpAwardResult.LevelUp)
                 actor.World.Events.Post(new SkillLevelUpEvent(actor, s));
         }
 

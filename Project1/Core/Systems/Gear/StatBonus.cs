@@ -53,6 +53,8 @@ static public class StatBonusContextDefOf
     static public readonly StatBonusContextDef Attribute = new("Attribute", /*typeof(AttributeDef), */typeof(StatBonusWorker_Actor_Attribute));
     static public readonly StatBonusContextDef Resource = new("Resource", /*typeof(ResourceDef), */typeof(StatBonusWorker_Actor_Resource));
     static public readonly StatBonusContextDef Trait = new("Trait", /*typeof(TraitDef), */typeof(StatBonusWorker_Actor_Trait));
+    static public readonly StatBonusContextDef Skill = new("Skill", /*typeof(TraitDef), */typeof(StatBonusWorker_Actor_Skill));
+    //static public readonly StatBonusContextDef ToolUse = new("ToolUse", /*typeof(TraitDef), */typeof(StatBonusWorker_Actor_ToolUse));
 
     static StatBonusContextDefOf()
     {
@@ -68,7 +70,7 @@ public abstract class StatBonusWorker()//StatBonusDef def)
     public void Apply(Entity item, StatBonusDef def)
     {
         var comp = item.GetComponent<ToolComp>();
-        //comp.AddActorEnhancement(this.Def, 5f);
+        comp.AddActorEnhancement(def, 5f);
         item.SetName(this.Format(item, def));
     }
     public virtual IEnumerable<Def> GetTargetDefs() => [];
@@ -93,6 +95,19 @@ public class StatBonusWorker_Actor_Trait : StatBonusWorker_Actor
     public override IEnumerable<Def> GetTargetDefs()
         => ActorDnaDefOf.Npc.Traits;
 }
+
+public class StatBonusWorker_Actor_Skill : StatBonusWorker_Actor
+{
+    public override IEnumerable<Def> GetTargetDefs()
+        => ActorDnaDefOf.Npc.Skills;
+}
+
+//public class StatBonusWorker_Actor_ToolUse : StatBonusWorker_Actor
+//{
+//    public override IEnumerable<Def> GetTargetDefs()
+//        => Def.Get<ToolUseDef>();
+//}
+
 public class StatBonusWorker_Item : StatBonusWorker
 {
     public override void ApplyNew(Entity item, StatBonusDef def)

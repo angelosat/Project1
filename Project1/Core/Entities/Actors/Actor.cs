@@ -51,7 +51,7 @@ public sealed class Actor : Entity
     internal RelationshipsComp Relationships => field ??= this.GetComponent<RelationshipsComp>();
 
     [InspectorHidden]
-    public Skill this[SkillDef skill] => this.Skills.GetSkill(skill);
+    public SkillRuntime this[SkillDef skill] => this.Skills.GetSkill(skill);
 
     [InspectorHidden]
     public Trait this[TraitDef trait] => this.GetTrait(trait);
@@ -63,6 +63,8 @@ public sealed class Actor : Entity
     public MoodComp Mood => field ??= this.GetComponent<MoodComp>();
 
     public float MoodValue => this.Mood.Mood;
+
+    public readonly Dictionary<Def, float> Bonuses = [];
 
     public Actor()
     {

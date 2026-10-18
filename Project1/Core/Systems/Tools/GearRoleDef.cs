@@ -10,6 +10,5 @@ public class GearRoleDef(string name, GearSlotDef slot, BoneStructureDef bones, 
 {
     public readonly GearSlotDef Slot = slot;
     public readonly BoneStructureDef Bones = bones;
-    //public DamageDef? Damage;
     public readonly StatDef[] Stats = stats;
 }

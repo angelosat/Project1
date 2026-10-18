@@ -11,12 +11,11 @@ using System.Collections.Generic;
 namespace Project1.Core.Systems.Tools;
 
 #nullable enable
-public class GearProfileDef(string name, GearRoleDef role /*GearSlotDef slot, BoneStructureDef bones*/) : Def(name), IItemDefVariator
+public class GearProfileDef(string name, GearRoleDef role) : Def(name), IItemDefVariator
 {
-    //public GearSlotDef Slot = slot;
-    //public BoneStructureDef Bones = bones;
     public GearRoleDef? Role = role;
     public ToolUseDef? ToolUse;
+    public ToolUseDef[]? ToolUses;
     public DamageDef? Damage;
     public Sprite? SpriteHandle, SpriteHead;
     public readonly Dictionary<BoneDef, Sprite> BoneSprites = [];

@@ -21,6 +21,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.ShovelHandle,
         SpriteHead = ItemContent.ShovelHead,
         ToolUse = ToolUseDefOf.Digging,
+        ToolUses = [ToolUseDefOf.Digging],
         //Damage = DamageDefOf.Digging,
         Skill = SkillDefOf.Digging,
         ExampleBone = BoneDefOf.ToolHandle,
@@ -38,6 +39,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.HammerHandle,
         SpriteHead = ItemContent.HammerHead,
         ToolUse = ToolUseDefOf.Building,
+        ToolUses = [ToolUseDefOf.Building],
         Damage = DamageDefOf.Blunt,
         Skill = SkillDefOf.Construction,
         BoneSprites =
@@ -53,6 +55,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.PickaxeHandle,
         SpriteHead = ItemContent.PickaxeHead,
         ToolUse = ToolUseDefOf.Mining,
+        ToolUses = [ToolUseDefOf.Mining],
         Damage = DamageDefOf.Piercing,
         Skill = SkillDefOf.Mining,
         BoneSprites =
@@ -68,6 +71,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.HandsawHandle,
         SpriteHead = ItemContent.HandsawHead,
         ToolUse = ToolUseDefOf.Carpentry,
+        ToolUses = [ToolUseDefOf.Carpentry],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Carpentry,
         BoneSprites =
@@ -83,6 +87,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.HoeHandle,
         SpriteHead = ItemContent.HoeHead,
         ToolUse = ToolUseDefOf.Argiculture,
+        ToolUses = [ToolUseDefOf.Argiculture],
         Damage = DamageDefOf.Blunt,
         Skill = SkillDefOf.Argiculture,
         BoneSprites =
@@ -99,6 +104,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.AxeHandle,
         SpriteHead = ItemContent.AxeHead,
         ToolUse = ToolUseDefOf.Chopping,
+        ToolUses = [ToolUseDefOf.Chopping],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Plantcutting,
         BoneSprites =
@@ -115,6 +121,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.AxeHandle,
         SpriteHead = ItemContent.AxeHead,
         ToolUse = ToolUseDefOf.Chopping,
+        ToolUses = [ToolUseDefOf.Chopping],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Melee,
         BoneSprites =
@@ -175,29 +182,29 @@ static class GearProfileDefOf
         Def.Register(typeof(GearProfileDefOf));
     }
 
-    private static void GenerateRecipesNew()
-    {
-        var defs = Def.Database.Values.OfType<GearProfileDef>().ToList();
-        foreach (var toolDef in defs)
-        {
-            var reagents = new List<Reaction.Reagent>();
+    //private static void GenerateRecipesNew()
+    //{
+    //    var defs = Def.Database.Values.OfType<GearProfileDef>().ToList();
+    //    foreach (var toolDef in defs)
+    //    {
+    //        var reagents = new List<Reaction.Reagent>();
 
-            foreach (var reagent in CraftingProperties.ToolCraftingProperties.Reagents)
-                reagents.Add(reagent.Value);
+    //        foreach (var reagent in CraftingProperties.ToolCraftingProperties.Reagents)
+    //            reagents.Add(reagent.Value);
 
-            var reaction = new Reaction(
-                $"Craft {toolDef.LabelReadable}",
-                Reaction.CanBeMadeAt(IsWorkstation.Types.None, IsWorkstation.Types.Workbench),
-                reagents,
-                new List<Reaction.Product>() {
-                    new Reaction.Product(dic=>ToolSystem.CreateToolOrWeapon(toolDef, dic["Handle"].Body.Material, dic["Head"].Body.Material)) },
-                    //new Reaction.Product(dic=>ItemFamilyDefOf.Tool.System.Create(toolDef, new ToolSystem.Args(dic["Handle"].Body.Material, dic["Head"].Body.Material))) },
-                SkillDefOf.Crafting,
-                DutyDefOf.Craftsman)
-            { CreatesUnfinishedItem = true }
-                .ModWorkRequiredFromMaterials();
+    //        var reaction = new Reaction(
+    //            $"Craft {toolDef.LabelReadable}",
+    //            Reaction.CanBeMadeAt(IsWorkstation.Types.None, IsWorkstation.Types.Workbench),
+    //            reagents,
+    //            new List<Reaction.Product>() {
+    //                new Reaction.Product(dic=>ToolSystem.CreateToolOrWeapon(toolDef, dic["Handle"].Body.Material, dic["Head"].Body.Material)) },
+    //                //new Reaction.Product(dic=>ItemFamilyDefOf.Tool.System.Create(toolDef, new ToolSystem.Args(dic["Handle"].Body.Material, dic["Head"].Body.Material))) },
+    //            SkillDefOf.Crafting,
+    //            DutyDefOf.Craftsman)
+    //        { CreatesUnfinishedItem = true }
+    //            .ModWorkRequiredFromMaterials();
 
-            Def.Register(reaction);
-        }
-    }
+    //        Def.Register(reaction);
+    //    }
+    //}
 }

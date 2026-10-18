@@ -7,9 +7,12 @@ using Project1.Core.Interactions;
 using Project1.Core.Resources;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Tools;
+using Project1.Framework;
+using System.Collections.Generic;
 
 namespace Project1.Core.Stats;
 
+//[EnsureStaticCtorCall]
 public static class StatDefOf
 {
     public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
@@ -49,7 +52,7 @@ public static class StatDefOf
         Type = StatDef.Types.Scalar
     };
 
-    public static readonly StatDef ToolEffectiveness = new("Tool Effectiveness", typeof(StatToolEffectiveness), typeof(ToolComp))
+    public static readonly StatDef ToolEffectiveness = new("Tool Effectiveness", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
     {
         Description = "Amount of work produced with each hit of the tool.",
         Type = StatDef.Types.Scalar,
@@ -80,9 +83,16 @@ public static class StatDefOf
     static StatDefOf()
     {
         Def.Register(typeof(StatDefOf));
-    }
 
-    
+        // Procedurally generate statdefs based on dynamic systems like skills, damage types, work types, etc
+        var tooluses = Def.Get<ToolUseDef>();
+        List<Def> toRegister = [];
+        foreach (var tooluse in tooluses)
+            //Def.Register(new StatDef($"ToolUse:{tooluse.LabelReadable}", new StatResolver_WorkEffectiveness(tooluse), typeof(ToolComp)));
+            toRegister.Add(new StatDef($"{tooluse.LabelReadable}", new StatResolver_ActorWorkEffectiveness(tooluse), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
+        foreach (var to in toRegister)
+            Def.Register(to);
+    }
 }
 
 //public static class StatDefOf

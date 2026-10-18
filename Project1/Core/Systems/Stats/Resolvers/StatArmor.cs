@@ -1,7 +1,4 @@
-﻿using Project1.Core.Entities.Actors;
-using System.Linq;
-
-namespace Project1.Core.Entities.Stats.Resolvers;
+﻿namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatArmor : StatResolver
 {
@@ -11,9 +8,9 @@ sealed class StatArmor : StatResolver
         var density = bodyMaterial.Density;
         return density;
 
-        var actor = item as Actor;
-        var gear = actor.GetGear();
-        var value = gear.Sum(g => g.Def.ApparelProperties?.ArmorValue ?? 0);
-        return value;
+        //var actor = item as Actor;
+        //var gear = actor.GetGear();
+        //var value = gear.Sum(g => g.Def.ApparelProperties?.ArmorValue ?? 0);
+        //return value;
     }
 }

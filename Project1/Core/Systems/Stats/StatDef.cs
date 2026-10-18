@@ -1,127 +1,133 @@
 ﻿using Project1.Core.Attributes;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats.Resolvers;
 using Project1.Core.Stats;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.Entities.Stats
+namespace Project1.Core.Entities.Stats;
+
+public sealed class StatDef : Def
 {
-    public sealed class StatDef : Def
+    public enum Types { Scalar, Percentile };
+    public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
+    public static StatDef[] NpcStatPackage { get; } = { StatDefOf.MaxHaulWeight, StatDefOf.Encumberance, StatDefOf.WalkSpeed, StatDefOf.Armor };
+
+    public float BaseValue;
+    public string Description;
+    public Types Type = Types.Scalar;
+    public string StringFormat = "";
+    readonly Type ValueGetterType;
+    StatResolver _valueGetter;
+    public readonly Type CompRequired;
+    public StatResolver Worker => this._valueGetter ??= ActivatorSafe<StatResolver>.CreateInstance(this.ValueGetterType);
+
+    public StatDef(string name) : base(name)
     {
-        public enum Types { Scalar, Percentile };
-        public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
-        public static StatDef[] NpcStatPackage { get; } = { StatDefOf.MaxHaulWeight, StatDefOf.Encumberance, StatDefOf.WalkSpeed, StatDefOf.Armor };
 
-        public float BaseValue;
-        public string Description;
-        public Types Type = Types.Scalar;
-        public string StringFormat = "";
-        readonly Type ValueGetterType;
-        StatResolver _valueGetter;
-        public readonly Type CompRequired;
-        public StatResolver Worker => this._valueGetter ??= ActivatorSafe<StatResolver>.CreateInstance(this.ValueGetterType);
+    }
+    public StatDef(string name, Type valueGetter, Type compRequired) : base(name)
+    {
+        this.ValueGetterType = valueGetter;
+        this.CompRequired = compRequired;
+    }
+    public StatDef(string name, StatResolver resolver, Type compRequired) : base(name)
+    {
+        this._valueGetter = resolver;
+        this.CompRequired = compRequired;
+    }
+    
+    float ApplyModifiers(Entity parent, float value)
+    {
+        var mods = parent.GetStatModifiers(this);
+        if (mods is not null)
+            foreach (var mod in mods)
+                value = mod.Def.Mod(parent, value);
+        return value;
+    }
+    public float CalculateFor(Entity item)
+    {
+        var value = this.Worker.CalculateStat(item);
 
-        public StatDef(string name) : base(name)
+        if (this.Type == Types.Scalar)
         {
-
+            var modified = this.ApplyModifiers(item, value);
+            return /*this.BaseValue + */modified;
         }
-        public StatDef(string name, Type valueGetter, Type compRequired) : base(name)
+        else if (this.Type == Types.Percentile)
         {
-            this.ValueGetterType = valueGetter;
-            this.CompRequired = compRequired;
+            return /*this.BaseValue * */this.ApplyModifiers(item, value);
         }
-        float ApplyModifiers(Entity parent, float value)
+        else throw new Exception();
+    }
+    //public Control GetControl(Entity parent)
+    //{
+    //    return new Label()
+    //    {
+    //        TextFunc = () => $"{this.Name}: {this.CalculateFor(parent)}",
+    //    };
+    //}
+
+    public abstract class ValueBuilder : Def
+    {
+        public ValueBuilder(string name) : base(name)
         {
-            var mods = parent.GetStatModifiers(this);
-            if (mods is not null)
-                foreach (var mod in mods)
-                    value = mod.Def.Mod(parent, value);
-            return value;
         }
-        public float CalculateFor(Entity item)
-        {
-            var value = this.Worker.CalculateStat(item);
+        protected abstract float BaseGet(Entity parent);
+        protected List<Expression> Expressions = new();
 
-            if (this.Type == Types.Scalar)
-            {
-                var modified = this.ApplyModifiers(item, value);
-                return /*this.BaseValue + */modified;
-            }
-            else if (this.Type == Types.Percentile)
-            {
-                return /*this.BaseValue * */this.ApplyModifiers(item, value);
-            }
-            else throw new Exception();
+        public float Get(Entity parent)
+        {
+            var val = this.BaseGet(parent);
+            foreach (var exp in this.Expressions)
+                val = exp.Perform(val);
+            return val;
         }
-        //public Control GetControl(Entity parent)
-        //{
-        //    return new Label()
-        //    {
-        //        TextFunc = () => $"{this.Name}: {this.CalculateFor(parent)}",
-        //    };
-        //}
 
-        public abstract class ValueBuilder : Def
+        public class ExpressionDef : Def
         {
-            public ValueBuilder(string name) : base(name)
+            internal Func<float, float, float> Operator;
+            public ExpressionDef(string name, string label, Func<float, float, float> op) : base(name)
             {
-            }
-            protected abstract float BaseGet(Entity parent);
-            protected List<Expression> Expressions = new();
-
-            public float Get(Entity parent)
-            {
-                var val = this.BaseGet(parent);
-                foreach (var exp in this.Expressions)
-                    val = exp.Perform(val);
-                return val;
+                this.Operator = op;
             }
 
-            public class ExpressionDef : Def
-            {
-                internal Func<float, float, float> Operator;
-                public ExpressionDef(string name, string label, Func<float, float, float> op) : base(name)
-                {
-                    this.Operator = op;
-                }
-
-                public static readonly ExpressionDef Division = new("Division", "/", (a, b) => a / b);
-            }
-            protected class Expression
-            {
-                readonly ExpressionDef Def;
-                readonly float Value;
-
-                public Expression(ExpressionDef def, float val)
-                {
-                    this.Def = def;
-                    this.Value = val;
-                }
-                public float Perform(float a)
-                {
-                    return this.Def.Operator(a, this.Value);
-                }
-
-            }
+            public static readonly ExpressionDef Division = new("Division", "/", (a, b) => a / b);
         }
-        class ValueBuilderFromAttribute : ValueBuilder
+        protected class Expression
         {
-            readonly AttributeDef Def;
-            public ValueBuilderFromAttribute(AttributeDef def) : base("AttributeGetter")
+            readonly ExpressionDef Def;
+            readonly float Value;
+
+            public Expression(ExpressionDef def, float val)
             {
                 this.Def = def;
+                this.Value = val;
             }
-            protected override float BaseGet(Entity parent)
+            public float Perform(float a)
             {
-                return parent.GetAttribute(this.Def)?.Level ?? 0;
+                return this.Def.Operator(a, this.Value);
             }
 
-            internal ValueBuilder DivideBy(int v)
-            {
-                this.Expressions.Add(new Expression(ExpressionDef.Division, 2));
-                return this;
-            }
+        }
+    }
+    class ValueBuilderFromAttribute : ValueBuilder
+    {
+        readonly AttributeDef Def;
+        public ValueBuilderFromAttribute(AttributeDef def) : base("AttributeGetter")
+        {
+            this.Def = def;
+        }
+        protected override float BaseGet(Entity parent)
+        {
+            return parent.GetAttribute(this.Def)?.Level ?? 0;
+        }
+
+        internal ValueBuilder DivideBy(int v)
+        {
+            this.Expressions.Add(new Expression(ExpressionDef.Division, 2));
+            return this;
         }
     }
 }

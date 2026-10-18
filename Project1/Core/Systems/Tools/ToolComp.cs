@@ -28,7 +28,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     }
     public override string Name { get; } = "Tool";
     GearProfileDef Profile => this.Owner.Profile as GearProfileDef;
-    public ToolUseDef ToolUse;
+    //public ToolUseDef ToolUse;
     public GearProfileDef ToolDef;
     readonly List<ToolUseDef> Skills = [];
     readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
@@ -91,7 +91,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     internal override void CopyFrom(EntityComp source)
     {
         var comp = (ToolComp)source;
-        this.ToolUse = comp.ToolUse;
+        //this.ToolUse = comp.ToolUse;
         this.ToolDef = comp.ToolDef;
         this.baseSpeed = comp.baseSpeed;
         this.baseWork = comp.baseWork;
@@ -130,11 +130,15 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         var profile = this.Owner.Profile as GearProfileDef;
         var slot = profile.Role.Slot;
         yield return new LabelNew($"Slot: {slot.LabelReadable}");
+        if (profile.Damage is DamageDef damage)
+            //yield return new LabelNew($"Damage: {damage.LabelReadable}");
+            yield return new LabelNew($"{this.BaseWork} {damage.LabelReadable} damage");
         foreach (var stat in this.Profile.Role.Stats)
         {
             var value = stat.Worker.CalculateStat(this.Owner);
             //yield return new LabelNew($"{stat}: +{value}");
-            yield return new LabelNew($"{stat}: +{StatSystem.Format(stat, value)}");
+            //yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}");
+            yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.Worker.Format(stat, this.Owner)}");
         }
 
         foreach(var (def, value) in this.ActorEnhancements)

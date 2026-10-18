@@ -381,14 +381,14 @@ public sealed class Interaction : Inspectable
         workamount = (int)total;
         speed = toolspeed;
     }
-    float GetToolEffectiveness()
-    {
-        //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
-        if (this.Actor.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
-            return tool[StatDefOf.ToolEffectiveness];
-        else
-            return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
-    }
+    //float GetToolEffectiveness()
+    //{
+    //    //if (this.Actor.Gear.GetGear(GearType.Mainhand) is Item tool && tool.ToolComponent.ToolProperties.ToolUse == this.GetToolUse())
+    //    if (this.Actor.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity tool && tool.ToolComponent.ToolUse == this.Def.ToolUse)
+    //        return tool[StatDefOf.ToolEffectiveness];
+    //    else
+    //        return this.Actor.GetMaterial(BoneDefOf.RightHand).Density;
+    //}
     float GetEnergyConsumption(float workAmount, int skillLevel)
     {
         var toolWeight = this.Actor[GearSlotDefOf.Mainhand]?.TotalWeight ?? 1;

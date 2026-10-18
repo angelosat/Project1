@@ -4,9 +4,12 @@ using Project1.Core.Systems.Gear;
 
 namespace Project1.Core.Systems.Tools;
 
+#nullable enable
+
 public class GearRoleDef(string name, GearSlotDef slot, BoneStructureDef bones, StatDef[] stats) : Def(name)
 {
     public readonly GearSlotDef Slot = slot;
     public readonly BoneStructureDef Bones = bones;
+    //public DamageDef? Damage;
     public readonly StatDef[] Stats = stats;
 }

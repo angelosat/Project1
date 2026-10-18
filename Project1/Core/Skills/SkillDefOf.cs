@@ -78,6 +78,11 @@ public static class SkillDefOf
         Description = "Exploration description",
         Icon = new Icon(UIManager.Icons32, 12, 32)
     };
+    static public readonly SkillDef Melee = new("Melee")
+    {
+        Description = "Melee description",
+        Icon = new Icon(UIManager.Icons32, 12, 32)
+    };
     static SkillDefOf()
     {
         Def.Register(typeof(SkillDefOf));

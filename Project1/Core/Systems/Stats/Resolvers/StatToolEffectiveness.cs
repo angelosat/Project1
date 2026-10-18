@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Systems.Quality;
+using Project1.Core.Systems.Tools;
 
 namespace Project1.Core.Entities.Stats.Resolvers;
 
@@ -12,5 +13,12 @@ sealed class StatToolEffectiveness : StatResolver
         if (material is null)
             return 1; // is it ever possible for this to be null?
         return material.Density * obj.QualityComp.Tier.Multiplier;
+    }
+
+    internal override string Format(StatDef def, Entity item)
+    {
+        //var comp = item.GetComponent<ToolComp>();
+        var profile = item.Profile as GearProfileDef;
+        return $"{profile.ToolUse.LabelReadable} effectiveness";
     }
 }

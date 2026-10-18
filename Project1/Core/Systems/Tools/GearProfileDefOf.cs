@@ -1,10 +1,10 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Assets;
-using Project1.Core.Entities.Stats;
 using Project1.Core.Legacy.Properties;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Stats;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.ShovelHandle,
         SpriteHead = ItemContent.ShovelHead,
         ToolUse = ToolUseDefOf.Digging,
-        Damage = DamageDefOf.Digging,
+        //Damage = DamageDefOf.Digging,
         Skill = SkillDefOf.Digging,
         ExampleBone = BoneDefOf.ToolHandle,
         BoneSprites =
@@ -53,7 +53,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.PickaxeHandle,
         SpriteHead = ItemContent.PickaxeHead,
         ToolUse = ToolUseDefOf.Mining,
-        Damage = DamageDefOf.Mining,
+        Damage = DamageDefOf.Piercing,
         Skill = SkillDefOf.Mining,
         BoneSprites =
         {
@@ -68,7 +68,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.HandsawHandle,
         SpriteHead = ItemContent.HandsawHead,
         ToolUse = ToolUseDefOf.Carpentry,
-        Damage = DamageDefOf.Sawing,
+        Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Carpentry,
         BoneSprites =
         {
@@ -83,7 +83,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.HoeHandle,
         SpriteHead = ItemContent.HoeHead,
         ToolUse = ToolUseDefOf.Argiculture,
-        Damage = DamageDefOf.Tilling,
+        Damage = DamageDefOf.Blunt,
         Skill = SkillDefOf.Argiculture,
         BoneSprites =
         {
@@ -99,12 +99,28 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.AxeHandle,
         SpriteHead = ItemContent.AxeHead,
         ToolUse = ToolUseDefOf.Chopping,
-        Damage = DamageDefOf.Chopping,
+        Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Plantcutting,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.AxeHandle },
             { BoneDefOf.ToolHead, ItemContent.AxeHead }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
+    };
+
+    public static readonly GearProfileDef Sword = new("Sword", GearRoleDefOf.Weapon)
+    {
+        Description = "Slashes enemies.",
+        SpriteHandle = ItemContent.AxeHandle,
+        SpriteHead = ItemContent.AxeHead,
+        ToolUse = ToolUseDefOf.Chopping,
+        Damage = DamageDefOf.Slashing,
+        Skill = SkillDefOf.Melee,
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.SwordHandle },
+            { BoneDefOf.ToolHead, ItemContent.SwordHead }
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
     };

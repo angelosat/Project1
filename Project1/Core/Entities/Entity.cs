@@ -74,10 +74,10 @@ public class Entity : GameObject
         this.Components.CreateAndResolve(def);
         this.EnumerateSlots();
     }
-    internal bool ProvidesSkill(ToolUseDef skill)
-    {
-        return this.ToolComponent?.ToolUse == skill;
-    }
+    //internal bool ProvidesSkill(ToolUseDef skill)
+    //{
+    //    return this.ToolComponent?.ToolUse == skill;
+    //}
 
     internal MaterialDef GetMaterial(BoneDef def)
     {

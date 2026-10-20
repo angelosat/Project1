@@ -25,6 +25,7 @@ namespace Project1.Framework.Serialization
         internal IDataWriter Write(IntVec2 v);
         internal IDataWriter Write(List<int> v);
         internal IDataWriter Write(ICollection<int> v) { this.ww.Write(v); return this; }
+        internal IDataWriter Write(ICollection<float> v) { this.ww.Write(v); return this; }
         public IDataWriter Write(int[] v) { this.ww.Write(v); return this; }
         internal IDataWriter Write(ICollection<IntVec3> list);
         internal IDataWriter Write<T>(ICollection<T> list) where T : ISerializableNew<T>;

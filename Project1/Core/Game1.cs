@@ -169,8 +169,8 @@ public class Game1 : Game
         // TODO: use this.Content to load your game content here
 
         /// def init
-        EnsureInitHelper.Init();
         DefOfHelper.Init();
+        EnsureInitHelper.Init();
         PresentationSystem.Init();
 
         GameObject.LoadTemplates();

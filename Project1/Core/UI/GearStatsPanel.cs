@@ -21,9 +21,13 @@ class GearStatsPanel : SelectionBoundControl
         this.Controls.Clear();
         this.Gear = actor.GetComponent<GearComp>();
 
-        var statsCache = this.Gear.GetCachedStatsNew();
-        foreach (var (stat, value) in statsCache)
-            AddControls(new LabelNew($"{stat.LabelReadable}: {StatSystem.Format(stat, value)}"));
+        ////var statsCache = this.Gear.GetCachedStatsNew();
+        //var statsCache = actor.StatTracker.GetAllStats();
+        //foreach (var (stat, value) in statsCache)
+        //    AddControls(new LabelNew($"{stat.LabelReadable}: {StatSystem.Format(stat, value)}"));
+        var statsCache = actor.StatTracker.GetAllStatRuntime();
+        foreach (var stat in statsCache)
+            AddControls(new LabelNew($"{stat.Def.LabelReadable}: {StatSystem.Format(stat.Def, stat.Value)} + {stat.Bonus}"));
         AlignTopToBottom();
     }
 
@@ -32,7 +36,8 @@ class GearStatsPanel : SelectionBoundControl
         base.Update();
         if (this.Gear is null)
             return;
-        if (this.Gear.StatsDirty)
-            Build(Gear.Owner as Actor);
+        //if (this.Gear.StatsDirty)
+        if ((this.Gear.Owner as Actor).StatTracker.IsStatsDirty)
+                Build(Gear.Owner as Actor);
     }
 }

@@ -23,6 +23,7 @@ namespace Project1.Framework.Serialization
         internal Vector3? ReadVector3Nullable();
         internal string[] ReadStringArray();
         internal List<int> ReadListInt32();
+        internal List<float> ReadListSingle();
         internal string ReadASCII();
         internal Color ReadColor();
         internal List<Vector3> ReadListVector3();

@@ -281,6 +281,16 @@ static class IOHelper
         }
         return list;
     }
+    public static List<float> ReadListSingle(this BinaryReader r)
+    {
+        var count = r.ReadInt32();
+        List<float> list = [];
+        for (int i = 0; i < count; i++)
+        {
+            list.Add(r.ReadSingle());
+        }
+        return list;
+    }
     public static List<IntVec3> ReadListIntVec3(this BinaryReader r)
     {
         var count = r.ReadInt32();
@@ -514,7 +524,14 @@ static class IOHelper
         foreach (var i in items)
             w.Write(i);
     }
-    
+
+    public static void Write(this BinaryWriter w, ICollection<float> items)
+    {
+        w.Write(items.Count);
+        foreach (var i in items)
+            w.Write(i);
+    }
+
     public static void Write(this BinaryWriter w, List<Vector2> list)
     {
         w.Write(list.Count);

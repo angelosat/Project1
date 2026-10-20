@@ -1,12 +1,20 @@
-﻿using Project1.Core.Animations;
+﻿using Project1.Core.AI.Personality;
+using Project1.Core.Animations;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Resources;
+using Project1.Core.Skills;
 using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
+using System.Linq;
 
 namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatResolver_ToolEffectiveness : StatResolver
 {
+    public StatResolver_ToolEffectiveness()
+    {
+        
+    }
     public override float CalculateStat(Entity owner)
     {
         var material = owner.GetMaterial(BoneDefOf.ToolHead);
@@ -23,24 +31,127 @@ sealed class StatResolver_ToolEffectiveness : StatResolver
     }
 }
 
-sealed class StatResolver_ActorWorkEffectiveness(ToolUseDef toolUse) : StatResolver
+sealed class StatResolver_ActorWorkEffectiveness : StatResolver
 {
-    readonly ToolUseDef ToolUse = toolUse;
+    public StatResolver_ActorWorkEffectiveness(ToolUseDef toolUse)
+    {
+        ToolUse = toolUse;
+    }
+
+    public StatResolver_ActorWorkEffectiveness()
+    {
+
+    }
+    readonly ToolUseDef ToolUse;
     public override float CalculateStat(Entity owner)
     {
         var actor = (Actor)owner;
         var skill = actor.Skills[this.ToolUse.Skill];
-        return skill.Level;
+        return skill.Level * .01f;
     }
     public override float CalculateStatActor(StatDef def, Actor actor)
     {
         var skill = actor.Skills[this.ToolUse.Skill];
         return skill.Level * .01f;
     }
+    
     internal override string Format(StatDef def, Entity item)
     {
         //var comp = item.GetComponent<ToolComp>();
         //var profile = item.Profile as GearProfileDef;
         return $"{this.ToolUse.LabelReadable} effectiveness";
+    }
+}
+
+sealed class StatResolver_ActorTraitBonus : StatResolver
+{
+    public StatResolver_ActorTraitBonus(TraitDef target)
+    {
+        Target = target;
+    }
+
+    public StatResolver_ActorTraitBonus()
+    {
+        
+    }
+    readonly TraitDef Target;
+    public override float CalculateStat(Entity owner)
+    {
+        return 100;
+    }
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        return 100;
+    }
+    internal override bool IsApplicable(StatDef statDef, ActorDnaDef actorDef)
+    {
+        var target = (TraitDef)statDef.TargetDef;
+        return actorDef.Traits.Contains(target);
+    }
+    internal override string Format(StatDef def, Entity item)
+    {
+        return $"{this.Target.LabelReadable} effectiveness";
+    }
+}
+
+sealed class StatResolver_ActorResourceBonus : StatResolver
+{
+    public StatResolver_ActorResourceBonus(ResourceDef target)
+    {
+        Target = target;
+    }
+
+    public StatResolver_ActorResourceBonus()
+    {
+        
+    }
+    readonly ResourceDef Target;
+    public override float CalculateStat(Entity owner)
+    {
+        return 100;
+    }
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        return 100;
+    }
+    internal override bool IsApplicable(StatDef statDef, ActorDnaDef actorDef)
+    {
+        var target = (ResourceDef)statDef.TargetDef;
+        return actorDef.Resources.Contains(target);
+    }
+    internal override string Format(StatDef def, Entity item)
+    {
+        return $"{this.Target.LabelReadable} effectiveness";
+    }
+}
+
+sealed class StatResolver_ActorSkillBonus : StatResolver
+{
+    public StatResolver_ActorSkillBonus(SkillDef target)
+    {
+        Target = target;
+    }
+
+    public StatResolver_ActorSkillBonus()
+    {
+
+    }
+    readonly SkillDef Target;
+    public override float CalculateStat(Entity owner)
+    {
+        return 0;
+    }
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        return 0;
+    }
+    internal override bool IsApplicable(StatDef statDef, ActorDnaDef actorDef)
+    {
+        var target = (SkillDef)statDef.TargetDef;
+        return actorDef.Skills.Contains(target);
+    }
+    internal override string Format(StatDef def, Entity item)
+    {
+        return $"{this.Target.LabelReadable} effectiveness";
     }
 }

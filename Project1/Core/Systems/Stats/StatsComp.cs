@@ -61,7 +61,7 @@ class StatsComp : EntityComp, IGuiNew
             .AddColumn("name", "", 128, a => new Label(a.LabelReadable) { HoverText = a.Description })
             .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.CalculateFor(this.Owner).ToString()));
         gui.ClearItems();
-        gui.AddItems(StatDef.NpcStatPackage);
+        //gui.AddItems(StatDef.NpcStatPackage);
         box.AddControlsBottomLeft(gui);
     }
     TableScrollableCompact<StatDef> GUITable;
@@ -71,7 +71,7 @@ class StatsComp : EntityComp, IGuiNew
             .AddColumn("name", "", 64, a => new Label(a.LabelReadable), 1)
             .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.CalculateFor(this.Owner).ToString()));
         gui.ClearItems();
-        gui.AddItems(StatDef.NpcStatPackage);
+        //gui.AddItems(StatDef.NpcStatPackage);
         return GUITable;
     }
     public Control CreateControl()
@@ -84,7 +84,7 @@ class StatsComp : EntityComp, IGuiNew
             //.AddColumn("value", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.CalculateFor(this.Owner).ToString()));
             .AddColumn("divider", 8, s => new Label(""))
             .AddColumn("value", 96, a => new Label(() => a.CalculateFor(this.Owner).ToString()));
-        gui.AddItems(StatDef.NpcStatPackage);
+        //gui.AddItems(StatDef.NpcStatPackage);
         return gui;
     }
 

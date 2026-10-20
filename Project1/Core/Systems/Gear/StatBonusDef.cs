@@ -29,10 +29,8 @@ static public class StatBonusDefOf
         //Def.Register(typeof(StatBonusDefOf));
 
         var contexts = Def.Get<StatBonusContextDef>();
-
         var toRegister = new List<StatBonusDef>();
         foreach (var contextDef in contexts)
-            //toRegister.AddRange(Def.Get(contextDef.TargetDefType).Select(d => new StatBonusDef(contextDef.LabelReadable, d, contextDef.WorkerType)));
             toRegister.AddRange(contextDef.Worker.GetTargetDefs().Select(d => new StatBonusDef(contextDef.LabelReadable, d, contextDef.WorkerType)));
         foreach (var role in toRegister)
             Def.Register(role);
@@ -70,8 +68,12 @@ public abstract class StatBonusWorker()//StatBonusDef def)
     public void Apply(Entity item, StatBonusDef def)
     {
         var comp = item.GetComponent<ToolComp>();
-        comp.AddActorEnhancement(def, 5f);
+        //comp.AddActorEnhancement(def, 5f);
         item.SetName(this.Format(item, def));
+    }
+    public float Calculate(Entity item)
+    {
+        return 5f;
     }
     public virtual IEnumerable<Def> GetTargetDefs() => [];
 }

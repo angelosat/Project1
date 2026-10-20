@@ -26,7 +26,8 @@ public sealed class ResourceRuntime : IProgressBar, ISaveableNewNew<ResourceRunt
     }
     public int Max
     {
-        get => this._max; set
+        get => this._max; 
+        set
         {
             var oldmax = this._max;
             this._max = value;

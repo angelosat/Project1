@@ -1,19 +1,19 @@
 ﻿using Project1.Core.Attributes;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats.Resolvers;
-using Project1.Core.Stats;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Entities.Stats;
 
+#nullable enable
+
 public sealed class StatDef : Def
 {
     public enum Types { Scalar, Percentile };
-    public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
-    public static StatDef[] NpcStatPackage { get; } = { StatDefOf.MaxHaulWeight, StatDefOf.Encumberance, StatDefOf.WalkSpeed, StatDefOf.Armor };
-
+    //public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
+    //public static StatDef[] NpcStatPackage { get; } = { StatDefOf.MaxHaulWeight, StatDefOf.Encumberance, StatDefOf.WalkSpeed, StatDefOf.Armor };
+    public readonly Def? TargetDef;
     public float BaseValue;
     public string Description;
     public Types Type = Types.Scalar;
@@ -26,6 +26,10 @@ public sealed class StatDef : Def
     public StatDef(string name) : base(name)
     {
 
+    }
+    public StatDef(string name, Def targetDef, Type valueGetter, Type compRequired) : this(name, valueGetter, compRequired)
+    {
+        this.TargetDef = targetDef;
     }
     public StatDef(string name, Type valueGetter, Type compRequired) : base(name)
     {

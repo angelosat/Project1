@@ -1,6 +1,5 @@
 ﻿using Project1.Framework;
 using Project1.Framework.UI;
-using Project1.Core.Stats;
 
 namespace Project1.Core.Skills;
 

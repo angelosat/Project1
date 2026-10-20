@@ -58,6 +58,7 @@ namespace Project1.Core.Networking
         public Vector3? ReadVector3Nullable() => this._reader.ReadVector3Nullable();
         public string[] ReadStringArray() => this._reader.ReadStringArray();
         public List<int> ReadListInt32() => this._reader.ReadListInt();
+        public List<float> ReadListSingle() => this._reader.ReadListSingle();
         public string ReadASCII() => this._reader.ReadASCII();
         public Color ReadColor() => this._reader.ReadColor();
         public List<Vector3> ReadListVector3() => this._reader.ReadListVector3();

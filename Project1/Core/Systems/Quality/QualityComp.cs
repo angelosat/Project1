@@ -36,11 +36,14 @@ public class QualityComp : EntityComp
         this.Tier = typed.Tier;
     }
 
-    public override void Randomize(GameObject parent, RandomThreaded random)
+    //public override void Randomize(GameObject parent, RandomThreaded random)
+    //{
+    //    this.Tier = QualitySystem.Random;
+    //}
+    internal override void ApplyQuality(Entity parent, QualityDef quality)
     {
-        this.Tier = QualitySystem.Random;
+        this.Tier = quality;
     }
-
     public override void Write(IDataWriter w)
     {
         this.LevelInt.Write(w);

@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
@@ -52,6 +53,7 @@ public sealed class GearComp : EntityComp
     private void OnSlotItemChanged()
     {
         this.StatsDirty = true;
+        this.Actor.StatTracker.MarkBonusesDirty();
     }
 
     public GearComp()
@@ -187,12 +189,15 @@ public sealed class GearComp : EntityComp
             return;
         this.StatsDirty = false;
      
-        this.Actor.Bonuses.Clear();
+        //this.Actor.StatTracker.Clear();
         var gearAll = this.GetGear();
 
-        foreach (var gear in gearAll)
-            foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
-                this.Actor.Bonuses[bonusDef.TargetDef] = bonusVal;
+        //foreach (var gear in gearAll)
+        //    foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
+        //    {
+        //        //this.Actor.Bonuses[bonusDef.TargetDef] = bonusVal;
+        //        this.Actor.Bonuses.AddBonus(bonusDef.TargetDef, bonusVal);
+        //    }
 
         foreach (var (stat, _) in this.StatsCache)
             this.StatsCache[stat].Value = stat.Worker.CalculateStatActor(stat, this.Actor);// stat.BaseValue;
@@ -204,6 +209,18 @@ public sealed class GearComp : EntityComp
         }
     }
 
+    public override IEnumerable<(StatBonusDef target, float value)> GetBonuses()
+    {
+        foreach (var gear in this.GetGear())
+            foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
+                yield return (bonusDef, bonusVal);
+    }
+    public override IEnumerable<(StatDef target, float value)> GetModifiers()
+    {
+        foreach (var gear in this.GetGear())
+            foreach (var (bonusDef, bonusVal) in gear.ToolComponent.Modifiers)
+                yield return (bonusDef, bonusVal);
+    }
     public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()
     {
         if (this.StatsDirty)

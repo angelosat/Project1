@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Graphics;
 using Project1.Core.Interactions;
 using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.UI.Hud;
@@ -47,6 +49,8 @@ public abstract class EntityComp : Inspectable
         this.OnDespawnExtra(oldmap);
     }
     public virtual void OnDespawnExtra(MapBase oldmap) { }
+    public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
+    public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
     public virtual void OnDispose() { }
     //internal virtual void ResolveReferences() { }
     internal virtual void InitializeOnce() { }
@@ -85,6 +89,7 @@ public abstract class EntityComp : Inspectable
                 tag.Add(t);
     }
     internal virtual void Load(GameObject parent, SaveTag tag) => this.LoadExtra(tag);
+    internal virtual void PostLoad() { }
     internal virtual void LoadExtra(SaveTag tag) { }
     public virtual Control GetParametrizer() => null;
     public virtual void Write(IDataWriter w) { }
@@ -111,6 +116,8 @@ public abstract class EntityComp : Inspectable
     internal virtual IEnumerable<Control> GetTooltipControls() { yield break; }
 
     internal virtual void Validate() { }
+
+   
 
     //{
     //    var box = new GroupBox();

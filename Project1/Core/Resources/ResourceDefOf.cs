@@ -3,7 +3,7 @@ using Project1.Framework;
 
 namespace Project1.Core.Resources;
 
-[EnsureStaticCtorCall]
+//[EnsureStaticCtorCall]
 public static class ResourceDefOf
 {
     static public readonly ResourceDef Health = new("Health", typeof(Health)) { SupportsRestore = true, SupportsFortify = true };

@@ -2,8 +2,7 @@
 
 public class TraitDefOf
 {
-    static TraitDefOf()
-        => Def.Register(typeof(TraitDefOf));
+
     
     static public readonly TraitDef Patience = new TraitDef("Patience")
     {
@@ -71,4 +70,7 @@ public class TraitDefOf
         NameNegative = "Extrovert",
         NamePositive = "Introvert"
     };
+
+    static TraitDefOf()
+        => Def.Register(typeof(TraitDefOf));
 }

@@ -881,6 +881,13 @@ static class SaveHelper
             list.Add(item.Name.Save(""));
         save.Add(list);
     }
+    public static void SaveDefs<T>(this SaveTag save, string name, ICollection<T> defs) where T : Def
+    {
+        var list = new SaveTag(SaveTag.Types.List, name, SaveTag.Types.String);
+        foreach (var item in defs)
+            list.Add(item.Name.Save(""));
+        save.Add(list);
+    }
     public static bool LoadDefs<T>(this ICollection<T> defs, SaveTag tag, string name) where T : Def
     {
         var list = tag[name].Value as List<SaveTag>;
@@ -890,6 +897,16 @@ static class SaveHelper
     }
     public static bool TryLoadDefs<T>(this ICollection<T> defs, SaveTag tag, string name) where T : Def
     {
+        if (!tag.TryGetTag(name, out var listTag))
+            return false;
+        var list = listTag.Value as List<SaveTag>;
+        foreach (var item in list)
+            defs.Add(Def.Get<T>((string)item.Value));
+        return true;
+    }
+    public static bool TryLoadDefs<T>(this SaveTag tag, string name, out ICollection<T> defs) where T : Def
+    {
+        defs = [];
         if (!tag.TryGetTag(name, out var listTag))
             return false;
         var list = listTag.Value as List<SaveTag>;

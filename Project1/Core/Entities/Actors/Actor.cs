@@ -2,8 +2,8 @@
 using Project1.Core.AI;
 using Project1.Core.AI.Behaviors;
 using Project1.Core.AI.Behaviors.Conversation;
-using Project1.Core.AI.Planners;
 using Project1.Core.AI.Personality;
+using Project1.Core.AI.Planners;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Attributes;
 using Project1.Core.Blocks;
@@ -64,8 +64,7 @@ public sealed class Actor : Entity
 
     public float MoodValue => this.Mood.Mood;
 
-    public readonly Dictionary<Def, float> Bonuses = [];
-
+    public ActorStatTracker StatTracker => field ??= new(this);
     public Actor()
     {
 

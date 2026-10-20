@@ -818,7 +818,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         tag.TryGetTagValueOrDefault("InstanceID", out obj.RefId);
         tag.TryGetTagValue<int>("Stack", v => obj._stackSize = v);
         obj.Components.Load(tag["Components"]);
-        obj.ResetName();
+        //obj.ResetName();
         return obj;
     }
     /// <summary>

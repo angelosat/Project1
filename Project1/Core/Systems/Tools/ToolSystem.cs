@@ -23,6 +23,7 @@ namespace Project1.Core.Systems.Tools;
 internal static class ToolSystem
 {
     static readonly StatBonusDef[] AllBonusDefs;
+    static readonly StatDef[] AllStatDefs;
     static readonly StatBonusDef[] AllSuffixDefs, AllPrefixDefs;
 
     public static Dictionary<BoneDef, CraftingRules> Rules = [];
@@ -39,6 +40,7 @@ internal static class ToolSystem
         AllBonusDefs = [.. Def.Get<StatBonusDef>()];
         AllPrefixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
         AllSuffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Actor)];
+        AllStatDefs = [.. Def.Get<StatDef>()];
         //foreach (var b in AllBonusDefs)
         //{
         //    switch (b.Worker)
@@ -259,21 +261,27 @@ internal static class ToolSystem
         Validate(item);
 
 
-        var bonus = AllBonusDefs.SelectRandom(r);
-        if (AllSuffixDefs.Length != 0)
-            if (r.Roll(.5f))
-            //AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
-            {
-                var def = AllSuffixDefs.SelectRandom(r);
-                def.Worker.Apply(item, def);
-            }
-        if (AllPrefixDefs.Length != 0)
-            if (r.Roll(.5f))
-            {
-                var def = AllPrefixDefs.SelectRandom(r);
-                AllPrefixDefs.SelectRandom(r).Worker.Apply(item, def);
-                def.Worker.Apply(item, def);
-            }
+        //var bonus = AllBonusDefs.SelectRandom(r);
+        //if (AllSuffixDefs.Length != 0)
+        //    if (r.Roll(.5f))
+        //    //AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
+        //    {
+        //        var def = AllSuffixDefs.SelectRandom(r);
+        //        def.Worker.Apply(item, def);
+        //    }
+        //if (AllPrefixDefs.Length != 0)
+        //    if (r.Roll(.5f))
+        //    {
+        //        var def = AllPrefixDefs.SelectRandom(r);
+        //        AllPrefixDefs.SelectRandom(r).Worker.Apply(item, def);
+        //        def.Worker.Apply(item, def);
+        //    }
+        var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank;
+        for (int i = 0; i < bonusCount; i++)
+        {
+            var stat = AllStatDefs.SelectRandom(r);
+            item.ToolComponent.Modifiers[stat] = bonusCount;
+        } 
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

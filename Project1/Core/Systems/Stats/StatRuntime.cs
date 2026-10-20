@@ -2,9 +2,10 @@
 
 namespace Project1.Core.Systems.Stats;
 
-internal class StatRuntime(StatDef def)
+public class StatRuntime(StatDef def)
 {
     public StatDef Def = def;
     public float Value;
+    public float Bonus;
     public bool Dirty;
 }

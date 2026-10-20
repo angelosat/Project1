@@ -7,6 +7,8 @@ public abstract class StatResolver
     public abstract float CalculateStat(Entity item);
     public virtual float CalculateStatActor(StatDef def, Actor actor) => def.BaseValue;
 
+    internal virtual bool IsApplicable(StatDef statDef, ActorDnaDef actorDef) => true;
+
     internal virtual string Format(StatDef def, Entity item)
         => def.LabelReadable;
 }

@@ -1,10 +1,12 @@
-﻿using Project1.Core.Interactions;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Interactions;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Project1.Core.Entities.Stats;
 
@@ -22,7 +24,7 @@ public static class StatSystem
     static public IReadOnlyDictionary<SkillDef, InteractionDef> SkillToInteraction => _skillToInteraction;
     static public IReadOnlyDictionary<ToolUseDef, InteractionDef> ToolToInteraction => _toolToInteraction;
 
-    static public readonly StatDef[] AllStats;
+    static public readonly StatDef[] AllStats, ActorStats;
     static StatSystem()
     {
         var tooldefs = Def.Get<ToolUseDef>();
@@ -53,12 +55,13 @@ public static class StatSystem
         }
 
         AllStats = [.. statdefs];
+
+        ActorStats = [.. AllStats.Where(s => s.Worker.IsApplicable(s, ActorDnaDefOf.Npc))];
     }
 
     static public IEnumerable<StatDef> GetStatsFor(EntityComp comp)
     {
         return _statsByCompType.TryGetValue(comp.GetType(), out var list) ? list : [];
-        //return _statsByCompType[comp.GetType()];
     }
 
     static public IEnumerable<ToolUseDef> GetToolUsesFor(SkillDef skill)

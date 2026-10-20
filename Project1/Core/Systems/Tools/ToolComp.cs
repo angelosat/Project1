@@ -6,11 +6,13 @@ using Project1.Core.Helpers;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Quality;
+using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -33,6 +35,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     readonly List<ToolUseDef> Skills = [];
     public readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
+    public readonly Dictionary<StatDef, float> Modifiers = [];
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
     public float BaseWork => this.baseWork ??= this.CalculateBaseWorkAmount();
@@ -43,7 +46,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
 
         //this.Owner.SetName($"{this.Owner.Body.FindBone(BoneDefOf.ToolHead).Material.LabelReadable} {this.Owner.Profile.LabelReadable} (Handle: {this.Owner.Body.FindBone(BoneDefOf.ToolHandle).Material.LabelReadable})");
         //this.Owner.SetName($"{this.Owner.Body.Material.LabelReadable} {this.Owner.Profile.LabelReadable}");
-        ToolSystem.Validate(this.Owner);
+        //ToolSystem.Validate(this.Owner);
     }
 
     private void RefreshStats()
@@ -133,8 +136,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         if (profile.Damage is DamageDef damage)
             //yield return new LabelNew($"Damage: {damage.LabelReadable}");
             yield return new LabelNew($"{this.BaseWork} {damage.LabelReadable} damage");
-        if(profile.ToolUses is var uses)
-            foreach(var use in uses)
+        if(profile.ToolUses is not null)
+            foreach(var use in profile.ToolUses)
                 yield return new LabelNew($"{this.BaseWork} {use.LabelReadable} effectiveness");
 
         foreach (var stat in this.Profile.Role.Stats)
@@ -149,6 +152,9 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         {
             yield return new LabelNew($"+{value:#} {def.TargetDef.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
         }
+
+        foreach(var (stat, value) in this.Modifiers)
+            yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)
@@ -169,22 +175,57 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
 
     public override void Write(IDataWriter w)
     {
-        w.Write(this.ActorEnhancements.Count);
-        foreach(var b in this.ActorEnhancements)
-        {
-            w.Write(b.Key);
-            w.Write(b.Value);
-        }
+        //w.Write(this.ActorEnhancements.Count);
+        //foreach(var b in this.ActorEnhancements)
+        //{
+        //    w.Write(b.Key);
+        //    w.Write(b.Value);
+        //}
+        w.Write(this.ActorEnhancements.Keys.ToArray());
+        w.Write(this.Modifiers.Keys.ToArray());
+        w.Write(this.Modifiers.Values);
     }
 
     public override void Read(IDataReader r)
     {
-        var count = r.ReadInt32();
-        for (int i = 0; i < count; i++)
-        {
-            var def = r.ReadDef<StatBonusDef>();
-            var value = r.ReadSingle();
-            this.ActorEnhancements.Add(def, value);
-        }
+        //var count = r.ReadInt32();
+        //for (int i = 0; i < count; i++)
+        //{
+        //    var def = r.ReadDef<StatBonusDef>();
+        //    var value = r.ReadSingle();
+        //    this.ActorEnhancements.Add(def, value);
+        //}
+
+        var actorBonuses = r.ReadListDef<StatBonusDef>();
+        foreach(var b in actorBonuses)
+            this.ActorEnhancements.Add(b, b.Worker.Calculate(this.Owner));
+        var statMods = r.ReadListDef<StatDef>();
+        var statModsValues = r.ReadListSingle();
+        var dic = statMods.Zip(statModsValues);
+        //foreach (var mod in statMods)
+        //    this.Modifiers[mod] = -1;
+        foreach (var (stat, value) in dic)
+            this.Modifiers[stat] = value;
+    }
+
+    internal override void PostLoad()
+    {
+        foreach (var mod in this.Modifiers.Keys)
+            this.Modifiers[mod] = this.Owner.Quality.RankEffective;
+    }
+
+    internal override void SaveExtra(SaveTag tag)
+    {
+        tag.SaveDefs("ActorBonuses", this.ActorEnhancements.Keys.ToArray());
+    }
+
+    internal override void LoadExtra(SaveTag tag)
+    {
+        if (tag.TryLoadDefs<StatBonusDef>("ActorBonuses", out var list))
+            foreach (var b in list)
+            {
+                this.ActorEnhancements.Add(b, b.Worker.Calculate(this.Owner));
+                //b.Worker.Apply(this.Owner, b);
+            }
     }
 }

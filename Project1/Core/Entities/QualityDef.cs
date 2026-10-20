@@ -22,6 +22,9 @@ namespace Project1.Core.Entities
 
         readonly public int ProbabilityTableWeight;
         readonly float MasterySensitivity;
+
+        public float RankEffective => 1 + this.Rank - QualityDefOf.Common.Rank;
+
         public int GetWeightFromMastery(float masteryRatio)
         {
             var masteryExcess = masteryRatio - 1;

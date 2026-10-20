@@ -21,3 +21,4 @@ static class QualityDefOf
         Def.Register(typeof(QualityDefOf));
     }
 }
+

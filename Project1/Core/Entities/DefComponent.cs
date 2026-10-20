@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework;

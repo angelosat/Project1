@@ -3,6 +3,7 @@ using Project1.Core.Interactions;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
+using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ namespace Project1.Core.Entities.Stats;
 [EnsureStaticCtorCall]
 public static class StatSystem
 {
+    static readonly Random r = new();
     static readonly Dictionary<SkillDef, ToolUseDef> _skillsToTools = [];
     static readonly Dictionary<ToolUseDef, GearProfileDef> _useToProfile = [];
     static readonly Dictionary<SkillDef, InteractionDef> _skillToInteraction = [];
@@ -88,5 +90,10 @@ public static class StatSystem
         else if (def.Type == StatDef.Types.Percentile)
             return $"{value:P0}";
         throw new UnreachableException();
+    }
+
+    internal static StatDef GetRandomStat(ActorDnaDef npc)
+    {
+        return ActorStats.SelectRandom(r);
     }
 }

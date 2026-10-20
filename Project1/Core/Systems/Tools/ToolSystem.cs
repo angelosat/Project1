@@ -9,6 +9,7 @@ using Project1.Core.Stats;
 using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Quality;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
@@ -240,6 +241,8 @@ internal static class ToolSystem
     public static void Randomize(Entity item)
     {
         var r = new Random();
+        item.CraftingQualityTier = r.Next(150);
+        QualitySystem.Randomize(item);
         int durabilityMax = 0;
         var profile = (GearProfileDef)item.Profile;
         var role = profile.Role;
@@ -279,7 +282,8 @@ internal static class ToolSystem
         var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank;
         for (int i = 0; i < bonusCount; i++)
         {
-            var stat = AllStatDefs.SelectRandom(r);
+            //var stat = AllStatDefs.SelectRandom(r);
+            var stat = StatSystem.GetRandomStat(ActorDnaDefOf.Npc);
             item.ToolComponent.Modifiers[stat] = bonusCount;
         } 
     }
@@ -324,6 +328,6 @@ internal static class ToolSystem
     {
         var mat = item.Body.Material;
         var prof = item.Profile;
-        item.SetName($"{mat.LabelReadable} {prof.LabelReadable}");
+        item.SetName($"{item.CraftQuality.LabelReadable} {mat.LabelReadable} {prof.LabelReadable}");
     }
 }

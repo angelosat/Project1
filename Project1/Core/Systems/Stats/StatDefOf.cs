@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI;
 using Project1.Core.AI.Personality;
+using Project1.Core.Attributes;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Entities.Stats.Resolvers;
@@ -88,13 +89,15 @@ public static class StatDefOf
         // Procedurally generate statdefs based on dynamic systems like skills, damage types, work types, etc
         List<Def> toRegister = [];
         foreach (var target in Def.Get<ToolUseDef>())
-            toRegister.Add(new StatDef($"{target.Name}", target, typeof(StatResolver_ActorWorkEffectiveness), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
+            toRegister.Add(new StatDef($"{target.LabelReadable} effectiveness", target, typeof(StatResolver_ActorWorkEffectiveness), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
+        foreach (var target in Def.Get<AttributeDef>())
+            toRegister.Add(new StatDef($"{target.LabelReadable}", target, typeof(StatResolver_ActorAttributeBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var target in Def.Get<TraitDef>())
-            toRegister.Add(new StatDef($"{target.Name}", target, typeof(StatResolver_ActorTraitBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
+            toRegister.Add(new StatDef($"{target.LabelReadable} trait", target, typeof(StatResolver_ActorTraitBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var target in Def.Get<ResourceDef>())
-            toRegister.Add(new StatDef($"{target.Name}", target, typeof(StatResolver_ActorResourceBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
+            toRegister.Add(new StatDef($"{target.LabelReadable}", target, typeof(StatResolver_ActorResourceBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var target in Def.Get<SkillDef>())
-            toRegister.Add(new StatDef($"{target.Name} modifier", target, typeof(StatResolver_ActorSkillBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
+            toRegister.Add(new StatDef($"{target.LabelReadable} skill", target, typeof(StatResolver_ActorSkillBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var to in toRegister)
             Def.Register(to);
     }

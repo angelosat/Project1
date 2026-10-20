@@ -37,6 +37,8 @@ public class Entity : GameObject
     public GearComp Gear => field ??= this.GetComponent<GearComp>();
 
     public OwnershipComponent Ownership => field ??= this.GetComponent<OwnershipComponent>();
+    public int? CraftingQualityTier;
+    public CraftQualityDef? CraftQuality;
     public Actor Author
     {
         get => this.DefComponent.Author;
@@ -115,8 +117,8 @@ public class Entity : GameObject
 
     public GameObject Randomize(RandomThreaded random)
     {
-        if (this.Def.CraftingProperties is not null) // HACK
-            this.SetQuality(QualitySystem.Random);
+        //if (this.Def.CraftingProperties is not null) // HACK
+        //    QualitySystem.Randomize(this);
         foreach (var comp in this.Components.Values)
             comp.Randomize(this, random);
         return this;

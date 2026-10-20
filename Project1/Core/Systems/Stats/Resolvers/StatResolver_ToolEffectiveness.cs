@@ -1,5 +1,6 @@
 ﻿using Project1.Core.AI.Personality;
 using Project1.Core.Animations;
+using Project1.Core.Attributes;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
@@ -93,7 +94,31 @@ sealed class StatResolver_ActorTraitBonus : StatResolver
         return $"{this.Target.LabelReadable} effectiveness";
     }
 }
+sealed class StatResolver_ActorAttributeBonus : StatResolver
+{
+    public StatResolver_ActorAttributeBonus()
+    {
 
+    }
+    readonly ResourceDef Target;
+    public override float CalculateStat(Entity owner)
+    {
+        return 100;
+    }
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        return 100;
+    }
+    internal override bool IsApplicable(StatDef statDef, ActorDnaDef actorDef)
+    {
+        var target = (AttributeDef)statDef.TargetDef;
+        return actorDef.Attributes.Contains(target);
+    }
+    internal override string Format(StatDef def, Entity item)
+    {
+        return $"{def.TargetDef.LabelReadable} effectiveness";
+    }
+}
 sealed class StatResolver_ActorResourceBonus : StatResolver
 {
     public StatResolver_ActorResourceBonus(ResourceDef target)
@@ -152,6 +177,6 @@ sealed class StatResolver_ActorSkillBonus : StatResolver
     }
     internal override string Format(StatDef def, Entity item)
     {
-        return $"{this.Target.LabelReadable} effectiveness";
+        return $"{this.Target.LabelReadable} skill";
     }
 }

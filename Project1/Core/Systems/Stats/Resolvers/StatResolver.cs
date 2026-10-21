@@ -2,9 +2,13 @@
 
 namespace Project1.Core.Entities.Stats.Resolvers;
 
-public abstract class StatResolver
+public class StatResolver
 {
-    public abstract float CalculateStat(Entity item);
+    public StatResolver()
+    {
+        
+    }
+    public virtual float CalculateStat(Entity item) => 1f;
     public virtual float CalculateStatActor(StatDef def, Actor actor) => def.BaseValue;
 
     internal virtual bool IsApplicable(StatDef statDef, ActorDnaDef actorDef) => true;

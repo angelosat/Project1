@@ -30,9 +30,38 @@ public static class StatDefOf
     {
         Description = "Speed of walking",
         Type = StatDef.Types.Percentile,
-        BaseValue = 1f,
+        BaseValue = 1f// 100f,
     };
-
+    public static readonly StatDef SwingSpeed = new("Swing Speed", typeof(StatResolver))
+    {
+        Description = "Speed of equipped main hand swing",
+        Type = StatDef.Types.Percentile,
+        BaseValue = 1f//100f,
+    };
+    public static readonly StatDef CriticalChance = new ("Critical Chance", typeof(StatResolver))
+    {
+        Description = "Critical chance",
+        Type = StatDef.Types.Percentile,
+        BaseValue = .05f// 5f,
+    };
+    public static readonly StatDef HitChance = new("Hit Chance", typeof(StatResolver))
+    {
+        Description = "Hit chance",
+        Type = StatDef.Types.Percentile,
+        BaseValue = .5f//50f,
+    };
+    public static readonly StatDef DodgeChance = new("Dodge Chance", typeof(StatResolver))
+    {
+        Description = "Hit chance",
+        Type = StatDef.Types.Percentile,
+        BaseValue = .05f//50f,
+    };
+    public static readonly StatDef ParryChance = new("Parry Chance", typeof(StatResolver))
+    {
+        Description = "Hit chance",
+        Type = StatDef.Types.Percentile,
+        BaseValue = .05f//50f,
+    };
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))
     {
         Description = "Won't start new tasks if stamina below this percentage.",
@@ -98,6 +127,8 @@ public static class StatDefOf
             toRegister.Add(new StatDef($"{target.LabelReadable}", target, typeof(StatResolver_ActorResourceBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var target in Def.Get<SkillDef>())
             toRegister.Add(new StatDef($"{target.LabelReadable} skill", target, typeof(StatResolver_ActorSkillBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
+        foreach (var target in Def.Get<DamageDef>())
+            toRegister.Add(new StatDef($"{target.LabelReadable} resistance", target, typeof(StatResolver_ActorResistanceBonus), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
         foreach (var to in toRegister)
             Def.Register(to);
     }

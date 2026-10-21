@@ -136,17 +136,24 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         if (profile.Damage is DamageDef damage)
             //yield return new LabelNew($"Damage: {damage.LabelReadable}");
             yield return new LabelNew($"{this.BaseWork} {damage.LabelReadable} damage");
-        if(profile.ToolUses is not null)
+        if (profile.BaseSpeed.HasValue)
+        {
+            var speedVal = StatDefOf.ToolSpeed.Worker.CalculateStat(this.Owner);
+            //yield return new LabelNew($"{profile.BaseSpeed.Value} speed");
+            yield return new LabelNew($"{speedVal.ToString(StatDefOf.ToolSpeed.StringFormat)} speed");
+        }
+
+        if (profile.ToolUses is not null)
             foreach(var use in profile.ToolUses)
                 yield return new LabelNew($"{this.BaseWork} {use.LabelReadable} effectiveness");
 
-        foreach (var stat in this.Profile.Role.Stats)
-        {
-            var value = stat.Worker.CalculateStat(this.Owner);
-            //yield return new LabelNew($"{stat}: +{value}");
-            //yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}");
-            yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.Worker.Format(stat, this.Owner)}");
-        }
+        //foreach (var stat in this.Profile.Role.Stats)
+        //{
+        //    var value = stat.Worker.CalculateStat(this.Owner);
+        //    //yield return new LabelNew($"{stat}: +{value}");
+        //    //yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}");
+        //    yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.Worker.Format(stat, this.Owner)}");
+        //}
 
         foreach(var (def, value) in this.ActorEnhancements)
         {
@@ -154,7 +161,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         }
 
         foreach(var (stat, value) in this.Modifiers)
-            yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+            //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+            yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)

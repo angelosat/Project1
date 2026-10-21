@@ -51,6 +51,8 @@ public static class StatSystem
         foreach(var stat in statdefs)
         {
             var comptype = stat.CompRequired;
+            if (comptype is null)
+                continue;
             if (!_statsByCompType.TryGetValue(comptype, out var list))
                 _statsByCompType[comptype] = list = [];
             list.Add(stat);
@@ -88,12 +90,28 @@ public static class StatSystem
         if (def.Type == StatDef.Types.Scalar)
             return $"{value}";
         else if (def.Type == StatDef.Types.Percentile)
-            return $"{value:P0}";
+            //return $"{value * .01f:P0}";
+            //return $"{value:P0}";
+            return $"{value}%";
         throw new UnreachableException();
     }
 
+    internal static IEnumerable<StatDef> GetRandomStats(ActorDnaDef npc, int count)
+    {
+        var indices = new int[ActorStats.Length];
+        for (int i = 0; i < ActorStats.Length; i++)
+            indices[i] = i;
+        indices = [.. indices.Shuffle()];
+        for (int i = 0; i < count; i++)
+            yield return ActorStats[indices[i]];
+    }
     internal static StatDef GetRandomStat(ActorDnaDef npc)
     {
+        int n = 0;
+        var indices = new int[ActorStats.Length];
+        for (int i = 0; i < ActorStats.Length; i++)
+            indices[i] = n;
+        indices.Shuffle();
         return ActorStats.SelectRandom(r);
     }
 }

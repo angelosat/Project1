@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Attributes;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats.Resolvers;
 using Project1.Framework.Helpers;
 using System;
@@ -20,7 +21,7 @@ public sealed class StatDef : Def
     public string StringFormat = "";
     readonly Type ValueGetterType;
     StatResolver _valueGetter;
-    public readonly Type CompRequired;
+    public readonly Type? CompRequired;
     public StatResolver Worker => this._valueGetter ??= ActivatorSafe<StatResolver>.CreateInstance(this.ValueGetterType);
 
     public StatDef(string name) : base(name)
@@ -31,7 +32,7 @@ public sealed class StatDef : Def
     {
         this.TargetDef = targetDef;
     }
-    public StatDef(string name, Type valueGetter, Type compRequired) : base(name)
+    public StatDef(string name, Type valueGetter, Type? compRequired = null) : base(name)
     {
         this.ValueGetterType = valueGetter;
         this.CompRequired = compRequired;
@@ -52,7 +53,8 @@ public sealed class StatDef : Def
     }
     public float CalculateFor(Entity item)
     {
-        var value = this.Worker.CalculateStat(item);
+        //var value = this.Worker.CalculateStat(item);
+        var value = this.Worker.CalculateStatActor(this, item as Actor);
 
         if (this.Type == Types.Scalar)
         {

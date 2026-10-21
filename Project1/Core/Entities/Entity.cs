@@ -9,7 +9,6 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -37,8 +36,7 @@ public class Entity : GameObject
     public GearComp Gear => field ??= this.GetComponent<GearComp>();
 
     public OwnershipComponent Ownership => field ??= this.GetComponent<OwnershipComponent>();
-    public int? CraftingQualityTier;
-    public CraftQualityDef? CraftQuality;
+    public CraftQualityDef? Craftsmanship;
     public Actor Author
     {
         get => this.DefComponent.Author;

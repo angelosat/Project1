@@ -12,9 +12,14 @@ public static class DamageDefOf
     public static readonly DamageDef Piercing = new("Piercing", DamageTypeDefOf.Physical);
     public static readonly DamageDef Blunt = new("Blunt", DamageTypeDefOf.Physical);
     //public static readonly DamageDef Sawing = new("Sawing", DamageTypeDefOf.Physical);
-    public static readonly DamageDef Fire = new("Sawing", DamageTypeDefOf.Elemental);
-    public static readonly DamageDef Ice = new("Sawing", DamageTypeDefOf.Elemental);
-    public static readonly DamageDef Poison = new("Sawing", DamageTypeDefOf.Elemental);
-    public static readonly DamageDef Acid = new("Sawing", DamageTypeDefOf.Elemental);
-    public static readonly DamageDef Electricity = new("Sawing", DamageTypeDefOf.Elemental);
+    public static readonly DamageDef Fire = new("Fire", DamageTypeDefOf.Elemental);
+    public static readonly DamageDef Ice = new("Ice", DamageTypeDefOf.Elemental);
+    public static readonly DamageDef Poison = new("Poison", DamageTypeDefOf.Elemental);
+    public static readonly DamageDef Acid = new("Acid", DamageTypeDefOf.Elemental);
+    public static readonly DamageDef Electricity = new("Electricity", DamageTypeDefOf.Elemental);
+
+    static DamageDefOf()
+    {
+        Def.Register(typeof(DamageDefOf));
+    }
 }

@@ -10,7 +10,7 @@ public sealed class ActorStatTracker(Actor actor)
 {
     readonly Actor Actor = actor;
     readonly Dictionary<StatBonusDef, float> Bonuses = [];
-    Dictionary<StatDef, StatRuntime> Stats => field ??= StatSystem.AllStats.ToDictionary(a => a, a => new StatRuntime(a));
+    Dictionary<StatDef, StatRuntime> Stats => field ??= StatSystem.ActorStats.ToDictionary(a => a, a => new StatRuntime(a));
     bool BonusesDirty = true, StatsDirty = true;
     public bool IsStatsDirty => this.StatsDirty;
     public void MarkBonusesDirty() => this.BonusesDirty = true;

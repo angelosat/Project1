@@ -33,7 +33,7 @@ internal static class QualitySystem
     {
         item.SetQuality(Random);
         var craftQuality = AllCraftQualities.SelectRandomWeighted(Rand, c => c.Threshold);
-        item.CraftQuality = craftQuality;
+        item.Craftsmanship = craftQuality;
         //item.SetName($"{craftQuality.LabelReadable} {item.Name}");
     }
 }

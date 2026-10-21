@@ -1,21 +1,17 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Assets;
-using Project1.Core.Legacy.Properties;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Stats;
-using Project1.Core.Towns.Duties;
 using Project1.Framework;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Project1.Core.Systems.Tools;
 
 [EnsureStaticCtorCall]
 static class GearProfileDefOf
 {
-    public static readonly GearProfileDef Shovel = new("Shovel", GearRoleDefOf.Tool)
+    public static readonly GearProfileDef Shovel = new("Shovel", GearRoleDefOf.MainHand)
     {
         Description = "Used to dig out grainy material like soil dirt and sand.",
         SpriteHandle = ItemContent.ShovelHandle,
@@ -23,6 +19,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Digging,
         ToolUses = [ToolUseDefOf.Digging],
         //Damage = DamageDefOf.Digging,
+        BaseSpeed = 1.3f,
         Skill = SkillDefOf.Digging,
         ExampleBone = BoneDefOf.ToolHandle,
         BoneSprites =
@@ -33,7 +30,7 @@ static class GearProfileDefOf
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
 
-    public static readonly GearProfileDef Hammer = new("Hammer", GearRoleDefOf.Tool)
+    public static readonly GearProfileDef Hammer = new("Hammer", GearRoleDefOf.MainHand)
     {
         Description = "Used for building.",
         SpriteHandle = ItemContent.HammerHandle,
@@ -42,6 +39,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Building],
         Damage = DamageDefOf.Blunt,
         Skill = SkillDefOf.Construction,
+        BaseSpeed = 1.1f,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.HammerHandle },
@@ -49,7 +47,7 @@ static class GearProfileDefOf
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
-    public static readonly GearProfileDef Pickaxe = new("Pickaxe", GearRoleDefOf.Tool)
+    public static readonly GearProfileDef Pickaxe = new("Pickaxe", GearRoleDefOf.MainHand)
     {
         Description = "Used for mining.",
         SpriteHandle = ItemContent.PickaxeHandle,
@@ -58,6 +56,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Mining],
         Damage = DamageDefOf.Piercing,
         Skill = SkillDefOf.Mining,
+        BaseSpeed = 1.6f,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.PickaxeHandle },
@@ -65,7 +64,7 @@ static class GearProfileDefOf
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
-    public static readonly GearProfileDef Handsaw = new("Handsaw", GearRoleDefOf.Tool)
+    public static readonly GearProfileDef Handsaw = new("Handsaw", GearRoleDefOf.MainHand)
     {
         Description = "Used for carpentry.",
         SpriteHandle = ItemContent.HandsawHandle,
@@ -74,6 +73,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Carpentry],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Carpentry,
+        BaseSpeed = 1.1f,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.HandsawHandle },
@@ -81,7 +81,7 @@ static class GearProfileDefOf
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
-    public static readonly GearProfileDef Hoe = new("Hoe", GearRoleDefOf.Tool)
+    public static readonly GearProfileDef Hoe = new("Hoe", GearRoleDefOf.MainHand)
     {
         Description = "Used to prepare soil for planting by converting it into farmland.",
         SpriteHandle = ItemContent.HoeHandle,
@@ -90,6 +90,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Argiculture],
         Damage = DamageDefOf.Blunt,
         Skill = SkillDefOf.Argiculture,
+        BaseSpeed = 1.5f,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.HoeHandle },
@@ -98,7 +99,7 @@ static class GearProfileDefOf
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
 
-    public static readonly GearProfileDef Axe = new("Axe", GearRoleDefOf.Tool)
+    public static readonly GearProfileDef Axe = new("Axe", GearRoleDefOf.MainHand)
     {
         Description = "Chops down trees.",
         SpriteHandle = ItemContent.AxeHandle,
@@ -107,6 +108,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Chopping],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Plantcutting,
+        BaseSpeed = 1.2f,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.AxeHandle },
@@ -115,7 +117,7 @@ static class GearProfileDefOf
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
 
-    public static readonly GearProfileDef Sword = new("Sword", GearRoleDefOf.Weapon)
+    public static readonly GearProfileDef Sword = new("Sword", GearRoleDefOf.MainHand)
     {
         Description = "Slashes enemies.",
         SpriteHandle = ItemContent.AxeHandle,
@@ -124,6 +126,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Chopping],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Melee,
+        BaseSpeed = 1f,
         BoneSprites =
         {
             { BoneDefOf.ToolHandle, ItemContent.SwordHandle },
@@ -131,7 +134,36 @@ static class GearProfileDefOf
         },
         BoneMaterials = BoneMaterialSet.ToolDefault
     };
-
+    public static readonly GearProfileDef Dagger = new("Dagger", GearRoleDefOf.MainHand)
+    {
+        Description = "Slashes enemies.",
+        SpriteHandle = ItemContent.AxeHandle,
+        SpriteHead = ItemContent.AxeHead,
+        Damage = DamageDefOf.Piercing,
+        Skill = SkillDefOf.Melee,
+        BaseSpeed = .6f,
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.SwordHandle },
+            { BoneDefOf.ToolHead, ItemContent.SwordHead }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
+    };
+    public static readonly GearProfileDef Mace = new("Mace", GearRoleDefOf.MainHand)
+    {
+        Description = "Slashes enemies.",
+        SpriteHandle = ItemContent.AxeHandle,
+        SpriteHead = ItemContent.AxeHead,
+        Damage = DamageDefOf.Blunt,
+        Skill = SkillDefOf.Melee,
+        BaseSpeed = 1.3f,
+        BoneSprites =
+        {
+            { BoneDefOf.ToolHandle, ItemContent.SwordHandle },
+            { BoneDefOf.ToolHead, ItemContent.SwordHead }
+        },
+        BoneMaterials = BoneMaterialSet.ToolDefault
+    };
     public static readonly GearProfileDef Helmet = new("Helmet", GearRoleDefOf.Head)
     {
         BoneSprites =

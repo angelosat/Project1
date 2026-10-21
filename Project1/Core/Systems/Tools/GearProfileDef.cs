@@ -23,6 +23,8 @@ public class GearProfileDef(string name, GearRoleDef role) : Def(name), IItemDef
     public SkillDef? Skill;
     public string? Description;
     public BoneDef? ExampleBone;
+
+    public float? BaseSpeed;
    
     public StorageFilterNewNew GetFilter()
     {

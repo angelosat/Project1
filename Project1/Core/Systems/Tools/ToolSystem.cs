@@ -241,7 +241,6 @@ internal static class ToolSystem
     public static void Randomize(Entity item)
     {
         var r = new Random();
-        item.CraftingQualityTier = r.Next(150);
         QualitySystem.Randomize(item);
         int durabilityMax = 0;
         var profile = (GearProfileDef)item.Profile;
@@ -279,13 +278,17 @@ internal static class ToolSystem
         //        AllPrefixDefs.SelectRandom(r).Worker.Apply(item, def);
         //        def.Worker.Apply(item, def);
         //    }
-        var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank;
-        for (int i = 0; i < bonusCount; i++)
-        {
-            //var stat = AllStatDefs.SelectRandom(r);
-            var stat = StatSystem.GetRandomStat(ActorDnaDefOf.Npc);
-            item.ToolComponent.Modifiers[stat] = bonusCount;
-        } 
+
+        var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
+        var selectedBonuses = StatSystem.GetRandomStats(ActorDnaDefOf.Npc, bonusCount);
+        foreach (var bonus in selectedBonuses)
+            item.ToolComponent.Modifiers[bonus] = bonusCount;
+        //for (int i = 0; i < bonusCount; i++)
+        //{
+        //    //var stat = AllStatDefs.SelectRandom(r);
+        //    var stat = StatSystem.GetRandomStat(ActorDnaDefOf.Npc);
+        //    item.ToolComponent.Modifiers[stat] = bonusCount;
+        //} 
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)
@@ -328,6 +331,6 @@ internal static class ToolSystem
     {
         var mat = item.Body.Material;
         var prof = item.Profile;
-        item.SetName($"{item.CraftQuality.LabelReadable} {mat.LabelReadable} {prof.LabelReadable}");
+        item.SetName($"{item.Craftsmanship.LabelReadable} {mat.LabelReadable} {prof.LabelReadable}");
     }
 }

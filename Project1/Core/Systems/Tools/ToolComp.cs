@@ -6,6 +6,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Quality;
+using Project1.Core.Systems.Stats;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
@@ -36,6 +37,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     public readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
     public readonly Dictionary<StatDef, float> Modifiers = [];
+    public readonly Dictionary<StatDef, StatRuntime> IntrinsicStats = [];
+
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
     public float BaseWork => this.baseWork ??= this.CalculateBaseWorkAmount();
@@ -163,6 +166,12 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         foreach(var (stat, value) in this.Modifiers)
             //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
             yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+
+        foreach (var (stat, runtime) in this.IntrinsicStats) 
+            yield return new LabelNew($"Intrinsic {stat}: {runtime.Value:#.##}");
+
+        foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
+            yield return roleControl;
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)
@@ -192,6 +201,11 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         w.Write(this.ActorEnhancements.Keys.ToArray());
         w.Write(this.Modifiers.Keys.ToArray());
         w.Write(this.Modifiers.Values);
+
+        //this.IntrinsicStats.WriteNew(w, v => v, v => v);
+        //w.Write(this.IntrinsicStats.Values);
+        w.Write(this.IntrinsicStats.Keys.ToArray());
+        w.Write(this.IntrinsicStats.Values.Select(v => v.Value).ToArray());
     }
 
     public override void Read(IDataReader r)
@@ -214,6 +228,11 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         //    this.Modifiers[mod] = -1;
         foreach (var (stat, value) in dic)
             this.Modifiers[stat] = value;
+
+        var intrinsicStatDefs = r.ReadListDef<StatDef>();
+        var intrinsicStatValues = r.ReadListSingle();
+        foreach (var (stat, val) in intrinsicStatDefs.Zip(intrinsicStatValues))
+            this.IntrinsicStats[stat] = new(stat, val);
     }
 
     internal override void PostLoad()

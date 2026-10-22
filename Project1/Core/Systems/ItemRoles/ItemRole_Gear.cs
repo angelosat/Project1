@@ -28,6 +28,9 @@ sealed class ItemRole_Gear : ItemRoleWorker
         if (item.Profile is not GearProfileDef profile)
             return -1;
         var statDef = (StatDef)role.Def;
+        // TODO need to differentiate between intrinsic gear stats like damage and speed
+        // and actor stat bonuses that are rolled on the item
+        // also i have to rethink the fact that itemrole gear prefs should be per slot 
         var value = ToolSystem.CalculateStat(item, statDef);
         return value.HasValue ? (int)value.Value : -1;
     }

@@ -11,4 +11,5 @@ public class GearRoleDef(string name, GearSlotDef slot, BoneStructureDef bones, 
     public readonly GearSlotDef Slot = slot;
     public readonly BoneStructureDef Bones = bones;
     public readonly StatDef[] Stats = stats;
+    public GearRoleWorker Worker = new();
 }

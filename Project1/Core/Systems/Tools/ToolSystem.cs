@@ -278,7 +278,7 @@ internal static class ToolSystem
         //        AllPrefixDefs.SelectRandom(r).Worker.Apply(item, def);
         //        def.Worker.Apply(item, def);
         //    }
-
+        var comp = item.ToolComponent;
         var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
         var selectedBonuses = StatSystem.GetRandomStats(ActorDnaDefOf.Npc, bonusCount);
         foreach (var bonus in selectedBonuses)
@@ -289,6 +289,11 @@ internal static class ToolSystem
         //    var stat = StatSystem.GetRandomStat(ActorDnaDefOf.Npc);
         //    item.ToolComponent.Modifiers[stat] = bonusCount;
         //} 
+        foreach (var stat in role.Stats)
+        {
+            var val = stat.Worker.CalculateStat(item);
+            comp.IntrinsicStats[stat] = new(stat, val);
+        }
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

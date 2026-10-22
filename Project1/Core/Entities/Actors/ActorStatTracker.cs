@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Stats;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -77,5 +78,14 @@ public sealed class ActorStatTracker(Actor actor)
         this.StatsDirty = false;
         foreach (var (stat, runtime) in this.Stats)
             runtime.Value = stat.CalculateFor(this.Actor);
+    }
+
+    internal void Remove(StatDef def, float value)
+    {
+        this.Stats[def].Value -= value;
+    }
+    internal void Add(StatDef def, float value)
+    {
+        this.Stats[def].Value += value;
     }
 }

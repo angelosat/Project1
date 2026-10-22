@@ -8,6 +8,7 @@ public class StatResolver
     {
         
     }
+
     public virtual float CalculateStat(Entity item) => 1f;
     public virtual float CalculateStatActor(StatDef def, Actor actor) => def.BaseValue;
 

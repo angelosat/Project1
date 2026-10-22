@@ -114,4 +114,24 @@ public static class StatSystem
         indices.Shuffle();
         return ActorStats.SelectRandom(r);
     }
+
+    internal static void Unequip(Actor actor, Entity item)
+    {
+        var tracker = actor.StatTracker;
+        var comp = item.ToolComponent;
+        foreach (var (def, value) in comp.Modifiers)
+            tracker.Remove(def, value);
+        var profile = item.Profile as GearProfileDef;
+        //foreach (var (def, value) in profile.Role.Stats)
+        //{
+
+        //}
+    }
+    internal static void Equip(Actor actor, Entity item)
+    {
+        var tracker = actor.StatTracker;
+        var comp = item.ToolComponent;
+        foreach (var (def, value) in comp.Modifiers)
+            tracker.Add(def, value);
+    }
 }

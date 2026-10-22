@@ -116,7 +116,9 @@ public sealed class GearComp : EntityComp
 
     internal void Equip(Entity item)
     {
-        if (!this.Owner.Inventory.Contains(item))
+        var actor = this.Owner as Actor;
+
+        if (!actor.Inventory.Contains(item))
             throw new Exception();
         var gearProfile = (GearProfileDef)item.Profile;
         var gearRole = gearProfile.Role;
@@ -128,18 +130,21 @@ public sealed class GearComp : EntityComp
 
         // the previousItem is currently detached from a parent but still exists, so we have to explicitly insert it in the inventory
         if(previousItem is not null)
-            this.Owner.Inventory.Insert(previousItem);
+            actor.Inventory.Insert(previousItem);
 
         this.RefreshStats();
-        this.Owner.World.Events.Post(new ActorGearUpdatedEvent(this.Owner as Actor, item, previousItem as Entity));
+        actor.World.Events.Post(new ActorGearUpdatedEvent(actor, item, previousItem as Entity));
 
         this.StatsDirty = true;
+        this.Actor.StatTracker.MarkBonusesDirty();
+        StatSystem.Equip(actor, item);
     }
+
     internal void Unequip(GearSlotDef slotType)
     {
         var actor = this.Owner as Actor;
         var slot = this.GetSlot(slotType);
-        var item = slot.Object;
+        var item = slot.Object as Entity;
         ArgumentNullException.ThrowIfNull(item);
         // the inventory implicitly removes the item from its previous owner, so no need to clear the slot explicitly
         actor.Inventory.Insert(item);
@@ -147,6 +152,9 @@ public sealed class GearComp : EntityComp
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
 
         this.StatsDirty = true;
+        this.Actor.StatTracker.MarkBonusesDirty();
+
+        StatSystem.Unequip(actor, item);
     }
     public bool EquipToggle(Entity item)
     {

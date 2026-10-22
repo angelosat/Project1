@@ -15,7 +15,8 @@ public class GearProfileDef(string name, GearRoleDef role) : Def(name), IItemDef
 {
     public GearRoleDef? Role = role;
     public ToolUseDef? ToolUse;
-    public ToolUseDef[]? ToolUses;
+    public ToolUseDef[] ToolUses = [];
+    public Dictionary<ToolUseDef, float> ToolUsesModifiers = [];
     public DamageDef? Damage;
     public Sprite? SpriteHandle, SpriteHead;
     public readonly Dictionary<BoneDef, Sprite> BoneSprites = [];

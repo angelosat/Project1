@@ -83,18 +83,26 @@ public static class StatDefOf
         Type = StatDef.Types.Scalar
     };
 
-    public static readonly StatDef ToolEffectiveness = new("Tool Effectiveness", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
+    public static readonly StatDef ItemPower = new("Power", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
     {
         Description = "Amount of work produced with each hit of the tool.",
         Type = StatDef.Types.Scalar,
-        StringFormat = "0"
+        StringFormat = "0",
+        Format = "#"
     };
+    //public static readonly StatDef DamageEffectiveness = new("Damage Effectiveness", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
+    //{
+    //    Description = "Amount of damage done with each swing.",
+    //    Type = StatDef.Types.Scalar,
+    //    StringFormat = "0"
+    //};
 
-    public static readonly StatDef ToolSpeed = new("Tool Speed", typeof(StatToolSwingSpeed), typeof(ToolComp))
+    public static readonly StatDef ItemSpeed = new("Speed", typeof(StatToolSwingSpeed), typeof(ToolComp))
     {
         Description = "Determines time between each tool strike.",
         Type = StatDef.Types.Scalar,
-        StringFormat = "0.##"
+        StringFormat = "0.##",
+        Format = "#.#"
         //StringFormat = "+##0%"
     };
 
@@ -102,7 +110,8 @@ public static class StatDefOf
     {
         Description = "Work speed",
         Type = StatDef.Types.Scalar,
-        StringFormat = "+##0%"
+        StringFormat = "+##0%",
+        Format = "#.#"
     };
     public static readonly StatDef WorkEffectiveness = new("Work Effectiveness", typeof(StatWorkEffectiveness), typeof(ToolComp))
     {

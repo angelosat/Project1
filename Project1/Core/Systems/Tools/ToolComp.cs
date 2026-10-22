@@ -66,7 +66,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         var density = Math.Max(aa, material.Density); // in case for some reason the material is air
         var total = aa / density;
         total *= tool.QualityComp.Tier.Multiplier;
-        total = StatDefOf.ToolSpeed.Worker.CalculateStat(this.Owner);
+        total = StatDefOf.ItemSpeed.Worker.CalculateStat(this.Owner);
         return total;
     }
 
@@ -141,9 +141,9 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
             yield return new LabelNew($"{this.BaseWork} {damage.LabelReadable} damage");
         if (profile.BaseSpeed.HasValue)
         {
-            var speedVal = StatDefOf.ToolSpeed.Worker.CalculateStat(this.Owner);
+            var speedVal = StatDefOf.ItemSpeed.Worker.CalculateStat(this.Owner);
             //yield return new LabelNew($"{profile.BaseSpeed.Value} speed");
-            yield return new LabelNew($"{speedVal.ToString(StatDefOf.ToolSpeed.StringFormat)} speed");
+            yield return new LabelNew($"{speedVal.ToString(StatDefOf.ItemSpeed.StringFormat)} speed");
         }
 
         if (profile.ToolUses is not null)
@@ -167,11 +167,14 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
             //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
             yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
 
-        foreach (var (stat, runtime) in this.IntrinsicStats) 
-            yield return new LabelNew($"Intrinsic {stat}: {runtime.Value:#.##}");
+        //foreach (var (stat, runtime) in this.IntrinsicStats) 
+        //    yield return new LabelNew($"Intrinsic {stat}: {runtime.Value:#.##}");
 
-        foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
-            yield return roleControl;
+        //foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
+        //    yield return roleControl;
+
+        foreach(var (stat, runtime) in this.IntrinsicStats)
+            yield return new LabelNew($"Intrinsic3: {runtime.Value.ToString(stat.Format)} {stat.LabelReadable}");
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)

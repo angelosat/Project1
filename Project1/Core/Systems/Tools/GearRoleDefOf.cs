@@ -4,7 +4,6 @@ using Project1.Core.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Framework;
 using Project1.Framework.UI;
-using SharpDX.XInput;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Tools;
@@ -13,7 +12,7 @@ namespace Project1.Core.Systems.Tools;
 static class GearRoleDefOf
 {
     //public static readonly GearRoleDef Tool = new("Tool", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness]);
-    public static readonly GearRoleDef MainHand = new("MainHand", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness])
+    public static readonly GearRoleDef MainHand = new("MainHand", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [StatDefOf.ItemSpeed, StatDefOf.ItemPower])
     { Worker = new GearRoleWorker_MainHand()};
     public static readonly GearRoleDef Head = new("Head", slot: GearSlotDefOf.Head, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor]);
     public static readonly GearRoleDef Feet = new("Feet", slot: GearSlotDefOf.Feet, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor, StatDefOf.WalkSpeed]);
@@ -37,19 +36,22 @@ sealed class GearRoleWorker_MainHand : GearRoleWorker
         var comp = item.ToolComponent;
         var profile = item.Profile as GearProfileDef;
         var stats = comp.IntrinsicStats;
-        if(profile.BaseSpeed.HasValue)
-            yield return new LabelNew($"Intrinsic2: {stats[StatDefOf.ToolSpeed].Value} speed");
+        //if(profile.BaseSpeed.HasValue)
+        //    yield return new LabelNew($"Intrinsic2: {stats[StatDefOf.ToolSpeed].Value.ToString(StatDefOf.ToolSpeed.Format)} speed");
 
         if (profile.Damage is not null)
         {
-            var magnitude = stats[StatDefOf.ToolEffectiveness].Value;
-            yield return new LabelNew($"Intrinsic2: {magnitude} {profile.Damage.LabelReadable}");
+            var magnitude = stats[StatDefOf.ItemPower].Value;
+            yield return new LabelNew($"Intrinsic2: {magnitude.ToString(StatDefOf.ItemPower.Format)} {profile.Damage.LabelReadable}");
         }
         if (profile.ToolUses is not null)
             foreach (var usage in profile.ToolUses)
             {
-                var magnitude = stats[StatDefOf.ToolEffectiveness].Value;
-                yield return new LabelNew($"Intrinsic2: {magnitude} {usage.LabelReadable}");
+                //var magnitude = stats[StatDefOf.ToolEffectiveness].Value;
+                //var profileMod = profile.ToolUsesModifiers[usage];
+                //yield return new LabelNew($"Intrinsic2: {magnitude * profileMod} {usage.LabelReadable}");
+                var final = ToolSystem.GetFinalValue(item, usage);
+                yield return new LabelNew($"Intrinsic2: {final.ToString(StatDefOf.ItemPower.Format)} {usage.LabelReadable}");
             }
         yield break;
     }

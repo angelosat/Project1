@@ -375,7 +375,7 @@ public sealed class Interaction : Inspectable
 
         total = Math.Max(1, total / this.WorkDifficulty);
 
-        var toolspeed = 1 + tool?.Stats[StatDefOf.ToolSpeed] ?? 0;
+        var toolspeed = 1 + tool?.Stats[StatDefOf.ItemSpeed] ?? 0;
         toolspeed /= 1 + skillMult;
 
         workamount = (int)total;

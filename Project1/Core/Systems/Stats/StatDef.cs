@@ -18,7 +18,7 @@ public sealed class StatDef : Def
     public float BaseValue;
     public string Description;
     public Types Type = Types.Scalar;
-    public string StringFormat = "";
+    public string StringFormat = "", Format = "";
     readonly Type ValueGetterType;
     StatResolver _valueGetter;
     public readonly Type? CompRequired;

@@ -12,11 +12,13 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -133,8 +135,8 @@ internal static class ToolSystem
     static internal void BakeStats(Entity tool)
     {
         var comp = tool.GetComponent<StatsComp>();
-        comp.Bake(StatDefOf.ToolSpeed, BoneDefOf.ToolHandle);
-        comp.Bake(StatDefOf.ToolEffectiveness, BoneDefOf.ToolHead);
+        comp.Bake(StatDefOf.ItemSpeed, BoneDefOf.ToolHandle);
+        comp.Bake(StatDefOf.ItemPower, BoneDefOf.ToolHead);
     }
 
     internal static Entity Create(EntityCreationRequest req)
@@ -289,10 +291,22 @@ internal static class ToolSystem
         //    var stat = StatSystem.GetRandomStat(ActorDnaDefOf.Npc);
         //    item.ToolComponent.Modifiers[stat] = bonusCount;
         //} 
-        foreach (var stat in role.Stats)
+        //foreach (var stat in role.Stats)
+        //{
+        //    var val = stat.Worker.CalculateStat(item);
+        //    comp.IntrinsicStats[stat] = new(stat, val);
+        //}
+        var power = StatDefOf.ItemPower.Worker.CalculateStat(item);
+        if (profile.Damage is not null)
         {
-            var val = stat.Worker.CalculateStat(item);
-            comp.IntrinsicStats[stat] = new(stat, val);
+            var dmgStat = StatSystem.GetDerivedStat(profile.Damage);
+            comp.IntrinsicStats[dmgStat] = new(dmgStat, power);
+        }
+        foreach (var capability in profile.ToolUses)
+        {
+            var stat = StatSystem.GetDerivedStat(capability);
+            var mod = profile.ToolUsesModifiers[capability];
+            comp.IntrinsicStats[stat] = new(stat, power * mod);
         }
     }
 
@@ -337,5 +351,15 @@ internal static class ToolSystem
         var mat = item.Body.Material;
         var prof = item.Profile;
         item.SetName($"{item.Craftsmanship.LabelReadable} {mat.LabelReadable} {prof.LabelReadable}");
+    }
+
+    public static float GetFinalValue(Entity item, ToolUseDef capability)
+    {
+        var comp = item.ToolComponent;
+        var profile = item.Profile as GearProfileDef;
+        var stats = comp.IntrinsicStats;
+        var magnitude = stats[StatDefOf.ItemPower].Value;
+        var profileMod = profile.ToolUsesModifiers[capability];
+        return magnitude * profileMod;
     }
 }

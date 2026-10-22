@@ -32,6 +32,30 @@ sealed class StatResolver_ToolEffectiveness : StatResolver
     }
 }
 
+sealed class StatResolver_DamageEffectiveness : StatResolver
+{
+    public StatResolver_DamageEffectiveness()
+    {
+
+    }
+    public override float CalculateStat(Entity owner)
+    {
+        var material = owner.GetMaterial(BoneDefOf.ToolHead);
+        if (material is null)
+            return 1; // is it ever possible for this to be null?
+        var role = (owner.Profile as GearProfileDef).Role;
+        return material.Density * owner.QualityComp.Tier.Multiplier;
+    }
+
+    internal override string Format(StatDef def, Entity item)
+    {
+        //var comp = item.GetComponent<ToolComp>();
+        var profile = item.Profile as GearProfileDef;
+        return $"{profile.ToolUse.LabelReadable} effectiveness";
+    }
+}
+
+
 sealed class StatResolver_ActorWorkEffectiveness : StatResolver
 {
     public StatResolver_ActorWorkEffectiveness(ToolUseDef toolUse)

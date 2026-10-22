@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities.Stats;
 
@@ -19,6 +20,7 @@ public static class StatSystem
     static readonly Dictionary<ToolUseDef, GearProfileDef> _useToProfile = [];
     static readonly Dictionary<SkillDef, InteractionDef> _skillToInteraction = [];
     static readonly Dictionary<ToolUseDef, InteractionDef> _toolToInteraction = [];
+    static readonly Dictionary<Def, StatDef> DerivedStats = [];
 
     static readonly Dictionary<Type, List<StatDef>> _statsByCompType = [];
     static public IReadOnlyDictionary<SkillDef, ToolUseDef> SkillsToTools => _skillsToTools;
@@ -61,7 +63,13 @@ public static class StatSystem
         AllStats = [.. statdefs];
 
         ActorStats = [.. AllStats.Where(s => s.Worker.IsApplicable(s, ActorDnaDefOf.Npc))];
+
+        foreach(var stat in statdefs.Where(s=>s.TargetDef is not null))
+            DerivedStats[stat.TargetDef] = stat; 
     }
+
+    static public StatDef GetDerivedStat(Def def)
+        => DerivedStats[def];
 
     static public IEnumerable<StatDef> GetStatsFor(EntityComp comp)
     {
@@ -122,10 +130,10 @@ public static class StatSystem
         foreach (var (def, value) in comp.Modifiers)
             tracker.Remove(def, value);
         var profile = item.Profile as GearProfileDef;
-        //foreach (var (def, value) in profile.Role.Stats)
-        //{
-
-        //}
+        foreach (var (def, value) in comp.Modifiers)
+            tracker.Remove(def, value);
+        foreach (var (def, runtime) in comp.IntrinsicStats)
+            tracker.Remove(def, runtime.Value);
     }
     internal static void Equip(Actor actor, Entity item)
     {
@@ -133,5 +141,7 @@ public static class StatSystem
         var comp = item.ToolComponent;
         foreach (var (def, value) in comp.Modifiers)
             tracker.Add(def, value);
+        foreach (var (def, runtime) in comp.IntrinsicStats)
+            tracker.Add(def, runtime.Value);
     }
 }

@@ -36,7 +36,7 @@ sealed class ItemRole_Tool : ItemRoleWorker
             return -1;
         if (toolProfile.ToolUse != role.Def)
             return -1;
-        return (int)StatDefOf.ToolEffectiveness.CalculateFor(item);
+        return (int)StatDefOf.ItemPower.CalculateFor(item);
     }
 
     public override IEnumerable<Def> GetValidTargetDefs()

@@ -27,7 +27,8 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.ShovelHandle },
             { BoneDefOf.ToolHead, ItemContent.ShovelHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { { ToolUseDefOf.Digging, 1f } }
     };
 
     public static readonly GearProfileDef Hammer = new("Hammer", GearRoleDefOf.MainHand)
@@ -45,7 +46,8 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.HammerHandle },
             { BoneDefOf.ToolHead, ItemContent.HammerHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { { ToolUseDefOf.Building, 1f } }
     };
     public static readonly GearProfileDef Pickaxe = new("Pickaxe", GearRoleDefOf.MainHand)
     {
@@ -62,7 +64,8 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.PickaxeHandle },
             { BoneDefOf.ToolHead, ItemContent.PickaxeHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { { ToolUseDefOf.Mining, 1f } }
     };
     public static readonly GearProfileDef Handsaw = new("Handsaw", GearRoleDefOf.MainHand)
     {
@@ -79,7 +82,9 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.HandsawHandle },
             { BoneDefOf.ToolHead, ItemContent.HandsawHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { { ToolUseDefOf.Carpentry, 1f } }
+
     };
     public static readonly GearProfileDef Hoe = new("Hoe", GearRoleDefOf.MainHand)
     {
@@ -96,7 +101,8 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.HoeHandle },
             { BoneDefOf.ToolHead, ItemContent.HoeHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { { ToolUseDefOf.Argiculture, 1f } }
     };
 
     public static readonly GearProfileDef Axe = new("Axe", GearRoleDefOf.MainHand)
@@ -114,7 +120,10 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.AxeHandle },
             { BoneDefOf.ToolHead, ItemContent.AxeHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { 
+            { ToolUseDefOf.Chopping, 1f },
+        }
     };
 
     public static readonly GearProfileDef Sword = new("Sword", GearRoleDefOf.MainHand)
@@ -123,7 +132,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.AxeHandle,
         SpriteHead = ItemContent.AxeHead,
         ToolUse = ToolUseDefOf.Chopping,
-        ToolUses = [ToolUseDefOf.Chopping],
+        ToolUses = [ToolUseDefOf.Chopping, ToolUseDefOf.Argiculture],
         Damage = DamageDefOf.Slashing,
         Skill = SkillDefOf.Melee,
         BaseSpeed = 1f,
@@ -132,7 +141,11 @@ static class GearProfileDefOf
             { BoneDefOf.ToolHandle, ItemContent.SwordHandle },
             { BoneDefOf.ToolHead, ItemContent.SwordHead }
         },
-        BoneMaterials = BoneMaterialSet.ToolDefault
+        BoneMaterials = BoneMaterialSet.ToolDefault,
+        ToolUsesModifiers = { 
+            { ToolUseDefOf.Chopping, .5f },
+            { ToolUseDefOf.Argiculture, .2f }
+        }
     };
     public static readonly GearProfileDef Dagger = new("Dagger", GearRoleDefOf.MainHand)
     {

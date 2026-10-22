@@ -183,7 +183,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.Item, ItemContent.HelmetFull }
         },
-        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal)),
+        ArmorModifier = 1
     };
 
     public static readonly GearProfileDef Boots = new("Boots", GearRoleDefOf.Feet)
@@ -192,7 +193,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.Item, ItemContent.HelmetFull }
         },
-        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal)),
+        ArmorModifier = 1
     };
 
     public static readonly GearProfileDef Shoes = new("Shoes", GearRoleDefOf.Feet)
@@ -201,7 +203,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.Item, ItemContent.HelmetFull }
         },
-        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal)),
+        ArmorModifier = 1
     };
 
     public static readonly GearProfileDef Shirt = new("Shirt", GearRoleDefOf.Torso)
@@ -210,7 +213,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.Item, ItemContent.HelmetFull }
         },
-        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal)), 
+        ArmorModifier = 1
     };
 
     public static readonly GearProfileDef Pants = new("Pants", GearRoleDefOf.Legs)
@@ -219,7 +223,8 @@ static class GearProfileDefOf
         {
             { BoneDefOf.Item, ItemContent.HelmetFull }
         },
-        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal))
+        BoneMaterials = new BoneMaterialSet().Allow(BoneDefOf.Item, MaterialFilter.Allow(MaterialTypeDefOf.Metal)),
+        ArmorModifier = 1
     };
 
     static GearProfileDefOf()

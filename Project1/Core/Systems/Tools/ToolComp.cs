@@ -165,13 +165,15 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
 
         foreach(var (stat, value) in this.Modifiers)
             //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
-            yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+            yield return new LabelNew($"Modifier: +{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
 
         //foreach (var (stat, runtime) in this.IntrinsicStats) 
         //    yield return new LabelNew($"Intrinsic {stat}: {runtime.Value:#.##}");
 
         //foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
         //    yield return roleControl;
+
+
 
         foreach(var (stat, runtime) in this.IntrinsicStats)
             yield return new LabelNew($"Intrinsic3: {runtime.Value.ToString(stat.Format)} {stat.LabelReadable}");

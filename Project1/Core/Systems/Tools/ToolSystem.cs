@@ -296,18 +296,32 @@ internal static class ToolSystem
         //    var val = stat.Worker.CalculateStat(item);
         //    comp.IntrinsicStats[stat] = new(stat, val);
         //}
-        var power = StatDefOf.ItemPower.Worker.CalculateStat(item);
-        if (profile.Damage is not null)
-        {
-            var dmgStat = StatSystem.GetDerivedStat(profile.Damage);
-            comp.IntrinsicStats[dmgStat] = new(dmgStat, power);
-        }
-        foreach (var capability in profile.ToolUses)
-        {
-            var stat = StatSystem.GetDerivedStat(capability);
-            var mod = profile.ToolUsesModifiers[capability];
-            comp.IntrinsicStats[stat] = new(stat, power * mod);
-        }
+
+        role.Worker.Handle(item);
+
+        //var power = StatDefOf.ItemPower.Worker.CalculateStat(item);
+        //if (profile.Damage is not null)
+        //{
+        //    var dmgStat = StatSystem.GetDerivedStat(profile.Damage);
+        //    comp.IntrinsicStats[dmgStat] = new(dmgStat, power);
+        //}
+        //foreach (var capability in profile.ToolUses)
+        //{
+        //    var stat = StatSystem.GetDerivedStat(capability);
+        //    var mod = profile.ToolUsesModifiers[capability];
+        //    comp.IntrinsicStats[stat] = new(stat, power * mod);
+        //}
+
+        //if (profile.ArmorModifier is float armor)
+        //{
+        //    var armorMod = StatDefOf.Armor.Worker.CalculateStat(item);
+        //    comp.IntrinsicStats[StatDefOf.Armor] = new(StatDefOf.Armor, armorMod);
+        //}
+        //foreach(var stat in role.Stats)
+        //{
+        //    var mod = stat.Worker.CalculateStat(item);
+        //    comp.IntrinsicStats[stat] = new(stat, mod);
+        //}
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

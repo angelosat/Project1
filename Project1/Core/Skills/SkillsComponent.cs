@@ -8,6 +8,7 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -134,17 +135,22 @@ public class SkillsComponent : EntityComp, IGui
             actor.World.Events.Post(new SkillLevelUpEvent(actor, s));
     }
 
-    public override IEnumerable<(StatDef target, float value)> GetModifiers()
-    {
-        foreach(var (stat, tooluse) in WorkSystem.StatToTooluse)
-        {
-            var skill = tooluse.Skill;
-            yield return (stat, this.SkillsNew[skill].Level);
-        }
-    }
+    //public override IEnumerable<(StatDef target, float value)> GetModifiers()
+    //{
+    //    foreach(var (stat, tooluse) in WorkSystem.StatToTooluse)
+    //    {
+    //        var skill = tooluse.Skill;
+    //        yield return (stat, this.SkillsNew[skill].Level);
+    //    }
+    //}
 
-    public override float? GetStatMod(StatDef target)
-        => this.SkillsNew[WorkSystem.StatToTooluse[target].Skill].Level;
+    //public override float? GetStatMod(StatDef target)
+    ////=> this.SkillsNew[WorkSystem.StatToTooluse[target].Skill].Level;
+    //{
+    //    if (WorkSystem.TryGetStatToToolUse(target, out var capability))
+    //        return this.SkillsNew[capability.Skill].Level;
+    //    return null;
+    //}
 
     public new class Spec : Spec<SkillsComponent>
     {

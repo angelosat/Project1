@@ -53,7 +53,7 @@ public sealed class GearComp : EntityComp
     private void OnSlotItemChanged()
     {
         this.StatsDirty = true;
-        this.Actor.StatTracker.MarkBonusesDirty();
+        this.Actor.Stats.MarkBonusesDirty();
     }
 
     public GearComp()
@@ -136,7 +136,7 @@ public sealed class GearComp : EntityComp
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, item, previousItem as Entity));
 
         this.StatsDirty = true;
-        this.Actor.StatTracker.MarkBonusesDirty();
+        this.Actor.Stats.MarkBonusesDirty();
         StatSystem.Equip(actor, item);
     }
 
@@ -152,7 +152,7 @@ public sealed class GearComp : EntityComp
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
 
         this.StatsDirty = true;
-        this.Actor.StatTracker.MarkBonusesDirty();
+        this.Actor.Stats.MarkBonusesDirty();
 
         StatSystem.Unequip(actor, item);
     }
@@ -229,13 +229,13 @@ public sealed class GearComp : EntityComp
             foreach (var (bonusDef, bonusVal) in gear.ToolComponent.Modifiers)
                 yield return (bonusDef, bonusVal);
     }
-    public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()
-    {
-        if (this.StatsDirty)
-            this.RebuildStats();
-        foreach (var k in this.StatsCache)
-            yield return (k.Key, k.Value.Value);
-    }
+    //public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()
+    //{
+    //    if (this.StatsDirty)
+    //        this.RebuildStats();
+    //    foreach (var k in this.StatsCache)
+    //        yield return (k.Key, k.Value.Value);
+    //}
     //public IEnumerable<(StatDef def, string value)> GetCachedStatsNewNew()
     //{
     //    if (this.StatsDirty)

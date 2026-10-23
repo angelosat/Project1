@@ -90,7 +90,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         sprite.Draw(sb, pos - new Vector2(source.Width, source.Height) * 0.5f, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
     }
 
-    internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComponent>().GetAttribute(att);
+    internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComp>().GetAttribute(att);
     public ItemDef Def;
     //public QualityDef Quality { get { return this.DefComponent.Quality; } set { this.DefComponent.Quality = value; } }
     //public QualityDef Quality { get => this.QualityComp.Tier; set => this.QualityComp.Tier = value; }

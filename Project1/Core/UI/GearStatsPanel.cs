@@ -25,7 +25,7 @@ class GearStatsPanel : SelectionBoundControl
         //var statsCache = actor.StatTracker.GetAllStats();
         //foreach (var (stat, value) in statsCache)
         //    AddControls(new LabelNew($"{stat.LabelReadable}: {StatSystem.Format(stat, value)}"));
-        var statsCache = actor.StatTracker.GetAllStatRuntime();
+        var statsCache = actor.Stats.GetAllStatRuntime();
         foreach (var stat in statsCache)
             //AddControls(new LabelNew($"{stat.Def.LabelReadable}: {StatSystem.Format(stat.Def, stat.Value)} + {stat.Bonus}"));
             AddControls(new LabelNew($"{stat.Def.LabelReadable}: {StatSystem.Format(stat.Def, stat.Resolve(actor))} + {stat.Bonus}"));
@@ -38,7 +38,7 @@ class GearStatsPanel : SelectionBoundControl
         if (this.Gear is null)
             return;
         //if (this.Gear.StatsDirty)
-        if ((this.Gear.Owner as Actor).StatTracker.IsStatsDirty)
+        if ((this.Gear.Owner as Actor).Stats.IsStatsDirty)
                 Build(Gear.Owner as Actor);
     }
 }

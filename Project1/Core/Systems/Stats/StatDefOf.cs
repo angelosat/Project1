@@ -33,7 +33,7 @@ public static class StatDefOf
     {
         Description = "Speed of walking",
         Type = StatDef.Types.Percentile,
-        BaseValue = 1f,// 100f,
+        BaseValue = 100f,// 100f,
         //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef SwingSpeed = new("Swing Speed", typeof(StatResolver))
@@ -48,28 +48,28 @@ public static class StatDefOf
     {
         Description = "Critical chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f,// 5f,
+        BaseValue = 5f,// 5f,
         //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
-    public static readonly StatDef HitChance = new("Hit Chance", typeof(StatResolver))
+    public static readonly StatDef HitChance = new("Hit Chance", typeof(StatResolver_HitChance))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .5f,//50f,
+        BaseValue = 50f,//50f,
         //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef DodgeChance = new("Dodge Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f,//50f,
+        BaseValue = 5f,//50f,
         //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef ParryChance = new("Parry Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f,//50f,
+        BaseValue = 5f,//50f,
         //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))
@@ -147,7 +147,8 @@ public static class StatDefOf
             toRegister.Add(new StatDef($"Unarmed {target.LabelReadable}", target, typeof(StatResolver_ActorUnarmedWorkAmount), typeof(ToolComp)) 
             {
                 EligibleBonusTargets = [GearRoleDefOf.Feet, GearRoleDefOf.Torso, GearRoleDefOf.Head],  
-                Type = StatDef.Types.Scalar 
+                Type = StatDef.Types.Scalar ,
+                BaseValue = 1f,
             });
         foreach (var target in Def.Get<AttributeDef>())
             toRegister.Add(new StatDef($"{target.LabelReadable}", target, typeof(StatResolver_ActorAttributeBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
@@ -165,5 +166,15 @@ public static class StatDefOf
             });
         foreach (var to in toRegister)
             Def.Register(to);
+    }
+}
+
+sealed class StatResolver_HitChance : StatResolver
+{
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        var meleeSkill = actor.Skills.GetLevel(SkillDefOf.Melee);
+        var dexterity = actor.Attributes.GetLevel(AttributeDefOf.Dexterity);
+        return (meleeSkill / 5f) + dexterity;
     }
 }

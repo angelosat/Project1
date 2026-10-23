@@ -37,7 +37,7 @@ public sealed class Actor : Entity
 {
     internal SkillsComponent Skills => field ??= this.GetComponent<SkillsComponent>();
 
-    internal AttributesComponent Attributes => field ??= this.GetComponent<AttributesComponent>();
+    internal AttributesComp Attributes => field ??= this.GetComponent<AttributesComp>();
 
     internal NpcComponent Npc => field ??= this.GetComponent<NpcComponent>();
 
@@ -64,7 +64,7 @@ public sealed class Actor : Entity
 
     public float MoodValue => this.Mood.Mood;
 
-    public ActorStatTracker StatTracker => field ??= new(this);
+    public ActorStatTracker Stats => field ??= new(this);
     public Actor()
     {
 

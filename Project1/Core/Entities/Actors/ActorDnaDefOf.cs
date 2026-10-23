@@ -43,7 +43,8 @@ public class ActorDnaDefOf
             SkillDefOf.Plantcutting,
             SkillDefOf.Social,
             SkillDefOf.Exploration,
-            AlchemyDefOf.Skill
+            AlchemyDefOf.Skill,
+            SkillDefOf.Melee
             ],
         Gear = [
             GearSlotDefOf.Mainhand,

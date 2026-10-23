@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
-using System.DirectoryServices.ActiveDirectory;
+using System.Linq;
 
 namespace Project1.Core.Systems.Stats;
 
@@ -19,7 +19,8 @@ public sealed class StatRuntime(StatDef def)
         if(this.Dirty)
         {
             this.Dirty = false;
-            this.Value = this.Def.Worker.CalculateStatActor(this.Def, actor);
+            //this.Value = this.Def.BaseValue + actor.Components.Values.Sum(c => c.GetStatMod(this.Def)).Value;
+            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateStatActor(this.Def, actor);
         }
         return this.Value;
     }

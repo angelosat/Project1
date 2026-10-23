@@ -25,7 +25,7 @@ public sealed class ActorDnaDef(string name) : Def(name)
     public IEnumerable<EntityComp.Spec> GenerateSpecs()
     {
         yield return new NeedsComp.Spec(Needs);
-        yield return new AttributesComponent.Spec(Attributes);
+        yield return new AttributesComp.Spec(Attributes);
         yield return new ResourcesComp.Spec(Resources);
         yield return new GearComp.Spec(Gear);
         yield return new SkillsComponent.Spec(Skills);

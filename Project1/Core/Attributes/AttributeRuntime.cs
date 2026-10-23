@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Framework;
@@ -86,6 +87,9 @@ namespace Project1.Core.Attributes
         {
             return new AttributeRuntime(this.AttributeDef, this.Level);
         }
+
+        public float GetStatMod(StatDef stat) => this.Def.Worker.GetStatMod(stat, this.Level);
+
         public SaveTag Save(string name = "")
         {
             var tag = new SaveTag(SaveTag.Types.Compound, name);

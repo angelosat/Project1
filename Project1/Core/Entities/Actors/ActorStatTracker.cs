@@ -78,15 +78,17 @@ public sealed class ActorStatTracker(Actor actor)
         }
     }
 
-    public float GetStatValue(StatDef def)
+    public float Get(StatDef def)
     {
         var runtime = this.Stats[def];
         if (runtime.Dirty)
         {
             runtime.Dirty = false;
-            runtime.Value = runtime.Def.Worker.CalculateStatActor(runtime.Def, this.Actor);
+            runtime.Value = def.BaseValue + runtime.Def.Worker.CalculateStatActor(runtime.Def, this.Actor);
+            foreach (var comp in this.Actor.Components.Values)
+                runtime.Value = comp.GetStatMod(def) ?? runtime.Value;
         }
-        return runtime.Value;
+        return runtime.Value * (def.Type == StatDef.Types.Percentile ? .01f : 1f);
         // this.Stats[def].Value;
     }
 

@@ -140,7 +140,7 @@ public static class StatSystem
 
     internal static void Unequip(Actor actor, Entity item)
     {
-        var tracker = actor.StatTracker;
+        var tracker = actor.Stats;
         var comp = item.ToolComponent;
         foreach (var (def, value) in comp.Modifiers)
             tracker.Remove(def, value);
@@ -150,7 +150,7 @@ public static class StatSystem
     }
     internal static void Equip(Actor actor, Entity item)
     {
-        var tracker = actor.StatTracker;
+        var tracker = actor.Stats;
         var comp = item.ToolComponent;
         foreach (var (def, value) in comp.Modifiers)
             tracker.Add(def, value);

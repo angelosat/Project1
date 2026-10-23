@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Helpers;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -9,18 +10,18 @@ using System.Linq;
 
 namespace Project1.Core.Attributes;
 
-class AttributesComponent : EntityComp<AttributesComponent.Spec>, IGuiNew
+class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Attributes;
     public override string Name { get; } = "Attributes";
     public Dictionary<AttributeDef, AttributeRuntime> Attributes = [];
     public AttributeRuntime this[AttributeDef def] => this.GetAttribute(def);
-    public AttributesComponent()
+    public AttributesComp()
     {
     }
     internal override void CopyFrom(EntityComp source)
     {
-        var atts = ((AttributesComponent)source).Attributes.Values;
+        var atts = ((AttributesComp)source).Attributes.Values;
         this.Attributes.Clear();
         foreach (var a in atts)
             this.Attributes.Add(a.AttributeDef, new AttributeRuntime(a.AttributeDef, (int)a.Progress.Value));
@@ -38,9 +39,11 @@ class AttributesComponent : EntityComp<AttributesComponent.Spec>, IGuiNew
             a.Update(this.Owner);
     }
     public AttributeRuntime GetAttribute(AttributeDef def)
-    {
-        return this.Attributes[def];//.FirstOrDefault(att => att.Def == def);
-    }
+        => this.Attributes[def];//.FirstOrDefault(att => att.Def == def);
+    
+    public int GetLevel(AttributeDef def)   
+        => this.Attributes[def].Level;
+
     public Control CreateControl()
     {
         //var table = new TableScrollableCompact<AttributeRuntime>()
@@ -93,7 +96,8 @@ class AttributesComponent : EntityComp<AttributesComponent.Spec>, IGuiNew
         table.AddItems(this.Attributes.Values);
         return table;
     }
-
+    //public override float? GetStatMod(StatDef target)
+    //    => this.Attributes.Values.Sum(r => r.GetStatMod(target));
     static readonly ListBoxNoScroll GuiList = new();
     public Control GetGui()
     {
@@ -102,7 +106,7 @@ class AttributesComponent : EntityComp<AttributesComponent.Spec>, IGuiNew
         GuiList.Validate(true);
         return GuiList;
     }
-    public AttributesComponent Randomize()
+    public AttributesComp Randomize()
     {
         var range = 20;
         var average = range / 2;
@@ -141,14 +145,14 @@ class AttributesComponent : EntityComp<AttributesComponent.Spec>, IGuiNew
         this.GetAttribute(def).SetValue(value);
     }
 
-    public new class Spec : Spec<AttributesComponent>
+    public new class Spec : Spec<AttributesComp>
     {
         public AttributeDef[] Items;
         public Spec(params AttributeDef[] defs)
         {
             this.Items = defs;
         }
-        protected override void ApplyDefaultsTo(AttributesComponent comp)
+        protected override void ApplyDefaultsTo(AttributesComp comp)
         {
             if (this.Items != null)
             {

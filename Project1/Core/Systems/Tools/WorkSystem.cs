@@ -13,12 +13,14 @@ namespace Project1.Core.Systems.Tools;
 [EnsureStaticCtorCall]
 public static class WorkSystem
 {
-    static public readonly Dictionary<StatDef, ToolUseDef> StatToTooluse = [];
+    static readonly Dictionary<StatDef, ToolUseDef> StatToTooluse = [];
     static WorkSystem()
     {
         foreach (var def in StatSystem.AllStats.Where(s => s.Worker is StatResolver_ActorWorkEffectiveness))
             StatToTooluse[def] = def.TargetDef as ToolUseDef;
     }
+    static public bool TryGetStatToToolUse(StatDef def, out ToolUseDef capability)
+        => StatToTooluse.TryGetValue(def, out capability);
     static public Dictionary<ToolUseDef, float> GetFinalWorkAmounts(Actor actor)
     {
         Dictionary<ToolUseDef, float> dic = [];
@@ -29,7 +31,7 @@ public static class WorkSystem
             foreach (var work in workTypes)
             {
                 var unarmedDef = StatSystem.GetDerivedStat(work);
-                var unarmedStat = actor.StatTracker.GetStatValue(unarmedDef);
+                var unarmedStat = actor.Stats.Get(unarmedDef);
                 dic.Add(work, unarmedStat);
             }
         }
@@ -51,13 +53,13 @@ public static class WorkSystem
         if (mainHand is null)
         {
             var unarmedDef = StatSystem.GetDerivedStat(capability);
-            var unarmedStat = actor.StatTracker.GetStatValue(unarmedDef);
+            var unarmedStat = actor.Stats.Get(unarmedDef);
             return unarmedStat;
         }
         var profile = mainHand.Profile as GearProfileDef;
         var power = mainHand.ToolComponent.IntrinsicStats[StatDefOf.ItemPower].Value;
         var itemMod = profile.ToolUsesModifiers.GetValueOrDefault(capability);
-        var actorMod = actor.StatTracker.GetStatValue(StatSystem.GetDerivedStat(capability));
+        var actorMod = actor.Stats.Get(StatSystem.GetDerivedStat(capability));
         var final = power * itemMod * actorMod;
         final = Math.Max(final, 1);
         return final;

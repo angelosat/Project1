@@ -32,7 +32,7 @@ public class WorkComponent : EntityComp
     }
     internal void OnToolContact()
     {
-        this.Task.OnToolContact();
+        this.Task.OnMainHandContact();
     }
     public Interaction Perform(InteractionDef taskDef, InteractionTarget target, int count = -1)
     {

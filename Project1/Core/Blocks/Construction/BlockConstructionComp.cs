@@ -70,7 +70,7 @@ namespace Project1.Core.Blocks
 
             // only take what i need
             quantity = Math.Min(quantity, this.Missing);
-            this.Fulfillment.ApplyDelta(quantity);
+            this.Fulfillment.ApplyWorkDelta(quantity);
             entity.Consume(quantity);
 
             // solidify the designation into a construction block 
@@ -118,7 +118,7 @@ namespace Project1.Core.Blocks
         {
             if (!this.IsReady)
                 throw new InvalidOperationException("Tried to advance construction without all materials present");
-            this.Progress.ApplyDelta(work);
+            this.Progress.ApplyWorkDelta(work);
 
             var map = this.Map; // capture map in case the construction is completed and the block entity gets removed from the map
             //if (this.Progress.IsFinished)

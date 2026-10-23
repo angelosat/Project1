@@ -78,7 +78,7 @@ public sealed class Interaction : Inspectable
             // TODO maybe instead of a magic crossfade number, crossfade until the second keyframe
             if (this.AnimationDef == AnimationDefOf.Tool) // HACK
             {
-                this.Calculate(out _, out _, out var speed);
+                this.CalculateWork(out _, out _, out var speed);
                 this.SetNextSwingSpeed(speed);
             }
         }
@@ -245,21 +245,21 @@ public sealed class Interaction : Inspectable
         this.BarProgress = progress;
     }
     
-    internal void AddProgress(int v)
+    internal void AddWork(int v)
     {
         this.Actor.Map.Events.Post(new InteractionProgressEvent(this.Actor, v));
 
         if (this.Def.Controller is not null)
-            this.Def.Controller.AddProgressFromToolSwing(this, v);
+            this.Def.Controller.AddWorkFromToolSwing(this, v);
         else
-            this.OnAddProgress(v);
-        this.Def.Logic.OnProgressAdded(this, v);
+            this.OnAddWork(v);
+        this.Def.Logic.OnWorkAdded(this, v);
     }
-    void OnAddProgress(int v)
+    void OnAddWork(int v)
     {
-        this.Progress.ApplyDelta(v);
+        this.Progress.ApplyWorkDelta(v);
     }
-    internal void OnToolContact()
+    internal void OnMainHandContact()
     {
         if (this.Actor.Net.IsClient)
             return;
@@ -271,25 +271,25 @@ public sealed class Interaction : Inspectable
 
         var actor = this.Actor;
         //var amount = this.CalculateWorkAmount();
-        this.Calculate(out var tool, out var amount, out var speed);
-        if (this.WillFinish(amount) && !this.CanFinish())
+        this.CalculateWork(out var tool, out var work, out var speed);
+        if (this.WillFinish(work) && !this.CanFinish())
         {
             this.Fail();
             return;
         }
         //var skill = this.Def.Skill;
         var skill = this.Context.Skill;
-        this.AddProgress(amount);
+        this.AddWork(work);
         DegradeTool(tool);
-        this.TotalWorkApplied += amount;
+        this.TotalWorkApplied += work;
 
         this.SetNextSwingSpeed(speed);
         if (skill is not null)
         {
             if (this.Def.SkillIncrease == SkillIncreaseType.OnWorkApplied)
-                actor.Skills.Increase(skill, amount);
+                actor.Skills.Increase(skill, work);
 
-            var energyConsumption = this.GetEnergyConsumption(amount, actor.Skills[skill].Level);
+            var energyConsumption = this.GetEnergyConsumption(work, actor.Skills[skill].Level);
 
             // "transfer" energy from stamina to strength
             actor.Attributes.ApplyDelta(AttributeDefOf.Strength, energyConsumption);
@@ -354,8 +354,9 @@ public sealed class Interaction : Inspectable
 
         return toolspeed;
     }
-    void Calculate(out Entity equippedTool, out int workamount, out float speed)
+    void CalculateWork(out Entity equippedTool, out int workamount, out float speed)
     {
+        var actor = this.Actor;
         if (this.Actor.Gear.GetGear(GearSlotDefOf.Mainhand) is not Entity tool || 
             this.Def.ToolUse is not ToolUseDef toolUse)
         {
@@ -364,11 +365,9 @@ public sealed class Interaction : Inspectable
             equippedTool = null;
             return;
         }
-        //var toolUse = this.Def.ToolUse;
         equippedTool = tool;
         var comp = tool.GetComponent<ToolComp>();
         var total = comp.GetWorkValue(toolUse) ?? 1;
-
         var skill = this.Actor.Skills[toolUse.Skill];
         var skillMult = skill.Level / 100f;
         total *= 1 + skillMult;

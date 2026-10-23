@@ -35,7 +35,7 @@ namespace Project1.Core.Interactions
         internal virtual bool HasSucceeded(Interaction i) => i.Progress.Percentage >= 1;
         internal virtual bool HasFailed(Interaction i) => false;
         internal virtual int CalculateMax(InteractionContext ctx) => 100;
-        internal virtual void OnProgressAdded(Interaction i, int delta) { }
+        internal virtual void OnWorkAdded(Interaction i, int delta) { }
         internal virtual void OnSuccess(Interaction i) { }
         internal virtual void OnFailure(Interaction i) { }
         internal virtual void OnAnimationHook(Interaction i) { }

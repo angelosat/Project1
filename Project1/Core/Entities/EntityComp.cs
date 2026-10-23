@@ -51,6 +51,7 @@ public abstract class EntityComp : Inspectable
     public virtual void OnDespawnExtra(MapBase oldmap) { }
     public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
     public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
+    public virtual float? GetStatMod(StatDef target) => null;
     public virtual void OnDispose() { }
     //internal virtual void ResolveReferences() { }
     internal virtual void InitializeOnce() { }

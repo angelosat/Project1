@@ -13,14 +13,14 @@
         sealed class InteractionControllerInstant : IInteractionController
         {
             public void Tick(Interaction interaction) => interaction.Progress.Complete();
-            public void AddProgressFromToolSwing(Interaction interaction, int progress) { }
+            public void AddWorkFromToolSwing(Interaction interaction, int progress) { }
             public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
             public float GetProgressBarPercentage(Interaction interaction) => 1f;
         }
         sealed class InteractionControllerFirstContact : IInteractionController
         {
             public void Tick(Interaction interaction) { }
-            public void AddProgressFromToolSwing(Interaction interaction, int progress) => interaction.Progress.Complete();
+            public void AddWorkFromToolSwing(Interaction interaction, int progress) => interaction.Progress.Complete();
             public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
             public float GetProgressBarPercentage(Interaction interaction) => 1f;
         }
@@ -30,18 +30,18 @@
             //public void Tick(Interaction interaction) => interaction.Progress.ApplyDelta(1);// interaction.AddProgress(1);
             public void Tick(Interaction interaction)
             {
-                interaction.Progress.ApplyDelta(1);// interaction.AddProgress(1);
+                interaction.Progress.ApplyWorkDelta(1);// interaction.AddProgress(1);
                 if (interaction.Actor.Net.IsServer)
                     interaction.Def.Logic.OnTick(interaction);
             }
-            public void AddProgressFromToolSwing(Interaction interaction, int progress) { }
+            public void AddWorkFromToolSwing(Interaction interaction, int progress) { }
             public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
         }
         sealed class InteractionControllerInternal : IInteractionController
         {
             public float GetProgressBarPercentage(Interaction interaction) => interaction.Progress.Percentage;
             public void Tick(Interaction interaction) { }
-            public void AddProgressFromToolSwing(Interaction interaction, int progress) => interaction.Progress.ApplyDelta(progress); //AddProgress(progress);// 
+            public void AddWorkFromToolSwing(Interaction interaction, int progress) => interaction.Progress.ApplyWorkDelta(progress); //AddProgress(progress);// 
             public bool IsFinished(Interaction interaction) => interaction.Progress.IsFinished;
         }
         sealed class InteractionControllerContextual : IInteractionController
@@ -53,7 +53,7 @@
                     return;
                 interaction.Def.Logic.OnTick(interaction);
             }
-            public void AddProgressFromToolSwing(Interaction interaction, int progress)// => interaction.Def.Logic.ApplyWork(interaction.Context, progress);
+            public void AddWorkFromToolSwing(Interaction interaction, int progress)// => interaction.Def.Logic.ApplyWork(interaction.Context, progress);
             {
                 if (interaction.Actor.Net.IsClient)
                     return;
@@ -65,7 +65,7 @@
         {
             public float GetProgressBarPercentage(Interaction interaction) => interaction.Context.ProgressBarPercentage;
             public void Tick(Interaction interaction) { }
-            public void AddProgressFromToolSwing(Interaction interaction, int progress) { }
+            public void AddWorkFromToolSwing(Interaction interaction, int progress) { }
             public bool IsFinished(Interaction interaction) => interaction.Context.ProgressBarPercentage >= 1;
         }
         sealed class InteractionControllerFullyExternal : IInteractionController
@@ -79,7 +79,7 @@
                 var logic = i.Def.Logic;
                 logic.OnTick(i);
             }
-            public void AddProgressFromToolSwing(Interaction interaction, int progress) { }
+            public void AddWorkFromToolSwing(Interaction interaction, int progress) { }
             public bool IsFinished(Interaction interaction)
                 => false;
         }

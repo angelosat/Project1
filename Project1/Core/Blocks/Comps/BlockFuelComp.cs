@@ -27,7 +27,7 @@ namespace Project1.Core.Blocks
         {
             if (fuel > this.FuelAvailable)
                 return false;
-            this.Fuel.ApplyDelta(-fuel);
+            this.Fuel.ApplyWorkDelta(-fuel);
             this.Parent.Map.Events.Post(new BlockEntityCompUpdatedEvent(this));
             return true;
         }
@@ -40,7 +40,7 @@ namespace Project1.Core.Blocks
             var totake = deficit / fuel;
             if (totake == 0)
                 throw new InvalidOperationException($"{nameof(totake)} was 0");
-            this.Fuel.ApplyDelta(fuel * totake);
+            this.Fuel.ApplyWorkDelta(fuel * totake);
             item.Consume(totake);
             this.Parent.Map.Events.Post(new BlockEntityCompUpdatedEvent(this));
             return true;

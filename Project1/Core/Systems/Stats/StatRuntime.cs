@@ -1,4 +1,6 @@
-﻿using Project1.Core.Entities.Stats;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace Project1.Core.Systems.Stats;
 
@@ -11,5 +13,14 @@ public sealed class StatRuntime(StatDef def)
     public StatDef Def = def;
     public float Value;
     public float Bonus;
-    public bool Dirty;
+    public bool Dirty = true;
+    public float Resolve(Actor actor)
+    {
+        if(this.Dirty)
+        {
+            this.Dirty = false;
+            this.Value = this.Def.Worker.CalculateStatActor(this.Def, actor);
+        }
+        return this.Value;
+    }
 }

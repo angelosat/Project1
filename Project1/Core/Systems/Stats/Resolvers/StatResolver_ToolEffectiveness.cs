@@ -75,15 +75,11 @@ sealed class StatResolver_ActorUnarmedWorkAmount : StatResolver
     }
     public override float CalculateStatActor(StatDef def, Actor actor)
     {
-        //var skill = actor.Skills[this.ToolUse.Skill];
-        //var skill = actor.Skills[(def.TargetDef as ToolUseDef).Skill];
-        return 1f;// skill.Level * .01f;
+        return 1f;
     }
 
     internal override string Format(StatDef def, Entity item)
     {
-        //var comp = item.GetComponent<ToolComp>();
-        //var profile = item.Profile as GearProfileDef;
         return $"Unarmed {this.ToolUse.LabelReadable}";
     }
 }
@@ -107,15 +103,12 @@ sealed class StatResolver_ActorWorkEffectiveness : StatResolver
     }
     public override float CalculateStatActor(StatDef def, Actor actor)
     {
-        //var skill = actor.Skills[this.ToolUse.Skill];
         var skill = actor.Skills[(def.TargetDef as ToolUseDef).Skill];
-        return skill.Level * .01f;
+        return skill.Level;
     }
     
     internal override string Format(StatDef def, Entity item)
     {
-        //var comp = item.GetComponent<ToolComp>();
-        //var profile = item.Profile as GearProfileDef;
         return $"{this.ToolUse.LabelReadable} effectiveness";
     }
 }

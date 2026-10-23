@@ -68,7 +68,7 @@ internal static class PacketsInteractions
         var r = packet.PacketReader;
         var actor = client.World.Get<Actor>(r.ReadInt32());
         var progress = r.ReadInt32();
-        actor.Work.Task.AddProgress(progress);
+        actor.Work.Task.AddWork(progress);
     }
     private static void OnInteractionSpeed(NetEndpoint endpoint, Packet packet)
     {

@@ -6,6 +6,6 @@
         bool IsFinished(Interaction interaction);
         float GetProgressBarPercentage(Interaction interaction);
         void Tick(Interaction interaction);
-        void AddProgressFromToolSwing(Interaction interaction, int progress);
+        void AddWorkFromToolSwing(Interaction interaction, int progress);
     }
 }

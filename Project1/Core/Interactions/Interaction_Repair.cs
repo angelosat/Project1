@@ -10,7 +10,7 @@ sealed internal class Interaction_Repair : InteractionLogic
         public override float ProgressBarPercentage => this.Durability.Percentage;
     }
     protected override InteractionContext CreateContextInt() => new Context();
-    internal override void OnProgressAdded(Interaction i, int delta)
+    internal override void OnWorkAdded(Interaction i, int delta)
     {
         var actor = i.Actor;
         if (actor.Net.IsClient) return;

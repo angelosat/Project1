@@ -124,7 +124,7 @@ namespace Project1.Framework.Helpers
         public int Missing => this.Max - this.Value;
         public bool IsFinished => this.Value == this.Max;
 
-        public int ApplyDelta(int value) => this.Value = Math.Min(this.Max, Math.Max(0, this.Value + value));
+        public int ApplyWorkDelta(int value) => this.Value = Math.Min(this.Max, Math.Max(0, this.Value + value));
         public int ApplyPercentageDelta(float delta) 
             => this.Value = (int)Math.Min(this.Max, Math.Max(0, (this.Percentage + delta) * this.Max));
         public int Set(int value) => this.Value = Math.Min(this.Max, Math.Max(0, value));

@@ -13,7 +13,12 @@ public sealed class ActorStatTracker(Actor actor)
     Dictionary<StatDef, StatRuntime> Stats => field ??= StatSystem.ActorStats.ToDictionary(a => a, a => new StatRuntime(a));
     bool BonusesDirty = true, StatsDirty = true;
     public bool IsStatsDirty => this.StatsDirty;
-    public void MarkBonusesDirty() => this.BonusesDirty = true;
+    public void MarkBonusesDirty()
+    {
+        this.BonusesDirty = true;
+        foreach (var runtime in this.Stats.Values)
+            runtime.Dirty = true;
+    }
     public void MarkStatsDirty() => this.StatsDirty = true;
     public IEnumerable<(StatDef, float)> GetAllStats()
     {
@@ -24,8 +29,8 @@ public sealed class ActorStatTracker(Actor actor)
     }
     public IEnumerable<StatRuntime> GetAllStatRuntime()
     {
-        if (this.StatsDirty)
-            this.RebuildStats();
+        //if (this.StatsDirty)
+        //    this.RebuildStats();
         return this.Stats.Values;
     }
     public void AddBonus(StatBonusDef def, float val)
@@ -68,15 +73,29 @@ public sealed class ActorStatTracker(Actor actor)
         foreach (var (stat, runtime) in this.Stats)
         {
             if(temp.TryGetValue(stat, out var mod))
-                runtime.Bonus = mod;
+                runtime.Value = mod;
+                //runtime.Bonus = mod;
         }
+    }
+
+    public float GetStatValue(StatDef def)
+    {
+        var runtime = this.Stats[def];
+        if (runtime.Dirty)
+        {
+            runtime.Dirty = false;
+            runtime.Value = runtime.Def.Worker.CalculateStatActor(runtime.Def, this.Actor);
+        }
+        return runtime.Value;
+        // this.Stats[def].Value;
     }
 
     void RebuildStats()
     {
         this.StatsDirty = false;
-        foreach (var (stat, runtime) in this.Stats)
-            runtime.Value = stat.CalculateFor(this.Actor);
+        this.RebuildBonuses();
+        //foreach (var (stat, runtime) in this.Stats)
+        //    runtime.Value = stat.CalculateFor(this.Actor);
     }
 
     internal void Remove(StatDef def, float value)

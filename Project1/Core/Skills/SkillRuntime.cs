@@ -55,7 +55,7 @@ public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, 
         v *= debugMultiplier;
         if (this.LvlProgress.Value + v < this.LvlProgress.Max)
         {
-            this.LvlProgress.ApplyDelta(v);
+            this.LvlProgress.ApplyWorkDelta(v);
             actor.World.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
             return;
         }
@@ -81,7 +81,7 @@ public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, 
         v *= debugMultiplier;
         if (this.LvlProgress.Value + v < this.LvlProgress.Max)
         {
-            this.LvlProgress.ApplyDelta(v);
+            this.LvlProgress.ApplyWorkDelta(v);
             //actor.Map.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
             return SkillXpAwardResult.XpGain;
         }

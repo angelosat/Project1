@@ -18,7 +18,7 @@ static class GearProfileDefOf
         SpriteHead = ItemContent.ShovelHead,
         ToolUse = ToolUseDefOf.Digging,
         ToolUses = [ToolUseDefOf.Digging],
-        //Damage = DamageDefOf.Digging,
+        Damage = DamageDefOf.Blunt,
         BaseSpeed = 1.3f,
         Skill = SkillDefOf.Digging,
         ExampleBone = BoneDefOf.ToolHandle,

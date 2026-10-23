@@ -264,64 +264,13 @@ internal static class ToolSystem
 
         Validate(item);
 
-
-        //var bonus = AllBonusDefs.SelectRandom(r);
-        //if (AllSuffixDefs.Length != 0)
-        //    if (r.Roll(.5f))
-        //    //AllSuffixDefs.SelectRandom(r).Worker.Apply(item);
-        //    {
-        //        var def = AllSuffixDefs.SelectRandom(r);
-        //        def.Worker.Apply(item, def);
-        //    }
-        //if (AllPrefixDefs.Length != 0)
-        //    if (r.Roll(.5f))
-        //    {
-        //        var def = AllPrefixDefs.SelectRandom(r);
-        //        AllPrefixDefs.SelectRandom(r).Worker.Apply(item, def);
-        //        def.Worker.Apply(item, def);
-        //    }
         var comp = item.ToolComponent;
         var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
-        var selectedBonuses = StatSystem.GetRandomStats(ActorDnaDefOf.Npc, bonusCount);
+        var selectedBonuses = StatSystem.RollBonuses(ActorDnaDefOf.Npc, role, bonusCount);
         foreach (var bonus in selectedBonuses)
             item.ToolComponent.Modifiers[bonus] = bonusCount;
-        //for (int i = 0; i < bonusCount; i++)
-        //{
-        //    //var stat = AllStatDefs.SelectRandom(r);
-        //    var stat = StatSystem.GetRandomStat(ActorDnaDefOf.Npc);
-        //    item.ToolComponent.Modifiers[stat] = bonusCount;
-        //} 
-        //foreach (var stat in role.Stats)
-        //{
-        //    var val = stat.Worker.CalculateStat(item);
-        //    comp.IntrinsicStats[stat] = new(stat, val);
-        //}
-
+       
         role.Worker.Handle(item);
-
-        //var power = StatDefOf.ItemPower.Worker.CalculateStat(item);
-        //if (profile.Damage is not null)
-        //{
-        //    var dmgStat = StatSystem.GetDerivedStat(profile.Damage);
-        //    comp.IntrinsicStats[dmgStat] = new(dmgStat, power);
-        //}
-        //foreach (var capability in profile.ToolUses)
-        //{
-        //    var stat = StatSystem.GetDerivedStat(capability);
-        //    var mod = profile.ToolUsesModifiers[capability];
-        //    comp.IntrinsicStats[stat] = new(stat, power * mod);
-        //}
-
-        //if (profile.ArmorModifier is float armor)
-        //{
-        //    var armorMod = StatDefOf.Armor.Worker.CalculateStat(item);
-        //    comp.IntrinsicStats[StatDefOf.Armor] = new(StatDefOf.Armor, armorMod);
-        //}
-        //foreach(var stat in role.Stats)
-        //{
-        //    var mod = stat.Worker.CalculateStat(item);
-        //    comp.IntrinsicStats[stat] = new(stat, mod);
-        //}
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

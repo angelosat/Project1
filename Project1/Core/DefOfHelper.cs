@@ -16,6 +16,7 @@ public static class DefOfHelper
         RuntimeHelpers.RunClassConstructor(typeof(TraitDefOf).TypeHandle);
         RuntimeHelpers.RunClassConstructor(typeof(ResourceDefOf).TypeHandle);
         RuntimeHelpers.RunClassConstructor(typeof(DamageDefOf).TypeHandle);
+        RuntimeHelpers.RunClassConstructor(typeof(GearRoleDefOf).TypeHandle);
         RuntimeHelpers.RunClassConstructor(typeof(StatDefOf).TypeHandle);
     }
 }

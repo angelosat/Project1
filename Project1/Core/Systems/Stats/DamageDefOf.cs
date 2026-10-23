@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Stats;
+using System.Linq;
 
 namespace Project1.Core.Systems.Stats;
 
@@ -21,5 +22,12 @@ public static class DamageDefOf
     static DamageDefOf()
     {
         Def.Register(typeof(DamageDefOf));
+
+        var toRegister = Def.Get<DamageDef>().Select(d => new DamageResistanceDef($"{d.LabelReadable}")).ToArray();
+        foreach (var def in toRegister)
+            Def.Register(def);
     }
 }
+
+public sealed class DamageResistanceDef(string name) : Def(name) { }
+

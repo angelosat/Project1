@@ -55,7 +55,38 @@ sealed class StatResolver_DamageEffectiveness : StatResolver
     }
 }
 
+sealed class StatResolver_ActorUnarmedWorkAmount : StatResolver
+{
+    public StatResolver_ActorUnarmedWorkAmount(ToolUseDef toolUse)
+    {
+        ToolUse = toolUse;
+    }
 
+    public StatResolver_ActorUnarmedWorkAmount()
+    {
+
+    }
+    readonly ToolUseDef ToolUse;
+    public override float CalculateStat(Entity owner)
+    {
+        var actor = (Actor)owner;
+        var skill = actor.Skills[this.ToolUse.Skill];
+        return skill.Level * .01f;
+    }
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        //var skill = actor.Skills[this.ToolUse.Skill];
+        //var skill = actor.Skills[(def.TargetDef as ToolUseDef).Skill];
+        return 1f;// skill.Level * .01f;
+    }
+
+    internal override string Format(StatDef def, Entity item)
+    {
+        //var comp = item.GetComponent<ToolComp>();
+        //var profile = item.Profile as GearProfileDef;
+        return $"Unarmed {this.ToolUse.LabelReadable}";
+    }
+}
 sealed class StatResolver_ActorWorkEffectiveness : StatResolver
 {
     public StatResolver_ActorWorkEffectiveness(ToolUseDef toolUse)
@@ -206,6 +237,15 @@ sealed class StatResolver_ActorSkillBonus : StatResolver
     }
 }
 
+sealed class StatResolver_Damage : StatResolver
+{
+    public override string GetName(StatDef def, Entity item)
+    {
+        var profile = item.Profile as GearProfileDef;
+        return $"{profile.Damage.LabelReadable} {def.LabelReadable}";
+    }
+}
+
 sealed class StatResolver_ActorResistanceBonus : StatResolver
 {
     readonly DamageDef Target;
@@ -231,5 +271,33 @@ sealed class StatResolver_ActorResistanceBonus : StatResolver
     internal override string Format(StatDef def, Entity item)
     {
         return $"{this.Target.LabelReadable} resistance";
+    }
+}
+
+sealed class StatResolver_ActorDamageBonus : StatResolver
+{
+    readonly DamageDef Target;
+
+    public StatResolver_ActorDamageBonus(DamageDef target)
+    {
+        Target = target;
+    }
+
+    public StatResolver_ActorDamageBonus()
+    {
+
+    }
+    public override float CalculateStat(Entity owner)
+    {
+        return 0;
+    }
+    public override float CalculateStatActor(StatDef def, Actor actor)
+    {
+        return 0;
+    }
+
+    internal override string Format(StatDef def, Entity item)
+    {
+        return $"{this.Target.LabelReadable} damage";
     }
 }

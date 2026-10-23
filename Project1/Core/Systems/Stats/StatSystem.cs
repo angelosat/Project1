@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Entities.Stats;
 
@@ -21,6 +20,7 @@ public static class StatSystem
     static readonly Dictionary<SkillDef, InteractionDef> _skillToInteraction = [];
     static readonly Dictionary<ToolUseDef, InteractionDef> _toolToInteraction = [];
     static readonly Dictionary<Def, StatDef> DerivedStats = [];
+    static readonly Dictionary<GearRoleDef, List<StatDef>> BonusRolesEligibility = [];
 
     static readonly Dictionary<Type, List<StatDef>> _statsByCompType = [];
     static public IReadOnlyDictionary<SkillDef, ToolUseDef> SkillsToTools => _skillsToTools;
@@ -33,13 +33,13 @@ public static class StatSystem
     {
         var tooldefs = Def.Get<ToolUseDef>();
         foreach (var def in tooldefs)
-            if(def.Skill is not null)
-            _skillsToTools[def.Skill] = def;
+            if (def.Skill is not null)
+                _skillsToTools[def.Skill] = def;
 
         var toolprofiles = Def.Get<GearProfileDef>();
         foreach (var profile in toolprofiles)
-            if(profile.ToolUse is not null)
-            _useToProfile[profile.ToolUse] = profile;
+            if (profile.ToolUse is not null)
+                _useToProfile[profile.ToolUse] = profile;
 
         var interactions = Def.Get<InteractionDef>();
         foreach (var i in interactions)
@@ -50,7 +50,7 @@ public static class StatSystem
             }
 
         var statdefs = Def.Get<StatDef>();
-        foreach(var stat in statdefs)
+        foreach (var stat in statdefs)
         {
             var comptype = stat.CompRequired;
             if (comptype is null)
@@ -64,8 +64,21 @@ public static class StatSystem
 
         ActorStats = [.. AllStats.Where(s => s.Worker.IsApplicable(s, ActorDnaDefOf.Npc))];
 
-        foreach(var stat in statdefs.Where(s=>s.TargetDef is not null))
-            DerivedStats[stat.TargetDef] = stat; 
+        foreach (var stat in statdefs.Where(s => s.TargetDef is not null))
+            DerivedStats[stat.TargetDef] = stat;
+
+        foreach (var role in Def.Get<GearRoleDef>())
+            BonusRolesEligibility.Add(role, []);
+
+        foreach(var stat in ActorStats)
+        {
+            if (stat.EligibleBonusTargets is null)
+                foreach (var list in BonusRolesEligibility.Values)
+                    list.Add(stat);
+            else
+                foreach (var role in stat.EligibleBonusTargets)
+                    BonusRolesEligibility[role].Add(stat);
+        }
     }
 
     static public StatDef GetDerivedStat(Def def)
@@ -104,14 +117,16 @@ public static class StatSystem
         throw new UnreachableException();
     }
 
-    internal static IEnumerable<StatDef> GetRandomStats(ActorDnaDef npc, int count)
+    internal static IEnumerable<StatDef> RollBonuses(ActorDnaDef npc, GearRoleDef role, int count)
     {
-        var indices = new int[ActorStats.Length];
-        for (int i = 0; i < ActorStats.Length; i++)
+        //var collection = ActorStats;
+        var collection = BonusRolesEligibility[role];
+        var indices = new int[collection.Count];
+        for (int i = 0; i < collection.Count; i++)
             indices[i] = i;
         indices = [.. indices.Shuffle()];
         for (int i = 0; i < count; i++)
-            yield return ActorStats[indices[i]];
+            yield return collection[indices[i]];
     }
     internal static StatDef GetRandomStat(ActorDnaDef npc)
     {
@@ -119,7 +134,7 @@ public static class StatSystem
         var indices = new int[ActorStats.Length];
         for (int i = 0; i < ActorStats.Length; i++)
             indices[i] = n;
-        indices.Shuffle();
+        indices = [.. indices.Shuffle()];
         return ActorStats.SelectRandom(r);
     }
 
@@ -130,8 +145,6 @@ public static class StatSystem
         foreach (var (def, value) in comp.Modifiers)
             tracker.Remove(def, value);
         var profile = item.Profile as GearProfileDef;
-        foreach (var (def, value) in comp.Modifiers)
-            tracker.Remove(def, value);
         foreach (var (def, runtime) in comp.IntrinsicStats)
             tracker.Remove(def, runtime.Value);
     }

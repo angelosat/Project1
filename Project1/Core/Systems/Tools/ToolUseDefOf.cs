@@ -1,5 +1,6 @@
-﻿using Project1.Framework;
-using Project1.Core.Skills;
+﻿using Project1.Core.Skills;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -18,5 +19,15 @@ static class ToolUseDefOf
     static ToolUseDefOf()
     {
         Def.Register(typeof(ToolUseDefOf));
+
+        var defs = Def.Get<ToolUseDef>().ToArray();
+        foreach(var def in defs)
+        {
+            var unarmedDef = new ToolUseUnarmedDef($"{def.LabelReadable}");
+            Def.Register(unarmedDef);
+        }
     }
 }
+
+sealed class ToolUseUnarmedDef(string name) : Def(name)
+{ }

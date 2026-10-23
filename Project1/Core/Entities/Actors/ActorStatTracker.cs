@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Stats;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

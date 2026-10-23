@@ -12,6 +12,8 @@ public class StatResolver
     public virtual float CalculateStat(Entity item) => 1f;
     public virtual float CalculateStatActor(StatDef def, Actor actor) => def.BaseValue;
 
+    public virtual string GetName(StatDef def, Entity item) => def.LabelReadable;
+
     internal virtual bool IsApplicable(StatDef statDef, ActorDnaDef actorDef) => true;
 
     internal virtual string Format(StatDef def, Entity item)

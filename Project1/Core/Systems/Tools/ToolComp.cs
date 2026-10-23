@@ -77,23 +77,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         return material.Density * tool.QualityComp.Tier.Multiplier;
     }
 
-    //public ToolComp()
-    //{
-
-    //}
-    
-    //public ToolComp(params ToolUseDef[] skills)
-    //{
-
-    //}
-
-    //public ToolComp Initialize(params ToolUseDef[] skills)
-    //{
-    //    return this;
-    //}
-
-    //public ToolUseDef Skill { get { return this.Skills.FirstOrDefault(); } }
-
     internal override void CopyFrom(EntityComp source)
     {
         var comp = (ToolComp)source;
@@ -136,27 +119,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         var profile = this.Owner.Profile as GearProfileDef;
         var slot = profile.Role.Slot;
         yield return new LabelNew($"Slot: {slot.LabelReadable}");
-        if (profile.Damage is DamageDef damage)
-            //yield return new LabelNew($"Damage: {damage.LabelReadable}");
-            yield return new LabelNew($"{this.BaseWork} {damage.LabelReadable} damage");
-        if (profile.BaseSpeed.HasValue)
-        {
-            var speedVal = StatDefOf.ItemSpeed.Worker.CalculateStat(this.Owner);
-            //yield return new LabelNew($"{profile.BaseSpeed.Value} speed");
-            yield return new LabelNew($"{speedVal.ToString(StatDefOf.ItemSpeed.StringFormat)} speed");
-        }
-
-        if (profile.ToolUses is not null)
-            foreach(var use in profile.ToolUses)
-                yield return new LabelNew($"{this.BaseWork} {use.LabelReadable} effectiveness");
-
-        //foreach (var stat in this.Profile.Role.Stats)
-        //{
-        //    var value = stat.Worker.CalculateStat(this.Owner);
-        //    //yield return new LabelNew($"{stat}: +{value}");
-        //    //yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}");
-        //    yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.Worker.Format(stat, this.Owner)}");
-        //}
 
         foreach(var (def, value) in this.ActorEnhancements)
         {
@@ -167,16 +129,11 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
             //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
             yield return new LabelNew($"Modifier: +{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
 
-        //foreach (var (stat, runtime) in this.IntrinsicStats) 
-        //    yield return new LabelNew($"Intrinsic {stat}: {runtime.Value:#.##}");
+        foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
+            yield return roleControl;
 
-        //foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
-        //    yield return roleControl;
-
-
-
-        foreach(var (stat, runtime) in this.IntrinsicStats)
-            yield return new LabelNew($"Intrinsic3: {runtime.Value.ToString(stat.Format)} {stat.LabelReadable}");
+        foreach (var (stat, runtime) in this.IntrinsicStats)
+            yield return new LabelNew($"Intrinsic3: {runtime.Value.ToString(stat.Format)} {stat.Worker.GetName(stat, this.Owner)}");// {stat.LabelReadable}");
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)

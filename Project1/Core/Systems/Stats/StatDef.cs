@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Attributes;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats.Resolvers;
+using Project1.Core.Systems.Tools;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ public sealed class StatDef : Def
     //public static StatDef[] ToolStatPackage { get; } = { StatDefOf.ToolEffectiveness, StatDefOf.ToolSpeed };
     //public static StatDef[] NpcStatPackage { get; } = { StatDefOf.MaxHaulWeight, StatDefOf.Encumberance, StatDefOf.WalkSpeed, StatDefOf.Armor };
     public readonly Def? TargetDef;
+    public GearRoleDef[]? EligibleBonusTargets;// = [];
     public float BaseValue;
     public string Description;
     public Types Type = Types.Scalar;

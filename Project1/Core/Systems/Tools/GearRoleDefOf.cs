@@ -1,35 +1,33 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Gear;
-using Project1.Framework;
 using Project1.Framework.UI;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Tools;
 
-[EnsureStaticCtorCall]
+//[EnsureStaticCtorCall]
 static class GearRoleDefOf
 {
     //public static readonly GearRoleDef Tool = new("Tool", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [StatDefOf.ToolSpeed, StatDefOf.ToolEffectiveness]);
-    public static readonly GearRoleDef MainHand = new("MainHand", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [StatDefOf.ItemSpeed, StatDefOf.ItemPower])
+    public static readonly GearRoleDef MainHand = new("MainHand", slot: GearSlotDefOf.Mainhand, bones: BoneStructureDefOf.Tool, stats: [/*StatDefOf.ItemSpeed, StatDefOf.ItemPower*/])
     { 
         Worker = new GearRoleWorker_MainHand()
     };
-    public static readonly GearRoleDef Head = new("Head", slot: GearSlotDefOf.Head, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor])
+    public static readonly GearRoleDef Head = new("Head", slot: GearSlotDefOf.Head, bones: BoneStructureDefOf.Armor, stats: [/*StatDefOf.Armor*/])
     {
         Worker = new GearRoleWorker_Apparel()
     };
-    public static readonly GearRoleDef Feet = new("Feet", slot: GearSlotDefOf.Feet, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor, StatDefOf.WalkSpeed])
+    public static readonly GearRoleDef Feet = new("Feet", slot: GearSlotDefOf.Feet, bones: BoneStructureDefOf.Armor, stats: [/*StatDefOf.Armor, StatDefOf.WalkSpeed*/])
     {
         Worker = new GearRoleWorker_Feet()
     };
-    public static readonly GearRoleDef Torso = new("Torso", slot: GearSlotDefOf.Chest, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor])
+    public static readonly GearRoleDef Torso = new("Torso", slot: GearSlotDefOf.Chest, bones: BoneStructureDefOf.Armor, stats: [/*StatDefOf.Armor*/])
     {
         Worker = new GearRoleWorker_Apparel()
     };
-    public static readonly GearRoleDef Legs = new("Legs", slot: GearSlotDefOf.Legs, bones: BoneStructureDefOf.Armor, stats: [StatDefOf.Armor])
+    public static readonly GearRoleDef Legs = new("Legs", slot: GearSlotDefOf.Legs, bones: BoneStructureDefOf.Armor, stats: [/*StatDefOf.Armor*/])
     {
         Worker = new GearRoleWorker_Apparel()
     };
@@ -74,14 +72,17 @@ sealed class GearRoleWorker_MainHand : GearRoleWorker
         var power = StatDefOf.ItemPower.Worker.CalculateStat(item);
         var speed = StatDefOf.ItemSpeed.Worker.CalculateStat(item);
         comp.IntrinsicStats[StatDefOf.ItemSpeed] = new(StatDefOf.ItemSpeed, speed);
-        var dmgStat = StatSystem.GetDerivedStat(profile.Damage);
+        //var dmgStat = StatSystem.GetDerivedStat(profile.Damage);
+        //var dmgStat = StatDefOf.Damage;// StatSystem.GetDerivedStat(profile.Damage);
+        var dmgStat = StatDefOf.ItemPower;// StatSystem.GetDerivedStat(profile.Damage);
         comp.IntrinsicStats[dmgStat] = new(dmgStat, power);
-        foreach (var capability in profile.ToolUses)
-        {
-            var stat = StatSystem.GetDerivedStat(capability);
-            var mod = profile.ToolUsesModifiers[capability];
-            comp.IntrinsicStats[stat] = new(stat, power * mod);
-        }
+        comp.IntrinsicStats[StatDefOf.ItemSpeed] = new(StatDefOf.ItemSpeed, speed);
+        //foreach (var capability in profile.ToolUses)
+        //{
+        //    var stat = StatSystem.GetDerivedStat(capability);
+        //    var mod = profile.ToolUsesModifiers[capability];
+        //    comp.IntrinsicStats[stat] = new(stat, power * mod);
+        //}
     }
     public override IEnumerable<LabelNew> GetControls(Entity item)
     {
@@ -94,6 +95,7 @@ sealed class GearRoleWorker_MainHand : GearRoleWorker
         if (profile.Damage is not null)
         {
             var magnitude = stats[StatDefOf.ItemPower].Value;
+            //var magnitude = stats[StatDefOf.Damage].Value;
             yield return new LabelNew($"Intrinsic2: {magnitude.ToString(StatDefOf.ItemPower.Format)} {profile.Damage.LabelReadable}");
         }
         if (profile.ToolUses is not null)

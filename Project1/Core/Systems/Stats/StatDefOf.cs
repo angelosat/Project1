@@ -9,6 +9,7 @@ using Project1.Core.Interactions;
 using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
 using System.Collections.Generic;
 
@@ -20,47 +21,56 @@ public static class StatDefOf
     public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
     {
         Description = "Exceeding the limit will drain stamina",
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef Encumberance = new("Encumberance", typeof(StatEncumberance), typeof(InventoryComp))
     {
         Description = "Being encumbered affects walking speed.",
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
 
     public static readonly StatDef WalkSpeed = new("Walk Speed", typeof(StatWalkSpeed), typeof(MobileComponent))
     {
         Description = "Speed of walking",
         Type = StatDef.Types.Percentile,
-        BaseValue = 1f// 100f,
+        BaseValue = 1f,// 100f,
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef SwingSpeed = new("Swing Speed", typeof(StatResolver))
     {
         Description = "Speed of equipped main hand swing",
         Type = StatDef.Types.Percentile,
-        BaseValue = 1f//100f,
+        BaseValue = 1f,//100f,
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+
     };
     public static readonly StatDef CriticalChance = new ("Critical Chance", typeof(StatResolver))
     {
         Description = "Critical chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f// 5f,
+        BaseValue = .05f,// 5f,
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef HitChance = new("Hit Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .5f//50f,
+        BaseValue = .5f,//50f,
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef DodgeChance = new("Dodge Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f//50f,
+        BaseValue = .05f,//50f,
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef ParryChance = new("Parry Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f//50f,
+        BaseValue = .05f,//50f,
+        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))
     {
@@ -82,7 +92,13 @@ public static class StatDefOf
         Description = "Protection against damage.",
         Type = StatDef.Types.Scalar
     };
-
+    public static readonly StatDef Damage = new("Damage", typeof(StatResolver_Damage), typeof(ToolComp))
+    {
+        Description = "Amount of damage.",
+        Type = StatDef.Types.Scalar,
+        StringFormat = "0",
+        Format = "#"
+    };
     public static readonly StatDef ItemPower = new("Power", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
     {
         Description = "Amount of work produced with each hit of the tool.",
@@ -102,7 +118,7 @@ public static class StatDefOf
         Description = "Determines time between each tool strike.",
         Type = StatDef.Types.Scalar,
         StringFormat = "0.##",
-        Format = "#.#"
+        Format = "0.#0"
         //StringFormat = "+##0%"
     };
 
@@ -111,7 +127,7 @@ public static class StatDefOf
         Description = "Work speed",
         Type = StatDef.Types.Scalar,
         StringFormat = "+##0%",
-        Format = "#.#"
+        Format = "#.#0"
     };
     public static readonly StatDef WorkEffectiveness = new("Work Effectiveness", typeof(StatWorkEffectiveness), typeof(ToolComp))
     {
@@ -124,10 +140,15 @@ public static class StatDefOf
     {
         Def.Register(typeof(StatDefOf));
 
-        // Procedurally generate statdefs based on dynamic systems like skills, damage types, work types, etc
         List<Def> toRegister = [];
         foreach (var target in Def.Get<ToolUseDef>())
-            toRegister.Add(new StatDef($"{target.LabelReadable} effectiveness", target, typeof(StatResolver_ActorWorkEffectiveness), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
+            toRegister.Add(new StatDef($"{target.LabelReadable} Work", target, typeof(StatResolver_ActorWorkEffectiveness), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
+        foreach (var target in Def.Get<ToolUseUnarmedDef>())
+            toRegister.Add(new StatDef($"Unarmed {target.LabelReadable}", target, typeof(StatResolver_ActorUnarmedWorkAmount), typeof(ToolComp)) 
+            {
+                EligibleBonusTargets = [GearRoleDefOf.Feet, GearRoleDefOf.Torso, GearRoleDefOf.Head],  
+                Type = StatDef.Types.Scalar 
+            });
         foreach (var target in Def.Get<AttributeDef>())
             toRegister.Add(new StatDef($"{target.LabelReadable}", target, typeof(StatResolver_ActorAttributeBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var target in Def.Get<TraitDef>())
@@ -136,8 +157,12 @@ public static class StatDefOf
             toRegister.Add(new StatDef($"{target.LabelReadable}", target, typeof(StatResolver_ActorResourceBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
         foreach (var target in Def.Get<SkillDef>())
             toRegister.Add(new StatDef($"{target.LabelReadable} skill", target, typeof(StatResolver_ActorSkillBonus), typeof(ToolComp)) { Type = StatDef.Types.Scalar });
-        foreach (var target in Def.Get<DamageDef>())
-            toRegister.Add(new StatDef($"{target.LabelReadable} resistance", target, typeof(StatResolver_ActorResistanceBonus), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
+        foreach (var target in Def.Get<DamageResistanceDef>())
+            toRegister.Add(new StatDef($"{target.LabelReadable} resistance", target, typeof(StatResolver_ActorResistanceBonus), typeof(ToolComp))
+            { 
+                EligibleBonusTargets = [GearRoleDefOf.Feet, GearRoleDefOf.Torso, GearRoleDefOf.Head],
+                Type = StatDef.Types.Percentile 
+            });
         foreach (var to in toRegister)
             Def.Register(to);
     }

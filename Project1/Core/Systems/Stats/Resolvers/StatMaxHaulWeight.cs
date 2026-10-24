@@ -5,7 +5,7 @@ namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatMaxHaulWeight : StatResolver
 {
-    public override float CalculateStat(Entity obj)
+    public override float CalculateItemStat(Entity obj)
     {
         return obj[AttributeDefOf.Strength]?.Level ?? 0;
     }

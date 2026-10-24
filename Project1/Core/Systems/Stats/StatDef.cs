@@ -56,7 +56,7 @@ public sealed class StatDef : Def
     public float CalculateFor(Entity item)
     {
         //var value = this.Worker.CalculateStat(item);
-        var value = this.Worker.CalculateStatActor(this, item as Actor);
+        var value = this.Worker.CalculateActorStat(this, item as Actor);
 
         if (this.Type == Types.Scalar)
         {

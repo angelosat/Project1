@@ -7,7 +7,7 @@ namespace Project1.Core.Resources;
 
 internal class StatResolver_Patience : StatResolver
 {
-    public override float CalculateStat(Entity obj)
+    public override float CalculateItemStat(Entity obj)
     {
         var actor = obj as Actor;
         var patience = actor.Personality.GetValue(TraitDefOf.Patience);

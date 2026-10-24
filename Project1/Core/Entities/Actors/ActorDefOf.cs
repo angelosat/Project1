@@ -37,7 +37,7 @@ namespace Project1.Core.Entities.Actors
                 typeof(NpcComponent),
                 typeof(InventoryComp),
                 typeof(StatsComp),
-                typeof(MobileComponent),
+                typeof(MobileComp),
                 typeof(MoodComp),
                 typeof(WorkComponent),
                 typeof(EffectsComp),

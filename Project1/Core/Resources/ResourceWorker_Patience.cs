@@ -11,7 +11,7 @@ internal class ResourceWorker_Patience : ResourceWorker
     }
 
     internal override int GetMax(Entity owner)
-        => (int)StatDefOf.MaxPatience.Worker.CalculateStat(owner);
+        => (int)StatDefOf.MaxPatience.Worker.CalculateItemStat(owner);
 
     public override string Description => "patience resource description";
 

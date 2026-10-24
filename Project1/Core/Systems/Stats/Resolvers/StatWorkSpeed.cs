@@ -7,7 +7,7 @@ namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatWorkSpeed : StatResolver
 {
-    public override float CalculateStat(Entity obj)
+    public override float CalculateItemStat(Entity obj)
     {
         var actor = obj as Actor;
         var toolspeed = actor.Gear.GetGear(GearSlotDefOf.Mainhand)?.GetStat(StatDefOf.ItemSpeed) ?? 0;

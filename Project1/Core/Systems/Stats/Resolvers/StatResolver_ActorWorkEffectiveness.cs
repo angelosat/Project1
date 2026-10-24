@@ -17,14 +17,14 @@ namespace Project1.Core.Entities.Stats.Resolvers
 
         }
         readonly ToolUseDef ToolUse;
-        public override float CalculateStat(Entity owner)
+        public override float CalculateItemStat(Entity owner)
         {
             throw new UnreachableException();
             var actor = (Actor)owner;
             var skill = actor.Skills[ToolUse.Skill];
             return skill.Level * .01f;
         }
-        public override float CalculateStatActor(StatDef def, Actor actor)
+        public override float CalculateActorStat(StatDef def, Actor actor)
         {
             var skill = actor.Skills[(def.TargetDef as ToolUseDef).Skill];
             return skill.Level;

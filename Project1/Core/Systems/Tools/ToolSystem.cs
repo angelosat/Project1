@@ -263,8 +263,6 @@ internal static class ToolSystem
         var durability = item.Resources.ViewOld(ResourceDefOf.Durability);
         durability.Value = durability.Max = durabilityMax;
 
-
-
         var comp = item.ToolComponent;
         var craftsmanship = QualitySystem.GetRandomCraftsmahship(r);
         comp.Craftsmanship = craftsmanship;
@@ -276,7 +274,14 @@ internal static class ToolSystem
         foreach (var bonus in selectedBonuses)
             item.ToolComponent.Modifiers[bonus] = bonusCount;
        
-        role.Worker.Handle(item);
+        role.Worker.InitIntrinsicStats(item);
+    }
+
+    public static void PostLoad(Entity item)
+    {
+        var profile = (GearProfileDef)item.Profile;
+        var role = profile.Role;
+        role.Worker.InitIntrinsicStats(item);
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)

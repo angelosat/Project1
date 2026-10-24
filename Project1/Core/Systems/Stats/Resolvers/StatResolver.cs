@@ -9,8 +9,8 @@ public class StatResolver
         
     }
 
-    public virtual float CalculateStat(Entity item) => 1f;
-    public virtual float CalculateStatActor(StatDef def, Actor actor) => def.BaseValue;
+    public virtual float CalculateItemStat(Entity item) => 1f;
+    public virtual float CalculateActorStat(StatDef def, Actor actor) => def.BaseValue;
 
     public virtual string GetName(StatDef def, Entity item) => def.LabelReadable;
 

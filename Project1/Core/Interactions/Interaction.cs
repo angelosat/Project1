@@ -272,15 +272,17 @@ public sealed class Interaction : Inspectable
         var actor = this.Actor;
         //var amount = this.CalculateWorkAmount();
         this.CalculateWork(out var tool, out var work, out var speed);
+        work = (int)WorkSystem.GetFinalWorkAmount(this.Actor, this.Def.ToolUse);
+
         if (this.WillFinish(work) && !this.CanFinish())
         {
             this.Fail();
             return;
         }
-        //var skill = this.Def.Skill;
         var skill = this.Context.Skill;
         this.AddWork(work);
-        DegradeTool(tool);
+        //DegradeTool(tool);
+        this.DegradeTool();
         this.TotalWorkApplied += work;
 
         this.SetNextSwingSpeed(speed);
@@ -312,6 +314,14 @@ public sealed class Interaction : Inspectable
         if (tool is null)
             return;
         tool.Resources.ApplyDelta(ResourceDefOf.Durability , - 1);
+    }
+
+    private void DegradeTool()
+    {
+        var tool = this.Actor.Gear.GetGear(GearSlotDefOf.Mainhand);
+        if (tool is null)
+            return;
+        DegradeTool(tool);
     }
 
     internal void SetNextSwingSpeed(float speed)
@@ -365,6 +375,7 @@ public sealed class Interaction : Inspectable
             equippedTool = null;
             return;
         }
+ 
         equippedTool = tool;
         var comp = tool.GetComponent<ToolComp>();
         var total = comp.GetWorkValue(toolUse) ?? 1;
@@ -378,6 +389,8 @@ public sealed class Interaction : Inspectable
         toolspeed /= 1 + skillMult;
 
         workamount = (int)total;
+        workamount = (int)WorkSystem.GetFinalWorkAmount(actor, this.Def.ToolUse);
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(workamount, 0);
         speed = toolspeed;
     }
     //float GetToolEffectiveness()

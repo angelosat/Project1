@@ -5,7 +5,7 @@ namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatEncumberance : StatResolver
 {
-    public override float CalculateStat(Entity obj)
+    public override float CalculateItemStat(Entity obj)
     {
         var haulWeight = obj.Hauled?.TotalWeight ?? 0;
         if (haulWeight == 0)

@@ -23,7 +23,7 @@ internal static class InteractionDefOf
     public static readonly InteractionDef Pick = new("Picking", typeof(InteractionHaulLogic))
     {
         Animation = AnimationDefOf.TouchItem,
-        Controller = InteractionControllers.FirstContact// new InteractionProgressFirstContact()
+        Controller = InteractionControllers.FirstContact// new InteractionProgressFirstContact(),
     };
     public static readonly InteractionDef WithdrawCash = new("Withdrawing", typeof(InteractionWithdrawCashOverflow))
     {

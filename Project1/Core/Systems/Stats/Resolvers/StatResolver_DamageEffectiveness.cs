@@ -11,7 +11,7 @@ namespace Project1.Core.Entities.Stats.Resolvers
         {
 
         }
-        public override float CalculateStat(Entity owner)
+        public override float CalculateItemStat(Entity owner)
         {
             var material = owner.GetMaterial(BoneDefOf.ToolHead);
             if (material is null)

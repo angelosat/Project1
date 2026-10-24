@@ -21,14 +21,14 @@ namespace Project1.Core.Components
             this.Animation = Animation.Block;
             throw new NotImplementedException("define AnimationDefOf.Block");
             //this.Animation = parent.SpriteComp.AddAnimation(AnimationDef.block);
-            parent.GetComponent<MobileComponent>().ToggleBlock(true); // TODO: create a new movement state and set it in the mobile component?
+            parent.GetComponent<MobileComp>().ToggleBlock(true); // TODO: create a new movement state and set it in the mobile component?
         }
         public void Stop(GameObject parent)
         {
             this.Active = false;
             // TODO remove damage reduction
             this.Animation.FadeOut();
-            parent.GetComponent<MobileComponent>().ToggleBlock(false);
+            parent.GetComponent<MobileComp>().ToggleBlock(false);
         }
     }
 }

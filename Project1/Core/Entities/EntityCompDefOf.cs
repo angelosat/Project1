@@ -47,7 +47,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef Haul = new("Haul", typeof(HaulComponent));
         public static readonly EntityCompDef Inventory = new("Inventory", typeof(InventoryComp));
         public static readonly EntityCompDef Possessions = new("Possesions", typeof(PossessionsComponent));
-        public static readonly EntityCompDef Mobile = new("Mobile", typeof(MobileComponent));
+        public static readonly EntityCompDef Mobile = new("Mobile", typeof(MobileComp));
         public static readonly EntityCompDef Mood = new("Mood", typeof(MoodComp));
         public static readonly EntityCompDef Gear = new("Gear", typeof(GearComp));
         public static readonly EntityCompDef Effects = new("Effects", typeof(EffectsComp));

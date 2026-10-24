@@ -23,11 +23,13 @@ static class ToolUseDefOf
         var defs = Def.Get<ToolUseDef>().ToArray();
         foreach(var def in defs)
         {
-            var unarmedDef = new ToolUseUnarmedDef($"{def.LabelReadable}");
+            var unarmedDef = new ToolUseUnarmedDef($"{def.LabelReadable}", def);
             Def.Register(unarmedDef);
         }
     }
 }
 
-sealed class ToolUseUnarmedDef(string name) : Def(name)
-{ }
+sealed class ToolUseUnarmedDef(string name, ToolUseDef source) : Def(name)
+{
+    public readonly ToolUseDef Source = source;
+}

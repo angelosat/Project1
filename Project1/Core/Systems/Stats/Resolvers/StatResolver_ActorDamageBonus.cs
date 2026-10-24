@@ -16,11 +16,11 @@ namespace Project1.Core.Entities.Stats.Resolvers
         {
 
         }
-        public override float CalculateStat(Entity owner)
+        public override float CalculateItemStat(Entity owner)
         {
             return 0;
         }
-        public override float CalculateStatActor(StatDef def, Actor actor)
+        public override float CalculateActorStat(StatDef def, Actor actor)
         {
             return 0;
         }

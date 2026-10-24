@@ -5,7 +5,7 @@ namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatMoodChangeRate : StatResolver
 {
-    public override float CalculateStat(Entity obj)
+    public override float CalculateItemStat(Entity obj)
     {
         var actor = obj as Actor;
         var resilience = actor.GetTrait(TraitDefOf.Resilience).Normalized;

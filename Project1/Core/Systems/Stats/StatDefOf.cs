@@ -27,10 +27,11 @@ public static class StatDefOf
         Description = "Being encumbered affects walking speed.",
     };
 
-    public static readonly StatDef MoveSpeed = new("Move Speed", typeof(StatResolver_MoveSpeed), typeof(MobileComponent))
+    public static readonly StatDef MoveSpeed = new("Move Speed", typeof(StatResolver_MoveSpeed), typeof(MobileComp))
     {
         Description = "Speed of walking",
         Type = StatDef.Types.Percentile,
+        //BaseValue = 1f,
         BaseValue = 100f,
     };
 
@@ -38,14 +39,14 @@ public static class StatDefOf
     {
         Description = "Speed of equipped main hand swing",
         Type = StatDef.Types.Percentile,
-        BaseValue = 1f,
-
+        BaseValue = 1f//1f,
     };
 
     public static readonly StatDef CriticalChance = new ("Critical Chance", typeof(StatResolver))
     {
         Description = "Critical chance",
         Type = StatDef.Types.Percentile,
+        //BaseValue = .05f,
         BaseValue = 5f,
     };
 
@@ -53,6 +54,7 @@ public static class StatDefOf
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
+        //BaseValue = .5f,
         BaseValue = 50f,
     };
 
@@ -60,6 +62,7 @@ public static class StatDefOf
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
+        //BaseValue = .05f,
         BaseValue = 5f,
     };
 
@@ -67,7 +70,7 @@ public static class StatDefOf
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = 5f,
+        BaseValue = .05f//5f,
     };
 
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))
@@ -138,7 +141,7 @@ public static class StatDefOf
         foreach (var target in Def.Get<ToolUseDef>())
             toRegister.Add(new StatDef($"{target.LabelReadable} Work", target, typeof(StatResolver_ActorWorkEffectiveness), typeof(ToolComp)) { Type = StatDef.Types.Percentile });
         foreach (var target in Def.Get<ToolUseUnarmedDef>())
-            toRegister.Add(new StatDef($"Unarmed {target.LabelReadable}", target, typeof(StatResolver_ActorUnarmedWorkAmount), typeof(ToolComp)) 
+                toRegister.Add(new StatDef($"Unarmed {target.LabelReadable}", target, typeof(StatResolver_ActorUnarmedWorkAmount), typeof(ToolComp)) 
             {
                 EligibleBonusTargets = [GearRoleDefOf.Feet, GearRoleDefOf.Torso, GearRoleDefOf.Head],  
                 Type = StatDef.Types.Scalar ,
@@ -165,7 +168,7 @@ public static class StatDefOf
 
 sealed class StatResolver_HitChance : StatResolver
 {
-    public override float CalculateStatActor(StatDef def, Actor actor)
+    public override float CalculateActorStat(StatDef def, Actor actor)
     {
         var meleeSkill = actor.Skills.GetLevel(SkillDefOf.Melee);
         var dexterity = actor.Attributes.GetLevel(AttributeDefOf.Dexterity);

@@ -7,7 +7,7 @@ namespace Project1.Core.Entities.Stats.Resolvers;
 
 sealed class StatToolSwingSpeed : StatResolver
 {
-    public override float CalculateStat(Entity obj)
+    public override float CalculateItemStat(Entity obj)
     {
         var tool = obj;
         var material = tool?.GetMaterial(BoneDefOf.ToolHandle);

@@ -16,11 +16,11 @@ namespace Project1.Core.Entities.Stats.Resolvers
 
         }
         readonly TraitDef Target;
-        public override float CalculateStat(Entity owner)
+        public override float CalculateItemStat(Entity owner)
         {
             return 100;
         }
-        public override float CalculateStatActor(StatDef def, Actor actor)
+        public override float CalculateActorStat(StatDef def, Actor actor)
         {
             return 100;
         }

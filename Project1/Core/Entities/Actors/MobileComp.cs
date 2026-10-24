@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Animations;
 using Project1.Core.Blocks;
-using Project1.Core.Graphics.Particles;
 using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
@@ -13,10 +12,10 @@ using System;
 
 namespace Project1.Core.Entities.Actors;
 
-public class MobileComponent : EntityComp
+public class MobileComp : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Mobile;
-    public new class Spec : Spec<MobileComponent> { }
+    public new class Spec : Spec<MobileComp> { }
 
     class State(float speed, float sprintSpeed, float animationWeight, float animationSpeed, bool allowJump)
     {
@@ -32,7 +31,7 @@ public class MobileComponent : EntityComp
     public const float NormalWalkSpeed = .1f;// 0.08f; when i used friction wrongly
 
     static readonly State[] States = new State[4];
-    static MobileComponent()
+    static MobileComp()
     {
         States[(byte)State.Types.Walking] = new(speed: .5f, sprintSpeed: 0, animationWeight: .33f, animationSpeed: 1f, allowJump: false);
         States[(byte)State.Types.Running] = new(speed: 1f, sprintSpeed: 0, animationWeight: .66f, animationSpeed: 1f, allowJump: true);
@@ -57,7 +56,7 @@ public class MobileComponent : EntityComp
 
     internal bool Crouching => this.AnimationCrouch.Weight > 0;
     const float AccelerationStep = .1f;
-    public MobileComponent()
+    public MobileComp()
     {
         this.Acceleration = 0f;
         this.Moving = false;
@@ -162,7 +161,7 @@ public class MobileComponent : EntityComp
     {
         this.Apply(toggle ? State.Types.Blocking : State.Types.Running);
     }
-    public MobileComponent ToggleCrouch(bool enabled)
+    public MobileComp ToggleCrouch(bool enabled)
     {
         this.AnimationCrouch.Weight = enabled ? 1 : 0;
         return this;
@@ -208,7 +207,7 @@ public class MobileComponent : EntityComp
         var resources = parent.GetComponent<ResourcesComp>();
         //var newwalk = parent.Gear.GetStat(StatDefOf.WalkSpeed);
         var actor = parent as Actor;
-        var newwalk = actor.Stats.Get(StatDefOf.MoveSpeed);
+        var newwalk = actor.Stats.Get(StatDefOf.MoveSpeed) * .01f;
         var walkSpeed = newwalk * Acceleration * NormalWalkSpeed * (this.CurrentState.Speed + this.CurrentState.SprintSpeed * resources.GetPercentage(ResourceDefOf.Stamina));
         if (this._currentState == State.Types.Sprinting)
             resources.ApplyAccumulatorDelta(ResourceDefOf.Stamina, -0.01f);

@@ -22,7 +22,7 @@ public class Entity : GameObject
 {
     bool _initialized;
    
-    public MobileComponent Mobile => field ??= this.GetComponent<MobileComponent>();
+    public MobileComp Mobile => field ??= this.GetComponent<MobileComp>();
 
     public SpriteComp Sprite => field ??= this.GetComponent<SpriteComp>();
 

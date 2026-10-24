@@ -17,7 +17,7 @@ sealed class StatResolver_ToolEffectiveness : StatResolver
     {
         
     }
-    public override float CalculateStat(Entity owner)
+    public override float CalculateItemStat(Entity owner)
     {
         var material = owner.GetMaterial(BoneDefOf.ToolHead);
         if (material is null)

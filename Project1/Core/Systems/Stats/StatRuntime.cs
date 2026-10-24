@@ -21,9 +21,14 @@ public sealed class StatRuntime(StatDef def)
         {
             this.Dirty = false;
             //this.Value = this.Def.BaseValue + actor.Components.Values.Sum(c => c.GetStatMod(this.Def)).Value;
-            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateStatActor(this.Def, actor);
+            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);
             this.Notifier.Notify();
         }
         return this.Value;
     }
+    public string Format()
+        => StatSystem.Format(this.Def, this.Value);
+
+    public override string ToString()
+        => this.Format();
 }

@@ -75,7 +75,7 @@ namespace Project1.Core.AI.Behaviors
             this.Actor = actor;
             if (actor.Velocity != Vector3.Zero)
             {
-                var acceleration = actor.GetComponent<MobileComponent>().Acceleration;
+                var acceleration = actor.GetComponent<MobileComp>().Acceleration;
                 if (acceleration != 0)
                     actor.MoveToggle(false);
                 return BehaviorState.Running;

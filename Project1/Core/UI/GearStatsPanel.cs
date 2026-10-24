@@ -25,8 +25,9 @@ class GearStatsPanel : SelectionBoundControl
         foreach (var stat in statsCache)
         {
             var value = stat.Resolve(actor);
-            var formatted = StatSystem.Format(stat.Def, value);
-            AddControls(new LabelNew($"{stat.Def.LabelReadable}: {formatted} + {stat.Bonus}").InvalidateOn(stat.Notifier));
+            //var formatted = StatSystem.Format(stat.Def, value);
+            var formatted = stat.Format();
+            AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {formatted} + {stat.Bonus}").InvalidateOn(stat.Notifier));
         }
         AlignTopToBottom();
     }

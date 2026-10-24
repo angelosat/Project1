@@ -22,9 +22,8 @@ public sealed class GearComp : EntityComp
     public override EntityCompDef CompDef => EntityCompDefOf.Gear;
     GearContainer Gear;
     public Container Equipment = new() { Name = "Equipment" };
-    public float ArmorTotal;
+    //public float ArmorTotal;
     readonly Dictionary<StatDef, StatRuntime> StatsCache = [];
-    public bool StatsDirty { get; private set; } = true;
 
     public override string Name { get; } = "Gear";
     public Entity this[GearSlotDef gearDef] => this.Gear.GetSlot(gearDef).Object as Entity;
@@ -53,13 +52,13 @@ public sealed class GearComp : EntityComp
 
     private void OnSlotItemChanged()
     {
-        this.StatsDirty = true;
         this.Actor.Stats.MarkBonusesDirty();
     }
 
     public GearComp()
     {
     }
+
     public override IEnumerable<Entity> GetChildren()
     {
         foreach (var o in this.Equipment.Slots.Where(s => s.HasValue).Select(s => s.Object as Entity))
@@ -133,12 +132,11 @@ public sealed class GearComp : EntityComp
         if(previousItem is not null)
             actor.Inventory.Insert(previousItem);
 
-        this.RefreshStats();
+        //this.RefreshStats();
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, item, previousItem as Entity));
 
-        this.StatsDirty = true;
         this.Actor.Stats.MarkBonusesDirty();
-        StatSystem.Equip(actor, item);
+        //StatSystem.Equip(actor, item);
     }
 
     internal void Unequip(GearSlotDef slotType)
@@ -149,13 +147,12 @@ public sealed class GearComp : EntityComp
         ArgumentNullException.ThrowIfNull(item);
         // the inventory implicitly removes the item from its previous owner, so no need to clear the slot explicitly
         actor.Inventory.Insert(item);
-        this.RefreshStats();
+        //this.RefreshStats();
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
 
-        this.StatsDirty = true;
         this.Actor.Stats.MarkBonusesDirty();
 
-        StatSystem.Unequip(actor, item);
+        //StatSystem.Unequip(actor, item);
     }
     public bool EquipToggle(Entity item)
     {
@@ -183,40 +180,14 @@ public sealed class GearComp : EntityComp
 
     public override GroupBox GetGUI() => this.Gear.GetGui();
 
-    public void RefreshStats()
-    {
-        this.ArmorTotal = 0;
-        foreach (var i in this.Equipment.Slots.Where(s => s.HasValue).Select(s => s.Object))
-        {
-            this.ArmorTotal += i.Def.ApparelProperties?.ArmorValue ?? 0;
-        }
-    }
-
-    void RebuildStats()
-    {
-        if (!this.StatsDirty)
-            return;
-        this.StatsDirty = false;
-     
-        //this.Actor.StatTracker.Clear();
-        var gearAll = this.GetGear();
-
-        //foreach (var gear in gearAll)
-        //    foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
-        //    {
-        //        //this.Actor.Bonuses[bonusDef.TargetDef] = bonusVal;
-        //        this.Actor.Bonuses.AddBonus(bonusDef.TargetDef, bonusVal);
-        //    }
-
-        foreach (var (stat, _) in this.StatsCache)
-            this.StatsCache[stat].Value = stat.Worker.CalculateStatActor(stat, this.Actor);// stat.BaseValue;
-
-        foreach (var gear in gearAll)
-        {
-            foreach (var (stat, value) in ToolSystem.GetStats(gear))
-                this.StatsCache[stat].Value += value;
-        }
-    }
+    //public void RefreshStats()
+    //{
+    //    this.ArmorTotal = 0;
+    //    foreach (var i in this.Equipment.Slots.Where(s => s.HasValue).Select(s => s.Object))
+    //    {
+    //        this.ArmorTotal += i.Def.ApparelProperties?.ArmorValue ?? 0;
+    //    }
+    //}
 
     public override IEnumerable<(StatBonusDef target, float value)> GetBonuses()
     {
@@ -224,37 +195,20 @@ public sealed class GearComp : EntityComp
             foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
                 yield return (bonusDef, bonusVal);
     }
+
     public override IEnumerable<(StatDef target, float value)> GetModifiers()
     {
         foreach (var gear in this.GetGear())
             foreach (var (bonusDef, bonusVal) in gear.ToolComponent.Modifiers)
                 yield return (bonusDef, bonusVal);
     }
-    //public IEnumerable<(StatDef def, float value)> GetCachedStatsNew()
-    //{
-    //    if (this.StatsDirty)
-    //        this.RebuildStats();
-    //    foreach (var k in this.StatsCache)
-    //        yield return (k.Key, k.Value.Value);
-    //}
-    //public IEnumerable<(StatDef def, string value)> GetCachedStatsNewNew()
-    //{
-    //    if (this.StatsDirty)
-    //        this.RebuildStats();
-    //    foreach (var k in this.StatsCache)
-    //        //yield return (k.Key, k.Value);
-    //        yield return (k.Key, StatSystem.Format(k.Key, k.Value.Value));
-    //}
-
+    
     public float GetArmor()
         => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
 
-    public float GetStat(StatDef statDef)
-    {
-        if (this.StatsDirty)
-            this.RebuildStats();
-        return this.StatsCache[statDef].Value;
-    }
+    public float GetMoveSpeed()
+     => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.MoveSpeed)?.Value ?? 0f);
+
     public new class Spec : Spec<GearComp>
     {
         public GearSlotDef[] Slots;

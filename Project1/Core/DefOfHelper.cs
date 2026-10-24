@@ -1,5 +1,4 @@
 ﻿using Project1.Core.AI.Personality;
-using Project1.Core.Entities.Stats;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Stats;

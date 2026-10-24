@@ -24,10 +24,10 @@ class GearStatsPanel : SelectionBoundControl
         var statsCache = actor.Stats.GetAllStatRuntime();
         foreach (var stat in statsCache)
         {
-            var value = stat.Resolve(actor);
-            //var formatted = StatSystem.Format(stat.Def, value);
-            var formatted = stat.Format();
-            AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {formatted} + {stat.Bonus}").InvalidateOn(stat.Notifier));
+            //var value = stat.Resolve(actor);
+            //var formatted = stat.Format();
+            //AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {stat.Format()} + {stat.Bonus}").InvalidateOn(stat.Notifier));
+            AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {stat.ResolveAndFormat(actor)} + {stat.Bonus}").InvalidateOn(stat.Notifier));
         }
         AlignTopToBottom();
     }

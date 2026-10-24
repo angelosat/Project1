@@ -203,6 +203,9 @@ public sealed class GearComp : EntityComp
                 yield return (bonusDef, bonusVal);
     }
     
+    public float GetModifier(StatDef stat)
+        => this.GetGear().Sum(g => g.ToolComponent.Modifiers.GetValueOrDefault(stat));
+
     public float GetArmor()
         => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
 

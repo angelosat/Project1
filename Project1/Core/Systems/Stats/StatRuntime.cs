@@ -15,20 +15,34 @@ public sealed class StatRuntime(StatDef def)
     public float Value;
     public float Bonus;
     public bool Dirty = true;
+
     public float Resolve(Actor actor)
     {
-        if(this.Dirty)
+        if (this.Dirty)
         {
             this.Dirty = false;
-            //this.Value = this.Def.BaseValue + actor.Components.Values.Sum(c => c.GetStatMod(this.Def)).Value;
-            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);
-            this.Notifier.Notify();
+            var newValue = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);
+            if (this.Value != newValue)
+            {
+                this.Value = newValue;
+                this.Notifier.Notify();
+            }
         }
         return this.Value;
     }
+
     public string Format()
         => StatSystem.Format(this.Def, this.Value);
 
+    public string ResolveAndFormat(Actor actor)
+      => StatSystem.Format(this.Def, this.Resolve(actor));
+
     public override string ToString()
         => this.Format();
+
+    internal void MarkDirty()
+    {
+        this.Dirty = true;
+        this.Notifier.Notify();
+    }
 }

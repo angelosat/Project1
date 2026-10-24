@@ -27,7 +27,8 @@ namespace Project1.Core.Entities.Stats.Resolvers
         public override float CalculateActorStat(StatDef def, Actor actor)
         {
             var skill = actor.Skills[(def.TargetDef as ToolUseDef).Skill];
-            return skill.Level;
+            var fromGear = actor.Gear.GetModifier(def);
+            return skill.Level + fromGear;
         }
 
         internal override string Format(StatDef def, Entity item)

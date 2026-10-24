@@ -205,13 +205,14 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     internal override void PostLoad()
     {
         ToolSystem.PostLoad(this.Owner);
-        foreach (var mod in this.Modifiers.Keys)
-            this.Modifiers[mod] = this.Owner.Quality.RankEffective;
+        //foreach (var mod in this.Modifiers.Keys)
+        //    this.Modifiers[mod] = this.Owner.Quality.RankEffective;
     }
 
     internal override void SaveExtra(SaveTag tag)
     {
         tag.SaveDefs("ActorBonuses", this.ActorEnhancements.Keys.ToArray());
+        tag.SaveDefs("Enhancements", this.Modifiers.Keys);
     }
 
     internal override void LoadExtra(SaveTag tag)
@@ -222,5 +223,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
                 this.ActorEnhancements.Add(b, b.Worker.Calculate(this.Owner));
                 //b.Worker.Apply(this.Owner, b);
             }
+        if (tag.TryLoadDefs<StatDef>("Enhancements", out var modifiers))
+            foreach (var mod in modifiers)
+                this.Modifiers.Add(mod, 0f);
     }
 }

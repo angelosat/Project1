@@ -17,7 +17,7 @@ public sealed class ActorStatTracker(Actor actor)
     {
         this.BonusesDirty = true;
         foreach (var runtime in this.Stats.Values)
-            runtime.Dirty = true;
+            runtime.MarkDirty();
     }
     public void MarkStatsDirty() => this.StatsDirty = true;
     public IEnumerable<(StatDef, float)> GetAllStats()

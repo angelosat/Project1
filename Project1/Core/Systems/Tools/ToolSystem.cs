@@ -12,14 +12,11 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
 using Project1.Framework;
 using Project1.Framework.Helpers;
-using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -272,9 +269,18 @@ internal static class ToolSystem
         var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
         var selectedBonuses = StatSystem.RollBonuses(ActorDnaDefOf.Npc, role, bonusCount);
         foreach (var bonus in selectedBonuses)
-            item.ToolComponent.Modifiers[bonus] = bonusCount;
-       
+            item.ToolComponent.Modifiers[bonus] = 0;// RollEnhancement(bonus, bonusCount);
+        CalculateEnhancements(comp);
+
         role.Worker.InitIntrinsicStats(item);
+    }
+
+    public static void CalculateEnhancements(ToolComp comp)
+    {
+        var random = new Random(GetBonusSeed(comp.Owner.RefId, 1));
+        var temp = comp.Modifiers.Count;
+        foreach (var mod in comp.Modifiers.Keys)
+            comp.Modifiers[mod] = RollEnhancement(random, mod, temp);
     }
 
     public static void PostLoad(Entity item)
@@ -282,14 +288,40 @@ internal static class ToolSystem
         var profile = (GearProfileDef)item.Profile;
         var role = profile.Role;
         role.Worker.InitIntrinsicStats(item);
+        CalculateEnhancements(item.ToolComponent);
+    }
+
+    static float RollEnhancement(Random rand, StatDef stat, int magnitude)
+    {
+        return 1 + rand.Next(magnitude);
+    }
+
+    static int GetBonusSeed(int itemId, int version)
+    {
+        unchecked
+        {
+            uint x = (uint)itemId;
+            x ^= (uint)version * 0x9E3779B9u;
+            x ^= x >> 16;
+            x *= 0x7FEB352Du;
+            x ^= x >> 15;
+            x *= 0x846CA68Bu;
+            x ^= x >> 16;
+            return (int)x;
+        }
     }
 
     public static float? CalculateStat(Entity item, StatDef stat)
     {
-        var profile = (GearProfileDef)item.Profile;
-        if (!profile.Role.Stats.Contains(stat))
+        //var profile = (GearProfileDef)item.Profile;
+        //if (!profile.Role.Stats.Contains(stat))
+        //    return null;
+        //return stat.CalculateFor(item);
+        var comp = item.ToolComponent;
+        var stats = comp.IntrinsicStats;
+        if (!stats.TryGetValue(stat, out var runtime))
             return null;
-        return stat.CalculateFor(item);
+        return runtime.Value;
     }
 
     public static IEnumerable<StatDef> GetSupportedStats(Entity item)

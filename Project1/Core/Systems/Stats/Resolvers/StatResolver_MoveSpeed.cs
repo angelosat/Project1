@@ -3,7 +3,7 @@ using Project1.Core.Entities.Actors;
 
 namespace Project1.Core.Entities.Stats.Resolvers;
 
-sealed class StatWalkSpeed : StatResolver
+sealed class StatResolver_MoveSpeed : StatResolver
 {
     public override float CalculateStat(Entity item)
         => 1f;// (item.Quality.Rank - QualityDefOf.Common.Rank) * .2f;

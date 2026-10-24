@@ -9,7 +9,7 @@ internal static class QualitySystem
     static readonly Random Rand = new();
 
     static QualityDef[] All => field ??= [.. Def.Get<QualityDef>()];
-    static CraftQualityDef[] AllCraftQualities => field ??= [.. Def.Get<CraftQualityDef>()];
+    static CraftsmanshipDef[] AllCraftQualities => field ??= [.. Def.Get<CraftsmanshipDef>()];
 
     public static QualityDef Random
         => All.SelectRandomWeighted(Rand, q => q.ProbabilityTableWeight);
@@ -18,6 +18,8 @@ internal static class QualitySystem
     {
         return All.SelectRandomWeighted(rand, q => q.GetWeightFromMastery(mastery));
     }
+    public static CraftsmanshipDef GetRandomCraftsmahship(Random rand)
+        => AllCraftQualities.SelectRandomWeighted(rand, q => q.Threshold);
 
     public static QualityDef GetRandom(Random rand)
     {
@@ -32,8 +34,8 @@ internal static class QualitySystem
     public static void Randomize(Entity item)
     {
         item.SetQuality(Random);
-        var craftQuality = AllCraftQualities.SelectRandomWeighted(Rand, c => c.Threshold);
-        item.Craftsmanship = craftQuality;
+        //var craftQuality = AllCraftQualities.SelectRandomWeighted(Rand, c => c.Threshold);
+        //item.Craftsmanship = craftQuality;
         //item.SetName($"{craftQuality.LabelReadable} {item.Name}");
     }
 }

@@ -33,6 +33,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     GearProfileDef Profile => this.Owner.Profile as GearProfileDef;
     //public ToolUseDef ToolUse;
     public GearProfileDef ToolDef;
+    public CraftsmanshipDef Craftsmanship = CraftsmanshipDefOf.Standard;
+
     readonly List<ToolUseDef> Skills = [];
     public readonly Dictionary<StatBonusDef, float> ActorEnhancements = [];
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
@@ -118,22 +120,23 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     {
         var profile = this.Owner.Profile as GearProfileDef;
         var slot = profile.Role.Slot;
-        yield return new LabelNew($"Slot: {slot.LabelReadable}");
+        yield return new LabelNew($"{slot.LabelReadable}");
+        yield return new LabelNew($"{this.Craftsmanship.LabelReadable}");
 
-        foreach(var (def, value) in this.ActorEnhancements)
-        {
-            yield return new LabelNew($"+{value:#} {def.TargetDef.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
-        }
+        //foreach(var (def, value) in this.ActorEnhancements)
+        //{
+        //    yield return new LabelNew($"+{value:#} {def.TargetDef.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+        //}
 
         foreach(var (stat, value) in this.Modifiers)
             //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
-            yield return new LabelNew($"Modifier: +{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
+            yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
 
         foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
             yield return roleControl;
 
         foreach (var (stat, runtime) in this.IntrinsicStats)
-            yield return new LabelNew($"Intrinsic3: {runtime.Value.ToString(stat.Format)} {stat.Worker.GetName(stat, this.Owner)}");// {stat.LabelReadable}");
+            yield return new LabelNew($"{runtime.Value.ToString(stat.Format)} {stat.Worker.GetName(stat, this.Owner)}");// {stat.LabelReadable}");
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)
@@ -160,6 +163,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         //    w.Write(b.Key);
         //    w.Write(b.Value);
         //}
+        w.Write(this.Craftsmanship);
         w.Write(this.ActorEnhancements.Keys.ToArray());
         w.Write(this.Modifiers.Keys.ToArray());
         w.Write(this.Modifiers.Values);
@@ -179,7 +183,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         //    var value = r.ReadSingle();
         //    this.ActorEnhancements.Add(def, value);
         //}
-
+        this.Craftsmanship = r.ReadDef<CraftsmanshipDef>();
         var actorBonuses = r.ReadListDef<StatBonusDef>();
         foreach(var b in actorBonuses)
             this.ActorEnhancements.Add(b, b.Worker.Calculate(this.Owner));

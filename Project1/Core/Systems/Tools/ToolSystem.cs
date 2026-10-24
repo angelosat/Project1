@@ -19,6 +19,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -243,6 +244,7 @@ internal static class ToolSystem
     public static void Randomize(Entity item)
     {
         var r = new Random();
+        
         QualitySystem.Randomize(item);
         int durabilityMax = 0;
         var profile = (GearProfileDef)item.Profile;
@@ -262,9 +264,13 @@ internal static class ToolSystem
         durability.Value = durability.Max = durabilityMax;
 
 
-        Validate(item);
 
         var comp = item.ToolComponent;
+        var craftsmanship = QualitySystem.GetRandomCraftsmahship(r);
+        comp.Craftsmanship = craftsmanship;
+        //item.SetName($"{craftsmanship.LabelReadable} {item.Name}");
+        Validate(item);
+
         var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
         var selectedBonuses = StatSystem.RollBonuses(ActorDnaDefOf.Npc, role, bonusCount);
         foreach (var bonus in selectedBonuses)
@@ -313,7 +319,7 @@ internal static class ToolSystem
     {
         var mat = item.Body.Material;
         var prof = item.Profile;
-        item.SetName($"{item.Craftsmanship.LabelReadable} {mat.LabelReadable} {prof.LabelReadable}");
+        item.SetName($"{item.ToolComponent.Craftsmanship.LabelReadable} {mat.LabelReadable} {prof.LabelReadable}");
     }
 
     public static float GetFinalValue(Entity item, ToolUseDef capability)

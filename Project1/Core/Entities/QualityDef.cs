@@ -32,31 +32,3 @@ public sealed class QualityDef : Def
         return this.ProbabilityTableWeight + mastery;
     }
 }
-
-public sealed class CraftQualityDef : Def
-{
-    public readonly int Tier;
-    public readonly int Threshold;
-    public CraftQualityDef(string name, int tier, int threshold) : base(name)
-    {
-        this.Tier = tier;
-        this.Threshold = threshold;
-    }
-}
-
-[EnsureStaticCtorCall]
-static public class CraftQualityDefOf
-{
-    static public readonly CraftQualityDef Crude = new("Crude", 1, 5);
-    static public readonly CraftQualityDef Standard = new("Standard", 2, 40);
-    static public readonly CraftQualityDef Fine = new("Fine", 3, 25);
-    static public readonly CraftQualityDef Superior = new("Superior", 3, 15);
-    static public readonly CraftQualityDef Exceptional = new("Exceptional", 4, 10);
-    static public readonly CraftQualityDef Masterwork = new("Masterwork", 5, 4);
-    static public readonly CraftQualityDef Peerless = new("Peerless", 6, 1);
-
-    static CraftQualityDefOf()
-    {
-        Def.Register(typeof(CraftQualityDefOf));
-    }
-}

@@ -36,7 +36,6 @@ public class Entity : GameObject
     public GearComp Gear => field ??= this.GetComponent<GearComp>();
 
     public OwnershipComponent Ownership => field ??= this.GetComponent<OwnershipComponent>();
-    public CraftQualityDef? Craftsmanship;
     public Actor Author
     {
         get => this.DefComponent.Author;

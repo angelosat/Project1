@@ -17,7 +17,7 @@ namespace Project1.Core.Entities.Stats
             this.Source = source;
         }
 
-        static public readonly StatModifierDef WalkSpeedHaulingWeight = new StatModifierDef("WalkSpeedHaulingWeight", StatDefOf.WalkSpeed)
+        static public readonly StatModifierDef WalkSpeedHaulingWeight = new StatModifierDef("WalkSpeedHaulingWeight", StatDefOf.MoveSpeed)
         {
             DurationType = DurationTypes.Permanent,
             Mod = (a,v)=>

@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Stats;
@@ -244,6 +245,9 @@ public sealed class GearComp : EntityComp
     //        //yield return (k.Key, k.Value);
     //        yield return (k.Key, StatSystem.Format(k.Key, k.Value.Value));
     //}
+
+    public float GetArmor()
+        => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
 
     public float GetStat(StatDef statDef)
     {

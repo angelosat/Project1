@@ -12,7 +12,7 @@ sealed class AttributeDexterity : AttributeWorker
 
     internal override float GetStatMod(StatDef stat, int level)
     {
-        if (stat == StatDefOf.WalkSpeed ||
+        if (stat == StatDefOf.MoveSpeed ||
             stat == StatDefOf.HitChance)
             return level;
         return 0f;

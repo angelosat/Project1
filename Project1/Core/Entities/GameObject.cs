@@ -22,7 +22,6 @@ using Project1.Core.Simulation.Physics;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Consumables.Scrolls;
-using Project1.Core.Systems.Equipment;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Ownership;
@@ -43,25 +42,16 @@ using System.Linq;
 
 namespace Project1.Core.Entities;
 
-public abstract class EntityBase : Inspectable
-{
-    public abstract MapBase Map { get; }
-    public abstract Vector3 Global { get; }
-}
-public interface ITransformAnchor
-{
-    public abstract MapBase Map { get; }
-    public Vector3 Global { get; }
-}
 public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable, IContextable, INameplateable, ISlottable, ISelectable//, ILabeled, IInspectable
 {
+    public ItemDef Def;
+    public Def Profile;
+
+
     public static readonly Dictionary<int, GameObject> Templates = [];
     public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
     public bool IsRegistered => this.RefId > 0;
-    static int GetNextTemplateID()
-    {
-        return Templates.Count + 1;
-    }
+    static int GetNextTemplateID() => Templates.Count + 1;
 
     public static void AddTemplates(IEnumerable<GameObject> templates)
     {
@@ -74,15 +64,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         Templates.Add(id, obj);
         return id;
     }
-    internal static GameObject CloneTemplate(int templateID)
-    {
-        return Templates[templateID].Clone();
-    }
-    public Color GetSlotColor()
-        => this.GetNameplateColor();
-    //{ return this.GetInfo().GetQualityColor(); }
-    public string GetCornerText()
-    { return this.StackSize.ToString(); }
+    
+    internal static GameObject CloneTemplate(int templateID) => Templates[templateID].Clone();
+
+    public Color GetSlotColor() => this.GetNameplateColor();
+
+    public string GetCornerText() => this.StackSize.ToString();
+
     public void DrawUI(SpriteBatch sb, Vector2 pos)
     {
         var sprite = this.GetSpriteOrDefault();
@@ -91,17 +79,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
 
     internal AttributeRuntime GetAttribute(AttributeDef att) => this.GetComponent<AttributesComp>().GetAttribute(att);
-    public ItemDef Def;
-    //public QualityDef Quality { get { return this.DefComponent.Quality; } set { this.DefComponent.Quality = value; } }
-    //public QualityDef Quality { get => this.QualityComp.Tier; set => this.QualityComp.Tier = value; }
-    public GameObjectSlot ToSlotLink(int amount = 1)
-    {
-        return new GameObjectSlot() { Link = this };
-    }
-    public Memory ToMemory(GameObject actor)
-    {
-        return new Memory(this, 100, 100, 1, actor);
-    }
+
+    public GameObjectSlot ToSlotLink(int amount = 1) => new() { Link = this };
+    
+    public Memory ToMemory(GameObject actor) => new(this, 100, 100, 1, actor);
+    
     public static void LoadTemplates()
     {
         AddTemplate(EntityFactory.Request(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer).Create());
@@ -351,7 +333,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public bool IsHauling => this.Hauled is not null;
     public GameObjectSlot Slot;
     #endregion
-    public Def Profile;
     public GameObject Clone(int amount = -1)
     {
         var obj = this.Def.Create(this.Profile);
@@ -414,31 +395,27 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public EntityCompCollection Components;
 
     public T GetComponent<T>(string name) where T : EntityComp
-    {
-        return this.GetComponent<T>();
-    }
+        => this.GetComponent<T>();
+    
     public EntityComp GetComponent(Type type)
-    {
-        return this.Components.GetComponent(type);
-    }
-    public T GetComponent<T>() where T : EntityComp
-    {
-        return this.Components.GetComponent<T>();
-    }
-    public bool HasComponent<T>() where T : EntityComp
-    {
-        return this.Components.TryGetComponent<T>(out var _);
-    }
-    public bool TryGetComponent<T>(string name, out T component) where T : EntityComp
-    {
-        return this.TryGetComponent(out component);
-    }
+        => this.Components.GetComponent(type);
+    
+    public T GetComponent<T>() where T : EntityComp 
+        => this.Components.GetComponent<T>();
+    
+    public bool HasComponent<T>() where T : EntityComp 
+        => this.Components.TryGetComponent<T>(out var _);
+    
+    public bool TryGetComponent<T>(string name, out T component) where T : EntityComp 
+        => this.TryGetComponent(out component);
+    
     public bool TryGetComponent<T>(out T component) where T : EntityComp
     {
         var result = this.Components.TryGetComponent<T>(out var c);
         component = (T)c;
         return result;
     }
+
     public bool TryGetComponent<T>(Action<T> action) where T : EntityComp
     {
         T component = this.GetComponent<T>();
@@ -450,16 +427,14 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         action(component);
         return true;
     }
+
     public virtual void Tick()
     {
         this.Components.Tick();
     }
 
     public override string ToString()
-    {
-        //return $"{this.Net?.ToString()} [{this.RefId}] {this.Def} {this.Profile} {this.Name}";
-        return $"{this.Net?.ToString()} [{this.RefId}] {this.Name}";
-    }
+        => $"{this.Net?.ToString()} [{this.RefId}] {this.Name}";
 
     #region Children
     byte _ChildrenSequence = 0;
@@ -526,7 +501,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         this.ChildrenSequence = 0;
         return this;
     }
+
     GameObjectSlot[] _cachedSlots;
+
     public GameObject EnumerateSlots()
     {
         this._cachedSlots = [.. Components.Values
@@ -534,11 +511,11 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             .Select((slot, index) => { slot.ID = index; return slot; })];
         return this;
     }
+
     public GameObjectSlot GetSlot(int slotId)
-    {
-        return this._cachedSlots[slotId];
-    }
-    public void GetTooltip(Control tooltip)//Message msg)
+        => this._cachedSlots[slotId];
+    
+    public void GetTooltipHeader(Control tooltip)//Message msg)
     {
         //GetInfo().OnTooltipCreated(this, tooltip);
         // TODO: LOL fix, i need the object name to be on top
@@ -563,8 +540,14 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (value > 0)
             tooltip.AddControlsBottomLeft(new Label($"Value: {value * this.StackSize} ({value})"));
 
-        tooltip.AddControlsBottomLeft(new Label($"{nameof(this.RefId)}: {this.RefId}"));
+        //tooltip.AddControlsBottomLeft(new Label($"{nameof(this.RefId)}: {this.RefId}"));
     }
+
+    public IEnumerable<Control> GetTooltipFooter()
+    {
+        yield return new LabelNew($"{nameof(this.RefId)}: {this.RefId}");
+    }
+
     public void GetInventoryTooltip(Control tooltip)
     {
         GetInfo().OnTooltipCreated(tooltip);
@@ -616,31 +599,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             comp.OnSpawn(newMap);
     }
   
-    
-    //public void SyncSpawnNew(MapBase map)
-    //{
-    //    if (this.RefId != 0)
-    //        //this.Spawn(map);
-    //        map.Spawn(this as Entity);
-    //    if (map.Net is not Server)
-    //        return;
-    //    SyncInstantiate(map.Net as NetEndpoint);
-    //    map.SyncSpawn(this, this.Global, this.Velocity);
-    //}
-
-    //public void SyncSpawn(MapBase map, Vector3 global)
-    //{
-    //    if (map.Net is not Server)
-    //        return;
-
-    //    map.SyncSpawn(this, global, Vector3.Zero);
-    //}
-
-    //public virtual void Draw(MySpriteBatch sb, RenderContext ctx)
-    //{
-    //    foreach (var comp in this.Components.Values)
-    //        comp.Draw(sb, ctx);
-    //}
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e)
     {
         foreach (var comp in this.Components.Values)
@@ -684,24 +642,17 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public virtual void GetTooltipInfo(Control tooltip)
     {
-        GetTooltip(tooltip);
+        GetTooltipHeader(tooltip);
     }
     Sprite CachedSprite;
     public ContainerList Container;
     public InventoryList ContainerNew;
 
-    public Sprite GetSprite()
-    {
-        return this.CachedSprite ??= this.SpriteComp?.Sprite;
-    }
-    public Sprite GetSpriteOrDefault()
-    {
-        return this.GetSprite() ?? Sprite.Default;
-    }
-    public Icon GetIcon()
-    {
-        return new Icon(GetSpriteOrDefault());
-    }
+    public Sprite GetSprite() => this.CachedSprite ??= this.SpriteComp?.Sprite;
+    
+    public Sprite GetSpriteOrDefault() => this.GetSprite() ?? Sprite.Default;
+    
+    public Icon GetIcon() => new(GetSpriteOrDefault());
 
     public byte[] GetSnapshotData()
     {
@@ -710,7 +661,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         this.Write(w);
         return mem.ToArray();
     }
-
    
     public void Write(IDataWriter w)
     {
@@ -723,6 +673,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         w.Write(this.OwnerId);
         this.Components.Write(w);
     }
+
     public static Entity Create(IDataReader r, WorldBase entityResolver)
     {
         string defName = r.ReadString();
@@ -737,6 +688,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         obj.Components.Read(r);
         return obj;
     }
+
     public static Entity Create(IDataReader r)
     {
         string defName = r.ReadString();
@@ -749,6 +701,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         obj.Components.Read(r);
         return obj;
     }
+
     public static GameObject CloneTemplate(int templateID, IDataReader reader)
     {
         GameObject obj = CloneTemplate(templateID);
@@ -770,35 +723,24 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         this.EnumerateChildren();
         return this;
     }
-    public void Save(SaveTag tag, string name)
-    {
-        tag.Add(this.Save(name));
-    }
+   
     public SaveTag Save(string name = "")
-    {
-        return new SaveTag(SaveTag.Types.Compound, name, this.SaveInternal());
-    }
+        => new(SaveTag.Types.Compound, name, this.SaveInternal());
+
     internal List<SaveTag> SaveInternal()
     {
-        //var data = new List<SaveTag>
-        //{
-        //    this.Def.Name.Save("Def"),
-        //    // todo : items without profile (coins for now)
-        //    //this.Profile?.Save("ProfileID"),
-            
-        //    ((int)this.RefId).Save("InstanceID"),
-        //    this._stackSize.Save("Stack"),
-        //    this.Components.Save("Components")
-        //};
-        var data = new List<SaveTag>();
-        data.Add(this.Def.Name.Save("Def"));
-        data.Add(this._stackSize.Save("Stack"));
-        data.Add(this.Components.Save("Components"));
+        var data = new List<SaveTag>
+        {
+            this.Def.Name.Save("Def"),
+            this._stackSize.Save("Stack"),
+            this.Components.Save("Components")
+        };
         if (this.Profile is not null)
             data.Add(this.Profile.Save("ProfileID"));
         data.Add(((int)this.RefId).Save("InstanceID"));
         return data;
     }
+
     /// <summary>
     /// Creates an object from a savetag node.
     /// </summary>
@@ -821,6 +763,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         //obj.ResetName();
         return obj;
     }
+
     /// <summary>
     /// Creates an object from a savetag node.
     /// </summary>
@@ -842,6 +785,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         obj.ResetName();
         return obj;
     }
+
     internal ContextAction GetContextRB(GameObject player)
     {
         var list = new List<ContextAction>();
@@ -853,6 +797,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         }
         return list.FirstOrDefault();
     }
+
     internal ContextAction GetContextActivate(GameObject player)
     {
         var list = new List<ContextAction>();
@@ -866,20 +811,18 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         }
         return list.FirstOrDefault();
     }
+
     public void GetContextActions(GameObject playerEntity, ContextArgs a)
     {
         if (playerEntity is null)
-        {
             return;
-        }
 
         foreach (var c in this.Components.Values)
-        {
             c.GetClientActions(this, a.Actions);
-        }
     }
 
     public bool IsDisposedOld => this.RefId > 0 && this.Net is null;
+
     public bool IsDisposed { get; private set; }
 
     [Obsolete("use world.disposeandsync")]
@@ -894,7 +837,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             c.OnDispose();
     }
     
-
     public bool IsInInteractionRange(InteractionTarget target)
     {
         if (target.Type == TargetType.Cell)
@@ -940,22 +882,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public int StackAvailableSpace { get { return this.StackMax - this.StackSize; } }
     public bool CanAbsorb(GameObject otherItem, int amount = -1)
     {
-        //ArgumentNullException.ThrowIfNull(otherItem);
-
-        //if (!this.Matches(otherItem))
-        //    return false;
-
-        //if (amount == -1)
-        //    return true;
-
-        //if (this.IsStackFull)
-        //    return false;
-
-        //if (this.StackSize + amount > this.StackMax)
-        //    throw new Exception();
-
-        //return true;
-
         ArgumentNullException.ThrowIfNull(otherItem);
 
         if (this.Def.IsSingleUnit)
@@ -1012,64 +938,50 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
   
     internal List<GameObject> GetPossesions()
-    {
-        return NpcComponent.GetPossessions(this).Select(id => this.World.Get(id) as GameObject).ToList();
-    }
+        => NpcComponent.GetPossessions(this).Select(id => this.World.Get(id) as GameObject).ToList();
+    
     internal NeedRuntime GetNeed(NeedDef def)
-    {
-        return this.GetComponent<NeedsComp>().NeedsNew[def];//.First(n => n.NeedDef == def);
-    }
+        => this.GetComponent<NeedsComp>().NeedsNew[def];//.First(n => n.NeedDef == def);
+    
     internal IEnumerable<NeedRuntime> GetNeeds(NeedCategoryDef cat)
-    {
-        return this.GetComponent<NeedsComp>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
-    }
+        => this.GetComponent<NeedsComp>().NeedsNew.Values.Where(n => n.NeedDef.CategoryDef == cat);
+    
     internal BoundingBox GetBoundingBox(Vector3 global)
-    {
-        return this.Physics.GetBoundingBox(global);
-    }
+        =>  this.Physics.GetBoundingBox(global);
+
     internal BoundingBox GetBoundingBox(Vector3 global, float height)
-    {
-        return PhysicsComp.GetBoundingBox(global, height);
-    }
+        => PhysicsComp.GetBoundingBox(global, height);
+    
     internal bool IntersectsCorners(IntVec3 cell)
-    {
-        return this.GetBoundingBoxCorners().Any(c => c.ToCell() == cell);
-    }
+        => this.GetBoundingBoxCorners().Any(c => c.ToCell() == cell);
+
     internal IEnumerable<Vector3> GetBoundingBoxCorners()
-    {
-        return this.Physics.GetBoundingBoxCorners(this.Global);
-    }
+        => this.Physics.GetBoundingBoxCorners(this.Global);
+
     internal IEnumerable<Vector3> GetBoundingBoxCorners(Vector3 global)
-    {
-        return this.Physics.GetBoundingBoxCorners(global);
-    }
+        => this.Physics.GetBoundingBoxCorners(global);
+
     /// <summary>
     /// checks if the entity's bounding box intersects the specified cell at its current position
     /// </summary>
     /// <param name="cell"></param>
     /// <returns></returns>
     internal bool Intersects(IntVec3 cell)
-    {
-        return this.GetBoundingBox(this.Global).Intersects(new BoundingBox(new Vector3(cell.X - .5f, cell.Y - .5f, cell.Z), new Vector3(cell.X + .5f, cell.Y + .5f, cell.Z + 1)));
-    }
+        => this.GetBoundingBox(this.Global).Intersects(new BoundingBox(new Vector3(cell.X - .5f, cell.Y - .5f, cell.Z), new Vector3(cell.X + .5f, cell.Y + .5f, cell.Z + 1)));
+    
+
     /// <summary>
     /// checks if the entity's bounding box will intersect the specified cell at the specified global position
     /// </summary>
     /// <param name="global"></param>
     /// <param name="cell"></param>
     /// <returns></returns>
-    internal bool Intersects(Vector3 global, IntVec3 cell)
-    {
-        return this.GetBoundingBox(global).Intersects(new BoundingBox(new Vector3(cell.X - .5f, cell.Y - .5f, cell.Z), new Vector3(cell.X + .5f, cell.Y + .5f, cell.Z + 1)));
-    }
-    internal bool Intersects(BoundingBox boundingBox)
-    {
-        return this.GetBoundingBox(this.Global).Intersects(boundingBox);
-    }
-    internal bool Intersects(Vector3 global, BoundingBox boundingBox)
-    {
-        return this.GetBoundingBox(global).Intersects(boundingBox);
-    }
+    internal bool Intersects(Vector3 global, IntVec3 cell) => this.GetBoundingBox(global).Intersects(new BoundingBox(new Vector3(cell.X - .5f, cell.Y - .5f, cell.Z), new Vector3(cell.X + .5f, cell.Y + .5f, cell.Z + 1)));
+    
+    internal bool Intersects(BoundingBox boundingBox) => this.GetBoundingBox(this.Global).Intersects(boundingBox);
+    
+    internal bool Intersects(Vector3 global, BoundingBox boundingBox) => this.GetBoundingBox(global).Intersects(boundingBox);
+    
     /// <summary>
     /// Returns the next cell the entity will enter determined by its velocity vector
     /// </summary>
@@ -1079,15 +991,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     /// </summary>
     public IntVec3 LastCell => this.Global - this.Velocity.Normalized();
 
-    internal Vector3 GetNextStep()
-    {
-        return this.Global + PhysicsComp.Decelerate(this.Velocity);
-    }
-    public bool IsStockpilable()
-    {
-        return this.Def?.Category != null;
-    }
-    
+    internal Vector3 GetNextStep() => this.Global + PhysicsComp.Decelerate(this.Velocity);
     
     public static void DrawIcon(Bone body, int w, int h, float scale = 1)
     {
@@ -1107,18 +1011,18 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
 
     public bool Exists => this.IsSpawned;
-    //public bool ExistsOn(MapBase map) => this._map == map && this.Owner == null;
+
     public bool ExistsOn(MapBase map) => this.Transform.IsSpawnedIn(map);
 
-    internal void MoveOrder(InteractionTarget target, bool enqueue)
-    {
-        this.GetComponent<AIComp>().MoveOrder(target, enqueue);
-    }
+    internal void MoveOrder(InteractionTarget target, bool enqueue) 
+        => this.GetComponent<AIComp>().MoveOrder(target, enqueue);
+    
     internal bool IsAt(Vector3 global)
     {
         var cylindermax = new BoundingCylinder(global, .1f, 1);
         return cylindermax.Contains(this.Global);
     }
+
     internal void DrawAfter(MySpriteBatch sb, RenderContext ctx)
     {
         foreach (var comp in this.Components.Values)
@@ -1173,26 +1077,19 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         throw new Exception(); //thrown when actor was stuck inside a block
     }
 
-    internal bool IsFootprintWithinCell(Vector3 target)
-    {
-        return target.ContainsEntityFootprint(this);
-    }
-    internal BoundingBox GetFootprint()
-    {
-        return this.GetBoundingBox(this.Global, 0);
-    }
+    internal bool IsFootprintWithinCell(Vector3 target) => target.ContainsEntityFootprint(this);
+    
+    internal BoundingBox GetFootprint() => this.GetBoundingBox(this.Global, 0);
     
     public MaterialDef Material => this.SpriteComp.GetMaterial(this.Body);
 
-    internal bool HasFocus()
-    {
-        return Ingame.Instance.ToolManager.ActiveTool?.Target?.Object == this;
-    }
+    internal bool HasFocus() => Ingame.Instance.ToolManager.ActiveTool?.Target?.Object == this;
 
     internal void Sync(NetEndpoint net)
     {
         PacketEntitySync.Send(net, this);
     }
+
     internal void SyncWrite(IDataWriter w)
     {
         foreach (var comp in this.Components.Values)
@@ -1205,39 +1102,15 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             comp.SyncRead(this, r);
     }
 
-    internal void SetOwner(GameObject actor)
-    {
-        this.SetOwner(actor != null ? actor.RefId : -1);
-    }
-    internal void SetOwner(int actorID)
-    {
-        this.TryGetComponent<OwnershipComponent>(c => c.SetOwner(this, actorID));
-    }
-
-    internal bool IsPlant()
-    {
-        return this.HasComponent<PlantComponent>();
-    }
-
-    internal SkillRuntime GetSkill(SkillDef skill)
-    {
-        return this.GetComponent<SkillsComponent>().GetSkill(skill);
-    }
-    public float Fuel
-    {
-        get
-        {
-            return this.Material?.Fuel?.Value ?? 0;
-        }
-    }
+    internal void SetOwner(GameObject actor) => this.SetOwner(actor != null ? actor.RefId : -1);
     
-    internal float TotalWeight
-    {
-        get
-        {
-            return this.Physics.Weight * this.StackSize;
-        }
-    }
+    internal void SetOwner(int actorID) => this.TryGetComponent<OwnershipComponent>(c => c.SetOwner(this, actorID));
+
+    internal bool IsPlant() => this.HasComponent<PlantComponent>();
+
+    internal SkillRuntime GetSkill(SkillDef skill) => this.GetComponent<SkillsComponent>().GetSkill(skill);
+    
+    internal float TotalWeight => this.Physics.Weight * this.StackSize;
 
     public Color? TooltipColor => this.QualityComp?.Tier.Color;
 
@@ -1246,14 +1119,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         this.TryGetComponent<StatsComp>(out var stats);
         return stats?.GetModifiers(statNewDef);
     }
+
     internal void AddResourceModifier(ResourceRateModifier resourceModifier)
-    {
-        this.GetComponent<ResourcesComp>().AddModifier(resourceModifier);
-    }
+        => this.GetComponent<ResourcesComp>().AddModifier(resourceModifier);
+    
     internal void AddStatModifier(StatNewModifier statNewModifier)
-    {
-        this.GetComponent<StatsComp>().AddModifier(statNewModifier);
-    }
+        => this.GetComponent<StatsComp>().AddModifier(statNewModifier);
+    
     public int GetValueScore()
     {
         if (this.Def.BaseValue == 0)
@@ -1265,10 +1137,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             value += b.Material?.ValueBase ?? 0;
         return (int)(value * this.Def.BaseValue * qualityMultiplier);
     }
+
     public int GetValueTotal()
-    {
-        return this.GetValueScore() * this.StackSize;
-    }
+        => this.GetValueScore() * this.StackSize;
+    
     public virtual IEnumerable<Control> GetSelectionDetails()
     {
         yield break;
@@ -1346,10 +1218,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     #endregion
    
     public IEnumerable<IntVec3> GetOccupyingCells()
-    {
-        return this.Def.OccupyingCellsStanding(this.Global.ToCell());
-    }
-
+        => this.Def.OccupyingCellsStanding(this.Global.ToCell());
     
     public void ResolveReferences()
     {
@@ -1360,10 +1229,12 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         var box = new GroupBox();
         //box.AddControls(new LabelNew(() => this.LabelReadable));
-        this.GetTooltipInfo(box);
+        this.GetTooltipHeader(box);
         foreach (var comp in this.Components.Values)
             foreach (Control ctrl in comp.GetTooltipControls())
                 box.AddControlsBottomLeft(ctrl);
+        foreach (var ctrl in this.GetTooltipFooter())
+            box.AddControlsBottomLeft(ctrl);
         yield return box;
     }
 }

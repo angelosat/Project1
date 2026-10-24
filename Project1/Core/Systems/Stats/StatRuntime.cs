@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
-using System.Linq;
+using Project1.Framework.Events;
 
 namespace Project1.Core.Systems.Stats;
 
@@ -10,6 +10,7 @@ public sealed class StatRuntime(StatDef def)
     {
         this.Value = value;
     }
+    public ChangeNotifier Notifier = new();
     public StatDef Def = def;
     public float Value;
     public float Bonus;
@@ -21,6 +22,7 @@ public sealed class StatRuntime(StatDef def)
             this.Dirty = false;
             //this.Value = this.Def.BaseValue + actor.Components.Values.Sum(c => c.GetStatMod(this.Def)).Value;
             this.Value = this.Def.BaseValue + this.Def.Worker.CalculateStatActor(this.Def, actor);
+            this.Notifier.Notify();
         }
         return this.Value;
     }

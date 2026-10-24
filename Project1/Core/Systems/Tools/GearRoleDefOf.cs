@@ -60,7 +60,7 @@ sealed class GearRoleWorker_Feet : GearRoleWorker
         var profile = item.Profile as GearProfileDef;
         var power = StatDefOf.ItemPower.Worker.CalculateStat(item);
         comp.IntrinsicStats[StatDefOf.Armor] = new(StatDefOf.Armor, power);
-        comp.IntrinsicStats[StatDefOf.WalkSpeed] = new(StatDefOf.WalkSpeed, power);
+        comp.IntrinsicStats[StatDefOf.MoveSpeed] = new(StatDefOf.MoveSpeed, power);
     }
 }
 sealed class GearRoleWorker_MainHand : GearRoleWorker

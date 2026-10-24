@@ -15,63 +15,61 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Stats;
 
-//[EnsureStaticCtorCall]
 public static class StatDefOf
 {
     public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
     {
         Description = "Exceeding the limit will drain stamina",
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
+
     public static readonly StatDef Encumberance = new("Encumberance", typeof(StatEncumberance), typeof(InventoryComp))
     {
         Description = "Being encumbered affects walking speed.",
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
     };
 
-    public static readonly StatDef WalkSpeed = new("Walk Speed", typeof(StatWalkSpeed), typeof(MobileComponent))
+    public static readonly StatDef MoveSpeed = new("Move Speed", typeof(StatResolver_MoveSpeed), typeof(MobileComponent))
     {
         Description = "Speed of walking",
         Type = StatDef.Types.Percentile,
-        BaseValue = 100f,// 100f,
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+        BaseValue = 100f,
     };
+
     public static readonly StatDef SwingSpeed = new("Swing Speed", typeof(StatResolver))
     {
         Description = "Speed of equipped main hand swing",
         Type = StatDef.Types.Percentile,
-        BaseValue = 1f,//100f,
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+        BaseValue = 1f,
 
     };
+
     public static readonly StatDef CriticalChance = new ("Critical Chance", typeof(StatResolver))
     {
         Description = "Critical chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = 5f,// 5f,
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+        BaseValue = 5f,
     };
+
     public static readonly StatDef HitChance = new("Hit Chance", typeof(StatResolver_HitChance))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = 50f,//50f,
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+        BaseValue = 50f,
     };
+
     public static readonly StatDef DodgeChance = new("Dodge Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = 5f,//50f,
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+        BaseValue = 5f,
     };
+
     public static readonly StatDef ParryChance = new("Parry Chance", typeof(StatResolver))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = 5f,//50f,
-        //EligibleBonusTargets = [GearRoleDefOf.Head, GearRoleDefOf.MainHand, GearRoleDefOf.Feet, GearRoleDefOf.Torso]
+        BaseValue = 5f,
     };
+
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))
     {
         Description = "Won't start new tasks if stamina below this percentage.",
@@ -87,11 +85,13 @@ public static class StatDefOf
         Description = "Capacity for patience.",
     };
 
-    public static readonly StatDef Armor = new("Armor", typeof(StatArmor), typeof(GearComp))
+    public static readonly StatDef Armor = new("Armor", typeof(StatResolver_Armor), typeof(GearComp))
     {
         Description = "Protection against damage.",
-        Type = StatDef.Types.Scalar
+        Type = StatDef.Types.Scalar,
+        BaseValue = 10f
     };
+
     public static readonly StatDef Damage = new("Damage", typeof(StatResolver_Damage), typeof(ToolComp))
     {
         Description = "Amount of damage.",
@@ -99,6 +99,7 @@ public static class StatDefOf
         StringFormat = "0",
         Format = "#"
     };
+
     public static readonly StatDef ItemPower = new("Power", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
     {
         Description = "Amount of work produced with each hit of the tool.",
@@ -106,20 +107,13 @@ public static class StatDefOf
         StringFormat = "0",
         Format = "#"
     };
-    //public static readonly StatDef DamageEffectiveness = new("Damage Effectiveness", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
-    //{
-    //    Description = "Amount of damage done with each swing.",
-    //    Type = StatDef.Types.Scalar,
-    //    StringFormat = "0"
-    //};
-
+    
     public static readonly StatDef ItemSpeed = new("Speed", typeof(StatToolSwingSpeed), typeof(ToolComp))
     {
         Description = "Determines time between each tool strike.",
         Type = StatDef.Types.Scalar,
         StringFormat = "0.##",
         Format = "0.#0"
-        //StringFormat = "+##0%"
     };
 
     public static readonly StatDef WorkSpeed = new("Work Speed", typeof(StatWorkSpeed), typeof(WorkComponent))

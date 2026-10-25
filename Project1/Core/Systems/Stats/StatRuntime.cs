@@ -21,12 +21,7 @@ public sealed class StatRuntime(StatDef def)
         if (this.Dirty)
         {
             this.Dirty = false;
-            var newValue = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);
-            if (this.Value != newValue)
-            {
-                this.Value = newValue;
-                this.Notifier.Notify();
-            }
+            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);
         }
         return this.Value;
     }

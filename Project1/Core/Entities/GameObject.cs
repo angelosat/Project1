@@ -642,7 +642,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public virtual void GetTooltipInfo(Control tooltip)
     {
-        GetTooltipHeader(tooltip);
+        //GetTooltipHeader(tooltip);
+        foreach (var ctrl in this.GetTooltipControls())
+            tooltip.AddControlsBottomLeft(ctrl);
     }
     Sprite CachedSprite;
     public ContainerList Container;
@@ -1230,11 +1232,18 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         var box = new GroupBox();
         //box.AddControls(new LabelNew(() => this.LabelReadable));
         this.GetTooltipHeader(box);
+        foreach (var ctrl in this.GetTooltipExtra())
+            box.AddControlsBottomLeft(ctrl);
         foreach (var comp in this.Components.Values)
             foreach (Control ctrl in comp.GetTooltipControls())
                 box.AddControlsBottomLeft(ctrl);
         foreach (var ctrl in this.GetTooltipFooter())
             box.AddControlsBottomLeft(ctrl);
         yield return box;
+    }
+
+    protected virtual IEnumerable<Control> GetTooltipExtra()
+    {
+        yield break;
     }
 }

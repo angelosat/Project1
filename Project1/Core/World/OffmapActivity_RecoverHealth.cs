@@ -6,10 +6,10 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_RecoverHealth : OffmapActivity
 {
-    internal override int GetWeight(FrontierWrapper frontier, Actor actor)
+    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         => 0;// (int)((1-actor.Resources.GetPercentage(ResourceDefOf.Health)) * 10);
 
-    internal override void Tick(FrontierWrapper frontier, Actor actor)
+    internal override void Tick(FrontierRuntime frontier, Actor actor)
     {
         actor.Resources.ApplyDelta(ResourceDefOf.Health, 5);
     }

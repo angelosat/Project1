@@ -7,4 +7,6 @@ internal abstract class WorldComp(WorldBase world)
     protected WorldBase World = world;
 
     internal virtual void Scan(Entity entity) { }
+
+    internal virtual void EnsureInitialized() { }
 }

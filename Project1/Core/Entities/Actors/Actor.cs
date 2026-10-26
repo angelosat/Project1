@@ -18,6 +18,7 @@ using Project1.Core.Rooms;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Stats;
+using Project1.Core.Systems.Factions;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Core.Systems.Relationships;
 using Project1.Core.Towns;
@@ -59,6 +60,7 @@ public sealed class Actor : Entity
     [InspectorHidden]
     public Entity this[GearSlotDef slot] => this.GetEquipmentSlot(slot);
 
+    public FactionId? FactionId;
 
     public MoodComp Mood => field ??= this.GetComponent<MoodComp>();
 
@@ -474,5 +476,11 @@ public sealed class Actor : Entity
             }
         }
         return validPosition;
+    }
+
+    protected override IEnumerable<Control> GetTooltipExtra()
+    {
+        if(this.FactionId.HasValue)
+            yield return new LabelNew($"Faction: {this.World.FactionRegistry[this.FactionId.Value].Def.LabelReadable}");
     }
 }

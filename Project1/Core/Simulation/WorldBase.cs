@@ -2,6 +2,7 @@
 using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Networking;
+using Project1.Core.Systems.Factions;
 using Project1.Core.Systems.Ownership;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
@@ -68,6 +69,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     internal WorldComp_Ownership Ownership;
 
     readonly EntityRegistry EntityRegistry;
+    public readonly Dictionary<FactionId, Faction> FactionRegistry = [];
     internal readonly List<WorldComp> Comps = [];
     public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
     public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;

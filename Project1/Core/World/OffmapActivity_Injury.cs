@@ -10,7 +10,7 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_Injury : OffmapActivity
 {
-    internal override void Tick(FrontierWrapper frontier, Actor actor)
+    internal override void Tick(FrontierRuntime frontier, Actor actor)
     {
         var dmgBase = frontier.Def.Tier * 2;
         var dmg = dmgBase + actor.World.Random.Next(-dmgBase, dmgBase) / 2;
@@ -20,7 +20,7 @@ internal sealed class OffmapActivity_Injury : OffmapActivity
         $"{actor} received {dmg} damage".ToConsole();
     }
 
-    internal override int GetWeight(FrontierWrapper frontier, Actor actor)
+    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     {
         return frontier.Def.Tier;
     }

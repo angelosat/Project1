@@ -4,6 +4,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Systems.Factions;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
@@ -37,6 +38,7 @@ public class StaticWorld : WorldBase
 
     public StaticMap Map => this.Maps.First() as StaticMap;
     public override PopulationManager Population => this.PopulationManager;
+    internal readonly WorldComp_Factions Factions;
     public IWorldSpaceManager Space;
     ulong currentTick;
     public override SimulationTick CurrentTick { get => this.currentTick; set => this.currentTick = value; }
@@ -76,8 +78,10 @@ public class StaticWorld : WorldBase
         this.Trees = true;
         this.PopulationManager = new PopulationManager(this);
         this.Ownership = new(this);
+        this.Factions = new(this);
         this.Comps.AddRange(
-            this.Ownership
+            this.Ownership,
+            this.Factions
             //new RecipeMasterySystem(this)
             );
         this.Space = new FrontierManager(this);
@@ -207,31 +211,33 @@ public class StaticWorld : WorldBase
     public override void ResolveReferences()
     {
         this.Population.ResolveReferences();
+        foreach (var comp in this.Comps)
+            comp.EnsureInitialized();
         foreach (var entity in this.Entities.Values)
             foreach(var comp in this.Comps)
                 comp.Scan(entity);
     }
 
-    public static void CreateExpansionMaps(StaticWorld world)
-    {
-        throw new NotImplementedException();
-        //(new List<Vector2>() { new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1) }).ForEach(n =>
-        //{
-        //    foreach (var mapdir in world.GetDirectory().GetDirectories("*.*", SearchOption.TopDirectoryOnly))
-        //    {
-        //        var c = mapdir.Name.Split('.');
-        //        var coords = new Vector2(Convert.ToInt32(c[0]), Convert.ToInt32(c[1]));
-        //        var newPos = coords + n;
-        //        if (!world.Maps.ContainsKey(newPos))
-        //            StaticMap.Create(world, newPos);
-        //    }
-        //});
-    }
+    //public static void CreateExpansionMaps(StaticWorld world)
+    //{
+    //    throw new NotImplementedException();
+    //    //(new List<Vector2>() { new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1) }).ForEach(n =>
+    //    //{
+    //    //    foreach (var mapdir in world.GetDirectory().GetDirectories("*.*", SearchOption.TopDirectoryOnly))
+    //    //    {
+    //    //        var c = mapdir.Name.Split('.');
+    //    //        var coords = new Vector2(Convert.ToInt32(c[0]), Convert.ToInt32(c[1]));
+    //    //        var newPos = coords + n;
+    //    //        if (!world.Maps.ContainsKey(newPos))
+    //    //            StaticMap.Create(world, newPos);
+    //    //    }
+    //    //});
+    //}
 
-    public void Initialize()
-    {
-        this.PopulationManager.Initialize();
-    }
+    //public void Initialize()
+    //{
+    //    this.PopulationManager.Initialize();
+    //}
     public IEnumerable<(string, Action)> GetGenerationTasks()
     {
         yield return ("Generating population", this.PopulationManager.Initialize);

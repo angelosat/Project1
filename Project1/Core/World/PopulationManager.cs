@@ -36,6 +36,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     public IEnumerable<WorldInhabitantView> AllActors => this.WorldInhabitants;
     public readonly StaticWorld World;
     const int WorldPopulationCap = 6;//3;//1;//0;//6;
+    const int TargetCount_Adventurers = 10, TargetCount_Bandits = 8;
     public int WorldPopulationCount { get; private set; }
     const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
     const int InitialApproval = 50;
@@ -71,8 +72,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
             this.WorldPopulationCount++;
             this.Undiscovered.Add(actor.RefId);
         }
-
     }
+
     public void Tick()
     {
         if(this.Schedule.OnSchedule(this.World.CurrentTick))
@@ -88,7 +89,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         for (int i = 0; i < WorldPopulationCap; i++)
         {
-            var actor = GenerateInhabitant();
+            var actor = GenerateInhabitant(RoleMetaDefOf.Adventurer);
             this.World.Register(actor);
             this.RegisterVisitor(actor);
         }
@@ -97,10 +98,13 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     private Actor PopulateRuntime()
     {
         var net = this.World.Net;
-        if (net.IsServer && this.WorldPopulationCount < WorldPopulationCap)
+        if (!net.IsServer)
+            return null;
+        //if (net.IsServer && this.WorldPopulationCount < WorldPopulationCap)
+        if (this.ChooseRole() is RoleMetaDef role)
         {
-            Actor actor = GenerateInhabitant();
-            var chosenPlace = this.World.PlaceAtRandom(actor);//
+            var actor = GenerateInhabitant(role);
+            var chosenPlace = this.World.PlaceAtRandom(actor);
             actor.AI.Meta.SetTargetFrontier(chosenPlace);
             net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
             return actor;
@@ -108,21 +112,34 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         return null;
     }
 
-    private Actor PopulateRuntime(INetEndpoint net)
+    RoleMetaDef? ChooseRole()
     {
-        if (net is Server && this.WorldPopulationCount < WorldPopulationCap)
+        if(this.World.Factions.AdventurerCount < TargetCount_Adventurers)
         {
-            Actor actor = GenerateInhabitant();
-            var chosenPlace = this.World.PlaceAtRandom(actor);//
-            net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
-            return actor;
+            return RoleMetaDefOf.Adventurer;
+        }
+        if(this.World.Factions.BanditCount < TargetCount_Bandits)
+        {
+            return RoleMetaDefOf.Npc;
         }
         return null;
     }
+
+    //private Actor PopulateRuntime(INetEndpoint net)
+    //{
+    //    if (net is Server && this.WorldPopulationCount < WorldPopulationCap)
+    //    {
+    //        Actor actor = GenerateInhabitant(RoleMetaDefOf.Adventurer);
+    //        var chosenPlace = this.World.PlaceAtRandom(actor);//
+    //        net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
+    //        return actor;
+    //    }
+    //    return null;
+    //}
    
-    private Actor GenerateInhabitant()
+    private Actor GenerateInhabitant(RoleMetaDef role)
     {
-        var actor = ActorSystem.Create(ActorDnaDefOf.Npc, RoleMetaDefOf.Adventurer);
+        var actor = ActorSystem.Create(ActorDnaDefOf.Npc, role);
         var coins = ItemDefOf.Coins.Create().SetStackSize(500);
         var townscroll = ConsumableSystem.CreateScroll(SpellDefOf.Teleporting, MaterialDefOf.ShrubStem, QualitySystem.Random);
         var inventory = actor.Inventory;
@@ -154,13 +171,13 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         var props = new WorldInhabitantView(this.World, actor, InitialChance, InitialApproval) { OffsiteArea = FrontierDefOf.Forest };
         this.WorldInhabitants.Add(props);
-        MakeVisitor(actor);
+        //MakeVisitor(actor);
     }
 
 
-    private static void MakeVisitor(Actor actor)
-    {
-    }
+    //private static void MakeVisitor(Actor actor)
+    //{
+    //}
 
     public IEnumerable<WorldInhabitantView> Find(Func<WorldInhabitantView, bool> pred)
     {
@@ -216,6 +233,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
                     ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
                 );
             };
+            btn.TooltipFunc = tt => npc.GetTooltipInfo(tt);
             return btn;
         });
 

@@ -5,7 +5,7 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_FindTreasure : OffmapActivity
 {
-    internal override void Tick(FrontierWrapper frontier, Actor actor)
+    internal override void Tick(FrontierRuntime frontier, Actor actor)
     {
         var rand = actor.World.Random;
         if (!frontier.TryFindTreasure(rand, actor, out var treasure))
@@ -17,7 +17,7 @@ internal sealed class OffmapActivity_FindTreasure : OffmapActivity
         actor.AI.State.Log.Write($"Treasure found! [{treasure.Name}]");
     }
 
-    internal override int GetWeight(FrontierWrapper frontier, Actor actor)
+    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     {
         return frontier.Treasures.Count;
     }

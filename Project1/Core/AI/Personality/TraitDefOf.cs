@@ -2,22 +2,26 @@
 
 public class TraitDefOf
 {
+    static public readonly TraitDef CommonSense = new("CommonSense")
+    {
+        NameNegative = "Emotion",
+        NamePositive = "Logic"
+    };
 
-    
-    static public readonly TraitDef Patience = new TraitDef("Patience")
+    static public readonly TraitDef Patience = new("Patience")
     {
         NameNegative = "Impatient",
         NamePositive = "Patient"
     };
     //static public readonly TraitDef Attention = new TraitDef("Attention")
-    static public readonly TraitDef Focus = new TraitDef("Attention")
+    static public readonly TraitDef Focus = new("Attention")
     {
         //NameNegative = "Absent minded",
         NameNegative = "Distracted",
         NamePositive = "Focused"
     };
     //static public readonly TraitDef Composure = new TraitDef("Composure")
-    static public readonly TraitDef Temperament = new TraitDef("Composure")
+    static public readonly TraitDef Temperament = new("Composure")
     {
         NameNegative = "Nervous",
         NamePositive = "Calm"
@@ -40,14 +44,14 @@ public class TraitDefOf
     /// <summary>
     /// Affects the range of which the actor will search for opportunistic hauls
     /// </summary>
-    static public readonly TraitDef Deliberation = new TraitDef("Planning")
+    static public readonly TraitDef Deliberation = new("Planning")
     {
         NameNegative = "Hasty",
         //NamePositive = "Thorough",
         NamePositive = "Methodical",
         Description = "Affects the range of which the actor will search for opportunistic hauls."
     };
-    static public readonly TraitDef Resilience = new TraitDef("Resilience")
+    static public readonly TraitDef Resilience = new("Resilience")
     {
         //NameNegative = "Oversensitive",
         NameNegative = "Sensitive",

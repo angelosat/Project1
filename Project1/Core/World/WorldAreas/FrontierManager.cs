@@ -16,7 +16,7 @@ namespace Project1.Core.World.WorldAreas;
 
 public class FrontierManager : IWorldSpaceManager
 {
-    readonly Dictionary<FrontierDef, FrontierWrapper> Frontiers = [];
+    readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
@@ -48,7 +48,7 @@ public class FrontierManager : IWorldSpaceManager
     {
         this.World = world;
         foreach (var areadef in _cachedDefs)
-            this.Frontiers.Add(areadef, new FrontierWrapper(areadef));
+            this.Frontiers.Add(areadef, new FrontierRuntime(areadef));
         //this.GenerateTreasure(new Random());
         //world.Events.ListenTo<EntityKilledEvent>(HandleEntityKilled);
         world.Events.ListenTo<ActorIncapacitatedEvent>(HandleActorIncapacitated);
@@ -180,7 +180,7 @@ public class FrontierManager : IWorldSpaceManager
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
     static internal IEnumerable<FrontierDef> AllFrontiers => FrontiersByTier.Values;
-    public FrontierWrapper GetFrontier(Entity entity)
+    public FrontierRuntime GetFrontier(Entity entity)
     {
         if (entity is not Actor actor)
             throw new NotImplementedException();

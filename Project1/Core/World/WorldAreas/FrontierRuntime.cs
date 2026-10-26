@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.World.WorldAreas;
 
-public class FrontierWrapper
+public class FrontierRuntime
 {
     public readonly FrontierDef Def;
     readonly internal List<Entity> Treasures = [];
@@ -19,7 +19,7 @@ public class FrontierWrapper
     {
 
     }
-    public FrontierWrapper(FrontierDef def)
+    public FrontierRuntime(FrontierDef def)
     {
         this.Def = def;
     }

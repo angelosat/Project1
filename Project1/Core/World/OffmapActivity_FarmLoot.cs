@@ -6,7 +6,7 @@ using Project1.Core.World.WorldAreas;
 namespace Project1.Core.World;
 internal sealed class OffmapActivity_FarmLoot : OffmapActivity
 {
-    internal override void Tick(FrontierWrapper frontier, Actor actor)
+    internal override void Tick(FrontierRuntime frontier, Actor actor)
     {
         var desiredLoot = actor.AI.GetMeta<RoleAdventurerData>().NextDesiredLoot;
         if (!desiredLoot.HasValue)
@@ -21,9 +21,11 @@ internal sealed class OffmapActivity_FarmLoot : OffmapActivity
         actor.Skills.ApplyXp(desiredLoot.Value.matdef.Type.GatheringSkill, 10);
         actor.AI.State.Log.Write($"I found {loot.LabelReadable} x{foundCount} ({newTotal})");
     }
-    internal override int GetWeight(FrontierWrapper frontier, Actor actor)
+    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     {
-        var desiredLoot = actor.AI.GetMeta<RoleAdventurerData>().NextDesiredLoot;
+        if (actor.AI.GetMeta<RoleAdventurerData>() is not RoleAdventurerData adventurer)
+            return 0;
+        var desiredLoot = adventurer.NextDesiredLoot;
         return desiredLoot.HasValue ? 1 : 0;
     }
 }

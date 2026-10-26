@@ -9,6 +9,7 @@ using Project1.Framework.Events;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core;
 
@@ -67,4 +68,6 @@ abstract class GameMode
     internal virtual void HandleEvent(NetEndpoint world, GameEvent e) { }
     internal virtual void HandleEvent(NetEndpoint net, object e, object[] p) { }
     internal virtual void AllChunksReceived(NetEndpoint net, MapId mapid) { }
+
+    internal virtual IEnumerable<(string label, Action<WorldBase> world)> GetInitTasks() => [];
 }

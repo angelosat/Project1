@@ -12,6 +12,7 @@ using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -220,4 +221,14 @@ class GameModeStaticMaps : GameMode
     {
         throw new System.NotImplementedException();
     }
+
+    //internal override IEnumerable<(string label, Action<WorldBase> world)> GetInitTasks()
+    //{
+    //    yield return ("Generating factions", this.GenerateFactions);
+    //}
+
+    //void GenerateFactions(WorldBase world)
+    //{
+    //    var factionsComp = world.Factions;
+    //}
 }

@@ -5,6 +5,6 @@ namespace Project1.Core.World;
 
 internal abstract class OffmapActivity
 {
-    internal abstract void Tick(FrontierWrapper frontier, Actor actor);
-    internal abstract int GetWeight(FrontierWrapper frontier, Actor actor);
+    internal abstract void Tick(FrontierRuntime frontier, Actor actor);
+    internal abstract int GetWeight(FrontierRuntime frontier, Actor actor);
 }

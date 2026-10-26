@@ -19,10 +19,12 @@ public class FrontierManager : IWorldSpaceManager
     readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
+    readonly Dictionary<Actor, OverworldEncounterRuntime> ActiveActorEncounters = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
     static readonly HashSet<FrontierDef> _cachedDefs;// = [];
     public StaticWorld World { get; }
     static readonly List<OffmapActivity> _offmapActivities = [];
+    static readonly OverworldEncounterDef[] EncounterDefs;
     static internal List<FrontierDecider> Deciders = [];
     //readonly Dictionary<Actor, SimulationTick> IncapacitatedActors = [];
     //public IEnumerable<Actor> GetIncapacitatedActors(FrontierDef frontier) => this.IncapacitatedActors.Keys.Where(a => GetFrontier(a).Def == frontier);
@@ -40,6 +42,8 @@ public class FrontierManager : IWorldSpaceManager
             if (typeof(FrontierDecider).IsAssignableFrom(type) && !type.IsAbstract)
                 Deciders.Add((FrontierDecider)Activator.CreateInstance(type));
         }
+
+        EncounterDefs = [.. Def.Get<OverworldEncounterDef>()];
 
         _cachedDefs = [.. Def.Get<FrontierDef>()];
         FrontiersByTier = _cachedDefs.ToDictionary(d => new Tier(d.Tier), d => d);
@@ -111,7 +115,7 @@ public class FrontierManager : IWorldSpaceManager
             frontier.AddTreasure(item);
     }
 
-    void GenerateTreasure()
+    void EnsureTreasureCount()
     {
         if (this.World.Net.IsClient)
             return;
@@ -135,48 +139,53 @@ public class FrontierManager : IWorldSpaceManager
         //float step = 1f / Ticks.PerGameHour;
         //float step = 1f / Ticks.PerGameMinute
         float step = 1f / Ticks.FromMinutes(5);
-        
         var snapshot = ActorPositions.ToList();
         foreach (var (actor, distance) in snapshot)
         {
-            var prevFrontier = this.GetFrontier(actor);
-            var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
-            // if current distance from town is not the target distance, step towards it
-            var nextDistance = distance;
-            if (distance != target)
+            if (!this.IsActorEngaged(actor))
             {
-                // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
-                nextDistance = distance + ((target - .5f < distance) ? -step : step);
-                nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
-                this.Notifier.Notify();
-            }
-            if (nextDistance == 0)
-            {
-                if (world.Net is Server server)
+                var prevFrontier = this.GetFrontier(actor);
+                var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
+                // if current distance from town is not the target distance, step towards it
+                var nextDistance = distance;
+                if (distance != target)
                 {
-                    world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
-                    server.SyncReport($"{actor.Name} has arrived!");
-                    actor.AI.State.Log.Write("I arrived in town.");
+                    // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
+                    nextDistance = distance + ((target - .5f < distance) ? -step : step);
+                    nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
+                    this.Notifier.Notify();
                 }
-                this.Exit(actor);
-                continue;
+                if (nextDistance == 0)
+                {
+                    if (world.Net is Server server)
+                    {
+                        world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
+                        server.SyncReport($"{actor.Name} has arrived!");
+                        actor.AI.State.Log.Write("I arrived in town.");
+                    }
+                    this.Exit(actor);
+                    continue;
+                }
+
+                this.ActorPositions[actor] = nextDistance;
+                var currentFrontier = this.GetFrontier(actor);
+                currentFrontier.Tick(actor);
+                if (currentFrontier != prevFrontier)
+                {
+                    currentFrontier.AddActor(actor);
+                    prevFrontier.RemoveActor(actor);
+                }
+                if (actor.Net.IsServer)
+                    this.EventSchedulers[actor].Tick(this.World.CurrentTick);
             }
-            
-            this.ActorPositions[actor] = nextDistance;
-            var currentFrontier = this.GetFrontier(actor);
-            currentFrontier.Tick(actor);
-            if(currentFrontier != prevFrontier)
-            {
-                currentFrontier.AddActor(actor);
-                prevFrontier.RemoveActor(actor);
-            }
-            if(actor.Net.IsServer)
-                this.EventSchedulers[actor].Tick(this.World.CurrentTick);
             actor.TickOffMap();
         }
         this.TickIncapacitated();
-        this.GenerateTreasure();
+        this.EnsureTreasureCount();
     }
+
+    bool IsActorEngaged(Actor actor)
+        => this.ActiveActorEncounters.ContainsKey(actor);
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
     static internal IEnumerable<FrontierDef> AllFrontiers => FrontiersByTier.Values;

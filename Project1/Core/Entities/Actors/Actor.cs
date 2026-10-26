@@ -365,7 +365,7 @@ public sealed class Actor : Entity
 
     public GameObject AttackTarget => null;
 
-    
+
     internal Trait GetTrait(TraitDef trait)
     {
         return this.GetComponent<PersonalityComponent>().Traits[trait];

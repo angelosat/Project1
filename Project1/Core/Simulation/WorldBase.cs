@@ -70,6 +70,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
 
     readonly EntityRegistry EntityRegistry;
     public readonly Dictionary<FactionId, Faction> FactionRegistry = [];
+    public abstract Faction GetFaction(FactionId id);
     internal readonly List<WorldComp> Comps = [];
     public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
     public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;

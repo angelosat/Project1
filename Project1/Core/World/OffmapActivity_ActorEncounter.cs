@@ -4,6 +4,7 @@ using Project1.Core.Resources;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
+using Project1.Core.Systems.Factions;
 using Project1.Core.Systems.Thoughts;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework;
@@ -21,6 +22,10 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
         if (otherActors.Count == 0)
             return;
         var other = otherActors.SelectRandom(actor.World.Random);
+        if (FactionsSystem.AreEnemies(actor, other))
+        {
+            // TODO initiate combat
+        }
         if (other.Biology.IsIncapacitated)
         {
             TryUsePotion(actor, other);

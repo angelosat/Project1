@@ -1,9 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Framework;
+using Project1.Core.Helpers;
 using Project1.Framework.Serialization;
 using System.Collections.Generic;
-using Project1.Core.Helpers;
-using System;
 
 namespace Project1.Core.Systems.Factions;
 
@@ -12,7 +10,7 @@ public sealed class Faction(FactionDef def, FactionId id, string name) : ISerial
     public FactionDef Def = def;
     public FactionId Id { get; private set; } = id;
 
-    internal readonly Dictionary<Faction, float> Relations = [];
+    internal readonly Dictionary<FactionId, float> Relations = [];
 
     readonly HashSet<EntityRefId> Members = [];
 
@@ -47,4 +45,8 @@ public sealed class Faction(FactionDef def, FactionId id, string name) : ISerial
 
     internal bool IsMember(Actor actor)
         => this.Members.Contains(actor.RefId);
+
+    public float GetRelation(FactionId other)
+        => this.Relations[other];
+    
 }

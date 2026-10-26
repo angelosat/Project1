@@ -92,7 +92,12 @@ internal class WorldComp_Factions : WorldComp
         if (this.AdventurersId == FactionId.Null)
             this.AdventurersId = this.GenerateFaction(FactionDefOf.Adventurers).Id;
         if (this.BanditsId == FactionId.Null)
-            this.BanditsId = this.GenerateFaction(FactionDefOf.Bandits).Id;
+        {
+            var bandits = this.GenerateFaction(FactionDefOf.Bandits);
+            this.BanditsId = bandits.Id;
+            SetRelation(this.Colony, bandits, -100);
+            SetRelation(this.Adventurers, bandits, -100);
+        }
         //this.EnsureBanditFactionCount();
     }
 

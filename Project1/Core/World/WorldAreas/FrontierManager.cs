@@ -226,25 +226,12 @@ public class FrontierManager : IWorldSpaceManager
         this.GetFrontier(actor).RemoveActor(actor);
         this.EventSchedulers.Remove(actor);
     }
-    //public void Enter(Actor actor)
-    //{
-    //    this.ActorPositions.Add(actor, 0);
-    //    this.EventSchedulers.Add(
-    //        actor, 
-    //        new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
-    //    actor.Map.Despawn(actor);
-
-    //    if (actor.Net is not Server server)
-    //        return;
-    //    server.SyncReport($"{actor.Name} has departed for {actor.AI.Meta.TargetFrontier.LabelReadable}!");
-    //}
+    
     void TriggerOffmapEvent(Actor actor)
     {
         if (actor.Biology.IsIncapacitated)
             return;
-        //var activity = _offmapActivities.SelectRandom(this.World.Random);
         var front = this.GetFrontier(actor);
-
         var activity = _offmapActivities.SelectRandomWeighted(this.World.Random, f => f.GetWeight(front, actor));
         activity.Tick(front, actor);
     }

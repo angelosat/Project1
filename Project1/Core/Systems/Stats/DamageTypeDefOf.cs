@@ -2,7 +2,7 @@
 {
     public static class DamageTypeDefOf
     {
-        public static readonly DamageTypeDef Physical = new("Physical");
-        public static readonly DamageTypeDef Elemental = new("Elemental");
+        public static readonly DamageCategoryDef Physical = new("Physical");
+        public static readonly DamageCategoryDef Elemental = new("Elemental");
     }
 }

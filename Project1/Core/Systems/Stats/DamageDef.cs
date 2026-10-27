@@ -1,6 +1,6 @@
 ﻿namespace Project1.Core.Entities.Stats;
 
-public class DamageDef(string name, DamageTypeDef damageType) : Def(name)
+public class DamageDef(string name, DamageCategoryDef damageType) : Def(name)
 {
-    public readonly DamageTypeDef DamageType = damageType;
+    public readonly DamageCategoryDef DamageType = damageType;
 }

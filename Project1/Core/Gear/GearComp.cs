@@ -209,9 +209,21 @@ public sealed class GearComp : EntityComp
     public float GetArmor()
         => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
 
+    public float GetDamage()
+      => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage)?.Value ?? 0f);
+
     public float GetMoveSpeed()
      => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.MoveSpeed)?.Value ?? 0f);
 
+    public DamageDef GetDamageType()
+    {
+        var weapon = this.GetGear(GearSlotDefOf.Mainhand);
+        if (weapon is null)
+            return DamageDefOf.Blunt; // fist damage
+        var profile = weapon.Profile as GearProfileDef;
+        return profile.Damage;
+    }
+    
     public new class Spec : Spec<GearComp>
     {
         public GearSlotDef[] Slots;

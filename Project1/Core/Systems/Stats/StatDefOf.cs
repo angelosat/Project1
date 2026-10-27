@@ -10,6 +10,7 @@ using Project1.Core.Resources;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Stats;
+using Project1.Core.Systems.Stats.Resolvers;
 using Project1.Core.Systems.Tools;
 using System.Collections.Generic;
 

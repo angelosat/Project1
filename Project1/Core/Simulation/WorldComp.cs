@@ -9,4 +9,6 @@ internal abstract class WorldComp(WorldBase world)
     internal virtual void Scan(Entity entity) { }
 
     internal virtual void EnsureInitialized() { }
+
+    internal virtual void Tick() { }
 }

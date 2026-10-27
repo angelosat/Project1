@@ -23,11 +23,13 @@ public static class DamageDefOf
     {
         Def.Register(typeof(DamageDefOf));
 
-        var toRegister = Def.Get<DamageDef>().Select(d => new DamageResistanceDef($"{d.LabelReadable}")).ToArray();
+        var toRegister = Def.Get<DamageDef>().Select(d => new DamageResistanceDef($"{d.LabelReadable}", d)).ToArray();
         foreach (var def in toRegister)
             Def.Register(def);
     }
 }
 
-public sealed class DamageResistanceDef(string name) : Def(name) { }
-
+public sealed class DamageResistanceDef(string name, DamageDef source) : Def(name)
+{
+    public readonly DamageDef Source = source;
+}

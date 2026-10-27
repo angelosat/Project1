@@ -48,6 +48,8 @@ public class StaticWorld : WorldBase
     {
         this.PopulationManager.Tick();
         this.Space.Tick();
+        foreach (var comp in this.Comps)
+            comp.Tick();
         this.CurrentTick++;
     }
     public string GetName()

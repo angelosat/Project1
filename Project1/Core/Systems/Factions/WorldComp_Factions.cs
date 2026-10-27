@@ -114,7 +114,7 @@ internal class WorldComp_Factions : WorldComp
 
     static void SetRelation(Faction first, Faction second, float value)
     {
-        first.Relations[second] = value;
-        second.Relations[first] = value;
+        first.Relations[second.Id] = value;
+        second.Relations[first.Id] = value;
     }
 }

@@ -16,7 +16,7 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
 {
-    internal override void Tick(FrontierRuntime frontier, Actor actor)
+    protected override void TickInt(FrontierRuntime frontier, Actor actor)
     {
         var otherActors = frontier.Actors.Except([actor]).ToList();
         if (otherActors.Count == 0)
@@ -70,6 +70,11 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         => frontier.IncapacitatedActors.Count * 10;
+
+    internal override EncounterStates GetState(EncounterRuntime runtime)
+    {
+        return base.GetState(runtime);
+    }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;
 

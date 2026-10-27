@@ -4,134 +4,133 @@ using Project1.Framework.UI.Primitives;
 using System;
 using System.Globalization;
 
-namespace Project1.Framework.Helpers
+namespace Project1.Framework.Helpers;
+
+public class ProgressFloat : IProgressBar
 {
-    public class ProgressFloat : IProgressBar
+    public virtual float Min { get; set; }
+    public virtual float Max { get; set; }
+    float _Value;
+    public virtual float Value { get => this._Value; set => this._Value = System.Math.Max(this.Min, System.Math.Min(this.Max, value)); }
+    public virtual float Percentage
     {
-        public virtual float Min { get; set; }
-        public virtual float Max { get; set; }
-        float _Value;
-        public virtual float Value { get => this._Value; set => this._Value = System.Math.Max(this.Min, System.Math.Min(this.Max, value)); }
-        public virtual float Percentage
-        {
-            get => this.Value / this.Max;
-            set => this.Value = this.Max * value;
-        }
-        public virtual bool IsFinished => this.Value >= this.Max;
-        public void ModifyValue(float value)
-        {
-            this.Value += value;
-        }
-        public ProgressFloat()
-        {
-            this.Min = this.Value = 0;
-            this.Max = 100;
-        }
-        public ProgressFloat(float min, float max, float value)
-        {
-            this.Min = min;
-            this.Max = max;
-            this.Value = value;
-        }
-        public ProgressFloat(float max)
-        {
-            this.Max = max;
-            this.Value = 0;
-            this.Min = 0;
-        }
-        public float ApplyDelta(float value) => this.Value = Math.Min(this.Max, Math.Max(0, this.Value + value));
-        public float ApplyPercentageDelta(float delta)
-            => this.Value = Math.Min(this.Max, Math.Max(0, (this.Percentage + delta) * this.Max));
+        get => this.Value / this.Max;
+        set => this.Value = this.Max * value;
+    }
+    public virtual bool IsFinished => this.Value >= this.Max;
+    public void ModifyValue(float value)
+    {
+        this.Value += value;
+    }
+    public ProgressFloat()
+    {
+        this.Min = this.Value = 0;
+        this.Max = 100;
+    }
+    public ProgressFloat(float min, float max, float value)
+    {
+        this.Min = min;
+        this.Max = max;
+        this.Value = value;
+    }
+    public ProgressFloat(float max)
+    {
+        this.Max = max;
+        this.Value = 0;
+        this.Min = 0;
+    }
+    public float ApplyDelta(float value) => this.Value = Math.Min(this.Max, Math.Max(0, this.Value + value));
+    public float ApplyPercentageDelta(float delta)
+        => this.Value = Math.Min(this.Max, Math.Max(0, (this.Percentage + delta) * this.Max));
 
-        public void Write(IDataWriter io)
-        {
-            io.Write(this.Min);
-            io.Write(this.Max);
-            io.Write(this.Value);
-            this.WriteExtra(io);
-        }
-        protected virtual void WriteExtra(IDataWriter w) { }
-        public void Read(IDataReader io)
-        {
-            this.Min = io.ReadSingle();
-            this.Max = io.ReadSingle();
-            this.Value = io.ReadSingle();
-            this.ReadExtra(io);
-        }
-        protected virtual void ReadExtra(IDataReader r) { }
+    public void Write(IDataWriter io)
+    {
+        io.Write(this.Min);
+        io.Write(this.Max);
+        io.Write(this.Value);
+        this.WriteExtra(io);
+    }
+    protected virtual void WriteExtra(IDataWriter w) { }
+    public void Read(IDataReader io)
+    {
+        this.Min = io.ReadSingle();
+        this.Max = io.ReadSingle();
+        this.Value = io.ReadSingle();
+        this.ReadExtra(io);
+    }
+    protected virtual void ReadExtra(IDataReader r) { }
 
-        public ProgressFloat(IDataReader r)
-        {
-            this.Min = r.ReadSingle();
-            this.Max = r.ReadSingle();
-            this.Value = r.ReadSingle();
-        }
-        public ProgressFloat Save(SaveTag tag, string name)
-        {
-            tag.Add(this.Save(name));
-            return this;
-        }
-        public SaveTag Save(string name)
-        {
-            SaveTag tag = new SaveTag(SaveTag.Types.Compound, name);
-            tag.Add(new SaveTag(SaveTag.Types.Float, "Min", this.Min));
-            tag.Add(new SaveTag(SaveTag.Types.Float, "Max", this.Max));
-            tag.Add(new SaveTag(SaveTag.Types.Float, "Value", this.Value));
-            this.SaveExtra(tag);
-            return tag;
-        }
-        protected virtual void SaveExtra(SaveTag tag) { }
-        public void Load(SaveTag tag)
-        {
-            this.Min = tag.GetValue<float>("Min");
-            this.Max = tag.GetValue<float>("Max");
-            this.Value = tag.GetValue<float>("Value");
-            this.LoadExtra(tag);
-        }
-        protected virtual void LoadExtra(SaveTag tag) { }
-        public ProgressFloat(SaveTag tag)
-        {
-            this.Min = tag.GetValue<float>("Min");
-            this.Max = tag.GetValue<float>("Max");
-            this.Value = tag.GetValue<float>("Value");
-        }
+    public ProgressFloat(IDataReader r)
+    {
+        this.Min = r.ReadSingle();
+        this.Max = r.ReadSingle();
+        this.Value = r.ReadSingle();
+    }
+    public ProgressFloat Save(SaveTag tag, string name)
+    {
+        tag.Add(this.Save(name));
+        return this;
+    }
+    public SaveTag Save(string name)
+    {
+        SaveTag tag = new SaveTag(SaveTag.Types.Compound, name);
+        tag.Add(new SaveTag(SaveTag.Types.Float, "Min", this.Min));
+        tag.Add(new SaveTag(SaveTag.Types.Float, "Max", this.Max));
+        tag.Add(new SaveTag(SaveTag.Types.Float, "Value", this.Value));
+        this.SaveExtra(tag);
+        return tag;
+    }
+    protected virtual void SaveExtra(SaveTag tag) { }
+    public void Load(SaveTag tag)
+    {
+        this.Min = tag.GetValue<float>("Min");
+        this.Max = tag.GetValue<float>("Max");
+        this.Value = tag.GetValue<float>("Value");
+        this.LoadExtra(tag);
+    }
+    protected virtual void LoadExtra(SaveTag tag) { }
+    public ProgressFloat(SaveTag tag)
+    {
+        this.Min = tag.GetValue<float>("Min");
+        this.Max = tag.GetValue<float>("Max");
+        this.Value = tag.GetValue<float>("Value");
+    }
 
-        public ProgressFloat(ProgressFloat toCopy)
+    public ProgressFloat(ProgressFloat toCopy)
+    {
+        this.Min = toCopy.Min;
+        this.Max = toCopy.Max;
+        this.Value = toCopy.Value;
+    }
+    public override string ToString() => $"{this.Value} / {this.Max}";
+    public string ToStringAsSeconds()
+    {
+        if (this.Max == 0)
+            return "";
+        var ts = TimeSpan.FromMilliseconds(1000 * this.Value / 60f);
+        string fmt = "";
+        if (ts.Hours > 0)
+            fmt += "%h'h '";
+        if (ts.Minutes > 0)
+            fmt += "%m'm '";
+        if (ts.Seconds > 0)
+            fmt += "%s's'";
+        return ts.ToString(fmt);
+    }
+    public string ToStringPercentage()
+    {
+        return $"{this.Percentage.ToString("P0", CultureInfo.InvariantCulture)}";
+    }
+    public BarImmediate GetGui(string text = "Progress")
+    {
+        return new BarImmediate(this)
         {
-            this.Min = toCopy.Min;
-            this.Max = toCopy.Max;
-            this.Value = toCopy.Value;
-        }
-        public override string ToString() => $"{this.Value} / {this.Max}";
-        public string ToStringAsSeconds()
-        {
-            if (this.Max == 0)
-                return "";
-            var ts = TimeSpan.FromMilliseconds(1000 * this.Value / 60f);
-            string fmt = "";
-            if (ts.Hours > 0)
-                fmt += "%h'h '";
-            if (ts.Minutes > 0)
-                fmt += "%m'm '";
-            if (ts.Seconds > 0)
-                fmt += "%s's'";
-            return ts.ToString(fmt);
-        }
-        public string ToStringPercentage()
-        {
-            return $"{this.Percentage.ToString("P0", CultureInfo.InvariantCulture)}";
-        }
-        public BarImmediate GetGui(string text = "Progress")
-        {
-            return new BarImmediate(this)
-            {
-                TextFunc = () => text,
-                HoverFunc = () => $"{this.Value:0.00} / {this.Max:0}"
-            };
-        }
-        public void Add(int work)
-        {
-            this.Value += work;
-        }
+            TextFunc = () => text,
+            HoverFunc = () => $"{this.Value:0.00} / {this.Max:0}"
+        };
+    }
+    public void Add(int work)
+    {
+        this.Value += work;
     }
 }

@@ -6,6 +6,7 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Tools;
+using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System;
@@ -19,7 +20,7 @@ public class FrontierManager : IWorldSpaceManager
     readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
-    readonly Dictionary<Actor, OverworldEncounterRuntime> ActiveActorEncounters = [];
+    readonly Dictionary<Actor, EncounterRuntime> ActiveEncounters = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
     static readonly HashSet<FrontierDef> _cachedDefs;// = [];
     public StaticWorld World { get; }
@@ -70,7 +71,7 @@ public class FrontierManager : IWorldSpaceManager
         this.GetFrontier(e.Actor)?.RemoveIncapacitatedActor(e.Actor);
     }
 
-    void TickIncapacitated()
+    void TickIncapacitatedActors()
     {
         var now = this.World.CurrentTick;
         foreach (var fw in this.Frontiers.Values)
@@ -180,12 +181,35 @@ public class FrontierManager : IWorldSpaceManager
             }
             actor.TickOffMap();
         }
-        this.TickIncapacitated();
+        this.TickIncapacitatedActors();
+        this.TickActiveEncounters();
+        this.CleanupActiveEncounters();
         this.EnsureTreasureCount();
     }
 
+    void TickActiveEncounters()
+    {
+        foreach(var (actor, encounter) in this.ActiveEncounters)
+        {
+            encounter.Tick(this.GetFrontier(actor), actor);
+        }
+    }
+
+    void CleanupActiveEncounters()
+    {
+        foreach (var (actor, encounter) in this.ActiveEncounters.ToArray())
+        {
+            var state = encounter.State;
+            if (state == EncounterStates.Finished)
+            {
+                $"{actor}'s {encounter.Def.LabelReadable} finished after {encounter.Current} ticks".ToConsole();
+                this.ActiveEncounters.Remove(actor);
+            }
+        }
+    }
+
     bool IsActorEngaged(Actor actor)
-        => this.ActiveActorEncounters.ContainsKey(actor);
+        => this.ActiveEncounters.ContainsKey(actor);
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
     static internal IEnumerable<FrontierDef> AllFrontiers => FrontiersByTier.Values;
@@ -206,7 +230,7 @@ public class FrontierManager : IWorldSpaceManager
         for (byte i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
-                return this.Frontiers[FrontiersByTier[(Tier)(i + 1)]];
+                return this.Frontiers[FrontiersByTier[(Tier)(byte)(i + 1)]];
         }
         throw new Exception("Actor distance out of bounds");
     }
@@ -223,7 +247,7 @@ public class FrontierManager : IWorldSpaceManager
         for (byte i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
-                return this.Frontiers[FrontiersByTier[(Tier)(i + 1)]].Def;
+                return this.Frontiers[FrontiersByTier[(Tier)(byte)(i + 1)]].Def;
         }
         throw new ArgumentOutOfRangeException(nameof(pos), "World-space position out of bounds");
     }
@@ -240,9 +264,15 @@ public class FrontierManager : IWorldSpaceManager
     {
         if (actor.Biology.IsIncapacitated)
             return;
-        var front = this.GetFrontier(actor);
-        var activity = _offmapActivities.SelectRandomWeighted(this.World.Random, f => f.GetWeight(front, actor));
-        activity.Tick(front, actor);
+        var frontier = this.GetFrontier(actor);
+        //var activity = _offmapActivities.SelectRandomWeighted(this.World.Random, f => f.GetWeight(front, actor));
+        //activity.Tick(front, actor);
+        var encounterDef = EncounterDefs.SelectRandomWeighted(this.World.Random, f => f.Worker.GetWeight(frontier, actor));
+        //var result = encounter.Worker.TriggerFor(frontier, actor);
+        //if (result is not null)
+        //    this.ActiveEncounters.Add(actor, result);
+        var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
+        this.ActiveEncounters.Add(actor, runtime);
     }
     public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {
@@ -256,15 +286,20 @@ public class FrontierManager : IWorldSpaceManager
         if (entity is not Actor actor)
             return;
         this.ActorPositions.Add(actor, pos);
-        this.GetFrontier(actor).AddActor(actor);
-        this.EventSchedulers.Add(
-            actor,
-            new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
+        this.GetFrontier(actor)
+            .AddActor(actor);
+        this.BeginSchedule(actor);
         //actor.AI.Meta.SetTargetFrontier(this.GetFrontier(actor).Def);
 
         actor.Map?.Despawn(actor);
         this.World.Events.Post(new InhabitantPlacedInWorldEvent(actor, pos));
         //return this.GetFrontier(actor).Def;
     }
-    
+
+    private void BeginSchedule(Actor actor)
+    {
+        this.EventSchedulers.Add(
+                    actor,
+                    new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
+    }
 }

@@ -306,4 +306,8 @@ public class StaticWorld : WorldBase
     {
         return this.Space.GetFrontier(entity)?.Def;
     }
+
+    public override Faction GetFaction(FactionId id)
+        => this.FactionRegistry[id];
+    
 }

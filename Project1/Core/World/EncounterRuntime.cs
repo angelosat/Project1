@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.WorldAreas;
-using Project1.Framework.Helpers;
 
 #nullable enable
 
@@ -10,9 +9,9 @@ internal sealed class EncounterRuntime(OverworldEncounterDef def, Actor actor, F
 {
     internal OverworldEncounterDef Def = def;
 
-    internal ProgressInt Progress = def.Worker.GetProgress(actor, frontier);
+    //internal ProgressInt Progress = def.Worker.GetProgress(actor, frontier);
 
-    internal int Max;
+    internal readonly int Max = def.Duration;
     internal float Current;
     internal float Percentage => this.Current / this.Max;
 

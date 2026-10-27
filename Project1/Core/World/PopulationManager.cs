@@ -207,7 +207,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     Control _gui;
 
     public Control Gui => this._gui ??= this.CreateGui();
-    Control CreateGui()
+    ScrollableBoxNewNewNew CreateGui()
     {
         var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
         var list = new ListBoxObservable<WorldInhabitantView, ButtonNew>(props =>

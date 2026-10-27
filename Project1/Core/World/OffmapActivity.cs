@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework.Helpers;
+using System;
 
 #nullable enable
 
@@ -10,8 +11,12 @@ internal abstract class OffmapActivity
 {
     internal void Tick(EncounterRuntime runtime, FrontierRuntime frontier, Actor actor)
     {
-        this.TickInt(frontier, actor);
+        //ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(runtime.Percentage, 1);
+        if (runtime.Percentage >= 1)
+            throw new InvalidOperationException("Encounter has already completed.");
         runtime.Current += this.GetProgressStep(actor, frontier);
+        if (runtime.Percentage >= 1)
+            this.TickInt(frontier, actor);
     }
 
     protected abstract void TickInt(FrontierRuntime frontier, Actor actor);

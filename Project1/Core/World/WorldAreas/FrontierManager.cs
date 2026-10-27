@@ -260,7 +260,7 @@ public class FrontierManager : IWorldSpaceManager
         this.EventSchedulers.Remove(actor);
     }
     
-    void TriggerOffmapEvent(Actor actor)
+    void TriggerEncounter(Actor actor)
     {
         if (actor.Biology.IsIncapacitated)
             return;
@@ -300,6 +300,6 @@ public class FrontierManager : IWorldSpaceManager
     {
         this.EventSchedulers.Add(
                     actor,
-                    new(() => this.TriggerOffmapEvent(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
+                    new(() => this.TriggerEncounter(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
     }
 }

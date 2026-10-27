@@ -159,7 +159,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             case CombatResults.Parry:
                 break;
             case CombatResults.Hit:
-                Second.Resources.ApplyDelta(ResourceDefOf.Health, -damage.Value.Value);
+                defender.Resources.ApplyDelta(ResourceDefOf.Health, -damage.Value.Value);
                 break;
             default:
                 throw new UnreachableException();

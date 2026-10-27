@@ -4,6 +4,7 @@ using Project1.Core.Blocks;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Systems.CombatOverworld;
 using Project1.Core.Systems.Factions;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
@@ -39,6 +40,7 @@ public class StaticWorld : WorldBase
     public StaticMap Map => this.Maps.First() as StaticMap;
     public override PopulationManager Population => this.PopulationManager;
     internal readonly WorldComp_Factions Factions;
+    internal readonly WorldComp_Combat Combat;
     public IWorldSpaceManager Space;
     ulong currentTick;
     public override SimulationTick CurrentTick { get => this.currentTick; set => this.currentTick = value; }
@@ -76,14 +78,16 @@ public class StaticWorld : WorldBase
     {
         this.MaxHeight = 128;
         this.DefaultBlock = BlockDefOf.Soil.Block;
-        this.Terraformers = new List<Terraformer>();
+        this.Terraformers = [];
         this.Trees = true;
         this.PopulationManager = new PopulationManager(this);
         this.Ownership = new(this);
         this.Factions = new(this);
+        this.Combat = new(this);
         this.Comps.AddRange(
             this.Ownership,
-            this.Factions
+            this.Factions,
+            this.Combat
             //new RecipeMasterySystem(this)
             );
         this.Space = new FrontierManager(this);

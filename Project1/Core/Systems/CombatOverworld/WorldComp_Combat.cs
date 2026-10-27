@@ -20,7 +20,14 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
     }
 
     public bool IsEngaged(Actor actor)
-        => this.ActorsToCombat.ContainsKey(actor.RefId);
+    //=> this.ActorsToCombat.ContainsKey(actor.RefId);
+    {
+        if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combat))
+            return false;
+        if (this.ActiveCombatSessions[combat].IsResolved)
+            return false;
+        return true;
+    }
 
     internal override void Tick()
     {

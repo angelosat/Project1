@@ -26,13 +26,16 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         if (this.IsResolved)
             throw new InvalidOperationException("Ticked a resolved combat encounter");
 
-        if (CooldownFirst-- <= 0)
+        if (--CooldownFirst <= 0)
         {
             CooldownFirst = BaseCooldown;
             PerformAttack(First, Second);
         }
 
-        if (CooldownSecond-- <= 0)
+        if (this.IsResolved)
+            return;
+
+        if (--CooldownSecond <= 0)
         {
             CooldownSecond = BaseCooldown;
             PerformAttack(Second, First);

@@ -11,6 +11,10 @@ internal sealed class EncounterRuntime(OverworldEncounterDef def, Actor actor, F
 
     //internal ProgressInt Progress = def.Worker.GetProgress(actor, frontier);
 
+    internal Actor Actor = actor;
+
+    internal FrontierDef FrontierDef = frontier;
+
     internal readonly int Max = def.Duration;
     internal float Current;
     internal float Percentage => this.Current / this.Max;

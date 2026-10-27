@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
@@ -25,7 +26,11 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
         if (FactionsSystem.AreEnemies(actor, other))
         {
             // TODO initiate combat
+            var world = actor.World as StaticWorld;
+            world.Combat.Engage(actor, other);
+            return;
         }
+
         if (other.Biology.IsIncapacitated)
         {
             TryUsePotion(actor, other);
@@ -37,6 +42,12 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
             other.Relationships.ApplyDelta(actor, 1);
             actor.World.Events.Post(new ActorsMetOffMapEvent(actor, other));
         }
+    }
+
+    internal override EncounterStates GetState(EncounterRuntime runtime)
+    {
+        var world = runtime.Actor.World as StaticWorld;
+        return world.Combat.IsEngaged(runtime.Actor) ? EncounterStates.InProgress : EncounterStates.Finished;
     }
 
     private static bool TryUsePotion(Actor actor, Actor other)
@@ -71,10 +82,6 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         => frontier.IncapacitatedActors.Count * 10;
 
-    internal override EncounterStates GetState(EncounterRuntime runtime)
-    {
-        return base.GetState(runtime);
-    }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;
 

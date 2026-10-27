@@ -47,9 +47,9 @@ public class StaticWorld : WorldBase
     public override void Tick()
     {
         this.PopulationManager.Tick();
-        this.Space.Tick();
         foreach (var comp in this.Comps)
             comp.Tick();
+        this.Space.Tick();
         this.CurrentTick++;
     }
     public string GetName()

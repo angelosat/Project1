@@ -46,7 +46,7 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
 
     internal override EncounterStates GetState(EncounterRuntime runtime)
     {
-        var world = runtime.Actor.World as StaticWorld;
+        var world = (StaticWorld)runtime.Actor.World;
         return world.Combat.IsEngaged(runtime.Actor) ? EncounterStates.InProgress : EncounterStates.Finished;
     }
 

@@ -213,6 +213,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var list = new ListBoxObservable<WorldInhabitantView, ButtonNew>(props =>
         {
             var npc = props.Actor;
+            var manager = (FrontierManager)((StaticWorld)npc.World).Space;
+
             var btn = ButtonNew.CreateBigNew(
                 //() => SelectionManager.Select(npc),
                 //() => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
@@ -221,7 +223,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
                 npc.RenderIcon(),
                 new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
                 //new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
-                new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}").InvalidateOn(((FrontierManager)((StaticWorld)npc.World).Space).Notifier));
+                new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"} {manager.GetEncounter(npc)?.LabelReadable ?? "idle"}").InvalidateOn(manager.Notifier));
 
             // debugging stuff
             btn.RightClickActionNew = b =>

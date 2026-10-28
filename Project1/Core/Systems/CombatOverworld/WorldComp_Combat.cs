@@ -20,7 +20,6 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
     }
 
     public bool IsEngaged(Actor actor)
-    //=> this.ActorsToCombat.ContainsKey(actor.RefId);
     {
         if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combat))
             return false;

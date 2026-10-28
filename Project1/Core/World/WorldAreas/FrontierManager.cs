@@ -25,7 +25,7 @@ public class FrontierManager : IWorldSpaceManager
     static readonly HashSet<FrontierDef> _cachedDefs;// = [];
     public StaticWorld World { get; }
     static readonly List<OffmapActivity> _offmapActivities = [];
-    static readonly OverworldEncounterDef[] EncounterDefs;
+    static readonly EncounterDef[] EncounterDefs;
     static internal List<FrontierDecider> Deciders = [];
     //readonly Dictionary<Actor, SimulationTick> IncapacitatedActors = [];
     //public IEnumerable<Actor> GetIncapacitatedActors(FrontierDef frontier) => this.IncapacitatedActors.Keys.Where(a => GetFrontier(a).Def == frontier);
@@ -44,7 +44,7 @@ public class FrontierManager : IWorldSpaceManager
                 Deciders.Add((FrontierDecider)Activator.CreateInstance(type));
         }
 
-        EncounterDefs = [.. Def.Get<OverworldEncounterDef>()];
+        EncounterDefs = [.. Def.Get<EncounterDef>()];
 
         _cachedDefs = [.. Def.Get<FrontierDef>()];
         FrontiersByTier = _cachedDefs.ToDictionary(d => new Tier(d.Tier), d => d);
@@ -143,7 +143,7 @@ public class FrontierManager : IWorldSpaceManager
         var snapshot = ActorPositions.ToList();
         foreach (var (actor, distance) in snapshot)
         {
-            if (!this.IsActorEngaged(actor))
+            if (!this.IsEngaged(actor))
             {
                 var prevFrontier = this.GetFrontier(actor);
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
@@ -203,13 +203,19 @@ public class FrontierManager : IWorldSpaceManager
             if (state == EncounterStates.Finished)
             {
                 $"{actor}'s {encounter.Def.LabelReadable} finished after {encounter.Current} ticks".ToConsole();
-                this.ActiveEncounters.Remove(actor);
+                this.EndEncounter(actor);
+                //this.ActiveEncounters.Remove(actor);
+                //this.World.Events.Post(new EncounterEndEvent(actor, encounter));
             }
         }
     }
 
-    bool IsActorEngaged(Actor actor)
+    bool IsEngaged(Actor actor)
         => this.ActiveEncounters.ContainsKey(actor);
+
+    internal EncounterDef GetEncounter(Actor actor)
+        => this.ActiveEncounters.GetValueOrDefault(actor)?.Def;
+
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
     static internal IEnumerable<FrontierDef> AllFrontiers => FrontiersByTier.Values;
@@ -265,14 +271,17 @@ public class FrontierManager : IWorldSpaceManager
         if (actor.Biology.IsIncapacitated)
             return;
         var frontier = this.GetFrontier(actor);
+
         //var activity = _offmapActivities.SelectRandomWeighted(this.World.Random, f => f.GetWeight(front, actor));
         //activity.Tick(front, actor);
         var encounterDef = EncounterDefs.SelectRandomWeighted(this.World.Random, f => f.Worker.GetWeight(frontier, actor));
         //var result = encounter.Worker.TriggerFor(frontier, actor);
         //if (result is not null)
         //    this.ActiveEncounters.Add(actor, result);
-        var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
-        this.ActiveEncounters.Add(actor, runtime);
+        this.BeginEncounter(actor, encounterDef);
+        //var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
+        //this.ActiveEncounters.Add(actor, runtime);
+        //this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
     }
     public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {
@@ -300,6 +309,32 @@ public class FrontierManager : IWorldSpaceManager
     {
         this.EventSchedulers.Add(
                     actor,
-                    new(() => this.TriggerEncounter(actor), this.World.CurrentTick, Ticks.FromMinutes(1), Ticks.FromMinutes(3), new()));
+                    new(() => this.TriggerEncounter(actor), 
+                    this.World.CurrentTick, 
+                    //Ticks.FromMinutes(1), 
+                    //Ticks.FromMinutes(3),
+                    Ticks.FromMinutes(10),
+                    Ticks.FromMinutes(30),
+                    new()));
+    }
+
+    internal void BeginEncounter(Actor actor, EncounterDef encounterDef)
+    {
+        var frontier = this.GetFrontier(actor);
+        var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
+        this.ActiveEncounters.Add(actor, runtime);
+        this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
+        this.Notifier.Notify();
+    }
+
+    internal void EndEncounter(Actor actor)
+    {
+        this.ActiveEncounters.Remove(actor);
+        this.World.Events.Post(new EncounterEndEvent(actor));
+        this.Notifier.Notify();
     }
 }
+
+internal record struct EncounterBeginEvent(Entity Entity, EncounterRuntime Encounter) : IEventPayload { }
+
+internal record struct EncounterEndEvent(Entity Entity) : IEventPayload { }

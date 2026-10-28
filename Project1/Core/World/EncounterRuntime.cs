@@ -5,9 +5,9 @@ using Project1.Core.World.WorldAreas;
 
 namespace Project1.Core.World;
 
-internal sealed class EncounterRuntime(OverworldEncounterDef def, Actor actor, FrontierDef frontier)
+internal sealed class EncounterRuntime(EncounterDef def, Actor actor, FrontierDef frontier)
 {
-    internal OverworldEncounterDef Def = def;
+    internal EncounterDef Def = def;
 
     //internal ProgressInt Progress = def.Worker.GetProgress(actor, frontier);
 

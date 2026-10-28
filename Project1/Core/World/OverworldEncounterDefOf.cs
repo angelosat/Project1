@@ -7,12 +7,12 @@ namespace Project1.Core.World;
 [EnsureStaticCtorCall]
 static public class OverworldEncounterDefOf
 {
-    static public readonly OverworldEncounterDef FarmLoot = new("FarmLoot", typeof(OffmapActivity_FarmLoot));
-    static public readonly OverworldEncounterDef FindTreasure = new("FindTreasure", typeof(OffmapActivity_FindTreasure));
-    static public readonly OverworldEncounterDef ActorEncounter = new("ActorEncounter", typeof(OffmapActivity_ActorEncounter));
-    static public readonly OverworldEncounterDef Injury = new("Injury", typeof(OffmapActivity_Injury));
-    static public readonly OverworldEncounterDef RecoverHealth = new("RecoverHealth", typeof(OffmapActivity_RecoverHealth));
-    static public readonly OverworldEncounterDef Rest = new("Rest", typeof(OffmapActivity_Rest));
+    static public readonly EncounterDef FarmLoot = new("FarmLoot", typeof(OffmapActivity_FarmLoot));
+    static public readonly EncounterDef FindTreasure = new("FindTreasure", typeof(OffmapActivity_FindTreasure));
+    static public readonly EncounterDef ActorEncounter = new("ActorEncounter", typeof(OffmapActivity_ActorEncounter));
+    static public readonly EncounterDef Injury = new("Injury", typeof(OffmapActivity_Injury));
+    static public readonly EncounterDef RecoverHealth = new("RecoverHealth", typeof(OffmapActivity_RecoverHealth));
+    static public readonly EncounterDef Rest = new("Rest", typeof(OffmapActivity_Rest));
 
     static OverworldEncounterDefOf()
     {

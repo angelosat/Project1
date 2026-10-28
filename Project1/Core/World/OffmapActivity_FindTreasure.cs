@@ -3,7 +3,7 @@ using Project1.Core.World.WorldAreas;
 
 namespace Project1.Core.World;
 
-internal sealed class OffmapActivity_FindTreasure : OffmapActivity
+internal sealed class OffmapActivity_FindTreasure : EncounterWorker
 {
     protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {

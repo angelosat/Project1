@@ -4,7 +4,7 @@ using Project1.Core.Systems.Materials;
 using Project1.Core.World.WorldAreas;
 
 namespace Project1.Core.World;
-internal sealed class OffmapActivity_FarmLoot : OffmapActivity
+internal sealed class OffmapActivity_FarmLoot : EncounterWorker
 {
     protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {

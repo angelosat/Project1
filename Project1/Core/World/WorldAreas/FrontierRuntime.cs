@@ -2,48 +2,60 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
+using Project1.Core.World.PointsOfInterest;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.World.WorldAreas;
 
 public class FrontierRuntime
 {
     public readonly FrontierDef Def;
+    public readonly StaticWorld World;
     readonly internal List<Entity> Treasures = [];
     internal readonly Dictionary<Actor, SimulationTick> ActorsIncapacitated = [];
     internal HashSet<Actor> ActorsActive = [];
 
-    internal void Tick(WorldBase world)
-    {
+    internal List<PoIRuntime> PoIs = [];
 
-    }
+    internal void Tick(WorldBase world) { }
+
     public FrontierRuntime(FrontierDef def)
     {
         this.Def = def;
     }
+
     internal void AddActor(Actor actor)
     {
         this.ActorsActive.Add(actor);
     }
+
     internal void RemoveActor(Actor actor)
     {
         this.ActorsActive.Remove(actor);
     }
+
+    internal PoIRuntime FindPoI(Actor actor)
+        => this.PoIs.FirstOrDefault(p => p.Contains(actor));
+
     internal void AddIncapacitatedActor(Actor actor)
     {
         this.ActorsIncapacitated.Add(actor, actor.World.CurrentTick);
     }
+
     internal void RemoveIncapacitatedActor(Actor actor)
     {
         this.ActorsIncapacitated.Remove(actor);
     }
+
     internal void AddTreasure(Entity entity)
     {
         entity.Detach();
         this.Treasures.Add(entity);
     }
+
     internal bool TryFindTreasure(Random rand, Actor actor, out Entity treasure)
     {
         if(this.Treasures.Count == 0)
@@ -63,6 +75,7 @@ public class FrontierRuntime
         this.Treasures.Remove(treasure);
         return true;
     }
+
     internal void Tick(Actor actor)
     {
         // roll encounter

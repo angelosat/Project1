@@ -8,7 +8,7 @@ using System;
 
 namespace Project1.Core.World;
 
-internal sealed class OffmapActivity_Injury : OffmapActivity
+internal sealed class OffmapActivity_Injury : EncounterWorker
 {
     protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {

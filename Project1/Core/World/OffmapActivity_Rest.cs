@@ -5,7 +5,7 @@ using Project1.Core.World.WorldAreas;
 
 namespace Project1.Core.World;
 
-internal sealed class OffmapActivity_Rest : OffmapActivity
+internal sealed class OffmapActivity_Rest : EncounterWorker
 {
     protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {

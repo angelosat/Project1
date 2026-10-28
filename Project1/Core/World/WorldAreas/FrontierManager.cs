@@ -5,15 +5,14 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
-using Project1.Core.Systems.CombatOverworld;
 using Project1.Core.Systems.Tools;
+using Project1.Core.World.PointsOfInterest;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Project1.Core.Bone;
 
 namespace Project1.Core.World.WorldAreas;
 
@@ -26,8 +25,9 @@ public class FrontierManager : IWorldSpaceManager
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
     static readonly HashSet<FrontierDef> _cachedDefs;// = [];
     public StaticWorld World { get; }
-    static readonly List<OffmapActivity> _offmapActivities = [];
+    static readonly List<EncounterWorker> _offmapActivities = [];
     static readonly EncounterDef[] EncounterDefs;
+    static readonly List<PoIRuntime> PoIs = new();
     static internal List<FrontierDecider> Deciders = [];
     //readonly Dictionary<Actor, SimulationTick> IncapacitatedActors = [];
     //public IEnumerable<Actor> GetIncapacitatedActors(FrontierDef frontier) => this.IncapacitatedActors.Keys.Where(a => GetFrontier(a).Def == frontier);
@@ -37,8 +37,8 @@ public class FrontierManager : IWorldSpaceManager
     {
         foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
         {
-            if (typeof(OffmapActivity).IsAssignableFrom(type) && !type.IsAbstract)
-                _offmapActivities.Add((OffmapActivity)Activator.CreateInstance(type));
+            if (typeof(EncounterWorker).IsAssignableFrom(type) && !type.IsAbstract)
+                _offmapActivities.Add((EncounterWorker)Activator.CreateInstance(type));
         }
         foreach (var type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()))
         {

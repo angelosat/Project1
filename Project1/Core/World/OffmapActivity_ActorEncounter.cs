@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace Project1.Core.World;
 
-internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
+internal sealed class OffmapActivity_ActorEncounter : EncounterWorker
 {
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
@@ -36,6 +36,8 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
     //        return;
     //    }
     //}
+
+   
 
     protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {

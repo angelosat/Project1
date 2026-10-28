@@ -7,7 +7,7 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_Rest : OffmapActivity
 {
-    protected override void TickInt(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {
         actor.AI.State.Log.Write($"I have rested a little bit");
         actor.Needs.ApplyAccumulatorDelta(NeedDefOf.Energy, +5);

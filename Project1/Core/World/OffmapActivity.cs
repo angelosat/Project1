@@ -16,10 +16,11 @@ internal abstract class OffmapActivity
             throw new InvalidOperationException("Encounter has already completed.");
         runtime.Current += this.GetProgressStep(actor, frontier);
         if (runtime.Percentage >= 1)
-            this.TickInt(frontier, actor);
+            this.OnSuccess(frontier, actor);
     }
 
-    protected abstract void TickInt(FrontierRuntime frontier, Actor actor);
+    protected abstract void OnSuccess(FrontierRuntime frontier, Actor actor);
+    //protected virtual void OnBegin(FrontierRuntime frontier, Actor actor) { }
 
     internal abstract int GetWeight(FrontierRuntime frontier, Actor actor);
 

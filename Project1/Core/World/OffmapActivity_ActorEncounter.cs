@@ -17,11 +17,31 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
 {
-    protected override void TickInt(FrontierRuntime frontier, Actor actor)
+    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
+        //=> frontier.IncapacitatedActors.Count * 10;
+        => (frontier.ActorsActive.Count - 1) * 10;
+
+    //protected override void OnBegin(FrontierRuntime frontier, Actor actor)
+    //{
+    //    var otherActors = frontier.ActorsActive.Except([actor]).ToList();
+    //    //if (otherActors.Count == 0)
+    //    //    return;
+    //    var other = otherActors.SelectRandom(actor.World.Random);
+
+    //    if (FactionsSystem.AreEnemies(actor, other))
+    //    {
+    //        // TODO initiate combat
+    //        var world = actor.World as StaticWorld;
+    //        world.Combat.Engage(actor, other);
+    //        return;
+    //    }
+    //}
+
+    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {
-        var otherActors = frontier.Actors.Except([actor]).ToList();
-        if (otherActors.Count == 0)
-            return;
+        var otherActors = frontier.ActorsActive.Except([actor]).ToList();
+        //if (otherActors.Count == 0)
+        //    return;
         var other = otherActors.SelectRandom(actor.World.Random);
         if (FactionsSystem.AreEnemies(actor, other))
         {
@@ -49,6 +69,9 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
         var world = (StaticWorld)runtime.Actor.World;
         return world.Combat.IsEngaged(runtime.Actor) ? EncounterStates.InProgress : EncounterStates.Finished;
     }
+
+    internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
+        => 0;
 
     private static bool TryUsePotion(Actor actor, Actor other)
     {
@@ -79,8 +102,6 @@ internal sealed class OffmapActivity_ActorEncounter : OffmapActivity
             throw new System.Exception();
     }
 
-    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-        => frontier.IncapacitatedActors.Count * 10;
 
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;

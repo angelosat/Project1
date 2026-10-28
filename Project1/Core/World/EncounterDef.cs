@@ -3,12 +3,11 @@ using System;
 
 #nullable enable
 
-namespace Project1.Core.World
+namespace Project1.Core.World;
+
+public sealed class EncounterDef(string name, Type workerType, int minutes = 0/*, Type runtimeType*/) : Def(name)
 {
-    public sealed class EncounterDef(string name, Type workerType, int ticks = 1/*, Type runtimeType*/) : Def(name)
-    {
-        //public readonly Type RuntimeType = runtimeType;
-        internal OffmapActivity Worker => field ??= ActivatorSafe<OffmapActivity>.CreateInstance(workerType);
-        internal int Duration = Ticks.FromMinutes(10);
-    }
+    //public readonly Type RuntimeType = runtimeType;
+    internal OffmapActivity Worker => field ??= ActivatorSafe<OffmapActivity>.CreateInstance(workerType);
+    internal int DurationInMinutes = Ticks.FromMinutes(minutes);
 }

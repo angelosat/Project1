@@ -5,6 +5,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
+using Project1.Core.Systems.CombatOverworld;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -12,6 +13,7 @@ using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Project1.Core.Bone;
 
 namespace Project1.Core.World.WorldAreas;
 
@@ -76,7 +78,7 @@ public class FrontierManager : IWorldSpaceManager
         var now = this.World.CurrentTick;
         foreach (var fw in this.Frontiers.Values)
         {
-            foreach (var (actor, tick) in fw.IncapacitatedActors)
+            foreach (var (actor, tick) in fw.ActorsIncapacitated)
             {
                 if (now - tick >= IncapacitationDuration)
                 {
@@ -97,8 +99,8 @@ public class FrontierManager : IWorldSpaceManager
         var loot = actor.GetSelfAndChildren(includeSelf: false).ToArray();
         foreach (var item in loot)
             frontier.AddTreasure(item);
-        frontier.IncapacitatedActors.Remove(actor);
-        frontier.Actors.Remove(actor);
+        frontier.ActorsIncapacitated.Remove(actor);
+        frontier.ActorsActive.Remove(actor);
         this.ActorPositions.Remove(actor);
         this.World.Events.Post(new ActorDeathEvent(actor));
         this.World.DisposeEntity(actor);
@@ -118,8 +120,8 @@ public class FrontierManager : IWorldSpaceManager
 
     void EnsureTreasureCount()
     {
-        if (this.World.Net.IsClient)
-            return;
+        //if (this.World.Net.IsClient)
+        //    return;
         var targetloot = 10;
         foreach(var f in this.Frontiers.Values)
         {
@@ -141,6 +143,8 @@ public class FrontierManager : IWorldSpaceManager
         //float step = 1f / Ticks.PerGameMinute
         float step = 1f / Ticks.FromMinutes(5);
         var snapshot = ActorPositions.ToList();
+        var server = this.World.Net as Server;
+        var isServer = server.IsServer;
         foreach (var (actor, distance) in snapshot)
         {
             if (!this.IsEngaged(actor))
@@ -158,7 +162,7 @@ public class FrontierManager : IWorldSpaceManager
                 }
                 if (nextDistance == 0)
                 {
-                    if (world.Net is Server server)
+                    if (isServer)
                     {
                         world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
                         server.SyncReport($"{actor.Name} has arrived!");
@@ -176,15 +180,18 @@ public class FrontierManager : IWorldSpaceManager
                     currentFrontier.AddActor(actor);
                     prevFrontier.RemoveActor(actor);
                 }
-                if (actor.Net.IsServer)
+                if (isServer)
                     this.EventSchedulers[actor].Tick(this.World.CurrentTick);
             }
             actor.TickOffMap();
         }
         this.TickIncapacitatedActors();
-        this.TickActiveEncounters();
-        this.CleanupActiveEncounters();
-        this.EnsureTreasureCount();
+        if (isServer)
+        {
+            this.TickActiveEncounters();
+            this.CleanupActiveEncounters();
+            this.EnsureTreasureCount();
+        }
     }
 
     void TickActiveEncounters()
@@ -219,7 +226,7 @@ public class FrontierManager : IWorldSpaceManager
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
     static internal IEnumerable<FrontierDef> AllFrontiers => FrontiersByTier.Values;
-    public FrontierRuntime GetFrontier(Entity entity)
+    public FrontierRuntime? GetFrontier(Entity entity)
     {
         if (entity is not Actor actor)
             throw new NotImplementedException();
@@ -332,6 +339,15 @@ public class FrontierManager : IWorldSpaceManager
         this.ActiveEncounters.Remove(actor);
         this.World.Events.Post(new EncounterEndEvent(actor));
         this.Notifier.Notify();
+    }
+
+    internal string GetStatusText(Actor actor)
+    {
+        var frontier = this.GetFrontier(actor);
+        return $"" +
+            $"{frontier?.Def.LabelReadable ?? "In town"} " +
+            $"{(this.World.Combat.IsEngaged(actor) ? "in combat" : "")} " +
+            $"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
     }
 }
 

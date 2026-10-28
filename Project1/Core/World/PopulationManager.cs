@@ -223,7 +223,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
                 npc.RenderIcon(),
                 new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
                 //new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
-                new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"} {manager.GetEncounter(npc)?.LabelReadable ?? "idle"}").InvalidateOn(manager.Notifier));
+                //new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"} {manager.GetEncounter(npc)?.LabelReadable ?? "idle"}").InvalidateOn(manager.Notifier));
+                new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier));
 
             // debugging stuff
             btn.RightClickActionNew = b =>

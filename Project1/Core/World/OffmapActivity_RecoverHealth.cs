@@ -9,7 +9,7 @@ internal sealed class OffmapActivity_RecoverHealth : OffmapActivity
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         => 0;// (int)((1-actor.Resources.GetPercentage(ResourceDefOf.Health)) * 10);
 
-    protected override void TickInt(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {
         actor.Resources.ApplyDelta(ResourceDefOf.Health, 5);
     }

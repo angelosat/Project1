@@ -15,7 +15,7 @@ internal sealed class EncounterRuntime(EncounterDef def, Actor actor, FrontierDe
 
     internal FrontierDef FrontierDef = frontier;
 
-    internal readonly int Max = def.Duration;
+    internal readonly int Max = def.DurationInMinutes;
     internal float Current;
     internal float Percentage => this.Current / this.Max;
 

@@ -38,7 +38,7 @@ internal sealed class EncounterRuntime
         this.Actor = actor;
         //this.Context = def.Worker.CreateContext(actor);
         this.FrontierDef = frontier;
-        this.Max = def.DurationInMinutes * def.Worker.GetDurationMultiplier(this.Context!);
+        //this.Max = def.DurationInMinutes * def.Worker.GetDurationMultiplier(this.Context!);
     }
 
     internal void Tick(FrontierRuntime frontier, Actor actor)
@@ -47,6 +47,9 @@ internal sealed class EncounterRuntime
     }
 
     public string GetTextStatus() => this.Def.Worker.GetTextStatus(this);
+
+    internal void Begin(FrontierRuntime frontier)
+        => this.Def.Worker.Begin(frontier, this);
 
     internal EncounterStates State => Def.Worker.GetState(this);
     //public enum States { InProgress, Paused, Finished };

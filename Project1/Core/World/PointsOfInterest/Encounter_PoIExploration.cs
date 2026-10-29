@@ -34,16 +34,17 @@ internal class Encounter_PoIExploration : EncounterWorker
         // TODO award exploration skill xp to actor
     }
 
-    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
         // TODO produce and apply exploration completion rewards
+        Typed(encounter.Context).PoI.Remove(encounter.Context.Actor);
     }
 
     internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
         => 1/* + (actor exploration skill * .01f)*/;
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-       => frontier.PoIs.Count;
+       => frontier.PoIs.Count * 50;
 
     internal override int GetDurationMultiplier(EncounterContext context)
         => Typed(context).PoI.Size;

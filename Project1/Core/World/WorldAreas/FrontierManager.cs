@@ -145,7 +145,7 @@ public class FrontierManager : IWorldSpaceManager
         float step = 1f / Ticks.FromMinutes(5);
         var snapshot = ActorPositions.ToList();
         var server = this.World.Net as Server;
-        var isServer = server.IsServer;
+        var isServer = server?.IsServer ?? false;
         foreach (var (actor, distance) in snapshot)
         {
             if (!this.IsEngaged(actor))
@@ -332,6 +332,11 @@ public class FrontierManager : IWorldSpaceManager
         var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
         this.ActiveEncounters.Add(actor, runtime);
         this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
+        if (this.World.Net.IsServer)
+        {
+            runtime.Begin(frontier);
+            $"{actor} begins {runtime.Def.LabelReadable} on tick {this.World.CurrentTick}".ToConsole();
+        }
         this.Notifier.Notify();
     }
 

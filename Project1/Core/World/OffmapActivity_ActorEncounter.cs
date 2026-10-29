@@ -39,8 +39,9 @@ internal sealed class OffmapActivity_ActorEncounter : EncounterWorker
 
    
 
-    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
+        var actor = encounter.Context.Actor;
         var otherActors = frontier.ActorsActive.Except([actor]).ToList();
         //if (otherActors.Count == 0)
         //    return;

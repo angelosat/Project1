@@ -18,8 +18,8 @@ internal abstract class EncounterWorker
     protected virtual EncounterContext CreateContextInt() => new();
     internal void Tick(EncounterRuntime runtime, FrontierRuntime frontier, Actor actor)
     {
-        if (runtime.Percentage == 0)
-            this.OnBegin(frontier, runtime); 
+        //if (runtime.Percentage == 0)
+        //    this.OnBegin(frontier, runtime); 
         // TODO guard against onbegin accidentally called more than once
 
         //ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(runtime.Percentage, 1);
@@ -30,10 +30,13 @@ internal abstract class EncounterWorker
         var nextPercentage = runtime.Percentage;
         this.Tick(runtime, prevPercentage, nextPercentage);
         if (runtime.Percentage >= 1)
-            this.OnSuccess(frontier, actor);
+            this.OnSuccess(frontier, runtime);
     }
 
-    protected abstract void OnSuccess(FrontierRuntime frontier, Actor actor);
+    protected abstract void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter);
+    internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter)
+        => this.OnBegin(frontier, encounter);
+
     protected virtual void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter) { }
 
     //internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter) => this.OnBegin(frontier, encounter);
@@ -47,7 +50,8 @@ internal abstract class EncounterWorker
         => new(def, actor, frontier.Def);
 
     internal virtual EncounterStates GetState(EncounterRuntime runtime) 
-        => runtime.Current >= runtime.Max ? EncounterStates.Finished : EncounterStates.InProgress;
+        //=> runtime.Current >= runtime.Max ? EncounterStates.Finished : EncounterStates.InProgress;
+        => runtime.Percentage >= 1 ? EncounterStates.Finished : EncounterStates.InProgress;
 
     internal ProgressInt GetProgress(Actor actor, FrontierDef frontier) => new(1);
 

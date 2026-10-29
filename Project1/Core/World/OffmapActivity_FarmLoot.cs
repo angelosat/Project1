@@ -6,8 +6,9 @@ using Project1.Core.World.WorldAreas;
 namespace Project1.Core.World;
 internal sealed class OffmapActivity_FarmLoot : EncounterWorker
 {
-    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
+        var actor = encounter.Actor;
         var desiredLoot = actor.AI.GetMeta<RoleAdventurerData>().NextDesiredLoot;
         if (!desiredLoot.HasValue)
             return;

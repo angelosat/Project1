@@ -1,8 +1,9 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework.Events;
+using System;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Project1.Core.World.PointsOfInterest;
 
@@ -15,7 +16,7 @@ internal class PoIRuntime
         ActorsIncapacitated = [],
         Loot = [];
 
-    readonly PoISecret[] Secrets, SecretsDiscovered, SecretsUndiscovered;// = [];
+    PoISecret[] Secrets, SecretsDiscovered, SecretsUndiscovered;// = [];
 
     public readonly FrontierRuntime Frontier;
     public readonly int Size, Id;
@@ -34,13 +35,18 @@ internal class PoIRuntime
         this.ExplorationTicksRequired = size * Ticks.FromHours(1);
         this.SecretsTotal = size;
         this.Secrets = new PoISecret[size];
-        this.RollTimeline(size);
     }
 
-    private void RollTimeline(int size)
+    internal void Init(StaticWorld world)
     {
-        for (int i = 0; i < size; i++)
-            this.Secrets[i] = new(Frontier.World.Random.Next(100));
+        this.RollTimeline(world);
+    }
+
+    private void RollTimeline(StaticWorld world)
+    {
+        this.Secrets = new PoISecret[this.Size];
+        for (int i = 0; i < this.Size; i++)
+            this.Secrets[i] = new(world.Random.Next(100));
     }
 
     internal void Discover() => this.IsDiscovered = true;
@@ -59,14 +65,20 @@ internal class PoIRuntime
     {
         if(!this.IsOpportunity(previousPercentage, nextPercentage)) 
             return false;
-        return true;
+        throw new NotImplementedException();
     }
 
     public bool Contains(Actor actor)
-        => ActorsActive.Contains(actor.RefId);
+        => this.ActorsActive.Contains(actor.RefId);
 
     internal void Add(Actor actor)
-        => ActorsActive.Add(actor.RefId);
+    { 
+        this.ActorsActive.Add(actor.RefId);
+        this.Frontier.World.Events.Post(new PoIActorAddedEvent(actor, this.Frontier.Def, this.Id));
+    }
+
+    internal void Remove(Actor actor)
+        => this.ActorsActive.Remove(actor.RefId);
 
     //public IEnumerable<int> RollTimeline()
     //{
@@ -77,3 +89,4 @@ internal class PoIRuntime
 
 internal record struct PoIAddedEvent(FrontierDef FrontierDef, PoIRuntime PoI) : IEventPayload;
 internal record struct PoIRemovedEvent(int Id) : IEventPayload;
+internal record struct PoIActorAddedEvent(Actor Actor, FrontierDef Frontier, int PoIId) : IEventPayload;

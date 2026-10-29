@@ -100,6 +100,8 @@ public class FrontierRuntime
     {
         var poi = new PoIRuntime(this, id, def, size);
         this.PoIs.Add(poi);
+        if (this.World.Net.IsServer)
+            poi.Init(this.World);
         this.World.Events.Post(new PoIAddedEvent(this.Def, poi));
     }
 }

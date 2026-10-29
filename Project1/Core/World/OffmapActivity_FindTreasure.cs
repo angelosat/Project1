@@ -5,8 +5,9 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_FindTreasure : EncounterWorker
 {
-    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
+        var actor = encounter.Actor;
         var rand = actor.World.Random;
         if (!frontier.TryFindTreasure(rand, actor, out var treasure))
         {

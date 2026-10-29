@@ -10,8 +10,9 @@ namespace Project1.Core.World;
 
 internal sealed class OffmapActivity_Injury : EncounterWorker
 {
-    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
+    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
+        var actor = encounter.Actor;
         var dmgBase = frontier.Def.Tier * 2;
         var dmg = dmgBase + actor.World.Random.Next(-dmgBase, dmgBase) / 2;
         //dmg += 50;

@@ -55,7 +55,7 @@ public class FrontierManager : IWorldSpaceManager
     {
         this.World = world;
         foreach (var areadef in _cachedDefs)
-            this.Frontiers.Add(areadef, new FrontierRuntime(areadef));
+            this.Frontiers.Add(areadef, new FrontierRuntime(this.World, areadef));
         //this.GenerateTreasure(new Random());
         //world.Events.ListenTo<EntityKilledEvent>(HandleEntityKilled);
         world.Events.ListenTo<ActorIncapacitatedEvent>(HandleActorIncapacitated);
@@ -118,13 +118,14 @@ public class FrontierManager : IWorldSpaceManager
             frontier.AddTreasure(item);
     }
 
-    void EnsureTreasureCount()
+    void EnsureFrontierContents()
     {
         //if (this.World.Net.IsClient)
         //    return;
         var targetloot = 10;
         foreach(var f in this.Frontiers.Values)
         {
+            f.EnsurePoICount();
             while(f.Treasures.Count < targetloot)
             //for (int i = 0; i < 10; i++)
             {
@@ -190,7 +191,7 @@ public class FrontierManager : IWorldSpaceManager
         {
             this.TickActiveEncounters();
             this.CleanupActiveEncounters();
-            this.EnsureTreasureCount();
+            this.EnsureFrontierContents();
         }
     }
 
@@ -350,6 +351,9 @@ public class FrontierManager : IWorldSpaceManager
             //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
             $"{this.GetEncounter(actor)?.GetTextStatus() ?? "idle"}";
     }
+
+    public FrontierRuntime Get(FrontierDef def)
+        => this.Frontiers[def];
 }
 
 internal record struct EncounterBeginEvent(Entity Entity, EncounterRuntime Encounter) : IEventPayload { }

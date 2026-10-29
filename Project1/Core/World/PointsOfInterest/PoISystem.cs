@@ -18,9 +18,9 @@ internal static class PoISystem
     public static PoIRuntime SelectPoI(FrontierRuntime frontier, Actor actor)
         => frontier.PoIs.SelectRandom(actor.World.Random);
 
-    public static IEnumerable<int> RollTimeline(PoIRuntime poi)
-    {
-        for (var i = 0; i < poi.SecretsUndiscoveredCount; i++)
-            yield return poi.Frontier.World.Random.Next(100);
-    }
+    //public static IEnumerable<int> RollTimeline(PoIRuntime poi)
+    //{
+    //    for (var i = 0; i < poi.SecretsUndiscoveredCount; i++)
+    //        yield return poi.Frontier.World.Random.Next(100);
+    //}
 }

@@ -18,6 +18,10 @@ internal abstract class EncounterWorker
     protected virtual EncounterContext CreateContextInt() => new();
     internal void Tick(EncounterRuntime runtime, FrontierRuntime frontier, Actor actor)
     {
+        if (runtime.Percentage == 0)
+            this.OnBegin(frontier, runtime); 
+        // TODO guard against onbegin accidentally called more than once
+
         //ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(runtime.Percentage, 1);
         if (runtime.Percentage >= 1)
             throw new InvalidOperationException("Encounter has already completed.");
@@ -32,6 +36,7 @@ internal abstract class EncounterWorker
     protected abstract void OnSuccess(FrontierRuntime frontier, Actor actor);
     protected virtual void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter) { }
 
+    //internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter) => this.OnBegin(frontier, encounter);
     protected virtual void Tick(EncounterRuntime encounter, float prevPercentage, float nextPercentage) { }
 
     internal abstract int GetWeight(FrontierRuntime frontier, Actor actor);

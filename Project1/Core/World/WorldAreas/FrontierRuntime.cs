@@ -23,8 +23,9 @@ public class FrontierRuntime
 
     internal void Tick(WorldBase world) { }
 
-    public FrontierRuntime(FrontierDef def)
+    public FrontierRuntime(StaticWorld world, FrontierDef def)
     {
+        World = world;
         this.Def = def;
     }
 
@@ -84,20 +85,20 @@ public class FrontierRuntime
         // etc
     }
 
-    void EnsurePoICount()
+    internal void EnsurePoICount()
     {
         while(this.PoIs.Count < PoITargetCount)
         {
             var id = this.PoIs.Count;
             var def = PoIDefOf.Dungeon;
             var size = this.World.Random.Next(10, 20);
-            RegisterPoI(id, def, size);
+            this.RegisterPoI(id, def, size);
         }
     }
 
     internal void RegisterPoI(int id, PoIDef def, int size)
     {
-        var poi = new PoIRuntime(id, def, size);
+        var poi = new PoIRuntime(this, id, def, size);
         this.PoIs.Add(poi);
         this.World.Events.Post(new PoIAddedEvent(this.Def, poi));
     }

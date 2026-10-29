@@ -25,14 +25,20 @@ internal class PoIRuntime
 
     public int ExplorationTicksRequired { get; internal set; }
 
-    public PoIRuntime(int id, PoIDef def, int size)
+    public PoIRuntime(FrontierRuntime frontier, int id, PoIDef def, int size)
     {
+        this.Frontier = frontier;
         this.Id = id;
         this.Def = def;
         this.Size = size;
         this.ExplorationTicksRequired = size * Ticks.FromHours(1);
         this.SecretsTotal = size;
         this.Secrets = new PoISecret[size];
+        this.RollTimeline(size);
+    }
+
+    private void RollTimeline(int size)
+    {
         for (int i = 0; i < size; i++)
             this.Secrets[i] = new(Frontier.World.Random.Next(100));
     }
@@ -62,11 +68,11 @@ internal class PoIRuntime
     internal void Add(Actor actor)
         => ActorsActive.Add(actor.RefId);
 
-    public IEnumerable<int> RollTimeline()
-    {
-        for (var i = 0; i < SecretsUndiscoveredCount; i++)
-            yield return Frontier.World.Random.Next(100);
-    }
+    //public IEnumerable<int> RollTimeline()
+    //{
+    //    for (var i = 0; i < SecretsUndiscoveredCount; i++)
+    //        yield return Frontier.World.Random.Next(100);
+    //}
 }
 
 internal record struct PoIAddedEvent(FrontierDef FrontierDef, PoIRuntime PoI) : IEventPayload;

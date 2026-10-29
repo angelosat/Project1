@@ -65,6 +65,7 @@ internal class PoIRuntime
     {
         if(!this.IsOpportunity(previousPercentage, nextPercentage)) 
             return false;
+        return true;
         throw new NotImplementedException();
     }
 

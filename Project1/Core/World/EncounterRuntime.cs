@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.World.WorldAreas;
-using System;
+using Project1.Framework.Interfaces;
 
 #nullable enable
 
@@ -10,12 +10,14 @@ namespace Project1.Core.World;
 internal class EncounterContext()
 {
     internal Actor Actor;// = actor;
-    internal virtual float GetPercentage(EncounterRuntime e) => e.Current / e.Max;
+    internal float GetPercentage(EncounterRuntime e) => this.GetCurrent(e) / this.GetMax(e);
+    internal virtual float GetMax(EncounterRuntime e) => e.Max;
+    internal virtual float GetCurrent(EncounterRuntime e) => e.Current;
 
     internal FrontierRuntime Frontier => field ??= ((StaticWorld)this.Actor.World).Space.GetFrontier(this.Actor);
 }
 
-internal sealed class EncounterRuntime
+internal sealed class EncounterRuntime : IProgressBar
 {
     internal EncounterDef Def;
 
@@ -27,8 +29,10 @@ internal sealed class EncounterRuntime
     internal FrontierDef FrontierDef;
 
     internal readonly int Max;
+    internal float GetMax() => this.Context.GetMax(this);
+    internal float GetCurrent() => this.Context.GetCurrent(this);
     internal float Current;
-    internal float Percentage => this.Context.GetPercentage(this);// this.Current / this.Max;
+    public float Percentage => this.Context.GetPercentage(this);// this.Current / this.Max;
 
     internal EntityRefId ActorId;
 
@@ -52,6 +56,7 @@ internal sealed class EncounterRuntime
         => this.Def.Worker.Begin(frontier, this);
 
     internal EncounterStates State => Def.Worker.GetState(this);
+
     //public enum States { InProgress, Paused, Finished };
     //public States State;
     //public float? PercentageComplete => null;

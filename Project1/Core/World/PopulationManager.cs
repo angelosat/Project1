@@ -22,6 +22,7 @@ using Project1.Framework.Helpers;
 using Project1.Framework.Input;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
+using Project1.Framework.UI.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -210,32 +211,23 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     ScrollableBoxNewNewNew CreateGui()
     {
         var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
-        var list = new ListBoxObservable<WorldInhabitantView, ButtonNew>(props =>
+        var list = new ListBoxObservable<WorldInhabitantView, Panel>(props =>
         {
             var npc = props.Actor;
             var manager = (FrontierManager)((StaticWorld)npc.World).Space;
-
-            var btn = ButtonNew.CreateBigNew(
-                //() => SelectionManager.Select(npc),
-                //() => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
-                () => UIManager.ToggleUnique<SelectionDetailsGui>(npc),
-                box.Viewport.Width,
-                npc.RenderIcon(),
-                new Label(() => npc.Npc.FullName) { TextColorFunc = ()=> npc.GetNameplateColor()},
-                //new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
-                //new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"} {manager.GetEncounter(npc)?.LabelReadable ?? "idle"}").InvalidateOn(manager.Notifier));
-                new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier));
+            //var btn = CreateInhabitantControl(box.Viewport.Width, npc, manager);
+            var btn = CreateInhabitantControlNew(box.Viewport.Width, npc, manager);
 
             // debugging stuff
-            btn.RightClickActionNew = b =>
-            {
-                if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-                    return;
-                ContextMenuManager.PopUp(
-                    ("Force visit", () => ForceVisitDepart(npc)),
-                    ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
-                );
-            };
+            //btn.RightClickActionNew = b =>
+            //{
+            //    if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
+            //        return;
+            //    ContextMenuManager.PopUp(
+            //        ("Force visit", () => ForceVisitDepart(npc)),
+            //        ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
+            //    );
+            //};
             btn.TooltipFunc = tt => npc.GetTooltipInfo(tt);
             return btn;
         });
@@ -250,6 +242,39 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         list.Bind(this.WorldInhabitants);
         box.AddControlsVertically(filters, list);
         return box;
+    }
+
+    private static ButtonNew CreateInhabitantControl(int width, Actor npc, FrontierManager manager)
+    {
+        var btn = ButtonNew.CreateBigNew(
+            //() => SelectionManager.Select(npc),
+            //() => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
+            () => UIManager.ToggleUnique<SelectionDetailsGui>(npc),
+            width,
+            npc.RenderIcon(),
+            new Label(() => npc.Npc.FullName) { TextColorFunc = () => npc.GetNameplateColor() },
+            //new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
+            //new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"} {manager.GetEncounter(npc)?.LabelReadable ?? "idle"}").InvalidateOn(manager.Notifier));
+            new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier));
+        return btn;
+    }
+    private static Panel CreateInhabitantControlNew(int width, Actor npc, FrontierManager manager)
+    {
+        var btnnew = new Panel() { AutoSize = true };// 0,0, BackgroundStyle.LargeButton.Right.Width, BackgroundStyle.LargeButton.Right.Height);
+        var render = new PictureBox(npc.RenderIcon());
+        var btnName = new LabelNew(npc);
+        var btnActivity = new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
+        var barActivity = new BarNew(
+            //() => manager.GetEncounter(npc)?.Max ?? 0, 
+            //() => manager.GetEncounter(npc)?.Current ?? 0, 
+            () => manager.GetEncounter(npc)?.GetMax() ?? 0,
+            () => manager.GetEncounter(npc)?.GetCurrent() ?? 0,
+            100, 
+            () => manager.GetEncounter(npc)?.Def.LabelReadable ?? "idle");
+        var text = new GroupBox();
+        text.AddControlsVertically(btnName, btnActivity, barActivity);
+        btnnew.AddControlsHorizontally(render, text);
+        return btnnew;
     }
 
     static void ForceVisitDepart(Actor actor)

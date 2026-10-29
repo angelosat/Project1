@@ -11,8 +11,10 @@ internal class Encounter_PoIExploration : EncounterWorker
     {
         internal PoIRuntime PoI => field ??= PoISystem.GetPoI(this.Actor)!;
 
-        internal override float GetPercentage(EncounterRuntime e)
-            => e.Current / this.PoI.ExplorationTicksRequired;
+        //internal override float GetPercentage(EncounterRuntime e)
+        //=> e.Current / this.PoI.ExplorationTicksRequired;
+        internal override float GetMax(EncounterRuntime e)
+            => this.PoI.ExplorationTicksRequired;
     }
 
     protected override Context CreateContextInt() => new();
@@ -26,7 +28,7 @@ internal class Encounter_PoIExploration : EncounterWorker
         poi.Add(actor);
     }
 
-    protected override void Tick(EncounterRuntime encounter, float prevPercentage, float nextPercentage)
+    protected override void TickInt(EncounterRuntime encounter, float prevPercentage, float nextPercentage)
     {
         var ctx = encounter.Context;
         var poi = Typed(ctx).PoI;

@@ -187,9 +187,11 @@ public class FrontierManager : IWorldSpaceManager
             actor.TickOffMap();
         }
         this.TickIncapacitatedActors();
+        this.TickActiveEncounters(); // moved the client guard inside so i can increment its progress on clients
+
         if (isServer)
         {
-            this.TickActiveEncounters();
+            //this.TickActiveEncounters();
             this.CleanupActiveEncounters();
             this.EnsureFrontierContents();
         }

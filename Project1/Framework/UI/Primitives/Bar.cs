@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core;
-using Project1.Core.Entities;
-using Project1.Core.Screens;
-using Project1.Core.UI;
 using Project1.Framework.Interfaces;
 using System;
 
@@ -87,3 +83,5 @@ public class Bar : ButtonBaseNew
     //    UIManager.DrawStringOutlined(sb, text, scrLoc, Color.Black, Color.White, 1, Alignment.Horizontal.Center, Alignment.Vertical.Center, 0.5f);
     //}
 }
+
+

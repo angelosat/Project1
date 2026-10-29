@@ -30,18 +30,27 @@ internal abstract class EncounterWorker
         var nextPercentage = runtime.Percentage;
         this.Tick(runtime, prevPercentage, nextPercentage);
         if (runtime.Percentage >= 1)
-            this.OnSuccess(frontier, runtime);
+            this.Success(frontier, runtime);
     }
 
     protected abstract void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter);
+    void Success(FrontierRuntime frontier, EncounterRuntime encounter)
+    {
+        if (encounter.Context.Actor.Net.IsServer)
+            this.OnSuccess(frontier, encounter);
+    }
     internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter)
         => this.OnBegin(frontier, encounter);
 
     protected virtual void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter) { }
 
     //internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter) => this.OnBegin(frontier, encounter);
-    protected virtual void Tick(EncounterRuntime encounter, float prevPercentage, float nextPercentage) { }
-
+    protected virtual void TickInt(EncounterRuntime encounter, float prevPercentage, float nextPercentage) { }
+    void Tick(EncounterRuntime encounter, float prevPercentage, float nextPercentage)
+    {
+        if (encounter.Context.Actor.Net.IsServer)
+            this.TickInt(encounter, prevPercentage, nextPercentage);
+    }
     internal abstract int GetWeight(FrontierRuntime frontier, Actor actor);
 
     //internal virtual EncounterRuntime Start(FrontierRuntime frontier, Actor actor) => null;

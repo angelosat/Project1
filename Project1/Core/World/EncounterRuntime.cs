@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.World.WorldAreas;
+using System;
 
 #nullable enable
 
@@ -44,6 +45,8 @@ internal sealed class EncounterRuntime
     {
         Def.Worker.Tick(this, frontier, actor);
     }
+
+    public string GetTextStatus() => this.Def.Worker.GetTextStatus(this);
 
     internal EncounterStates State => Def.Worker.GetState(this);
     //public enum States { InProgress, Paused, Finished };

@@ -5,18 +5,6 @@ using Project1.Core.World.WorldAreas;
 
 namespace Project1.Core.World.PointsOfInterest;
 
-internal class Encounter_PoIEnter : EncounterWorker
-{
-    protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
-    {
-        var poi = PoISystem.SelectPoI(frontier, actor);
-        poi.Add(actor);
-    }
-
-    internal override int GetWeight(FrontierRuntime frontier, Actor actor) 
-        => frontier.PoIs.Count;
-}
-
 internal class Encounter_PoIExploration : EncounterWorker
 {
     internal sealed class Context : EncounterContext
@@ -42,11 +30,13 @@ internal class Encounter_PoIExploration : EncounterWorker
     {
         var ctx = encounter.Context;
         var poi = Typed(ctx).PoI;
-        poi.TryTriggerOpportunity(ctx.Actor, prevPercentage, nextPercentage);
+        poi.TryEvent(ctx.Actor, prevPercentage, nextPercentage);
+        // TODO award exploration skill xp to actor
     }
 
     protected override void OnSuccess(FrontierRuntime frontier, Actor actor)
     {
+        // TODO produce and apply exploration completion rewards
     }
 
     internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
@@ -57,4 +47,7 @@ internal class Encounter_PoIExploration : EncounterWorker
 
     internal override int GetDurationMultiplier(EncounterContext context)
         => Typed(context).PoI.Size;
+
+    internal override string GetTextStatus(EncounterRuntime encounter)
+        => $"Exploring: {Typed(encounter.Context).PoI.Def.LabelReadable}";
 }

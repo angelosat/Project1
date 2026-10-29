@@ -19,6 +19,7 @@ public class FrontierRuntime
     internal HashSet<Actor> ActorsActive = [];
 
     internal List<PoIRuntime> PoIs = [];
+    int PoITargetCount = 1;
 
     internal void Tick(WorldBase world) { }
 
@@ -81,5 +82,23 @@ public class FrontierRuntime
         // roll encounter
         // roll random loot
         // etc
+    }
+
+    void EnsurePoICount()
+    {
+        while(this.PoIs.Count < PoITargetCount)
+        {
+            var id = this.PoIs.Count;
+            var def = PoIDefOf.Dungeon;
+            var size = this.World.Random.Next(10, 20);
+            RegisterPoI(id, def, size);
+        }
+    }
+
+    internal void RegisterPoI(int id, PoIDef def, int size)
+    {
+        var poi = new PoIRuntime(id, def, size);
+        this.PoIs.Add(poi);
+        this.World.Events.Post(new PoIAddedEvent(this.Def, poi));
     }
 }

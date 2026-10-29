@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.WorldAreas;
+using Project1.Framework.Events;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -7,7 +8,7 @@ namespace Project1.Core.World.PointsOfInterest;
 
 internal class PoIRuntime
 {
-    PoIDef Def;
+    public readonly PoIDef Def;
 
     readonly HashSet<EntityRefId>
         ActorsActive = [],
@@ -17,22 +18,26 @@ internal class PoIRuntime
     readonly PoISecret[] Secrets, SecretsDiscovered, SecretsUndiscovered;// = [];
 
     public readonly FrontierRuntime Frontier;
-    public readonly int Size;
+    public readonly int Size, Id;
+    public bool IsDiscovered;
     public int SecretsTotal, SecretsDiscoveredCount;
     public int SecretsUndiscoveredCount => SecretsTotal - SecretsDiscoveredCount;
 
     public int ExplorationTicksRequired { get; internal set; }
 
-    public PoIRuntime(PoIDef def, int size)
+    public PoIRuntime(int id, PoIDef def, int size)
     {
-        Def = def;
-        Size = size;
+        this.Id = id;
+        this.Def = def;
+        this.Size = size;
         this.ExplorationTicksRequired = size * Ticks.FromHours(1);
-        SecretsTotal = size;
-        Secrets = new PoISecret[size];
+        this.SecretsTotal = size;
+        this.Secrets = new PoISecret[size];
         for (int i = 0; i < size; i++)
-            Secrets[i] = new(Frontier.World.Random.Next(100));
+            this.Secrets[i] = new(Frontier.World.Random.Next(100));
     }
+
+    internal void Discover() => this.IsDiscovered = true;
 
     internal bool IsOpportunity(float previousPercentage, float nextPercentage)
     {
@@ -44,7 +49,7 @@ internal class PoIRuntime
         return false;
     }
 
-    internal bool TryTriggerOpportunity(Actor actor, float previousPercentage, float nextPercentage)
+    internal bool TryEvent(Actor actor, float previousPercentage, float nextPercentage)
     {
         if(!this.IsOpportunity(previousPercentage, nextPercentage)) 
             return false;
@@ -63,3 +68,6 @@ internal class PoIRuntime
             yield return Frontier.World.Random.Next(100);
     }
 }
+
+internal record struct PoIAddedEvent(FrontierDef FrontierDef, PoIRuntime PoI) : IEventPayload;
+internal record struct PoIRemovedEvent(int Id) : IEventPayload;

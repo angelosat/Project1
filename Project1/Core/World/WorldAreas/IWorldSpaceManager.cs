@@ -12,6 +12,7 @@ namespace Project1.Core.World.WorldAreas
         FrontierDef PlaceAtRandom(Entity entity);
         void PlaceAt(Entity entity, WorldSpacePosition pos);
         FrontierRuntime GetFrontier(Entity entity);
+        FrontierRuntime Get(FrontierDef def);
         void Tick();
         FrontierDef FrontierAt(WorldSpacePosition pos);
     }

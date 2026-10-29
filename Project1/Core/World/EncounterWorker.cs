@@ -51,4 +51,6 @@ internal abstract class EncounterWorker
     internal virtual float GetProgressStep(Actor actor, FrontierRuntime frontier) => 1;
 
     internal virtual int GetDurationMultiplier(EncounterContext context) => 1;
+
+    internal virtual string GetTextStatus(EncounterRuntime encounter) => encounter.Def.LabelReadable;
 }

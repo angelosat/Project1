@@ -220,8 +220,8 @@ public class FrontierManager : IWorldSpaceManager
     bool IsEngaged(Actor actor)
         => this.ActiveEncounters.ContainsKey(actor);
 
-    internal EncounterDef GetEncounter(Actor actor)
-        => this.ActiveEncounters.GetValueOrDefault(actor)?.Def;
+    internal EncounterRuntime GetEncounter(Actor actor)
+        => this.ActiveEncounters.GetValueOrDefault(actor);
 
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
@@ -347,7 +347,8 @@ public class FrontierManager : IWorldSpaceManager
         return $"" +
             $"{frontier?.Def.LabelReadable ?? "In town"} " +
             $"{(this.World.Combat.IsEngaged(actor) ? "in combat" : "")} " +
-            $"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
+            //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
+            $"{this.GetEncounter(actor)?.GetTextStatus() ?? "idle"}";
     }
 }
 

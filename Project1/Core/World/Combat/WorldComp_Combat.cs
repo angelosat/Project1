@@ -3,7 +3,9 @@ using Project1.Core.Simulation;
 using Project1.Framework.Events;
 using System.Collections.Generic;
 
-namespace Project1.Core.Systems.CombatOverworld;
+#nullable enable
+
+namespace Project1.Core.World.Combat;
 
 internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
 {
@@ -57,6 +59,13 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         this.ActorsToCombat.Remove(combat.First.RefId);
         this.ActorsToCombat.Remove(combat.Second.RefId);
         this.World.Events.Post(new CombatEndEvent(combat.Id));
+    }
+
+    internal CombatRuntime? Get(Actor actor)
+    {
+        if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combatId))
+            return null;
+        return this.ActiveCombatSessions[combatId];
     }
 }
 

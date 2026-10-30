@@ -47,6 +47,5 @@ public sealed class Faction(FactionDef def, FactionId id, string name) : ISerial
         => this.Members.Contains(actor.RefId);
 
     public float GetRelation(FactionId other)
-        => this.Relations[other];
-    
+        => other != this.Id ? this.Relations[other] : int.MaxValue;
 }

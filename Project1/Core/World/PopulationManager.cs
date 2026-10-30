@@ -16,6 +16,7 @@ using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Needs;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
+using Project1.Core.World.Combat;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -258,12 +259,13 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
             new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier));
         return btn;
     }
-    private static Panel CreateInhabitantControlNew(int width, Actor npc, FrontierManager manager)
+    private Panel CreateInhabitantControlNew(int width, Actor npc, FrontierManager manager)
     {
         var btnnew = new Panel() { AutoSize = true };// 0,0, BackgroundStyle.LargeButton.Right.Width, BackgroundStyle.LargeButton.Right.Height);
         var render = new PictureBox(npc.RenderIcon());
         var btnName = new LabelNew(npc);
-        var btnActivity = new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
+        //var btnActivity = new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
+        var btnActivity = new LabelNew(() => $"{this.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
         var barActivity = new BarNew(
             //() => manager.GetEncounter(npc)?.Max ?? 0, 
             //() => manager.GetEncounter(npc)?.Current ?? 0, 
@@ -275,6 +277,12 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         text.AddControlsVertically(btnName, btnActivity, barActivity);
         btnnew.AddControlsHorizontally(render, text);
         return btnnew;
+    }
+    string GetStatusText(Actor actor)
+    {
+        if(this.World.Combat.Get(actor) is CombatRuntime combat)
+            return $"Fighting: {combat.Other(actor)}";
+        return ((FrontierManager)this.World.Space).GetStatusText(actor);
     }
 
     static void ForceVisitDepart(Actor actor)

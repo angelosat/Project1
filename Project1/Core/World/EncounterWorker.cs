@@ -64,7 +64,7 @@ internal abstract class EncounterWorker
 
     internal ProgressInt GetProgress(Actor actor, FrontierDef frontier) => new(1);
 
-    internal virtual int GetProgressMax(Actor actor, FrontierDef frontier) => 1;
+    internal virtual int GetProgressMax(EncounterRuntime e) => 1;
 
     internal virtual float GetProgressStep(Actor actor, FrontierRuntime frontier) => 1;
 

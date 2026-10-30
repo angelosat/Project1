@@ -15,8 +15,9 @@ using System.Linq;
 
 namespace Project1.Core.World;
 
-internal sealed class OffmapActivity_ActorEncounter : EncounterWorker
+internal sealed class Encounter_OtherActor : EncounterWorker
 {
+  
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
         => (frontier.ActorsActive.Count - 1) * 10;
@@ -37,7 +38,6 @@ internal sealed class OffmapActivity_ActorEncounter : EncounterWorker
     //    }
     //}
 
-   
 
     protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
@@ -48,9 +48,9 @@ internal sealed class OffmapActivity_ActorEncounter : EncounterWorker
         var other = otherActors.SelectRandom(actor.World.Random);
         if (FactionsSystem.AreEnemies(actor, other))
         {
-            // TODO initiate combat
             var world = actor.World as StaticWorld;
-            world.Combat.Engage(actor, other);
+            if (!world.Combat.IsEngaged(other))
+                world.Combat.Engage(actor, other);
             return;
         }
 
@@ -67,14 +67,14 @@ internal sealed class OffmapActivity_ActorEncounter : EncounterWorker
         }
     }
 
-    internal override EncounterStates GetState(EncounterRuntime runtime)
-    {
-        var world = (StaticWorld)runtime.Actor.World;
-        return world.Combat.IsEngaged(runtime.Actor) ? EncounterStates.InProgress : EncounterStates.Finished;
-    }
+    //internal override EncounterStates GetState(EncounterRuntime runtime)
+    //{
+    //    var world = (StaticWorld)runtime.Actor.World;
+    //    return world.Combat.IsEngaged(runtime.Actor) ? EncounterStates.InProgress : EncounterStates.Finished;
+    //}
 
-    internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
-        => 0;
+    //internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
+    //    => 0;
 
     private static bool TryUsePotion(Actor actor, Actor other)
     {

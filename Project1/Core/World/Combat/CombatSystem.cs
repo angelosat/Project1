@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Systems.CombatOverworld;
+namespace Project1.Core.World.Combat;
 
 [EnsureStaticCtorCall]
 internal static class CombatSystem
@@ -44,7 +44,7 @@ internal static class CombatSystem
         var armor = defender.Stats.Get(StatDefOf.Armor);
         var resistandeDef = DamageToResistanceDefs[damageType];
         var resistanceStat = StatSystem.GetDerivedStat(resistandeDef);
-        var resistance = defender.Stats.Get(StatSystem.GetDerivedStat(resistanceStat));
+        var resistance = defender.Stats.Get(resistanceStat);
 
         var finalDamage = new DamageInfo((int)damageValue, damageType);
         // TODO calculate damage mitigation

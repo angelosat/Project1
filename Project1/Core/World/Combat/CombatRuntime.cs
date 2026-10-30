@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Project1.Core.Systems.CombatOverworld;
+namespace Project1.Core.World.Combat;
 
 internal sealed class CombatRuntime(int id, Actor first, Actor second)
 {
@@ -61,5 +61,10 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
                 throw new UnreachableException();
         }
         Log.Add(result);
+    }
+
+    internal Actor Other(Actor actor)
+    {
+        return actor == this.First ? this.Second : this.First;
     }
 }

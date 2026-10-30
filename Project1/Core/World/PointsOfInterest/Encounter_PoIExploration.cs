@@ -21,6 +21,9 @@ internal class Encounter_PoIExploration : EncounterWorker
 
     static Context Typed(EncounterContext ctx) => (Context)ctx;
 
+    //internal override int GetProgressMax(EncounterRuntime e)
+    //    => Typed(e.Context).PoI.ExplorationTicksRequired;
+
     protected override void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter)
     {
         var actor = encounter.Actor;
@@ -46,7 +49,7 @@ internal class Encounter_PoIExploration : EncounterWorker
         => 1/* + (actor exploration skill * .01f)*/;
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-       => frontier.PoIs.Count * 50;
+       => frontier.PoIs.Count;// * 50;
 
     internal override int GetDurationMultiplier(EncounterContext context)
         => Typed(context).PoI.Size;

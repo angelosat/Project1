@@ -31,8 +31,13 @@ internal sealed class EncounterRuntime : IProgressBar
     internal readonly int Max;
     internal float GetMax() => this.Context.GetMax(this);
     internal float GetCurrent() => this.Context.GetCurrent(this);
-    internal float Current;
     public float Percentage => this.Context.GetPercentage(this);// this.Current / this.Max;
+
+    //internal float GetMax() => this.Def.Worker.GetProgressMax(this);
+    //internal float GetCurrent() => this.Context.GetCurrent(this);
+    //public float Percentage => this.Context.GetPercentage(this);// this.Current / this.Max;
+
+    internal float Current;
 
     internal EntityRefId ActorId;
 
@@ -42,12 +47,12 @@ internal sealed class EncounterRuntime : IProgressBar
         this.Actor = actor;
         //this.Context = def.Worker.CreateContext(actor);
         this.FrontierDef = frontier;
-        //this.Max = def.DurationInMinutes * def.Worker.GetDurationMultiplier(this.Context!);
+        this.Max = def.DurationInMinutes;// * def.Worker.GetDurationMultiplier(this.Context!);
     }
 
     internal void Tick(FrontierRuntime frontier, Actor actor)
     {
-        Def.Worker.Tick(this, frontier, actor);
+        this.Def.Worker.Tick(this, frontier, actor);
     }
 
     public string GetTextStatus() => this.Def.Worker.GetTextStatus(this);
@@ -60,4 +65,9 @@ internal sealed class EncounterRuntime : IProgressBar
     //public enum States { InProgress, Paused, Finished };
     //public States State;
     //public float? PercentageComplete => null;
+}
+
+struct EncounterTickResult
+{
+    internal EncounterRuntime? FollowUpEncounter;
 }

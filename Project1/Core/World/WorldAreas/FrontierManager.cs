@@ -202,6 +202,10 @@ public class FrontierManager : IWorldSpaceManager
         foreach(var (actor, encounter) in this.ActiveEncounters)
         {
             encounter.Tick(this.GetFrontier(actor), actor);
+            //if(result.FollowUpEncounter is EncounterRuntime nextEncounter)
+            //{
+
+            //}
         }
     }
 
@@ -354,7 +358,7 @@ public class FrontierManager : IWorldSpaceManager
         var frontier = this.GetFrontier(actor);
         return $"" +
             $"{frontier?.Def.LabelReadable ?? "In town"} " +
-            $"{(this.World.Combat.IsEngaged(actor) ? "in combat" : "")} " +
+            $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +
             //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
             $"{this.GetEncounter(actor)?.GetTextStatus() ?? "idle"}";
     }

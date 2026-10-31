@@ -271,7 +271,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //    () => manager.GetEncounter(npc)?.GetCurrent() ?? 0,
         //    100,
         //    () => manager.GetEncounter(npc)?.Def.LabelReadable ?? "idle");
-        var actionsManager = manager.World.Actions;
+        var actionsManager = this.World.Actions;
         var barActivity = new BarNew(
             //() => manager.GetEncounter(npc)?.Max ?? 0, 
             //() => manager.GetEncounter(npc)?.Current ?? 0, 

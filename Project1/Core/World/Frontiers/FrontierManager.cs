@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Project1.Core.AI.MetaRoles.Adventurer;
+﻿using Project1.Core.AI.MetaRoles.Adventurer;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
@@ -12,14 +11,14 @@ using Project1.Core.World.Rooms;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.World.Frontiers;
 
-public class FrontierManager : IWorldSpaceManager
+public class FrontierManager : WorldComp, IWorldSpaceManager
 {
     readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
@@ -27,7 +26,7 @@ public class FrontierManager : IWorldSpaceManager
     readonly Dictionary<Actor, EncounterRuntime> ActiveEncounters = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
     static readonly HashSet<FrontierDef> _cachedDefs;// = [];
-    public StaticWorld World { get; }
+    //public StaticWorld World { get; }
     static readonly List<EncounterWorker> _offmapActivities = [];
     static readonly EncounterDef[] EncounterDefs;
     static readonly List<PoIRuntime> PoIs = new();
@@ -54,9 +53,9 @@ public class FrontierManager : IWorldSpaceManager
         _cachedDefs = [.. Def.Get<FrontierDef>()];
         FrontiersByTier = _cachedDefs.ToDictionary(d => new Tier(d.Tier), d => d);
     }
-    public FrontierManager(StaticWorld world)
+    public FrontierManager(WorldBase world) : base(world)
     {
-        this.World = world;
+        //this.World = world;
         foreach (var areadef in _cachedDefs)
             this.Frontiers.Add(areadef, new FrontierRuntime(this.World, areadef));
         //this.GenerateTreasure(new Random());
@@ -142,9 +141,9 @@ public class FrontierManager : IWorldSpaceManager
     public void Explore(FrontierRuntime room, Actor actor)
     {
         // TODO account for actor's exploration skill/stat?
-        room.Exploration.ApplyDelta(1);
+        room.Exploration.ApplyDelta(.1f);
         room.World.Events.Post(new WorldExplorationEvent(room, actor));
-        this.Notifier.Notify();
+        room.Notifier.Notify();
     }
     internal ChangeNotifier Notifier = new();
     public void Tick()
@@ -176,7 +175,7 @@ public class FrontierManager : IWorldSpaceManager
                 {
                     if (isServer)
                     {
-                        world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, Vector3.Zero);
+                        world.Map.Spawn(actor, world.Map.GetRandomEdgeCell().Above, IntVec3.Zero);
                         server.SyncReport($"{actor.Name} has arrived!");
                         actor.AI.State.Log.Write("I arrived in town.");
                     }
@@ -363,7 +362,7 @@ public class FrontierManager : IWorldSpaceManager
     {
         var frontier = this.GetFrontier(actor);
         if (frontier is not null)
-            return $"{frontier.Def.LabelReadable} {frontier.Exploration.ToStringPercentage()}";
+            return $"{frontier.Def.LabelReadable}";// {frontier.Exploration.ToStringPercentage()}";
         else
             return $"In town";
         //return $"" +
@@ -381,6 +380,36 @@ public class FrontierManager : IWorldSpaceManager
 
     public FrontierRuntime Get(FrontierDef def)
         => this.Frontiers[def];
+
+    protected internal override (string label, Control control)? GetGui()
+    {
+        var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
+        var list = new ListBoxNoScroll<FrontierRuntime, Control>(props =>
+        {
+            var btn = new LabelNew(() => $"{props.Def.LabelReadable} {props.Exploration.ToStringPercentage()} explored")
+                .InvalidateOn(props.Notifier);
+            return btn;
+        });
+
+        //list.Bind(this.WorldInhabitants);
+        list.AddItems(this.Frontiers.Values);
+        box.AddControlsVertically(list);
+        return ("Frontiers", box);
+    }
+    ScrollableBoxNewNewNew CreateGui()
+    {
+        var box = new ScrollableBoxNewNewNew(200, UIManager.LargeButton.Height * 8, ScrollModes.Vertical);
+        var list = new ListBoxNoScroll<FrontierRuntime, LabelNew>(props =>
+        {
+            var btn = new LabelNew(() => $"{props.Def.LabelReadable} {props.Exploration.ToStringPercentage()} explored");
+            return btn;
+        });
+
+        //list.Bind(this.WorldInhabitants);
+        list.AddItems(this.Frontiers.Values);
+        box.AddControlsVertically(list);
+        return box;
+    }
 }
 
 internal record struct EncounterBeginEvent(Entity Entity, EncounterRuntime Encounter) : IEventPayload { }

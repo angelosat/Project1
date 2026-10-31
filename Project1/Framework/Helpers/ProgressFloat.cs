@@ -119,7 +119,8 @@ public class ProgressFloat : IProgressBar
     }
     public string ToStringPercentage()
     {
-        return $"{this.Percentage.ToString("P0", CultureInfo.InvariantCulture)}";
+        //return $"{this.Percentage.ToString("P0", CultureInfo.InvariantCulture)}";
+        return $"{this.Percentage.ToString("P2", CultureInfo.InvariantCulture)}";
     }
     public BarImmediate GetGui(string text = "Progress")
     {

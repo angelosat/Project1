@@ -87,14 +87,16 @@ public class StaticWorld : WorldBase
         this.Factions = new(this);
         this.Combat = new(this);
         this.Actions = new(this);
+        this.Space = new FrontierManager(this);
+
         this.Comps.AddRange(
+            this.Space as FrontierManager,
             this.Ownership,
             this.Factions,
             this.Combat,
             this.Actions
             //new RecipeMasterySystem(this)
             );
-        this.Space = new FrontierManager(this);
     }
     public StaticWorld(string name, List<Terraformer> mutators)
        : this()
@@ -275,12 +277,20 @@ public class StaticWorld : WorldBase
         this.Map.OnHudCreated(hud);
     }
 
+
     GroupBox CreateUI()
     {
         var box = new GroupBox();
         var winPop = new Lazy<Window>(() => new Window(this.PopulationManager.Gui) { Title = "Population", Movable = true, Closable = true });
         var btnPop = new Button("Population").SetLeftClickAction(b => winPop.Value.Toggle());
         box.AddControls(btnPop);
+
+        foreach (var p in this.Comps.Select(c => c.GetGui()).Where(p => p.HasValue))
+        {
+            var win = new Lazy<Window>(() => new Window(p.Value.control) { Title = p.Value.label, Movable = true, Closable = true });
+            var btn = new Button(p.Value.label).SetLeftClickAction(b => win.Value.Toggle());
+            box.AddControlsBottomLeft(btn);
+        }
         return box;
     }
 

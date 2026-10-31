@@ -1,8 +1,9 @@
 ﻿using Project1.Core.Entities;
+using Project1.Framework.UI;
 
 namespace Project1.Core.Simulation;
 
-internal abstract class WorldComp(WorldBase world)
+public abstract class WorldComp(WorldBase world)
 {
     //protected WorldBase World = world;
     protected StaticWorld World = (StaticWorld)world;
@@ -12,4 +13,6 @@ internal abstract class WorldComp(WorldBase world)
     internal virtual void EnsureInitialized() { }
 
     internal virtual void Tick() { }
+
+    internal protected virtual (string label, Control control)? GetGui() => null;
 }

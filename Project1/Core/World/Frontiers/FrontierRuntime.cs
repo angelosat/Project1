@@ -4,6 +4,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.World.PointsOfInterest;
 using Project1.Core.World.Rooms;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace Project1.Core.World.Frontiers;
 
 public class FrontierRuntime : WorldRoom
 {
+    public ChangeNotifier Notifier = new();
     public readonly FrontierDef Def;
     public readonly StaticWorld World;
     readonly internal List<Entity> Treasures = [];

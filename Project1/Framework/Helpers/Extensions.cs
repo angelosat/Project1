@@ -245,6 +245,11 @@ namespace Project1.Framework.Helpers
             var roll = rand.Next(100) + 1;
             return roll <= chance;
         }
+        public static bool CoinFlip(this Random rand)
+        {
+            var roll = rand.Next(2);
+            return roll == 0;
+        }
         static public Dictionary<T, U> ToDictionary<T,U>(this IList<T> listA, IList<U> listB)
         {
             var count = listA.Count;

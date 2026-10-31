@@ -5,7 +5,7 @@ using Project1.Framework.Interfaces;
 
 #nullable enable
 
-namespace Project1.Core.World;
+namespace Project1.Core.World.Actions;
 
 internal class EncounterContext()
 {

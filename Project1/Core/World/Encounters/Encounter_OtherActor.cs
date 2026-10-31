@@ -13,7 +13,7 @@ using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System.Linq;
 
-namespace Project1.Core.World;
+namespace Project1.Core.World.Actions;
 
 internal sealed class Encounter_OtherActor : EncounterWorker
 {

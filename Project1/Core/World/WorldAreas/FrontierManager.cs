@@ -6,6 +6,7 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Tools;
+using Project1.Core.World.Actions;
 using Project1.Core.World.PointsOfInterest;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -148,8 +149,9 @@ public class FrontierManager : IWorldSpaceManager
         var isServer = server?.IsServer ?? false;
         foreach (var (actor, distance) in snapshot)
         {
-            if (!this.IsEngaged(actor))
-            {
+            //if (!this.IsEngaged(actor))
+            if (!this.World.Actions.IsBusy(actor))
+                {
                 var prevFrontier = this.GetFrontier(actor);
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
                 // if current distance from town is not the target distance, step towards it
@@ -285,17 +287,12 @@ public class FrontierManager : IWorldSpaceManager
         if (actor.Biology.IsIncapacitated)
             return;
         var frontier = this.GetFrontier(actor);
-
-        //var activity = _offmapActivities.SelectRandomWeighted(this.World.Random, f => f.GetWeight(front, actor));
-        //activity.Tick(front, actor);
         var encounterDef = EncounterDefs.SelectRandomWeighted(this.World.Random, f => f.Worker.GetWeight(frontier, actor));
-        //var result = encounter.Worker.TriggerFor(frontier, actor);
-        //if (result is not null)
-        //    this.ActiveEncounters.Add(actor, result);
-        this.BeginEncounter(actor, encounterDef);
-        //var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
-        //this.ActiveEncounters.Add(actor, runtime);
-        //this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
+        //this.BeginEncounter(actor, encounterDef);
+        var action = encounterDef.Worker.DecideAction(frontier, actor);
+        if (!action.HasValue)
+            return;
+        this.World.Actions.Start(action.Value.actionDef, action.Value.data);
     }
     public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {
@@ -356,6 +353,11 @@ public class FrontierManager : IWorldSpaceManager
     internal string GetStatusText(Actor actor)
     {
         var frontier = this.GetFrontier(actor);
+        //return $"" +
+        //    $"{frontier?.Def.LabelReadable ?? "In town"} " +
+        //    $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +
+        //    //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
+        //    $"{this.World.Actions.GetAction(actor)?.Def.LabelReadable ?? "idle"}";
         return $"" +
             $"{frontier?.Def.LabelReadable ?? "In town"} " +
             $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +

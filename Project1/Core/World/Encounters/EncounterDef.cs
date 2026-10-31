@@ -3,7 +3,7 @@ using System;
 
 #nullable enable
 
-namespace Project1.Core.World;
+namespace Project1.Core.World.Actions;
 
 public sealed class EncounterDef(string name, Type workerType, int minutes = 0/*, Type runtimeType*/) : Def(name)
 {

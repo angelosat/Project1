@@ -4,7 +4,8 @@ namespace Project1.Core.Simulation;
 
 internal abstract class WorldComp(WorldBase world)
 {
-    protected WorldBase World = world;
+    //protected WorldBase World = world;
+    protected StaticWorld World = (StaticWorld)world;
 
     internal virtual void Scan(Entity entity) { }
 

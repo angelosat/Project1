@@ -8,6 +8,7 @@ using Project1.Core.Systems.Factions;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
+using Project1.Core.World.Actions;
 using Project1.Core.World.Combat;
 using Project1.Core.World.WorldAreas;
 using Project1.Core.WorldGen;
@@ -41,6 +42,7 @@ public class StaticWorld : WorldBase
     public override PopulationManager Population => this.PopulationManager;
     internal readonly WorldComp_Factions Factions;
     internal readonly WorldComp_Combat Combat;
+    internal readonly WorldComp_Actions Actions;
     public IWorldSpaceManager Space;
     ulong currentTick;
     public override SimulationTick CurrentTick { get => this.currentTick; set => this.currentTick = value; }
@@ -84,10 +86,12 @@ public class StaticWorld : WorldBase
         this.Ownership = new(this);
         this.Factions = new(this);
         this.Combat = new(this);
+        this.Actions = new(this);
         this.Comps.AddRange(
             this.Ownership,
             this.Factions,
-            this.Combat
+            this.Combat,
+            this.Actions
             //new RecipeMasterySystem(this)
             );
         this.Space = new FrontierManager(this);

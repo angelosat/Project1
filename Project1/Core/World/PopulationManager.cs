@@ -2,7 +2,6 @@
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
-using Project1.Core.Networking.Entities;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Alchemy;
@@ -20,7 +19,6 @@ using Project1.Core.World.Combat;
 using Project1.Core.World.WorldAreas;
 using Project1.Framework;
 using Project1.Framework.Helpers;
-using Project1.Framework.Input;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using Project1.Framework.UI.Primitives;
@@ -266,13 +264,21 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var btnName = new LabelNew(npc);
         //var btnActivity = new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
         var btnActivity = new LabelNew(() => $"{this.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
+        //var barActivity = new BarNew(
+        //    //() => manager.GetEncounter(npc)?.Max ?? 0, 
+        //    //() => manager.GetEncounter(npc)?.Current ?? 0, 
+        //    () => manager.GetEncounter(npc)?.GetMax() ?? 0,
+        //    () => manager.GetEncounter(npc)?.GetCurrent() ?? 0,
+        //    100,
+        //    () => manager.GetEncounter(npc)?.Def.LabelReadable ?? "idle");
+        var actionsManager = manager.World.Actions;
         var barActivity = new BarNew(
             //() => manager.GetEncounter(npc)?.Max ?? 0, 
             //() => manager.GetEncounter(npc)?.Current ?? 0, 
-            () => manager.GetEncounter(npc)?.GetMax() ?? 0,
-            () => manager.GetEncounter(npc)?.GetCurrent() ?? 0,
+            () => actionsManager.GetAction(npc)?.Max ?? 0,
+            () => actionsManager.GetAction(npc)?.Current ?? 0,
             100, 
-            () => manager.GetEncounter(npc)?.Def.LabelReadable ?? "idle");
+            () => actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle");
         var text = new GroupBox();
         text.AddControlsVertically(btnName, btnActivity, barActivity);
         btnnew.AddControlsHorizontally(render, text);

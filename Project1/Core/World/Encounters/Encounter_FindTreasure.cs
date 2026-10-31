@@ -1,9 +1,10 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.World.Actions;
 using Project1.Core.World.WorldAreas;
 
-namespace Project1.Core.World;
+namespace Project1.Core.World.Encounters;
 
-internal sealed class OffmapActivity_FindTreasure : EncounterWorker
+internal sealed class Encounter_FindTreasure : EncounterWorker
 {
     protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {

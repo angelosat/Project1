@@ -5,7 +5,7 @@ using System;
 
 #nullable enable
 
-namespace Project1.Core.World;
+namespace Project1.Core.World.Actions;
 
 internal abstract class EncounterWorker
 {
@@ -71,4 +71,6 @@ internal abstract class EncounterWorker
     internal virtual int GetDurationMultiplier(EncounterContext context) => 1;
 
     internal virtual string GetTextStatus(EncounterRuntime encounter) => encounter.Def.LabelReadable;
+
+    internal virtual (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor) => null;
 }

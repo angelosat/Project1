@@ -1,10 +1,11 @@
 ﻿using Project1.Core.AI.MetaRoles.Adventurer;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Materials;
+using Project1.Core.World.Actions;
 using Project1.Core.World.WorldAreas;
 
-namespace Project1.Core.World;
-internal sealed class OffmapActivity_FarmLoot : EncounterWorker
+namespace Project1.Core.World.Encounters;
+internal sealed class Encounter_FarmLoot : EncounterWorker
 {
     protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {

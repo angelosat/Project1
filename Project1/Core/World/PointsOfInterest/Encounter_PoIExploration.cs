@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.World.Actions;
 using Project1.Core.World.WorldAreas;
 
 #nullable enable
@@ -56,4 +57,11 @@ internal class Encounter_PoIExploration : EncounterWorker
 
     internal override string GetTextStatus(EncounterRuntime encounter)
         => $"Exploring: {Typed(encounter.Context).PoI.Def.LabelReadable}";
+
+    internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)
+    {
+        var poi = PoISystem.SelectPoI(frontier, actor);
+        var data = new WorldActionData_PoI(frontier, actor) { PoI = poi };
+        return (WorldActionDefOf.EnterPoI, data);
+    }
 }

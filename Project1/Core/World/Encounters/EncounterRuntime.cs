@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework.Interfaces;
 
 #nullable enable

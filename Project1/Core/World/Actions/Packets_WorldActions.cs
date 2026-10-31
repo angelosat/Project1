@@ -2,7 +2,7 @@
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework;
 
 #nullable enable

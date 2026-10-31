@@ -2,7 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Materials;
 using Project1.Core.World.Actions;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 
 namespace Project1.Core.World.Encounters;
 internal sealed class Encounter_FarmLoot : EncounterWorker

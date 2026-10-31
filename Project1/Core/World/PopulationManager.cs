@@ -16,7 +16,7 @@ using Project1.Core.Towns.AI.Needs;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World.Combat;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;

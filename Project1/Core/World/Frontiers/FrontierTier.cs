@@ -1,4 +1,4 @@
-﻿namespace Project1.Core.World.WorldAreas
+﻿namespace Project1.Core.World.Frontiers
 {
     
     internal record struct FrontierTier(int Value)

@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI.Thought;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Quests;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using System.Linq;
 
 namespace Project1.Core.AI.MetaRoles.Adventurer;

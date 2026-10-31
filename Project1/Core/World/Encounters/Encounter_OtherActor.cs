@@ -7,7 +7,7 @@ using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Factions;
 using Project1.Core.Systems.Thoughts;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
@@ -20,7 +20,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
   
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
-        => (frontier.ActorsActive.Count - 1) * 10;
+        => (frontier.OccupantCount - 1) * 10;
 
     //protected override void OnBegin(FrontierRuntime frontier, Actor actor)
     //{
@@ -42,10 +42,10 @@ internal sealed class Encounter_OtherActor : EncounterWorker
     protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
         var actor = encounter.Context.Actor;
-        var otherActors = frontier.ActorsActive.Except([actor]).ToList();
+        var otherActorIds = frontier.ActorsActiveNew.Except([actor.RefId]).ToList();
         //if (otherActors.Count == 0)
         //    return;
-        var other = otherActors.SelectRandom(actor.World.Random);
+        var other = actor.World.Get<Actor>(otherActorIds.SelectRandom(actor.World.Random));
         if (FactionsSystem.AreEnemies(actor, other))
         {
             var world = actor.World as StaticWorld;

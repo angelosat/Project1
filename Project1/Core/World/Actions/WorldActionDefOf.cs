@@ -9,6 +9,7 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef HarvestResource = new("HarvestResource", typeof(WorldActionWorker_HarvestResource), duration: Ticks.FromMinutes(20));
     static public readonly WorldActionDef Rest = new("Resting", typeof(WorldActionWorker_Resting), duration: Ticks.FromMinutes(30));
     static public readonly WorldActionDef AvoidInjury = new("AvoidInjury", typeof(WorldActionWorker_AvoidInjury), duration: Ticks.FromMinutes(10));
+    static public readonly WorldActionDef Explore = new("Exploring", typeof(WorldActionWorker_Exploration), duration: Ticks.FromMinutes(10));
     static WorldActionDefOf()
     {
         Def.Register(typeof(WorldActionDefOf));

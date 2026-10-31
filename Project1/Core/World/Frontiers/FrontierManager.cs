@@ -8,14 +8,16 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Tools;
 using Project1.Core.World.Actions;
 using Project1.Core.World.PointsOfInterest;
+using Project1.Core.World.Rooms;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
-namespace Project1.Core.World.WorldAreas;
+namespace Project1.Core.World.Frontiers;
 
 public class FrontierManager : IWorldSpaceManager
 {
@@ -101,7 +103,8 @@ public class FrontierManager : IWorldSpaceManager
         foreach (var item in loot)
             frontier.AddTreasure(item);
         frontier.ActorsIncapacitated.Remove(actor);
-        frontier.ActorsActive.Remove(actor);
+        //frontier.ActorsActive.Remove(actor.RefId);
+        frontier.RemoveActor(actor);
         this.ActorPositions.Remove(actor);
         this.World.Events.Post(new ActorDeathEvent(actor));
         this.World.DisposeEntity(actor);
@@ -136,7 +139,13 @@ public class FrontierManager : IWorldSpaceManager
             }
         }
     }
-
+    public void Explore(FrontierRuntime room, Actor actor)
+    {
+        // TODO account for actor's exploration skill/stat?
+        room.Exploration.ApplyDelta(1);
+        room.World.Events.Post(new WorldExplorationEvent(room, actor));
+        this.Notifier.Notify();
+    }
     internal ChangeNotifier Notifier = new();
     public void Tick()
     {
@@ -353,12 +362,17 @@ public class FrontierManager : IWorldSpaceManager
     internal string GetStatusText(Actor actor)
     {
         var frontier = this.GetFrontier(actor);
+        if (frontier is not null)
+            return $"{frontier.Def.LabelReadable} {frontier.Exploration.ToStringPercentage()}";
+        else
+            return $"In town";
         //return $"" +
         //    $"{frontier?.Def.LabelReadable ?? "In town"} " +
         //    $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +
         //    //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
         //    $"{this.World.Actions.GetAction(actor)?.Def.LabelReadable ?? "idle"}";
         return $"" +
+            //$"{frontier?.Def.LabelReadable ?? "In town"} " +
             $"{frontier?.Def.LabelReadable ?? "In town"} " +
             $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +
             //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";

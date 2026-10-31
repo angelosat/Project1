@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.World.WorldAreas
+namespace Project1.Core.World.Frontiers
 {
     // todo: instead of loot tables, add finite loot pools, and add regeneration rate of said loot pools
     public class FrontierDef : Def

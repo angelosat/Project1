@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Materials;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework.Helpers;
 using System.Collections.Generic;
 

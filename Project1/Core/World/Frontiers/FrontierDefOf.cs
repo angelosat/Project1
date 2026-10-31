@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Systems.Materials;
 using Project1.Framework;
 
-namespace Project1.Core.World.WorldAreas
+namespace Project1.Core.World.Frontiers
 {
     [EnsureStaticCtorCall]
     static class FrontierDefOf

@@ -25,7 +25,7 @@ using Project1.Core.Towns;
 using Project1.Core.Towns.AI.Behaviors.ItemEvaluators;
 using Project1.Core.Towns.Duties;
 using Project1.Core.UI;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.UI;
 using System;

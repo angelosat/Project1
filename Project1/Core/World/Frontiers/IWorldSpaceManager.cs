@@ -1,7 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 
-namespace Project1.Core.World.WorldAreas
+namespace Project1.Core.World.Frontiers
 {
     public interface IWorldSpaceManager
     {

@@ -2,7 +2,7 @@
 using Project1.Core.Needs;
 using Project1.Core.Resources;
 using Project1.Core.World.Actions;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using System.Diagnostics;
 
 namespace Project1.Core.World.Encounters;

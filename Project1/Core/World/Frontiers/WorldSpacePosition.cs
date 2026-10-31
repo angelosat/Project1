@@ -1,6 +1,6 @@
 ﻿using Project1.Framework.Serialization;
 
-namespace Project1.Core.World.WorldAreas;
+namespace Project1.Core.World.Frontiers;
 
 public record struct WorldSpacePosition(float Value)
 {

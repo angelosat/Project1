@@ -1,6 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.PointsOfInterest;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 
 namespace Project1.Core.World.Actions;
 

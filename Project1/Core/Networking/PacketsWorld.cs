@@ -1,5 +1,5 @@
 ﻿using Project1.Framework;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.World;

@@ -1,7 +1,7 @@
 ﻿using Project1.Core.AI.Behaviors.NodeTypes;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities.Actors;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Framework.Events;
 
 namespace Project1.Core.AI;

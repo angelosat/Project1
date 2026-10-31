@@ -1,18 +1,19 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Rooms;
+using Project1.Core.World.Frontiers;
 using Project1.Framework.Events;
 using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.World.PointsOfInterest;
 
-internal class PoIRuntime
+internal class PoIRuntime : WorldRoom
 {
     public readonly PoIDef Def;
 
     readonly HashSet<EntityRefId>
-        ActorsActive = [],
+        //ActorsActive = [],
         ActorsIncapacitated = [],
         Loot = [];
 

@@ -10,7 +10,7 @@ using Project1.Core.UI.Hud;
 using Project1.Core.World;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Combat;
-using Project1.Core.World.WorldAreas;
+using Project1.Core.World.Frontiers;
 using Project1.Core.WorldGen;
 using Project1.Framework;
 using Project1.Framework.Helpers;

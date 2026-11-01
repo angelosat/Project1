@@ -9,7 +9,14 @@ namespace Project1.Core.World.Frontiers
         static public readonly FrontierDef Forest = new FrontierDef("Forest", 1)
         {
             LootWeightRawMaterial = 1,
-            LootWeightCurrency = 9
+            LootWeightCurrency = 9,
+            ResourceTypes = new() { 
+                { (MaterialRefinementDefOf.Logs, MaterialDefOf.LightWood), 90 },
+                { (MaterialRefinementDefOf.Logs, MaterialDefOf.DarkWood), 9 },
+                { (MaterialRefinementDefOf.Logs, MaterialDefOf.RedWood), 1 },
+                { (MaterialRefinementDefOf.Ore, MaterialDefOf.Iron), 95 },
+                { (MaterialRefinementDefOf.Ore, MaterialDefOf.Gold), 5 },
+            }
         }
         .AddLootRawMaterial(RawMaterialDefOf.Logs,
             (MaterialDefOf.LightWood, 90),

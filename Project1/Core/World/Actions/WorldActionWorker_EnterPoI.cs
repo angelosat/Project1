@@ -1,20 +1,17 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.World.PointsOfInterest;
-using Project1.Core.World.Frontiers;
-
-namespace Project1.Core.World.Actions;
-
-internal sealed class WorldActionData_PoI(FrontierRuntime frontier, Actor actor) : WorldActionData(frontier, actor)
-{
-    internal required PoIRuntime PoI;
-}
+﻿namespace Project1.Core.World.Actions;
 
 internal class WorldActionWorker_EnterPoI : WorldActionWorker
 {
+    static WorldActionData_PoI Typed(WorldActionData data) => (WorldActionData_PoI)data;
     internal override void Resolve(WorldActionData data)
     {
         var typed = (WorldActionData_PoI)data;
-        var poi = typed.PoI;
+        var id = typed.PoIId;
+        var poi = data.Frontier.PoIs[id];
+        //var poi = typed.PoI;
         poi.Add(data.Actor);
     }
+
+    internal override string GetStatusText(WorldActionRuntime runtime)
+        => $"Enterint {Typed(runtime.Data).PoI.Def.LabelReadable}";
 }

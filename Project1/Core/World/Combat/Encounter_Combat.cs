@@ -2,6 +2,7 @@
 using Project1.Core.Simulation;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
+using System.Collections.Generic;
 
 namespace Project1.Core.World.Combat;
 
@@ -20,4 +21,7 @@ internal class Encounter_Combat : EncounterWorker
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         => 0;
+
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
+        => [];
 }

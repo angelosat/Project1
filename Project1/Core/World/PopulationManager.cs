@@ -277,8 +277,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
             //() => manager.GetEncounter(npc)?.Current ?? 0, 
             () => actionsManager.GetAction(npc)?.Max ?? 0,
             () => actionsManager.GetAction(npc)?.Current ?? 0,
-            100, 
-            () => actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle");
+            100,
+            () => actionsManager.GetStatusText(npc));// actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle")
         var text = new GroupBox();
         text.AddControlsVertically(btnName, btnActivity, barActivity);
         btnnew.AddControlsHorizontally(render, text);

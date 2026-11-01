@@ -289,18 +289,24 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         this.GetFrontier(actor).RemoveActor(actor);
         this.EventSchedulers.Remove(actor);
     }
-    
+
     void TriggerEncounter(Actor actor)
     {
         if (actor.Biology.IsIncapacitated)
             return;
         var frontier = this.GetFrontier(actor);
-        var encounterDef = EncounterDefs.SelectRandomWeighted(this.World.Random, f => f.Worker.GetWeight(frontier, actor));
-        //this.BeginEncounter(actor, encounterDef);
-        var action = encounterDef.Worker.DecideAction(frontier, actor);
-        if (!action.HasValue)
+        //var encounterDef = EncounterDefs.SelectRandomWeighted(this.World.Random, f => f.Worker.GetWeight(frontier, actor));
+        //var action = encounterDef.Worker.DecideAction(frontier, actor);
+        //if (!action.HasValue)
+        //    return;
+        //this.World.Actions.Start(action.Value.actionDef, action.Value.data);
+
+        var candidates = EncounterDefs.SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
+        var (encounter, context, weight) = candidates.SelectRandomWeighted(this.World.Random, f => f.weight);
+        //var action = encounter.Worker.DecideAction(frontier, actor);
+        if (encounter.Worker.DecideAction(frontier, actor) is not WorldActionDef action)
             return;
-        this.World.Actions.Start(action.Value.actionDef, action.Value.data);
+        this.World.Actions.Start(action, context);
     }
     public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {

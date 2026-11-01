@@ -2,6 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Materials;
 using Project1.Core.World.PointsOfInterest;
 using Project1.Core.World.Rooms;
 using Project1.Framework.Events;
@@ -21,6 +22,7 @@ public class FrontierRuntime : WorldRoom
     internal readonly Dictionary<Actor, SimulationTick> ActorsIncapacitated = [];
     //internal HashSet<Actor> ActorsActive = [];
     //internal HashSet<EntityRefId> ActorsActive = [];
+    //internal readonly Dictionary<MaterialDef, int> Resources = [];
 
     internal List<PoIRuntime> PoIs = [];
     int PoITargetCount = 1;
@@ -31,6 +33,10 @@ public class FrontierRuntime : WorldRoom
     {
         World = world;
         this.Def = def;
+        var resourceTargetCount = 10;
+        //var mats = MaterialSystem.ByTier(this.Def.Tier);
+        //foreach (var mat in mats)
+        //    this.Resources.Add(mat, resourceTargetCount);
     }
 
     internal void AddActor(Actor actor)

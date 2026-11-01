@@ -11,6 +11,8 @@ public class MaterialSystem
 {
     internal static readonly Dictionary<MaterialTypeDef, HashSet<MaterialDef>> MaterialsByType = [];
     static readonly Dictionary<int, HashSet<MaterialDef>> MaterialsByTier = [];
+    static readonly Dictionary<MaterialTypeDef, MaterialRefinementDef> SourceRefinementsByType;
+    static readonly Dictionary<MaterialDef, MaterialRefinementDef> SourceRefinementsByMaterial;
     static readonly Dictionary<int, Dictionary<MaterialRefinementDef, MaterialDef>> RefinemenetsByTier = [];
     static MaterialSystem()
     {
@@ -24,7 +26,6 @@ public class MaterialSystem
             if (!MaterialsByTier.TryGetValue(tier, out var listByTier))
                 MaterialsByTier[tier] = listByTier = [];
             listByTier.Add(matdef);
-
         }
 
         var allRefs = Def.Get<MaterialRefinementDef>();
@@ -40,15 +41,20 @@ public class MaterialSystem
                 dicType.Add(refDef, mat);
             }
         }
+
+        //SourceRefinementsByType = allRefs.Where(r => r.Source is null).ToDictionary(r => r.MaterialType, r => r);
+        //SourceRefinementsByMaterial = allmats.ToDictionary(m => m, m => SourceRefinementsByType[m.Type]);
     }
     public static List<MaterialDef> ByTier(int tier)
-        => [.. RefinemenetsByTier[tier].Select(e => e.Value)];
+        => [.. RefinemenetsByTier[tier].Select(e => e.Value).Distinct()];
     public static MaterialDef ByTierAndType(int tier, MaterialRefinementDef refinement)
         => RefinemenetsByTier[tier][refinement];
     public static IReadOnlySet<MaterialDef> GetMaterialsByType(MaterialTypeDef typeDef)
         => typeDef is null ? [] : MaterialsByType[typeDef];
     public static IEnumerable<MaterialDef> TryGetMaterialsByType(MaterialTypeDef typeDef)
         => MaterialsByType.TryGetValue(typeDef, out var list) ? list : [];
+
+
     static public Entity Create(MaterialRefinementDef profile, MaterialDef material, int stackSize = -1)
     {
         return Create(profile, material, [], stackSize);

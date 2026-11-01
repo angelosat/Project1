@@ -4,6 +4,8 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.World.Frontiers;
 using Project1.Framework;
+using System.Data;
+using System.Runtime.InteropServices;
 
 #nullable enable
 
@@ -25,9 +27,11 @@ static class Packets_WorldActions
     {
         Server.Instance.BeginPacket(_pActionStart)
             .Write(e.Actor.RefId)
+            .Write(e.Action.Data.Frontier.Def)
             .Write(e.Action.Def)
             .Write(e.Action.Max)
-            .Write(e.Action.Data.Frontier.Def);
+            .Write(e.Action.Data);
+            //.Write(e.Action.Data.Frontier.Def);
     }
 
     private static void SendWorldActionFinished(WorldActionFinishedEvent e)
@@ -41,10 +45,14 @@ static class Packets_WorldActions
         var r = packet.PacketReader;
         var world = (StaticWorld)endpoint.World;
         var actor = world.Get<Actor>(r.ReadEntityRefId());
+        var frontierDef = r.ReadDef<FrontierDef>();
         var actionDef = r.ReadDef<WorldActionDef>();
         var actionDuration = r.ReadInt32();
-        var frontier = r.ReadDef<FrontierDef>();
-        var runtime = world.Actions.Start(actionDef, actor!, frontier);
+        var frontier = ((FrontierManager)world.Space).Get(frontierDef);
+        //var runtime = world.Actions.Start(actionDef, actor!, frontierDef);
+        var data = WorldActionSystem.CreateData(actionDef, frontier, actor);
+        data.Read(r);
+        var runtime = world.Actions.Start(actionDef, data);
         $"CLIENT {actor} starts {actionDef.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
     }
 

@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -27,9 +29,10 @@ internal class Encounter_PoIExploration : EncounterWorker
 
     protected override void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter)
     {
-        var actor = encounter.Actor;
-        var poi = PoISystem.SelectPoI(frontier, actor);
-        poi.Add(actor);
+        throw new UnreachableException();
+        //var actor = encounter.Actor;
+        //var poi = PoISystem.SelectPoI(frontier, actor);
+        //poi.Add(actor);
     }
 
     protected override void TickInt(EncounterRuntime encounter, float prevPercentage, float nextPercentage)
@@ -58,10 +61,17 @@ internal class Encounter_PoIExploration : EncounterWorker
     internal override string GetTextStatus(EncounterRuntime encounter)
         => $"Exploring: {Typed(encounter.Context).PoI.Def.LabelReadable}";
 
-    internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    {
+        //var poi = PoISystem.SelectPoI(frontier, actor);
+        //var data = new WorldActionData_PoI(frontier, actor) { PoI = poi };
+        return WorldActionDefOf.EnterPoI;
+    }
+
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
         var poi = PoISystem.SelectPoI(frontier, actor);
-        var data = new WorldActionData_PoI(frontier, actor) { PoI = poi };
-        return (WorldActionDefOf.EnterPoI, data);
+
+        yield return (EncounterDefOf.PoIExploration, new WorldActionData_PoI(frontier, actor) { PoIId = poi.id }, frontier.PoIs.Count);
     }
 }

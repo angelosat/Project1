@@ -36,15 +36,25 @@ internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
     public WorldActionRuntime? GetAction(Actor actor)
         => this.ActiveActions.GetValueOrDefault(actor);
 
+    public string GetStatusText(Actor actor)
+    {
+        var action = this.GetAction(actor);
+        if (action is null)
+            return "idle";
+        return action.GetStatusText();
+        //actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle");
+    }
+
     internal bool IsBusy(Actor actor)
         => this.ActiveActions.ContainsKey(actor);
 
-    internal void Start(WorldActionDef def, WorldActionData data)
+    internal WorldActionRuntime Start(WorldActionDef def, WorldActionData data)
     {
         var runtime = new WorldActionRuntime(def, data);
         this.ActiveActions.Add(data.Actor, runtime);
         $"SERVER {data.Actor} starts {def.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
         this.World.Events.Post(new WorldActionStartedEvent(data.Actor, runtime));
+        return runtime;
     }
 
     internal WorldActionRuntime Start(WorldActionDef def, Actor actor, FrontierDef frontier)

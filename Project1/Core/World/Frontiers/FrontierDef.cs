@@ -14,8 +14,10 @@ namespace Project1.Core.World.Frontiers
     // todo: instead of loot tables, add finite loot pools, and add regeneration rate of said loot pools
     public class FrontierDef : Def
     {
-        readonly Dictionary<ItemDef, Dictionary<MaterialDef, int>> ResourcesNew = new();
+        [Obsolete]
+        readonly Dictionary<ItemDef, Dictionary<MaterialDef, int>> ResourcesNew = [];
         public LootTable LootTable;
+        public Dictionary<(MaterialRefinementDef matRef, MaterialDef mat), int> ResourceTypes = [];
         public int LootWeightRawMaterial = 1;
         public int LootWeightEquipment = 1;
         public int LootWeightCurrency = 1;

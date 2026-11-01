@@ -3,6 +3,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Materials;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
+using System.Collections.Generic;
 
 namespace Project1.Core.World.Encounters;
 internal sealed class Encounter_FarmLoot : EncounterWorker
@@ -23,6 +24,16 @@ internal sealed class Encounter_FarmLoot : EncounterWorker
         actor.Skills.ApplyXp(desiredLoot.Value.matdef.Type.GatheringSkill, 10);
         actor.AI.State.Log.Write($"I found {loot.LabelReadable} x{foundCount} ({newTotal})");
     }
+
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
+    {
+        if (actor.AI.GetMeta<RoleAdventurerData>() is not RoleAdventurerData adventurer)
+            yield break;
+        var desiredLoot = adventurer.NextDesiredLoot;
+        var weight = desiredLoot.HasValue ? 1 : 0;
+        yield return (EncounterDefOf.FarmLoot, new(frontier, actor), weight);
+    }
+
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     {
         if (actor.AI.GetMeta<RoleAdventurerData>() is not RoleAdventurerData adventurer)

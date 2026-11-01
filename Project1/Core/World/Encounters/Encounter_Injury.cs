@@ -3,6 +3,7 @@ using Project1.Core.Resources;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
 using Project1.Framework;
+using System.Collections.Generic;
 
 namespace Project1.Core.World.Encounters;
 
@@ -19,9 +20,14 @@ internal sealed class Encounter_Injury : EncounterWorker
         $"{actor} received {dmg} damage".ToConsole();
     }
 
-    internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
     {
-        return new(WorldActionDefOf.AvoidInjury, new(frontier, actor));
+        return WorldActionDefOf.AvoidInjury;
+    }
+
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
+    {
+        yield return (EncounterDefOf.Injury, new(frontier, actor), frontier.Def.Tier);
     }
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)

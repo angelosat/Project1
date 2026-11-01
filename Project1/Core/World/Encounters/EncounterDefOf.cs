@@ -17,6 +17,7 @@ static public class EncounterDefOf
     static public readonly EncounterDef RecoverHealth = new("RecoverHealth", typeof(Encounter_RecoverHealth), minutes: 10);
     static public readonly EncounterDef Camp = new("Camp", typeof(Encounter_Camp), minutes: 10);
     static public readonly EncounterDef Exploration = new("Exploration", typeof(Encounter_Exploration), minutes: 10);
+    static public readonly EncounterDef Resource = new("Resource", typeof(Encounter_ResourceNode), minutes: 10);
 
     static EncounterDefOf()
     {

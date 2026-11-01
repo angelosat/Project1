@@ -59,6 +59,10 @@ internal sealed class WorldActionRuntime(WorldActionDef def, WorldActionData dat
     internal void Resolve()
         => this.Def.Worker.Resolve(this.Data);
 
+    public string GetStatusText()
+        => this.Def.Worker.GetStatusText(this);// LabelReadable;
+
+
     internal bool IsFinished => this.Percentage >= 1;
     public Actor Actor => this.Data.Actor;
 

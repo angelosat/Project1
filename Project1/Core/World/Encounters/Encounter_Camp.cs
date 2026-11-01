@@ -3,6 +3,7 @@ using Project1.Core.Needs;
 using Project1.Core.Resources;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Project1.Core.World.Encounters;
@@ -17,9 +18,14 @@ internal sealed class Encounter_Camp : EncounterWorker
         actor.Needs.ApplyAccumulatorDelta(NeedDefOf.Energy, +5);
     }
 
-    internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
     {
-        return (WorldActionDefOf.Rest, new(frontier, actor));
+        return WorldActionDefOf.Rest;
+    }
+
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
+    {
+        yield return (EncounterDefOf.Camp, new(frontier, actor), (int)((1 - actor.Resources.GetPercentage(ResourceDefOf.Health)) * 10));
     }
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)

@@ -2,6 +2,8 @@
 using Project1.Core.World.Frontiers;
 using Project1.Framework.Helpers;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 #nullable enable
 
@@ -72,5 +74,8 @@ internal abstract class EncounterWorker
 
     internal virtual string GetTextStatus(EncounterRuntime encounter) => encounter.Def.LabelReadable;
 
-    internal virtual (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor) => null;
+    //internal virtual (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor) => null;
+    internal virtual WorldActionDef? DecideAction(FrontierRuntime frontier, Actor actor) => null;
+
+    internal abstract IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor);
 }

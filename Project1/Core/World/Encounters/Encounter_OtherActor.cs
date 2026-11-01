@@ -11,6 +11,7 @@ using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.World.Actions;
@@ -105,7 +106,10 @@ internal sealed class Encounter_OtherActor : EncounterWorker
             throw new System.Exception();
     }
 
-
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
+    {
+        yield return (EncounterDefOf.ActorEncounter, new(frontier, actor), (frontier.OccupantCount - 1) * 10);
+    }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;
 

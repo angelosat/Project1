@@ -15,8 +15,12 @@ internal static class PoISystem
         return frontier.FindPoI(actor);
     }
 
-    public static PoIRuntime SelectPoI(FrontierRuntime frontier, Actor actor)
-        => frontier.PoIs.SelectRandom(actor.World.Random);
+    public static (PoIRuntime poi, int id) SelectPoI(FrontierRuntime frontier, Actor actor)
+    {
+        var poi = frontier.PoIs.SelectRandom(actor.World.Random);
+        var id = frontier.PoIs.IndexOf(poi);
+        return (poi, id);
+    }
 
     //public static IEnumerable<int> RollTimeline(PoIRuntime poi)
     //{

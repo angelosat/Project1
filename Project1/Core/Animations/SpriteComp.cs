@@ -10,7 +10,6 @@ using Project1.Core.Rendering;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
-using Project1.Core.Systems.Plants;
 using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.Helpers;

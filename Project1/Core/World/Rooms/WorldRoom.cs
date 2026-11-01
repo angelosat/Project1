@@ -10,7 +10,7 @@ public abstract class WorldRoom
 {
     protected readonly HashSet<EntityRefId> ActorsActive = [];
 
-    public IReadOnlyList<EntityRefId> ActorsActiveNew => (IReadOnlyList<EntityRefId>)this.ActorsActive;
+    public IReadOnlyCollection<EntityRefId> ActorsActiveNew => this.ActorsActive;
 
     public int OccupantCount => this.ActorsActive.Count;
 

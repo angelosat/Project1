@@ -1,5 +1,4 @@
-﻿using Project1.Core.Simulation;
-using Project1.Core.World.Frontiers;
+﻿using Project1.Core.World.Frontiers;
 
 namespace Project1.Core.World.Actions;
 

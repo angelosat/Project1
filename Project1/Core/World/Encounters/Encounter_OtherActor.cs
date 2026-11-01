@@ -21,7 +21,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
   
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
-        => (frontier.OccupantCount - 1) * 10;
+        => (frontier.OccupantCount - 1) * 100;
 
     //protected override void OnBegin(FrontierRuntime frontier, Actor actor)
     //{
@@ -108,7 +108,14 @@ internal sealed class Encounter_OtherActor : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.ActorEncounter, new(frontier, actor), (frontier.OccupantCount - 1) * 10);
+        //yield return (EncounterDefOf.ActorEncounter, new(frontier, actor), (frontier.OccupantCount - 1) * 100);
+        foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(frontier, actor) { Other = id }, 100)))
+            yield return k;
+    }
+
+    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    {
+        return WorldActionDefOf.Combat;
     }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;

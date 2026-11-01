@@ -73,6 +73,6 @@ internal class Encounter_PoIEntrance : EncounterWorker
     {
         var poi = PoISystem.SelectPoI(frontier, actor);
 
-        yield return (EncounterDefOf.PoIEntrance, new WorldActionData_PoI(frontier, actor) { PoIId = poi.id }, frontier.PoIs.Count * 100);
+        yield return (EncounterDefOf.PoIEntrance, new WorldActionData_PoI(frontier, actor) { PoIId = poi.id }, frontier.PoIs.Count);// * 100);
     }
 }

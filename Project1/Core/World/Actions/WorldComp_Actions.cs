@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
-using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,5 +67,10 @@ internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
     {
         this.ActiveActions.Remove(actor);
         this.World.Events.Post(new WorldActionFinishedEvent(actor));
+    }
+
+    internal void Interrupt(Actor actor)
+    {
+        this.Finish(actor);
     }
 }

@@ -322,7 +322,8 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
 
     public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {
-        var tier = 1 + entity.World.Random.Next(this.Frontiers.Count);
+        // TODO uncommment the line below
+        var tier = 1;// + entity.World.Random.Next(this.Frontiers.Count);
         /*return*/ this.PlaceAt(entity, tier);
         return this.GetFrontier(entity).Def;
     }
@@ -352,7 +353,8 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
                     //Ticks.FromMinutes(3),
                     Ticks.FromMinutes(10),
                     Ticks.FromMinutes(30),
-                    new()));
+                    //new()));
+                    actor.World.Random));
     }
 
     internal void BeginEncounter(Actor actor, EncounterDef encounterDef)
@@ -461,4 +463,5 @@ internal record struct EncounterBeginEvent(Entity Entity, EncounterRuntime Encou
 internal record struct EncounterEndEvent(Entity Entity) : IEventPayload { }
 
 internal record struct ActorEnterPoIEvent(Actor Actor, FrontierRuntime Frontier, PoIRuntime PoI) : IEventPayload;
+
 internal record struct ActorExitPoIEvent(Actor Actor) : IEventPayload;

@@ -44,6 +44,8 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     private void PerformAttack(Actor attacker, Actor defender)
     {
+        if (!attacker.Net.IsServer)
+            return;
         var result = CombatSystem.ResolveHit(attacker, defender);
         switch (result.Type)
         {

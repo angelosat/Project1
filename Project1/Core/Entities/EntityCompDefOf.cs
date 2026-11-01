@@ -18,6 +18,7 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Equipment;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.MentalState;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Recipes;
@@ -67,6 +68,7 @@ namespace Project1.Core.Entities
         public static readonly EntityCompDef MentalState = new("MentalState", typeof(MentalStateComp));
         public static readonly EntityCompDef Abilities = new("Abilities", typeof(AbilitiesComp));
         public static readonly EntityCompDef Recipes = new("Recipes", typeof(RecipesComp));
+        public static readonly EntityCompDef Ingredient = new("Ingredient", typeof(EntityComp_Ingredient));
         static EntityCompDefOf()
         {
             Def.Register(typeof(EntityCompDefOf));

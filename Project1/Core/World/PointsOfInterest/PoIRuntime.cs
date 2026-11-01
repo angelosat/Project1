@@ -14,7 +14,10 @@ internal class PoIRuntime : WorldRoom
     static EncounterDef[] Encounters;
     static PoIRuntime()
     {
-        Encounters = [EncounterDefOf.PoIExit];
+        Encounters = [
+            EncounterDefOf.PoIExit, 
+            EncounterDefOf.Camp
+            ];
     }
     internal IEnumerable<EncounterDef> GetEncounters() => Encounters;
 

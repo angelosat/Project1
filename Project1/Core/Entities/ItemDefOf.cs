@@ -34,7 +34,8 @@ static class ItemDefOf
         Category = ItemCategoryDefOf.RawMaterials,
         Body = new Bone(BoneDefOf.Item, Sprite.Default) { DrawMaterialColor = true },
         DefaultBoneStruct = BoneStructureDefOf.Default,
-        ProfileType = typeof(MaterialRefinementDef)
+        ProfileType = typeof(MaterialRefinementDef),
+        CompDefs = [EntityCompDefOf.Ingredient],
     };
     static public readonly ItemDef UnfinishedItem = new ItemDef("UnfinishedItem", typeof(Entity))
     {

@@ -13,7 +13,7 @@ namespace Project1.Core.World.Combat;
 [EnsureStaticCtorCall]
 internal static class CombatSystem
 {
-    static readonly Random Random = new();
+    //static readonly Random Random = new();
     static readonly Dictionary<DamageDef, DamageResistanceDef> DamageToResistanceDefs;
 
     static CombatSystem()
@@ -27,15 +27,16 @@ internal static class CombatSystem
         var attackerId = attacker.RefId;
 
         var toHit = (int)attacker.Stats.Get(StatDefOf.HitChance);
-        if (!Random.Roll100(toHit))
+        var random = attacker.World.Random;
+        if (!random.Roll100(toHit))
             return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty);
 
         var dodge = defender.Stats.Get(StatDefOf.DodgeChance);
-        if (Random.Roll100((int)dodge))
+        if (random.Roll100((int)dodge))
             return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty);
 
         var parry = defender.Stats.Get(StatDefOf.ParryChance);
-        if (Random.Roll100((int)parry))
+        if (random.Roll100((int)parry))
             return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty);
 
         var damageValue = attacker.Gear.GetDamage();

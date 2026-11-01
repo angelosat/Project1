@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
+using Project1.Core.Systems.Crafting;
 using Project1.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,10 +71,15 @@ public class MaterialSystem
                 bone.Material = overridenMaterial;
             else
                 bone.Material = defaultMaterial;
-        item.Name = $"{item.Body.Material.LabelReadable} {stage.LabelReadable}";
+        //item.Name = $"{item.Body.Material.LabelReadable} {stage.LabelReadable}";
+        item.Name = DeriveName(item);
         item.Initialize();
         return item;
     }
+
+    static string DeriveName(Entity item)
+        => $"{item.Body.Material.LabelReadable} {item.Profile.LabelReadable}";
+    
 
     static public IEnumerable<Entity> GenerateTemplates()
     {
@@ -90,5 +96,10 @@ public class MaterialSystem
     internal static Entity Create(EntityCreationRequest req)
     {
         return Create(req.Context as MaterialRefinementDef, req.DefaultMaterial, req.MaterialBindings, req.StackSize);// req.DefaultMaterial);
+    }
+
+    internal static void PostLoad(EntityComp_Ingredient comp)
+    {
+        comp.Owner.Name = DeriveName(comp.Owner);
     }
 }

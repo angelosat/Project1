@@ -22,6 +22,7 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef Rest = new("Resting", typeof(WorldActionWorker_Resting), duration: Ticks.FromMinutes(30));
     static public readonly WorldActionDef AvoidInjury = new("AvoidInjury", typeof(WorldActionWorker_AvoidInjury), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Explore = new("Exploring", typeof(WorldActionWorker_Exploration), duration: Ticks.FromMinutes(10));
+    static public readonly WorldActionDef Combat = new("Combat", typeof(WorldActionWorker_CombatBegin), duration: Ticks.FromMinutes(1));
     static WorldActionDefOf()
     {
         Def.Register(typeof(WorldActionDefOf));

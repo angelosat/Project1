@@ -5,7 +5,7 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions;
 
-internal sealed class WorldActionData_PoI(FrontierRuntime frontier, Actor actor) : WorldActionData(frontier, actor)
+internal sealed record WorldActionData_PoI(FrontierRuntime Frontier, Actor Actor) : WorldActionData(Frontier, Actor)
 {
     internal PoIRuntime PoI => field ??= this.Frontier.PoIs[this.PoIId];
     internal required int PoIId;

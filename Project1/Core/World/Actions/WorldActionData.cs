@@ -4,11 +4,11 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions;
 
-internal class WorldActionData(FrontierRuntime frontier, Actor actor) : ISerializable
+internal record WorldActionData(FrontierRuntime Frontier, Actor Actor) : ISerializable
 {
-    internal readonly FrontierRuntime Frontier = frontier;
+    //internal readonly FrontierRuntime Frontier = frontier;
 
-    internal readonly Actor Actor = actor;
+    //internal readonly Actor Actor = actor;
 
     public virtual ISerializable Read(IDataReader r) { return this; }
 

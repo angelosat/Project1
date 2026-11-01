@@ -1,7 +1,8 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
-using Project1.Core.World.Rooms;
+using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
+using Project1.Core.World.Rooms;
 using Project1.Framework.Events;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ namespace Project1.Core.World.PointsOfInterest;
 
 internal class PoIRuntime : WorldRoom
 {
+    static EncounterDef[] Encounters;
+    static PoIRuntime()
+    {
+        Encounters = [EncounterDefOf.PoIExit];
+    }
+    internal IEnumerable<EncounterDef> GetEncounters() => Encounters;
+
     public readonly PoIDef Def;
 
     readonly HashSet<EntityRefId>

@@ -57,12 +57,12 @@ internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
         return runtime;
     }
 
-    internal WorldActionRuntime Start(WorldActionDef def, Actor actor, FrontierDef frontier)
-    {
-        var runtime = new WorldActionRuntime(def, new(this.World.Space.Get(frontier), actor));
-        this.ActiveActions.Add(actor, runtime);
-        return runtime;
-    }
+    //internal WorldActionRuntime Start(WorldActionDef def, Actor actor, FrontierDef frontier)
+    //{
+    //    var runtime = new WorldActionRuntime(def, new(this.World.Space.Get(frontier), actor));
+    //    this.ActiveActions.Add(actor, runtime);
+    //    return runtime;
+    //}
 
     internal void Finish(Actor actor)
     {

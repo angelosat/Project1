@@ -1,5 +1,4 @@
 ﻿using Project1.Framework;
-using System.ComponentModel.DataAnnotations;
 
 namespace Project1.Core.World.Actions;
 
@@ -7,9 +6,15 @@ namespace Project1.Core.World.Actions;
 static public class WorldActionDefOf
 {
     static public readonly WorldActionDef EnterPoI = new("EnterPoI",
-                                                         workerType: typeof(WorldActionWorker_EnterPoI),
+                                                         workerType: typeof(WorldActionWorker_PoIEnter),
                                                          dataType: typeof(WorldActionData_PoI),
                                                          duration: Ticks.FromMinutes(5));
+
+    static public readonly WorldActionDef ExitPoI = new("ExitPoI",
+                                                         workerType: typeof(WorldActionWorker_PoIExit),
+                                                         //dataType: typeof(WorldActionData_PoI),
+                                                         duration: Ticks.FromMinutes(5));
+
     static public readonly WorldActionDef HarvestResource = new("HarvestResource",
                                                                 workerType: typeof(WorldActionWorker_HarvestResource),
                                                                 dataType: typeof(WorldActionData_HarvestResource),

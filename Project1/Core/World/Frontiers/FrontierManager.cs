@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Project1.Core.World.Frontiers;
 
 public class FrontierManager : WorldComp, IWorldSpaceManager
@@ -25,6 +27,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
     readonly Dictionary<Actor, EncounterRuntime> ActiveEncounters = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
+    readonly Dictionary<Actor, PoIRuntime> ActorsInPoIs = [];
     static readonly HashSet<FrontierDef> _cachedDefs;// = [];
     //public StaticWorld World { get; }
     static readonly List<EncounterWorker> _offmapActivities = [];
@@ -301,13 +304,22 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         //    return;
         //this.World.Actions.Start(action.Value.actionDef, action.Value.data);
 
-        var candidates = EncounterDefs.SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
+        var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
         var (encounter, context, weight) = candidates.SelectRandomWeighted(this.World.Random, f => f.weight);
         //var action = encounter.Worker.DecideAction(frontier, actor);
         if (encounter.Worker.DecideAction(frontier, actor) is not WorldActionDef action)
             return;
         this.World.Actions.Start(action, context);
     }
+
+    private IEnumerable<EncounterDef> GetAvailableEncounters(Actor actor)
+    //=> EncounterDefs;
+    {
+        if (this.GetPoi(actor) is PoIRuntime poi)
+            return poi.GetEncounters();
+        return EncounterDefs;
+    }
+
     public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
     {
         var tier = 1 + entity.World.Random.Next(this.Frontiers.Count);
@@ -366,6 +378,9 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
 
     internal string GetStatusText(Actor actor)
     {
+        var poi = this.GetPoi(actor);
+        if(poi is not null)
+            return $"{poi.Def.LabelReadable}";// {frontier.Exploration.ToStringPercentage()}";
         var frontier = this.GetFrontier(actor);
         if (frontier is not null)
             return $"{frontier.Def.LabelReadable}";// {frontier.Exploration.ToStringPercentage()}";
@@ -416,8 +431,34 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         box.AddControlsVertically(list);
         return box;
     }
+    internal void ActorEnterPoI(Actor actor, FrontierDef frontierDef, int id)
+        => this.ActorPoIEnter(actor, this.Get(frontierDef), id);
+
+    internal void ActorPoIEnter(Actor actor, FrontierRuntime frontier, int id)
+    {
+        var poi = frontier.PoIs[id];
+        poi.Add(actor);
+        this.ActorsInPoIs.Add(actor, poi);
+        this.World.Events.Post(new ActorEnterPoIEvent(actor, frontier, poi));
+        this.Notifier.Notify();
+    }
+
+    internal void ActorPoIExit(Actor actor)
+    {
+        var poi = this.GetPoi(actor);
+        poi.Remove(actor);
+        this.ActorsInPoIs.Remove(actor);
+        this.World.Events.Post(new ActorExitPoIEvent(actor));
+        this.Notifier.Notify();
+    }
+
+    internal PoIRuntime? GetPoi(Actor actor)
+        => this.ActorsInPoIs.GetValueOrDefault(actor);
 }
 
 internal record struct EncounterBeginEvent(Entity Entity, EncounterRuntime Encounter) : IEventPayload { }
 
 internal record struct EncounterEndEvent(Entity Entity) : IEventPayload { }
+
+internal record struct ActorEnterPoIEvent(Actor Actor, FrontierRuntime Frontier, PoIRuntime PoI) : IEventPayload;
+internal record struct ActorExitPoIEvent(Actor Actor) : IEventPayload;

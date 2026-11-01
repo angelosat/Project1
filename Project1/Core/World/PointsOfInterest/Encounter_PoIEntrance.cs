@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Diagnostics;
 
 namespace Project1.Core.World.PointsOfInterest;
 
-internal class Encounter_PoIExploration : EncounterWorker
+internal class Encounter_PoIEntrance : EncounterWorker
 {
     internal sealed class Context : EncounterContext
     {
@@ -53,7 +54,7 @@ internal class Encounter_PoIExploration : EncounterWorker
         => 1/* + (actor exploration skill * .01f)*/;
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-       => frontier.PoIs.Count;// * 50;
+       => frontier.PoIs.Count * 50;
 
     internal override int GetDurationMultiplier(EncounterContext context)
         => Typed(context).PoI.Size;
@@ -72,6 +73,6 @@ internal class Encounter_PoIExploration : EncounterWorker
     {
         var poi = PoISystem.SelectPoI(frontier, actor);
 
-        yield return (EncounterDefOf.PoIExploration, new WorldActionData_PoI(frontier, actor) { PoIId = poi.id }, frontier.PoIs.Count);
+        yield return (EncounterDefOf.PoIEntrance, new WorldActionData_PoI(frontier, actor) { PoIId = poi.id }, frontier.PoIs.Count * 100);
     }
 }

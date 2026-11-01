@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using static Project1.Core.Blocks.Block;
 
 namespace Project1.Core.Simulation;
 
@@ -43,6 +44,7 @@ public class StaticWorld : WorldBase
     internal readonly WorldComp_Factions Factions;
     internal readonly WorldComp_Combat Combat;
     internal readonly WorldComp_Actions Actions;
+    internal readonly FrontierManager Frontiers;
     public IWorldSpaceManager Space;
     ulong currentTick;
     public override SimulationTick CurrentTick { get => this.currentTick; set => this.currentTick = value; }
@@ -88,6 +90,7 @@ public class StaticWorld : WorldBase
         this.Combat = new(this);
         this.Actions = new(this);
         this.Space = new FrontierManager(this);
+        this.Frontiers = (FrontierManager)this.Space;
 
         this.Comps.AddRange(
             this.Space as FrontierManager,
@@ -329,5 +332,6 @@ public class StaticWorld : WorldBase
 
     public override Faction GetFaction(FactionId id)
         => this.FactionRegistry[id];
-    
+
+   
 }

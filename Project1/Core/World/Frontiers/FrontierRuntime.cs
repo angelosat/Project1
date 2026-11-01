@@ -2,7 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Materials;
+using Project1.Core.World.Actions;
 using Project1.Core.World.PointsOfInterest;
 using Project1.Core.World.Rooms;
 using Project1.Framework.Events;
@@ -114,4 +114,5 @@ public class FrontierRuntime : WorldRoom
             poi.Init(this.World);
         this.World.Events.Post(new PoIAddedEvent(this.Def, poi));
     }
+
 }

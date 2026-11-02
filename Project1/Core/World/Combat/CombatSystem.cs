@@ -42,8 +42,10 @@ internal static class CombatSystem
         if (random.Roll100((int)parry))
             return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty);
 
-        var damageValue = attacker.Gear.GetDamage();
-        var damageType = attacker.Gear.GetDamageType();
+        //var unarmedDamage = 1;
+        //var damageValue = attacker.Gear.GetDamage();
+        //var damageType = attacker.Gear.GetDamageType();
+        var (damageValue, damageType) = attacker.Gear.GetWeaponDamage();
 
         var armor = defender.Stats.Get(StatDefOf.Armor);
         var resistandeDef = DamageToResistanceDefs[damageType];

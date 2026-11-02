@@ -1,4 +1,5 @@
-﻿using Project1.Core.Components;
+﻿using Project1.Core.Attributes;
+using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
@@ -21,7 +22,8 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     readonly static int BaseCooldown = Ticks.FromMinutes(10);
 
-    int CooldownFirst = BaseCooldown, CooldownSecond = BaseCooldown;
+    int CooldownFirst,// = BaseCooldown,
+        CooldownSecond;// = BaseCooldown;
 
     internal bool IsResolved { get; private set; }
 
@@ -29,27 +31,28 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     {
         if (this.IsResolved)
             throw new InvalidOperationException("Ticked a resolved combat encounter");
-        var world = (StaticWorld)this.First.World;
-        if (world.Actions.GetAction(this.First) is null)
+        //var world = (StaticWorld)this.First.World;
+        //if (world.Actions.GetAction(this.First) is null)
+        if(this.CooldownFirst > 0)
             this.CooldownFirst -= 1;
-        if (CooldownFirst <= 0)
+        else//if (CooldownFirst <= 0)
         {
             //PerformAttack(First, Second);
-            PerformAttackNew(First, Second);
-            CooldownFirst = BaseCooldown;
-
+            this.PerformAttackNew(this.First, this.Second);
+            this.CooldownFirst = ResetCooldown(this.First);// BaseCooldown;
         }
 
         if (this.IsResolved)
             return;
 
-        if (world.Actions.GetAction(this.Second) is null)
+        //if (world.Actions.GetAction(this.Second) is null)
+        if (this.CooldownSecond > 0)
             this.CooldownSecond -= 1;
-        if (CooldownSecond <= 0)
+        else//if (CooldownSecond <= 0)
         {
             //PerformAttack(Second, First);
-            PerformAttackNew(Second, First);
-            CooldownSecond = BaseCooldown;
+            this.PerformAttackNew(this.Second, this.First);
+            this.CooldownSecond = ResetCooldown(this.Second);// BaseCooldown;
 
         }
 
@@ -72,6 +75,11 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         //    //PerformAttack(Second, First);
         //    PerformAttackNew(Second, First);
         //}
+    }
+    int ResetCooldown(Actor actor)
+    {
+        var dexterity = actor.Attributes.Get(AttributeDefOf.Dexterity);
+        return (int)(BaseCooldown * (1 - dexterity / 100f));
     }
     void PerformAttackNew(Actor attacker, Actor defender)
     {

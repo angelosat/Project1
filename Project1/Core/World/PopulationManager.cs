@@ -149,6 +149,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
         //need.Value = this.World.Random.Next(0, 100);
         //actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
+        actor.Attributes.Randomize();
         actor.Skills.Randomize();
         actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
@@ -263,25 +264,18 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var btnnew = new Panel() { AutoSize = true };// 0,0, BackgroundStyle.LargeButton.Right.Width, BackgroundStyle.LargeButton.Right.Height);
         var render = new PictureBox(npc.RenderIcon());
         var btnName = new LabelNew(npc);
+        var health = npc.GetHealth();
+        var w = 150;
+        var barName = new BarNew(() => health.Max, () => health.Value, w, () => npc.Name);
         //var btnActivity = new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
         var btnActivity = new LabelNew(() => $"{this.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
-        //var barActivity = new BarNew(
-        //    //() => manager.GetEncounter(npc)?.Max ?? 0, 
-        //    //() => manager.GetEncounter(npc)?.Current ?? 0, 
-        //    () => manager.GetEncounter(npc)?.GetMax() ?? 0,
-        //    () => manager.GetEncounter(npc)?.GetCurrent() ?? 0,
-        //    100,
-        //    () => manager.GetEncounter(npc)?.Def.LabelReadable ?? "idle");
         var actionsManager = this.World.Actions;
-        var barActivity = new BarNew(
-            //() => manager.GetEncounter(npc)?.Max ?? 0, 
-            //() => manager.GetEncounter(npc)?.Current ?? 0, 
-            () => actionsManager.GetAction(npc)?.Max ?? 0,
-            () => actionsManager.GetAction(npc)?.Current ?? 0,
-            100,
-            () => actionsManager.GetStatusText(npc));// actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle")
+        var barActivity = actionsManager.GetActorControl(npc, w);
         var text = new GroupBox();
-        text.AddControlsVertically(btnName, btnActivity, barActivity);
+        text.AddControlsVertically(//btnName,
+                                   barName,
+                                   btnActivity,
+                                   barActivity);
         btnnew.AddControlsHorizontally(render, text);
         return btnnew;
     }

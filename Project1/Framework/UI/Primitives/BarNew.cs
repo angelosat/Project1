@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core;
-using Project1.Core.Entities;
-using Project1.Core.Screens;
-using Project1.Core.UI;
 using System;
 
 namespace Project1.Framework.UI.Primitives;
@@ -56,6 +52,7 @@ public class BarNew : ButtonBase
     {
         this.Width = width;
         this.TextFunc = textFunc;
+        this.HoverFunc = () => $"{this.Value} / {this.Max}";
     }
     public override void Update()
     {

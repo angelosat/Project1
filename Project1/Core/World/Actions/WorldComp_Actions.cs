@@ -2,6 +2,8 @@
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Framework;
+using Project1.Framework.UI;
+using Project1.Framework.UI.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -72,5 +74,15 @@ internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
     internal void Interrupt(Actor actor)
     {
         this.Finish(actor);
+    }
+
+    internal Control GetActorControl(Actor actor, int width)
+    {
+        var barActivity = new BarNew(
+            () => this.GetAction(actor)?.Max ?? 0,
+            () => this.GetAction(actor)?.Current ?? 0,
+            width,
+            () => this.GetStatusText(actor));
+        return barActivity;
     }
 }

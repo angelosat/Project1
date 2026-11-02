@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Attributes;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Stats;
 using Project1.Core.World.Actions;
@@ -41,8 +42,10 @@ internal class WorldActionWorker_Attack : WorldActionWorker
     internal override float GetDurationMultiplier(WorldActionData data)
     {
         var actor = data.Actor;
+        var dexterity = actor.Attributes.Get(AttributeDefOf.Dexterity);
+        var dexMultiplier = 1 - dexterity / 100f;
         var speed = actor.Stats.Get(StatDefOf.SwingSpeed);
-        return speed;
+        return speed * dexMultiplier;
     }
 }
 

@@ -39,7 +39,11 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
     }
     public AttributeRuntime GetAttribute(AttributeDef def)
         => this.Attributes[def];//.FirstOrDefault(att => att.Def == def);
-    
+
+    public int Get(AttributeDef def)
+     => this.Attributes[def].Level;//.FirstOrDefault(att => att.Def == def);
+
+
     public int GetLevel(AttributeDef def)   
         => this.Attributes[def].Level;
 

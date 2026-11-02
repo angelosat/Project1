@@ -47,7 +47,7 @@ internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
     internal bool IsBusy(Actor actor)
         => this.ActiveActions.ContainsKey(actor);
 
-    internal WorldActionRuntime Start(WorldActionDef def, WorldActionData data)
+    internal WorldActionRuntime Begin(WorldActionDef def, WorldActionData data)
     {
         var runtime = new WorldActionRuntime(def, data);
         this.ActiveActions.Add(data.Actor, runtime);

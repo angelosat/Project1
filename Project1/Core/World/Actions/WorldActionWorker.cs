@@ -1,12 +1,14 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.Frontiers;
-using Project1.Framework.Helpers;
 
 namespace Project1.Core.World.Actions;
 
 public abstract class WorldActionWorker
 {
-    internal virtual int GetDurationMultiplier(WorldActionData data)
+    internal virtual WorldActionData CreateData(FrontierRuntime frontier, Actor actor)
+        => new(frontier, actor);
+
+    internal virtual float GetDurationMultiplier(WorldActionData data)
         => 1;
 
     internal virtual string GetStatusText(WorldActionRuntime runtime)

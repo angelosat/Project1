@@ -52,7 +52,7 @@ static class Packets_WorldActions
         //var runtime = world.Actions.Start(actionDef, actor!, frontierDef);
         var data = WorldActionSystem.CreateData(actionDef, frontier, actor);
         data.Read(r);
-        var runtime = world.Actions.Start(actionDef, data);
+        var runtime = world.Actions.Begin(actionDef, data);
         $"CLIENT {actor} starts {actionDef.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
     }
 

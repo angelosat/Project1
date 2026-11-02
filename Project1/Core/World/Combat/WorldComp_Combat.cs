@@ -35,6 +35,8 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
 
     internal override void Tick()
     {
+        if (!this.World.Net.IsServer)
+            return;
         var toRemove = new List<CombatRuntime>(this.ActiveCombatSessions.Count);
         foreach (var combat in this.ActiveCombatSessions.Values)
         {

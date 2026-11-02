@@ -1,4 +1,5 @@
-﻿using Project1.Framework;
+﻿using Project1.Core.World.Combat;
+using Project1.Framework;
 
 namespace Project1.Core.World.Actions;
 
@@ -23,6 +24,10 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef AvoidInjury = new("AvoidInjury", typeof(WorldActionWorker_AvoidInjury), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Explore = new("Exploring", typeof(WorldActionWorker_Exploration), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Combat = new("Combat", typeof(WorldActionWorker_CombatBegin), duration: Ticks.FromMinutes(1));
+    static public readonly WorldActionDef Attack = new("Attacking",
+                                                       workerType: typeof(WorldActionWorker_Attack),
+                                                       dataType: typeof(WorldActionWorker_Attack.Data),
+                                                       duration: Ticks.FromMinutes(5));
     static WorldActionDefOf()
     {
         Def.Register(typeof(WorldActionDefOf));

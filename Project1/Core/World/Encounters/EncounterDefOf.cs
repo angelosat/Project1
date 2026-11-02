@@ -1,4 +1,5 @@
-﻿using Project1.Core.World.Encounters;
+﻿using Project1.Core.World.Combat;
+using Project1.Core.World.Encounters;
 using Project1.Core.World.PointsOfInterest;
 using Project1.Framework;
 
@@ -19,6 +20,7 @@ static public class EncounterDefOf
     static public readonly EncounterDef Camp = new("Camp", typeof(Encounter_Camp), minutes: 10);
     static public readonly EncounterDef Exploration = new("Exploration", typeof(Encounter_Exploration), minutes: 10);
     static public readonly EncounterDef Resource = new("Resource", typeof(Encounter_ResourceNode), minutes: 10);
+    static public readonly EncounterDef Combat = new("Combat", typeof(Encounter_Combat), minutes: 0);
 
     static EncounterDefOf()
     {

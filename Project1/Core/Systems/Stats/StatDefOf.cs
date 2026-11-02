@@ -166,13 +166,3 @@ public static class StatDefOf
             Def.Register(to);
     }
 }
-
-sealed class StatResolver_HitChance : StatResolver
-{
-    public override float CalculateActorStat(StatDef def, Actor actor)
-    {
-        var meleeSkill = actor.Skills.GetLevel(SkillDefOf.Melee);
-        var dexterity = actor.Attributes.GetLevel(AttributeDefOf.Dexterity);
-        return (meleeSkill / 5f) + dexterity;
-    }
-}

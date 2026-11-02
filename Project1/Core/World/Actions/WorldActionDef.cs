@@ -1,7 +1,4 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.World.Frontiers;
-using Project1.Framework.Helpers;
-using System;
+﻿using System;
 
 namespace Project1.Core.World.Actions;
 
@@ -10,6 +7,4 @@ public sealed class WorldActionDef(string name, Type workerType, Type dataType =
     public readonly int BaseDuration = duration;
     public readonly WorldActionWorker Worker = (WorldActionWorker)Activator.CreateInstance(workerType);
     public readonly Type DataType = dataType ?? typeof(WorldActionData);
-
-
 }

@@ -1,6 +1,10 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Components;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
+using Project1.Core.World.Actions;
+using Project1.Core.World.Frontiers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,23 +29,55 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     {
         if (this.IsResolved)
             throw new InvalidOperationException("Ticked a resolved combat encounter");
-
-        if (--CooldownFirst <= 0)
+        var world = (StaticWorld)this.First.World;
+        if (world.Actions.GetAction(this.First) is null)
+            this.CooldownFirst -= 1;
+        if (CooldownFirst <= 0)
         {
+            //PerformAttack(First, Second);
+            PerformAttackNew(First, Second);
             CooldownFirst = BaseCooldown;
-            PerformAttack(First, Second);
+
         }
 
         if (this.IsResolved)
             return;
 
-        if (--CooldownSecond <= 0)
+        if (world.Actions.GetAction(this.Second) is null)
+            this.CooldownSecond -= 1;
+        if (CooldownSecond <= 0)
         {
+            //PerformAttack(Second, First);
+            PerformAttackNew(Second, First);
             CooldownSecond = BaseCooldown;
-            PerformAttack(Second, First);
-        }
-    }
 
+        }
+
+        //if (this.IsResolved)
+        //    throw new InvalidOperationException("Ticked a resolved combat encounter");
+
+        //if (--CooldownFirst <= 0)
+        //{
+        //    CooldownFirst = BaseCooldown;
+        //    //PerformAttack(First, Second);
+        //    PerformAttackNew(First, Second);
+        //}
+
+        //if (this.IsResolved)
+        //    return;
+
+        //if (--CooldownSecond <= 0)
+        //{
+        //    CooldownSecond = BaseCooldown;
+        //    //PerformAttack(Second, First);
+        //    PerformAttackNew(Second, First);
+        //}
+    }
+    void PerformAttackNew(Actor attacker, Actor defender)
+    {
+        var world = (StaticWorld)attacker.World;
+        world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker.Frontier, attacker) { TargetId = defender.RefId });
+    }
     private void PerformAttack(Actor attacker, Actor defender)
     {
         if (!attacker.Net.IsServer)
@@ -68,5 +104,15 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     internal Actor Other(Actor actor)
     {
         return actor == this.First ? this.Second : this.First;
+    }
+
+    internal void MarkResolved()
+    {
+        this.IsResolved = true;
+    }
+
+    internal void Record(AttackResult result)
+    {
+        this.Log.Add(result);
     }
 }

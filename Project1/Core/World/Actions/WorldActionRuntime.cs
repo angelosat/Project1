@@ -29,7 +29,7 @@ internal sealed class WorldActionRuntime(WorldActionDef def, WorldActionData dat
 
     //internal FrontierDef FrontierDef;
 
-    internal readonly int Max = def.BaseDuration * def.Worker.GetDurationMultiplier(data);
+    internal readonly int Max = (int)(def.BaseDuration * def.Worker.GetDurationMultiplier(data));
     //internal float GetMax() => this.Context.GetMax(this);
     //internal float GetCurrent() => this.Context.GetCurrent(this);
     //public float Percentage => this.Context.GetPercentage(this);// this.Current / this.Max;

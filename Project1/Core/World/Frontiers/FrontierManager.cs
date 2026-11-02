@@ -19,7 +19,6 @@ using System.Linq;
 #nullable enable
 
 namespace Project1.Core.World.Frontiers;
-
 public class FrontierManager : WorldComp, IWorldSpaceManager
 {
     readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
@@ -161,7 +160,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         foreach (var (actor, distance) in snapshot)
         {
             //if (!this.IsEngaged(actor))
-            if (!this.World.Actions.IsBusy(actor))
+            if (!this.World.Actions.IsBusy(actor) && !this.World.Combat.IsEngaged(actor))
                 {
                 var prevFrontier = this.GetFrontier(actor);
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
@@ -309,12 +308,14 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         //var action = encounter.Worker.DecideAction(frontier, actor);
         if (encounter.Worker.DecideAction(frontier, actor) is not WorldActionDef action)
             return;
-        this.World.Actions.Start(action, context);
+        this.World.Actions.Begin(action, context);
     }
 
     private IEnumerable<EncounterDef> GetAvailableEncounters(Actor actor)
     //=> EncounterDefs;
     {
+        //if (this.World.Combat.IsEngaged(actor))
+        //    return [EncounterDefOf.Combat];
         if (this.GetPoi(actor) is PoIRuntime poi)
             return poi.GetEncounters();
         return EncounterDefs;

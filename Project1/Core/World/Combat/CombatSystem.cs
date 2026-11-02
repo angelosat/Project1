@@ -1,11 +1,14 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Stats;
+using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Stats;
 using Project1.Framework;
 using Project1.Framework.Helpers;
-using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Project1.Core.World.Combat;
@@ -51,5 +54,31 @@ internal static class CombatSystem
         // TODO calculate damage mitigation
 
         return new(tick, attackerId, AttackResultTypes.Hit, finalDamage);
+    }
+
+    static public void PerformAttack(Actor attacker)
+    {
+        if (!attacker.Net.IsServer)
+            return;
+        var world = (StaticWorld)attacker.World;
+        var runtime = world.Combat.Get(attacker);
+        var defender = runtime.Other(attacker);
+        var result = ResolveHit(attacker, defender);
+        switch (result.Type)
+        {
+            case AttackResultTypes.Miss:
+            case AttackResultTypes.Dodge:
+            case AttackResultTypes.Parry:
+                break;
+            case AttackResultTypes.Hit:
+                var damage = result.Damage;
+                defender.Resources.ApplyDelta(ResourceDefOf.Health, -damage.Value);
+                if (defender.Biology.IsIncapacitated)
+                    runtime.MarkResolved();
+                break;
+            default:
+                throw new UnreachableException();
+        }
+        runtime.Record(result);
     }
 }

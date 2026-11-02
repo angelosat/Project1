@@ -23,5 +23,10 @@ internal class Encounter_Combat : EncounterWorker
         => 0;
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
-        => [];
+        => [(EncounterDefOf.Combat, new(frontier, actor), 1)];
+
+    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    {
+        return WorldActionDefOf.Attack;
+    }
 }

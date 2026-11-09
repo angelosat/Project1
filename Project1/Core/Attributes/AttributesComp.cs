@@ -12,12 +12,15 @@ namespace Project1.Core.Attributes;
 class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Attributes;
+
     public override string Name { get; } = "Attributes";
+
     public Dictionary<AttributeDef, AttributeRuntime> Attributes = [];
+
     public AttributeRuntime this[AttributeDef def] => this.GetAttribute(def);
-    public AttributesComp()
-    {
-    }
+
+    public AttributesComp() { }
+
     internal override void CopyFrom(EntityComp source)
     {
         var atts = ((AttributesComp)source).Attributes.Values;
@@ -26,46 +29,34 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
             this.Attributes.Add(a.AttributeDef, new AttributeRuntime(a.AttributeDef, (int)a.Progress.Value));
         this.Randomize();
     }
+
     public void Add(AttributeDef def)
     {
         this.Attributes.Add(def, new AttributeRuntime(def));
     }
+
     public override void Tick()
     {
-        //for (int i = 0; i < this.Attributes.Length; i++)
-        //    this.Attributes[i].Update(this.Owner);
         foreach (var a in this.Attributes.Values)
             a.Update(this.Owner);
     }
+
     public AttributeRuntime GetAttribute(AttributeDef def)
-        => this.Attributes[def];//.FirstOrDefault(att => att.Def == def);
+        => this.Attributes[def];
 
     public int Get(AttributeDef def)
-     => this.Attributes[def].Level;//.FirstOrDefault(att => att.Def == def);
-
+        => this.Attributes[def].Level;
 
     public int GetLevel(AttributeDef def)   
         => this.Attributes[def].Level;
 
     public Control CreateControl()
     {
-        //var table = new TableScrollableCompact<AttributeRuntime>()
-        //    .AddColumn("name", "", 64, a => new Label(a.AttributeDef.LabelReadable)
-        //    {
-        //        TooltipFunc = (t) =>
-        //        {
-        //            t.AddControlsBottomLeft(
-        //                new Label(a.AttributeDef.Description),
-        //                a.GetProgressControl());
-        //        }
-        //    })
-        //    .AddColumn("value", "", (int)UIManager.Font.MeasureString("###").X, a => new Label(() => a.Level.ToString()));
-        //table.AddItems(this.Attributes.Values);
-        //return table;
         var list = new ListBoxNoScroll();
         list.AddItems(this.Attributes.Values);
         return list;
     }
+
     TableScrollableCompact<AttributeRuntime> GUITableAttributes = new TableScrollableCompact<AttributeRuntime>()
             .AddColumn("name", "", 64, a => new Label(a.AttributeDef.LabelReadable)
             {
@@ -77,12 +68,14 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
                 }
             })
             .AddColumn("value", "", (int) UIManager.Font.MeasureString("###").X, a => new Label(() => a.Level.ToString()));
+
     public override GroupBox GetGUI()
     {
         GUITableAttributes.ClearItems();
         GUITableAttributes.AddItems(this.Attributes.Values);
         return GUITableAttributes;
     }
+
     internal override void GetInterface(GameObject gameObject, Control box)
     {
         GUITableAttributes.ClearItems();
@@ -99,9 +92,9 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
         table.AddItems(this.Attributes.Values);
         return table;
     }
-    //public override float? GetStatMod(StatDef target)
-    //    => this.Attributes.Values.Sum(r => r.GetStatMod(target));
+
     static readonly ListBoxNoScroll GuiList = new();
+
     public Control GetGui()
     {
         GuiList.Clear();
@@ -109,6 +102,7 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
         GuiList.Validate(true);
         return GuiList;
     }
+
     public AttributesComp Randomize()
     {
         var range = 20;
@@ -122,18 +116,22 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
         }
         return this;
     }
+
     internal override void SaveExtra(SaveTag tag)
     {
         tag.SaveDefWrappers("Attributes", this.Attributes);
     }
+
     internal override void Load(GameObject parent, SaveTag tag)
     {
         tag.LoadDefWrappers("Attributes", this.Attributes);
     }
+
     public override void Write(IDataWriter w)
     {
         w.WriteValues(this.Attributes);
     }
+
     public override void Read(IDataReader r)
     {
         r.ReadDefWrappers(this.Attributes);

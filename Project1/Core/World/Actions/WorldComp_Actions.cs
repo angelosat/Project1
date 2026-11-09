@@ -53,7 +53,7 @@ internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
     {
         var runtime = new WorldActionRuntime(def, data);
         this.ActiveActions.Add(data.Actor, runtime);
-        $"SERVER {data.Actor} starts {def.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
+        $"{data.Actor} starts {def.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
         this.World.Events.Post(new WorldActionStartedEvent(data.Actor, runtime));
         return runtime;
     }

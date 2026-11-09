@@ -20,7 +20,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     readonly List<AttackResult> Log = [];
 
-    readonly static int BaseCooldown = Ticks.FromMinutes(10);
+    readonly static int BaseCooldown = Ticks.FromMinutes(20);//10);
 
     int CooldownFirst,// = BaseCooldown,
         CooldownSecond;// = BaseCooldown;
@@ -31,11 +31,11 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     {
         if (this.IsResolved)
             throw new InvalidOperationException("Ticked a resolved combat encounter");
-        //var world = (StaticWorld)this.First.World;
+        var world = (StaticWorld)this.First.World;
         //if (world.Actions.GetAction(this.First) is null)
         if(this.CooldownFirst > 0)
             this.CooldownFirst -= 1;
-        else//if (CooldownFirst <= 0)
+        else if (world.Actions.GetAction(this.First) is null)//if (CooldownFirst <= 0)
         {
             //PerformAttack(First, Second);
             this.PerformAttackNew(this.First, this.Second);
@@ -48,12 +48,11 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         //if (world.Actions.GetAction(this.Second) is null)
         if (this.CooldownSecond > 0)
             this.CooldownSecond -= 1;
-        else//if (CooldownSecond <= 0)
+        else if (world.Actions.GetAction(this.Second) is null)//if (CooldownSecond <= 0)
         {
             //PerformAttack(Second, First);
             this.PerformAttackNew(this.Second, this.First);
             this.CooldownSecond = ResetCooldown(this.Second);// BaseCooldown;
-
         }
 
         //if (this.IsResolved)

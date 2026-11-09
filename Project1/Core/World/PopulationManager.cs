@@ -266,7 +266,10 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var btnName = new LabelNew(npc);
         var health = npc.GetHealth();
         var w = 150;
-        var barName = new BarNew(() => health.Max, () => health.Value, w, () => npc.Name);
+        var barName = new BarNew(() => health.Max, () => health.Value, w, () => npc.Name)
+        {
+            LeftClickActionNew = _ => UIManager.ToggleUnique<SelectionDetailsGui>(npc)
+        };
         //var btnActivity = new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
         var btnActivity = new LabelNew(() => $"{this.GetStatusText(npc)}").InvalidateOn(manager.Notifier);
         var actionsManager = this.World.Actions;

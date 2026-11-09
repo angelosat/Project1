@@ -53,7 +53,6 @@ static class Packets_WorldActions
         var data = WorldActionSystem.CreateData(actionDef, frontier, actor);
         data.Read(r);
         var runtime = world.Actions.Begin(actionDef, data);
-        $"CLIENT {actor} starts {actionDef.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
     }
 
     private static void ReceiveWorldActionFinish(NetEndpoint endpoint, Packet packet)

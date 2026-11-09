@@ -5,8 +5,11 @@ using Project1.Core.Simulation;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Stats;
+using Project1.Core.Systems.Thoughts;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -42,9 +45,9 @@ internal static class CombatSystem
         if (random.Roll100((int)parry))
             return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty);
 
-        //var unarmedDamage = 1;
-        //var damageValue = attacker.Gear.GetDamage();
-        //var damageType = attacker.Gear.GetDamageType();
+        var toCrit = (int)attacker.Stats.Get(StatDefOf.CriticalChance);
+        var isCrit = random.Roll100((int)toCrit);
+      
         var (damageValue, damageType) = attacker.Gear.GetWeaponDamage();
 
         var armor = defender.Stats.Get(StatDefOf.Armor);
@@ -52,10 +55,10 @@ internal static class CombatSystem
         var resistanceStat = StatSystem.GetDerivedStat(resistandeDef);
         var resistance = defender.Stats.Get(resistanceStat);
 
-        var finalDamage = new DamageInfo((int)damageValue, damageType);
+        var finalDamage = new DamageInfo(damageValue * (isCrit ? 2 : 1), damageType) ;
         // TODO calculate damage mitigation
 
-        return new(tick, attackerId, AttackResultTypes.Hit, finalDamage);
+        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage);
     }
 
     static public void PerformAttack(Actor attacker)
@@ -73,6 +76,7 @@ internal static class CombatSystem
             case AttackResultTypes.Parry:
                 break;
             case AttackResultTypes.Hit:
+            case AttackResultTypes.Critical:
                 var damage = result.Damage;
                 defender.Resources.ApplyDelta(ResourceDefOf.Health, -damage.Value);
                 if (defender.Biology.IsIncapacitated)
@@ -81,6 +85,19 @@ internal static class CombatSystem
             default:
                 throw new UnreachableException();
         }
+        $"{attacker} {result.Type} {defender} {result.Damage}".ToConsole();
+        attacker.World.Events.Post(new WorldCombatEvent(runtime, attacker, result));
         runtime.Record(result);
+    }
+}
+
+record struct WorldCombatEvent(CombatRuntime Combat, Actor Actor, AttackResult Result) : IEventPayload { }
+
+sealed class Thought_Combat : ThoughtSource<WorldCombatEvent>
+{
+    internal override void Handle(WorldCombatEvent e)
+    {
+        var result = e.Result;
+        e.Actor.AI.State.Log.Write($"{result.Type} {e.Combat.Other(e.Actor)} {result.Damage}");
     }
 }

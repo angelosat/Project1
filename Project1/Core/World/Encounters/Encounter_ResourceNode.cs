@@ -34,7 +34,7 @@ internal class Encounter_ResourceNode : EncounterWorker
     //    return (WorldActionDefOf.HarvestResource, new WorldActionData_HarvestResource(frontier, actor) { MaterialType = MaterialTypeDefOf.Wood });
     //}
 
-    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(WorldActionData context)
     {
         return WorldActionDefOf.HarvestResource;
     }

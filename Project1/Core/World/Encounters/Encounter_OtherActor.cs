@@ -14,6 +14,8 @@ using Project1.Framework.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Project1.Core.World.Actions;
 
 internal sealed class Encounter_OtherActor : EncounterWorker
@@ -113,8 +115,12 @@ internal sealed class Encounter_OtherActor : EncounterWorker
             yield return k;
     }
 
-    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef? DecideAction(WorldActionData context)
     {
+        var ctx = (WorldActionData_Combat)context;
+        var other = ctx.Actor.World.Get<Actor>(ctx.Other);
+        if (other.Biology.IsIncapacitated)
+            return null;
         return WorldActionDefOf.Combat;
     }
 

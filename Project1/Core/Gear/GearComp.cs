@@ -204,16 +204,18 @@ public sealed class GearComp : EntityComp
     }
 
     public Entity? Weapon => (Entity)this.GetSlot(GearSlotDefOf.Mainhand).Object;
-    public (int value, DamageDef damage) GetWeaponDamage()
-    {
-        var weapon = this.Weapon;
-        if (weapon is null)
-            return (1, DamageDefOf.Blunt); // unarmed
-        var value = (int)weapon.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage).Value;
-        var profile = weapon.Profile as GearProfileDef;
-        var type = profile.Damage;
-        return (value, type);
-    }
+
+    //public (int value, DamageDef damage) GetWeaponDamage()
+    //{
+    //    var weapon = this.Weapon;
+    //    if (weapon is null)
+    //        return (1, DamageDefOf.Blunt); // unarmed
+    //    var value = (int)weapon.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage).Value;
+    //    var profile = weapon.Profile as GearProfileDef;
+    //    var type = profile.Damage;
+    //    return (value, type);
+    //}
+
     public float GetModifier(StatDef stat)
         => this.GetGear().Sum(g => g.ToolComponent.Modifiers.GetValueOrDefault(stat));
 

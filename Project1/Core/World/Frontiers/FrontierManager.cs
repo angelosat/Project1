@@ -306,7 +306,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
         var (encounter, context, weight) = candidates.SelectRandomWeighted(this.World.Random, f => f.weight);
         //var action = encounter.Worker.DecideAction(frontier, actor);
-        if (encounter.Worker.DecideAction(frontier, actor) is not WorldActionDef action)
+        if (encounter.Worker.DecideAction(context) is not WorldActionDef action)
             return;
         this.World.Actions.Begin(action, context);
     }

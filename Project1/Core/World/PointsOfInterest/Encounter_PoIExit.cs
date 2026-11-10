@@ -20,7 +20,7 @@ internal class Encounter_PoIExit : EncounterWorker
         yield return (EncounterDefOf.PoIExit, new(frontier, actor), ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0);
     }
 
-    internal override WorldActionDef? DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef? DecideAction(WorldActionData context)
     {
         return WorldActionDefOf.ExitPoI;
     }

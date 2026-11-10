@@ -104,6 +104,14 @@ public static class StatDefOf
         Format = "#"
     };
 
+    public static readonly StatDef Unarmed = new("Unarmed", typeof(StatResolver_Unarmed), typeof(ToolComp))
+    {
+        Description = "Amount of Unarmed damage.",
+        Type = StatDef.Types.Scalar,
+        StringFormat = "0",
+        Format = "#"
+    };
+
     public static readonly StatDef ItemPower = new("Power", typeof(StatResolver_ToolEffectiveness), typeof(ToolComp))
     {
         Description = "Amount of work produced with each hit of the tool.",

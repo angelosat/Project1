@@ -5,6 +5,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Factions;
+using Project1.Core.Systems.Lifecycle;
 using Project1.Core.UI;
 using Project1.Core.UI.Hud;
 using Project1.Core.World;
@@ -44,6 +45,7 @@ public class StaticWorld : WorldBase
     internal readonly WorldComp_Factions Factions;
     internal readonly WorldComp_Combat Combat;
     internal readonly WorldComp_Actions Actions;
+    internal readonly WorldComp_LifeCycle LifeCycle;
     internal readonly FrontierManager Frontiers;
     public IWorldSpaceManager Space;
     ulong currentTick;
@@ -89,6 +91,7 @@ public class StaticWorld : WorldBase
         this.Factions = new(this);
         this.Combat = new(this);
         this.Actions = new(this);
+        this.LifeCycle = new(this);
         this.Space = new FrontierManager(this);
         this.Frontiers = (FrontierManager)this.Space;
 
@@ -97,7 +100,8 @@ public class StaticWorld : WorldBase
             this.Ownership,
             this.Factions,
             this.Combat,
-            this.Actions
+            this.Actions,
+            this.LifeCycle
             //new RecipeMasterySystem(this)
             );
     }

@@ -16,7 +16,7 @@ internal class Encounter_Exploration : EncounterWorker
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         => (int)((1 - frontier.Exploration.Percentage) * 100);
 
-    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(WorldActionData context)
         => WorldActionDefOf.Explore;
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)

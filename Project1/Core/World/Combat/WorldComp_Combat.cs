@@ -40,9 +40,10 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         var toRemove = new List<CombatRuntime>(this.ActiveCombatSessions.Count);
         foreach (var combat in this.ActiveCombatSessions.Values)
         {
-            combat.Tick();
             if (combat.IsResolved)
                 toRemove.Add(combat);
+            else
+                combat.Tick();
         }
         foreach (var combat in toRemove)
             this.UnregisterCombat(combat);
@@ -55,16 +56,26 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         this.ActorsToCombat.Add(first.RefId, id);
         this.ActorsToCombat.Add(second.RefId, id);
         this.World.Events.Post(new CombatBeginEvent(id, first, second));
-        ((FrontierManager)this.World.Space).Notifier.Notify();
+        ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
+    }
+    internal void UnregisterCombat(int combatId)
+    {
+        var combat = this.ActiveCombatSessions[combatId];
+        this.UnregisterCombat(combat);
     }
 
     internal void UnregisterCombat(CombatRuntime combat)
     {
         this.ActiveCombatSessions.Remove(combat.Id);
+        this.ClearCombat(combat);
+    }
+
+    void ClearCombat(CombatRuntime combat)
+    {
         this.ActorsToCombat.Remove(combat.First.RefId);
         this.ActorsToCombat.Remove(combat.Second.RefId);
         this.World.Events.Post(new CombatEndEvent(combat.Id));
-        ((FrontierManager)this.World.Space).Notifier.Notify();
+        ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
     }
 
     internal CombatRuntime? Get(Actor actor)

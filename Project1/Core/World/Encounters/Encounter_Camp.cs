@@ -18,7 +18,7 @@ internal sealed class Encounter_Camp : EncounterWorker
         actor.Needs.ApplyAccumulatorDelta(NeedDefOf.Energy, +5);
     }
 
-    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(WorldActionData context)
     {
         return WorldActionDefOf.Rest;
     }

@@ -6,20 +6,20 @@ using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Thoughts;
+using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.World.Combat;
 
 [EnsureStaticCtorCall]
 internal static class CombatSystem
 {
-    //static readonly Random Random = new();
     static readonly Dictionary<DamageDef, DamageResistanceDef> DamageToResistanceDefs;
 
     static CombatSystem()
@@ -48,7 +48,7 @@ internal static class CombatSystem
         var toCrit = (int)attacker.Stats.Get(StatDefOf.CriticalChance);
         var isCrit = random.Roll100((int)toCrit);
       
-        var (damageValue, damageType) = attacker.Gear.GetWeaponDamage();
+        var (damageValue, damageType) = GetAttackDamage(attacker);
 
         var armor = defender.Stats.Get(StatDefOf.Armor);
         var resistandeDef = DamageToResistanceDefs[damageType];
@@ -59,6 +59,18 @@ internal static class CombatSystem
         // TODO calculate damage mitigation
 
         return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage);
+    }
+
+    static public (int value, DamageDef damage) GetAttackDamage(Actor actor)
+    {
+        var gear = actor.Gear;
+        var weapon = gear.Weapon;
+        if (weapon is null)
+            return ((int)actor.Stats.Get(StatDefOf.Unarmed), DamageDefOf.Blunt);
+        var value = (int)weapon.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage).Value;
+        var profile = weapon.Profile as GearProfileDef;
+        var type = profile.Damage;
+        return (value, type);
     }
 
     static public void PerformAttack(Actor attacker)

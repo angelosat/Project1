@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Biology;
 using Project1.Framework;
 using Project1.Framework.UI;
 using Project1.Framework.UI.Primitives;
@@ -11,9 +12,20 @@ using System.Linq;
 
 namespace Project1.Core.World.Actions;
 
-internal class WorldComp_Actions(WorldBase world) : WorldComp(world)
+internal class WorldComp_Actions : WorldComp
 {
     readonly Dictionary<Actor, WorldActionRuntime> ActiveActions = [];
+
+    public WorldComp_Actions(WorldBase world) : base(world)
+    {
+        world.Events.ListenTo<ActorIncapacitatedEvent>(HandleActorIncapacitated);
+
+    }
+
+    private void HandleActorIncapacitated(ActorIncapacitatedEvent e)
+    {
+        this.Interrupt(e.Actor);
+    }
 
     internal override void Tick()
     {

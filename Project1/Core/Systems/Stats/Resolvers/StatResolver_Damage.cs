@@ -1,8 +1,11 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Attributes;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Entities.Stats.Resolvers;
+using Project1.Core.Skills;
 using Project1.Core.Systems.Tools;
+using System;
 
 namespace Project1.Core.Systems.Stats.Resolvers;
 
@@ -15,5 +18,5 @@ sealed class StatResolver_Damage : StatResolver
     }
 
     public override float CalculateActorStat(StatDef def, Actor actor)
-    => actor.Gear.GetDamage();
+        => actor.Gear.GetDamage();
 }

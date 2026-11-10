@@ -20,7 +20,7 @@ internal sealed class Encounter_Injury : EncounterWorker
         $"{actor} received {dmg} damage".ToConsole();
     }
 
-    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(WorldActionData context)
     {
         return WorldActionDefOf.AvoidInjury;
     }

@@ -24,18 +24,26 @@ static class Packets_Combat
         Registry.WorldEventHooksServer.Register<CombatEndEvent>(SendCombatEnd);
     }
 
+    private static void SendCombatEnd(CombatEndEvent e)
+    {
+        Server.Instance.BeginPacket(_pCombatEnd)
+            .Write(e.Id);
+    }
+
+    private static void ReceiveCombatEnd(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var combatId = r.ReadInt32();
+        var world = (StaticWorld)endpoint.World;
+        world.Combat.UnregisterCombat(combatId);
+    }
+
     private static void SendCombatBegin(CombatBeginEvent e)
     {
         Server.Instance.BeginPacket(_pCombatBegin)
             .Write(e.Id)
             .Write(e.Attacker.RefId)
             .Write(e.Defender.RefId);
-    }
-
-    private static void SendCombatEnd(CombatEndEvent e)
-    {
-        Server.Instance.BeginPacket(_pCombatEnd)
-            .Write(e.Id);
     }
 
     private static void ReceiveCombatBegin(NetEndpoint endpoint, Packet packet)
@@ -48,10 +56,5 @@ static class Packets_Combat
         var attacker = world.Get<Actor>(attackerid);
         var defender = world.Get<Actor>(defenderid);
         world.Combat.RegisterCombat(combatId, attacker, defender);
-    }
-
-    private static void ReceiveCombatEnd(NetEndpoint endpoint, Packet packet)
-    {
-        throw new NotImplementedException();
     }
 }

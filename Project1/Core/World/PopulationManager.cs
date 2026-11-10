@@ -5,6 +5,7 @@ using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Alchemy;
+using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
@@ -284,6 +285,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     }
     string GetStatusText(Actor actor)
     {
+        if (actor.Biology.IsIncapacitated)
+            return $"Incapacitated";
         if(this.World.Combat.Get(actor) is CombatRuntime combat)
             return $"Fighting: {combat.Other(actor)}";
         return ((FrontierManager)this.World.Space).GetStatusText(actor);

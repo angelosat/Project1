@@ -62,7 +62,7 @@ internal class Encounter_PoIEntrance : EncounterWorker
     internal override string GetTextStatus(EncounterRuntime encounter)
         => $"Exploring: {Typed(encounter.Context).PoI.Def.LabelReadable}";
 
-    internal override WorldActionDef DecideAction(FrontierRuntime frontier, Actor actor)
+    internal override WorldActionDef DecideAction(WorldActionData context)
     {
         //var poi = PoISystem.SelectPoI(frontier, actor);
         //var data = new WorldActionData_PoI(frontier, actor) { PoI = poi };

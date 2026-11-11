@@ -7,6 +7,7 @@ using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Rendering;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.ItemRoles;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -22,6 +23,10 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     public override EntityCompDef CompDef => EntityCompDefOf.AI;
 
     public override string Name { get; } = "AI";
+
+    public ItemPreferenceManager ItemPreferences
+        => this.State.ItemPreferences;
+
     public Guid Guid = Guid.NewGuid();
     public static Dictionary<Guid, GameObject> Registry = new();
     public static Guid GetGuid(GameObject agent)

@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+#nullable enable
+
 namespace Project1.Core.World;
 
 public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
@@ -97,7 +99,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         }
     }
 
-    private Actor PopulateRuntime()
+    private Actor? PopulateRuntime()
     {
         var net = this.World.Net;
         if (!net.IsServer)
@@ -154,7 +156,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         actor.Skills.Randomize();
         actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
-        var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
+        //var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
+        var damagedTool = ToolSystem.CreateRandomNew(this.World.Random);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
         inventory.Insert(damagedTool);
 

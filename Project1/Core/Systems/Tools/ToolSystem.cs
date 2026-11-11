@@ -4,6 +4,7 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
+using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Crafting;
@@ -24,11 +25,17 @@ namespace Project1.Core.Systems.Tools;
 internal static class ToolSystem
 {
     static readonly StatBonusDef[] AllBonusDefs;
+
     static readonly StatDef[] AllStatDefs;
+
     static readonly StatBonusDef[] AllSuffixDefs, AllPrefixDefs;
 
+    static readonly Random _r = new();
+
     public static Dictionary<BoneDef, CraftingRules> Rules = [];
+
     static readonly HashSet<GearProfileDef> _allDefs;
+
     static ToolSystem()
     {
         CreateRuleFor(BoneDefOf.ToolHandle)
@@ -42,38 +49,28 @@ internal static class ToolSystem
         AllPrefixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
         AllSuffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Actor)];
         AllStatDefs = [.. Def.Get<StatDef>()];
-        //foreach (var b in AllBonusDefs)
-        //{
-        //    switch (b.Worker)
-        //    {
-        //        case StatBonusWorker_Affix:
-        //            AllAffixDefs.
-        //            break;
-
-        //        case StatBonusWorker_Suffix:
-        //            break;
-
-        //        default:
-        //            throw new UnreachableException();
-        //    }
-        //}
     }
+
     public static CraftingRules CreateRuleFor(BoneDef bone)
     {
         var rules = new CraftingRules(bone);
         Rules.Add(bone, rules);
         return rules;
     }
+
     public static CraftingRules GetRuleFor(BoneDef bone)
     {
         return Rules[bone];
     }
+
     public static IEnumerable<CraftingRules> GetRules() => Rules.Values;
+
     public static IEnumerable<CraftingRule> GetCraftingRulesStruct(Def recipe)
     {
         foreach (var rule in GetRules())
             yield return new(rule.Bone, ItemDefOf.Ingredient, rule.Profiles, [.. rule.Profiles.Select(mr => ((MaterialRefinementDef)mr).MaterialType)], 1);
     }
+
     static public Entity CreateToolOrWeapon(GearProfileDef profile, MaterialDef handleMaterial, MaterialDef headMaterial)
     {
         var item = ItemDefOf.Gear.Create();
@@ -94,6 +91,7 @@ internal static class ToolSystem
         item.Initialize();
         return item;
     }
+
     static public Entity CreateArmor(GearProfileDef profile, MaterialDef material)
     {
         var item = ItemDefOf.Gear.Create();
@@ -107,6 +105,7 @@ internal static class ToolSystem
         item.Initialize();
         return item;
     }
+
     static public Entity Create(GearProfileDef profile, params (BoneDef bone, MaterialDef)[] materialBindings)
     {
         var item = ItemDefOf.Gear.Create();
@@ -151,7 +150,7 @@ internal static class ToolSystem
         comp.Initialize(author, order, [handleMaterial ,headMaterial]);
 
         // temp debugging
-        var assembly = item.Resources.ViewOld(ResourceDefOf.Assembly);
+        var assembly = item.Resources.View(ResourceDefOf.Assembly);
         assembly.Value = 0;
         assembly.Max = 110;
 
@@ -160,6 +159,7 @@ internal static class ToolSystem
         order.UnfinishedItem = item;
         return item;
     }
+
     internal static void CancelUnfinished(Entity entity)
     {
         if (entity is null) // cancellation has been requested after crafting completion
@@ -175,6 +175,7 @@ internal static class ToolSystem
         entity.Map.Events.Post(new LootDropEvent([.. ingredients], entity.Map, entity.Global, entity.Velocity));
         entity.World.DisposeEntity(entity);
     }
+
     static MaterialRefinementDef GetCorrectRefinementForBoneMaterial(BoneDef bone, MaterialDef material)
     {
         var rule = GetRuleFor(bone);
@@ -188,8 +189,19 @@ internal static class ToolSystem
     internal static Entity CreateRandom(Random rand, Tier tier)
     {
         var mats = MaterialSystem.ByTier(tier);
-
         return CreateToolOrWeapon(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
+    }
+
+    internal static Entity CreateRandomNew(Random rand)
+    {
+        var item = ItemDefOf.Gear.Create();
+        var profile = _allDefs.SelectRandom(rand);
+        item.Profile = profile;
+        item.ToolComponent.ToolDef = profile;
+        item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
+        item.SpriteComp.BodyDef = profile.Role.Bones;
+        item.Randomize(Server.Random);
+        return item;
     }
 
     internal static IEnumerable<GameObject> GenerateTemplates()
@@ -204,44 +216,10 @@ internal static class ToolSystem
             var obj = Create(toolProp, bonesMats);
             yield return obj;
         }
-
-    }
-    public static void RandomizeOld(Entity obj)
-    {
-        var r = new Random();
-        int durabilityMax = 0;
-        var profile = (GearProfileDef)obj.Profile;
-        //var rules = CraftingSystem.GetCraftingRules(this.Profile);
-        //foreach(var (bone, validRefinements, quantity) in rules)
-        //{
-        //    var entityBone = this.Owner.Body.FindBone(bone);
-        //    var matTypes = validRefinements.Select(r => r.MaterialType);
-        //    var mats = matTypes.SelectMany(t => RawMaterialSystem.MaterialsByType[t]).ToArray();
-        //    var mat = mats.SelectRandom(r);
-        //    entityBone.Material = mat;
-        //    durabilityMax += mat.Density;
-        //}
-        //var rules = CraftingSystem.GetCraftingRulesStruct(this.Profile);
-        //var rules = WorkstationCapabilityDefOf.ToolMaking.Worker.GetCraftingRulesStruct(profile);
-        var rules = GetCraftingRulesStruct(profile);
-        foreach (var rule in rules)
-        {
-            var entityBone = obj.Body.FindBone(rule.Bone);
-            var matTypes = rule.MaterialTypes;// validRefinements.Select(r => r.MaterialType);
-            var mats = matTypes.SelectMany(t => MaterialSystem.MaterialsByType[t]).ToArray();
-            var mat = mats.SelectRandom(r);
-            entityBone.Material = mat;
-            durabilityMax += mat.Density;
-        }
-        var durability = obj.Resources.ViewOld(ResourceDefOf.Durability);
-        durability.Value = durability.Max = durabilityMax;
-
     }
 
-    public static void Randomize(Entity item)
+    public static void Randomize(Entity item, Random r)
     {
-        var r = new Random();
-        
         QualitySystem.Randomize(item);
         int durabilityMax = 0;
         var profile = (GearProfileDef)item.Profile;
@@ -257,22 +235,23 @@ internal static class ToolSystem
             entityBone.SetMaterial(mat);
             durabilityMax += mat.Density;
         }
-        var durability = item.Resources.ViewOld(ResourceDefOf.Durability);
+        var durability = item.Resources.View(ResourceDefOf.Durability);
         durability.Value = durability.Max = durabilityMax;
-
         var comp = item.ToolComponent;
         var craftsmanship = QualitySystem.GetRandomCraftsmahship(r);
         comp.Craftsmanship = craftsmanship;
-        //item.SetName($"{craftsmanship.LabelReadable} {item.Name}");
-        Validate(item);
-
+        ApplyName(item);
         var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
         var selectedBonuses = StatSystem.RollBonuses(ActorDnaDefOf.Npc, role, bonusCount);
         foreach (var bonus in selectedBonuses)
-            item.ToolComponent.Modifiers[bonus] = 0;// RollEnhancement(bonus, bonusCount);
+            item.ToolComponent.Modifiers[bonus] = 0;
         CalculateEnhancements(comp);
-
         role.Worker.InitIntrinsicStats(item);
+    }
+
+    public static void Randomize(Entity item)
+    {
+        Randomize(item, _r);
     }
 
     public static void CalculateEnhancements(ToolComp comp)
@@ -330,6 +309,7 @@ internal static class ToolSystem
         var gearRole = gearProf.Role;
         return gearRole.Stats;
     }
+
     public static IEnumerable<(StatDef def, float value)> GetStats(Entity item)
     {
         var gearProf = item.Profile as GearProfileDef;
@@ -340,6 +320,7 @@ internal static class ToolSystem
             yield return (stat, value);
         }
     }
+
     public static IEnumerable<(Def def, float value)> GetStatsNew(Entity item)
     {
         var gearProf = item.Profile as GearProfileDef;
@@ -352,7 +333,8 @@ internal static class ToolSystem
         foreach (var (bonusDef, bonusVal) in item.ToolComponent.ActorEnhancements)
             yield return (bonusDef, bonusVal);
     }
-    internal static void Validate(Entity item)
+
+    internal static void ApplyName(Entity item)
     {
         var mat = item.Body.Material;
         var prof = item.Profile;

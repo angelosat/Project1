@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace Project1.Core.AI.MetaRoles;
 
-namespace Project1.Core.AI.MetaRoles
+public abstract class RoleMetaWorker
 {
-    public abstract class RoleMetaWorker
-    {
-        internal virtual void Tick(RoleMetaWrapper meta) { }
-    }
+    internal virtual void Tick(RoleMetaWrapper meta) { }
 }

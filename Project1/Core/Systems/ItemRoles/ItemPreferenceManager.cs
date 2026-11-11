@@ -22,19 +22,29 @@ namespace Project1.Core.Systems.ItemRoles;
 public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
     static List<ItemRoleDef> _flatItemRolesList;// = [];
+
     readonly EntityQueryEnumerator EntityQuery = new();
+
     Control _gui;
 
     readonly Actor Actor;
+
     readonly Dictionary<ItemRoleDef, (Entity item, int score)> PreCommitScanCache = [];
 
     readonly Dictionary<int, ItemBias> ItemBiases = [];
+
     readonly Queue<Entity> notScannedYet = [];
+
     readonly HashSet<EntityRefId> alreadyQueued = [];
+
     readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
+
     readonly Dictionary<Entity, List<ItemPreference>> ItemsToPrefs = [];
+
     readonly Dictionary<EntityRefId, int> TempIgnore = [];
+
     readonly HashSet<EntityRefId> ToDiscard = [];
+
     public Entity? DequeueUnevaluated()
     {
         if (this.notScannedYet.Count == 0)
@@ -43,11 +53,13 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         this.alreadyQueued.Remove(entity.RefId);
         return entity;
     }
+
     public ItemPreferenceManager(Actor actor)
     {
         this.Actor = actor;
         //populate();
     }
+
     private void HandleEntitySpawned(EntitySpawnedEvent e)
     {
         EnqueueItemInt(e.Entity);
@@ -94,6 +106,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         };
         return box;
     }
+
     private void EvaluateOneNew()
     {
         if (!this.EntityQuery.TryGetNext(this.Actor.Map, out var item))
@@ -113,6 +126,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
             this.PreCommitScanCache[role] = (item, score);
         }
     }
+
     internal void EvaluateOne()
     {
         if (notScannedYet.Count == 0)
@@ -122,13 +136,16 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
             return;
         EvaluateInt(item);
     }
+
     internal Entity Peek()
         => this.notScannedYet.TryPeek(out var entity) ? entity : null;
+
     internal void EvaluateInt(Entity item)
     {
         var result = this.EvaluateAndRegister(item);
         this.TryPreCommit(item, result);
     }
+
     internal void TryPreCommit(Entity item, ItemEvaluation result)
     {
         foreach (var (role, score) in result.Roles)
@@ -140,11 +157,11 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
             this.PreCommitScanCache[role] = (item, score);
         }
     }
+
     private bool StillValid(Entity i)
     {
         return i.ExistsOn(this.Actor.Map);
     }
-
 
     private void UpdateBiases()
     {
@@ -188,11 +205,16 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     }
   
     static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
+
     static List<ItemRoleDef> GenerateItemRolesAll()
         => [.. Def.Get<ItemRoleDef>()];
+
     bool IsScanning => notScannedYet.Count > 0;
+
     event Action<ItemPreference> PrefUpdated;
+
     event Action<ItemPreference> PrefRemoved;
+
     internal void UpdatePref(ItemRoleDef role, Entity item, int score)
     {
         if (score <= 0)
@@ -206,6 +228,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         this.PrefsInternal[role] = pref;
         this.PrefUpdated?.Invoke(pref);
     }
+
     internal bool TryCommit(Entity item)
     {
         var results = this.EvaluateAndRegister(item);
@@ -220,6 +243,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         }
         return commited;
     }
+
     internal void Commit(ItemRoleDef role, Entity item, int score)
     {
         Entity oldItem = null;
@@ -236,6 +260,20 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         Packets_ItemPrefs.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
         this.PreCommitScanCache.Remove(role);
     }
+
+    public bool ShouldPickUp(Entity item)
+    {
+        var result = this.EvaluateAndRegister(item);
+        foreach (var (role, score) in result.Roles)
+        {
+            if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
+                return true;
+            if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
+                return true;
+        }
+        return false;
+    }
+
     internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
     {
         foreach (var role in FlatItemRolesList)
@@ -247,6 +285,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
                 yield return (role, score);
         }
     }
+
     internal ItemEvaluation EvaluateAndRegister(Entity item)
     {
         //if (item.OwnerId != EntityRefId.Null)
@@ -262,6 +301,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         knowledge.Register(item, result);
         return result;
     }
+
     internal ItemEvaluation EvaluateWithoutRegistering(Entity item)
     {
         var knowledge = this.Actor.AI.State.Knowledge;
@@ -284,20 +324,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         var result = new ItemEvaluation(item.RefId, [.. results]);
         return result;
     }
-    //private ItemPrefEval EvaluateIntNew(Entity item)
-    //{
-    //    List<(ItemRoleKey key, int score)> results = [];
-    //    foreach (var (key, context) in allKeys)
-    //    {
-    //        var score = context.Worker.GetInventoryScore(this.Actor, item, key);
-    //        if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
-    //            score += bias.Value;
-    //        if (score > 0)
-    //            results.Add((key, score));
-    //    }
-    //    var result = new ItemPrefEval(item.RefId, [.. results]);
-    //    return result;
-    //}
+
     internal bool TryGetExistingScore(ItemRoleDef role, out Entity item, out int score)
     {
         if (this.PrefsInternal.TryGetValue(role, out var pref))
@@ -310,6 +337,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         score = -1;
         return false;
     }
+
     internal int GetExistingScore(ItemRoleDef role)
         => this.PrefsInternal.TryGetValue(role, out var pref) ? pref.InventoryScore : 0;
 
@@ -360,6 +388,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         //foreach (var r in toRemove)
         //    this.PreCommitScanCache.Remove(r);
     }
+
     internal (ItemRoleDef role, int score) GetPotential(Entity item)
     {
         foreach (var vk in this.PreCommitScanCache)
@@ -422,6 +451,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         foreach (var (context, pref) in dic)
             yield return (context, pref.item, pref.score);
     }
+
     public IEnumerable<Entity> GetJunk()
     {
         this.Validate();
@@ -440,13 +470,13 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         }
     }
 
-
     public Control GetListControl(Entity entity)
     {
         var p = this.GetPreference(entity);
         //return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
         return new Label(p.target ?? p.role) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
     }
+
     public (ItemRoleDef? role, Def? target) GetPreference(Entity item)
     {
         //return this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item).Role?.Def; 
@@ -454,10 +484,12 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         return (pref.Role, pref.Role?.Def);
         // if itempreferences are struct, then the default returned will have role == null
     }
+
     public Entity GetPreference(Def context)
     {
         return null;
     }
+
     public IEnumerable<Entity> GetUselessItems(IEnumerable<Entity> entity)
     {
         var items = this.Actor.Inventory.GetItems();
@@ -482,10 +514,12 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         if (!this.IsUseful(item))
             this.ToDiscard.Add(item.RefId);
     }
+
     public bool IsPreference(Entity item)
     {
         return this.PrefsInternal.Values.Any(p => item == p.Item);
     }
+
     public bool IsUseful(Entity item)
     {
         //if (item.Def == ItemDefOf.Coins) // HACK
@@ -582,6 +616,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
 
         return scoredList.Select(a => a.pref);
     }
+
     public int GetTotalSituationalScoreFor(Entity item)
     {
         var relevantRoles = this.PrefsInternal.Where(pref => pref.Value.Item == item);
@@ -590,12 +625,14 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
             total += role.GetSituationalScore(this.Actor, item);
         return total;
     }
+
     public void OnSpawn(MapBase newMap)
     {
         foreach (var i in newMap.Entities)
             this.TryEnqueue(i);
         newMap.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
     }
+
     public void RemoveJunk(Entity item)
     {
         this.ToDiscard.Remove(item.RefId);
@@ -613,6 +650,7 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         this.UpdateBiases();
         this.UpdateTempIgnore();
     }
+
     public void Validate()
     {
         this.ResetPreferences();
@@ -632,12 +670,14 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
         this.BuildItemsToPrefsCache();
         return this;
     }
+
     internal void ResolveReferences() 
     {
         foreach (var i in this.Actor.Map.Entities)
             this.TryEnqueue(i);
         this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
     }
+
     internal void OnAttachedToWorld()
     {
         this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
@@ -647,23 +687,28 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
     {
         EnqueueItemInt(e.Item);
     }
+
     public SaveTag Save(string name = "")
     {
         var tag = new SaveTag(SaveTag.Types.Compound, name);
         tag.Add(this.PrefsInternal.Values.Save("Preferences"));
         return tag;
     }
+
     public static ItemPreferenceManager Create(IDataReader r) => new ItemPreferenceManager().Read(r);
+
     public ItemPreferenceManager()
     {
         
     }
+
     public ItemPreferenceManager Read(IDataReader r)
     {
         r.ReadValuesWithInferredKeys(this.PrefsInternal, r => r.Role);
         this.BuildItemsToPrefsCache();
         return this;
     }
+
     void BuildItemsToPrefsCache()
     {
         this.ItemsToPrefs.Clear();
@@ -674,10 +719,9 @@ public partial class ItemPreferenceManager : Inspectable, ISaveable, ISerializab
             roleList.Add(pref);
         }
     }
+
     public void Write(IDataWriter w)
     {
         w.WriteValues(this.PrefsInternal);
     }
-
-    
 }

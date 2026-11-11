@@ -78,11 +78,11 @@ public class FrontierRuntime : WorldRoom
         var exploration = actor.Skills.GetLevel(SkillDefOf.Exploration);
         var chance = 10 + exploration;
         var success = rand.Roll100(chance);
-        if (!success)
-        {
-            treasure = null;
-            return false;
-        }
+        //if (!success)
+        //{
+        //    treasure = null;
+        //    return false;
+        //}
         treasure = this.Treasures.SelectRandom(rand);
         this.Treasures.Remove(treasure);
         return true;

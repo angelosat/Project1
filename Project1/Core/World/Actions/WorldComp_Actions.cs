@@ -27,7 +27,7 @@ internal class WorldComp_Actions : WorldComp
         this.Interrupt(e.Actor);
     }
 
-    internal override void Tick()
+    public override void Tick()
     {
         this.TickActiveEncounters(); // moved the client guard inside so i can increment its progress on clients
     }

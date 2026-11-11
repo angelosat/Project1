@@ -127,19 +127,21 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
     {
         //if (this.World.Net.IsClient)
         //    return;
-        var targetloot = 10;
+        var targetloot = 20;
         foreach(var f in this.Frontiers.Values)
         {
             f.EnsurePoICount();
             while(f.Treasures.Count < targetloot)
             //for (int i = 0; i < 10; i++)
             {
-                var item = ToolSystem.CreateRandom(this.World.Random, f.Def.Tier);
+                //var item = ToolSystem.CreateRandom(this.World.Random, f.Def.Tier);
+                var item = ToolSystem.CreateRandomNew(this.World.Random);
                 this.World.Register(item);
                 f.AddTreasure(item);
             }
         }
     }
+
     public void Explore(FrontierRuntime room, Actor actor)
     {
         // TODO account for actor's exploration skill/stat?
@@ -147,8 +149,10 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         room.World.Events.Post(new WorldExplorationEvent(room, actor));
         room.Notifier.Notify();
     }
+
     internal ChangeNotifier Notifier = new();
-    public void Tick()
+
+    public override void Tick()
     {
         var world = this.World;
         //float step = 1f / Ticks.PerGameHour;

@@ -33,7 +33,7 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         return true;
     }
 
-    internal override void Tick()
+    public override void Tick()
     {
         if (!this.World.Net.IsServer)
             return;

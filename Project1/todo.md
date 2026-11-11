@@ -1,4 +1,6 @@
 # todo 2026
+## overworld exploration and encounters
+- separate explorationsystem that responds to actorexplorationevent?
 ## Future: Multi-specialist crafting pipeline
 - Blacksmith crafts the base item using materials, techniques, and skill; these determine inherent stats and base quality.
 - Specialized craftsmen (e.g. enchanters, jewelsmiths) can further enhance finished items.

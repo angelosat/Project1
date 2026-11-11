@@ -20,10 +20,10 @@ namespace Project1.Core.World.Actions;
 
 internal sealed class Encounter_OtherActor : EncounterWorker
 {
-  
+
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
-        => (frontier.OccupantCount - 1) * 100;
+        => (frontier.OccupantCount - 1);// * 100;
 
     //protected override void OnBegin(FrontierRuntime frontier, Actor actor)
     //{

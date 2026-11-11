@@ -12,7 +12,7 @@ public abstract class WorldComp(WorldBase world)
 
     internal virtual void EnsureInitialized() { }
 
-    internal virtual void Tick() { }
+    public virtual void Tick() { }
 
     internal protected virtual (string label, Control control)? GetGui() => null;
 }

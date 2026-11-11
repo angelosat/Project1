@@ -3,6 +3,8 @@ using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Project1.Core.World.Encounters;
 
 internal sealed class Encounter_FindTreasure : EncounterWorker
@@ -22,7 +24,12 @@ internal sealed class Encounter_FindTreasure : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.FindTreasure, new(frontier, actor), frontier.Treasures.Count);
+        yield return (EncounterDefOf.FindTreasure, new(frontier, actor), frontier.Treasures.Count * 100);
+    }
+
+    internal override WorldActionDef? DecideAction(WorldActionData context)
+    {
+        return WorldActionDefOf.LootTreasure;
     }
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)

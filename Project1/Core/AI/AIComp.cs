@@ -136,6 +136,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
         this.State.ItemPreferences.OnSpawn(newMap);
     }
+
     public override void OnDespawnExtra(MapBase oldmap)
     {
         this.State.ItemPreferences.OnDespawn(oldmap);

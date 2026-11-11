@@ -1130,7 +1130,7 @@ public abstract class MapBase : Inspectable
 
         entity.Slot?.Assign(null);
         entity.Detach();
-        entity.Net = this.Net;
+        //entity.Net = this.Net;
         entity.Map = this;
         entity.Global = position;
         entity.Velocity = velocity;

@@ -36,7 +36,7 @@ namespace Project1.Core.Entities
             this._innerObservable.Add(entity);
 
             entity.World = this.World;
-            entity.Net = this.World.Net;
+            //entity.Net = this.World.Net;
 
             entity.OnAttachedToWorld();
 

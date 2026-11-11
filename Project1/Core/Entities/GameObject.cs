@@ -146,7 +146,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public int RefId;
 
-    public NetEndpoint Net { get => this.World?.Net; set { } }
+    public NetEndpoint Net { get => this.World?.Net; }
+    //set { } }
 
     public WorldBase World { get; set; }
 
@@ -588,7 +589,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     
     internal virtual void OnSpawn(MapBase newMap)
     {
-        this.Net = newMap.Net;
+        //this.Net = newMap.Net;
         //this.Container?.Remove(this);
         this.Owner = null;
         this.Map = newMap;

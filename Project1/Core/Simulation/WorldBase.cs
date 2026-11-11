@@ -171,7 +171,8 @@ public abstract class WorldBase : Inspectable, IEntityProvider
             //$"{this.Net} disposing {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
             obj.OnDispose();
             this.EntityRegistry.Remove(obj.RefId);
-            obj.Net = null;
+            //obj.Net = null;
+            obj.World = null;
             obj.Detach();
         }
         this.Events.Post(new EntityDisposedEvent(o));

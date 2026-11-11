@@ -58,7 +58,7 @@ internal class WorldComp_Actions : WorldComp
         //actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle");
     }
 
-    internal bool IsBusy(Actor actor)
+    internal bool HasActiveAction(Actor actor)
         => this.ActiveActions.ContainsKey(actor);
 
     internal WorldActionRuntime Begin(WorldActionDef def, WorldActionData data)

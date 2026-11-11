@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Simulation;
 using Project1.Core.Towns.Services.Shops;
 
 namespace Project1.Core.AI.Thought;
@@ -6,6 +7,10 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
 {
     internal override void TickOffMap(AIState state)
     {
+        var actor = state.Owner;
+        var world = (StaticWorld)actor.World;
+        if (world.Actions.HasActiveAction(actor))
+            return;
     }
 
     internal override void TickOnMap(AIState state)

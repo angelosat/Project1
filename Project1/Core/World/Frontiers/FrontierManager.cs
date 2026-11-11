@@ -164,7 +164,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         foreach (var (actor, distance) in snapshot)
         {
             //if (!this.IsEngaged(actor))
-            if (!this.World.Actions.IsBusy(actor) && !this.World.Combat.IsEngaged(actor))
+            if (!this.World.Actions.HasActiveAction(actor) && !this.World.Combat.IsEngaged(actor))
                 {
                 var prevFrontier = this.GetFrontier(actor);
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;

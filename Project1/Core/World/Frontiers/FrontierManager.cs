@@ -316,16 +316,13 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
     }
 
     private IEnumerable<EncounterDef> GetAvailableEncounters(Actor actor)
-    //=> EncounterDefs;
     {
-        //if (this.World.Combat.IsEngaged(actor))
-        //    return [EncounterDefOf.Combat];
         if (this.GetPoi(actor) is PoIRuntime poi)
             return poi.GetEncounters();
         return EncounterDefs;
     }
 
-    public FrontierDef /*void*/ PlaceAtRandom(Entity entity)
+    public FrontierDef PlaceAtRandom(Entity entity)
     {
         // TODO uncommment the line below
         var tier = 1;// + entity.World.Random.Next(this.Frontiers.Count);
@@ -341,7 +338,6 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         this.GetFrontier(actor)
             .AddActor(actor);
         this.BeginSchedule(actor);
-        //actor.AI.Meta.SetTargetFrontier(this.GetFrontier(actor).Def);
 
         actor.Map?.Despawn(actor);
         this.World.Events.Post(new InhabitantPlacedInWorldEvent(actor, pos));

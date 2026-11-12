@@ -128,6 +128,8 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     }
     public override void TickOffMap()
     {
+        if (this.Owner.Net.IsClient) // do i want to run some deterministic behaviors locally too? answer: NO
+            return;
         this.Meta.TickOffMap();
     }
     public override void OnSpawn(MapBase newMap)

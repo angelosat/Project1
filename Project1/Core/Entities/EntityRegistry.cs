@@ -38,7 +38,7 @@ namespace Project1.Core.Entities
             entity.World = this.World;
             //entity.Net = this.World.Net;
 
-            //entity.OnAttachedToWorld();
+            entity.OnAttachedToWorld();
 
             return true;
         }

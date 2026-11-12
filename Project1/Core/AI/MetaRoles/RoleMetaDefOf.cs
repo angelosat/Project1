@@ -18,7 +18,7 @@ internal class RoleMetaDefOf
         typeof(ThoughtAdventuring),
         typeof(ThoughtProcess_Quests),
         typeof(ThoughtProcess_UseTownScroll)]);
-    public readonly static RoleMetaDef Npc = new("Npc", typeof(RoleNpcData), typeof(RoleNpcWorker), [], []);
+    public readonly static RoleMetaDef Npc = new("Npc", typeof(RoleNpcData), typeof(RoleNpcWorker), [], [typeof(ThoughtProcess_ItemEvaluatorVisitor)]);
 
     static RoleMetaDefOf()
     {

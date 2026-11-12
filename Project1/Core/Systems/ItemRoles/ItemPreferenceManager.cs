@@ -65,20 +65,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         EnqueueItemInt(e.Entity);
     }
 
-    private bool EnqueueItemInt(Entity item)
-    {
-        if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
-        {
-            $"tried to enqueue already known item".ToConsole();
-            return false;
-        }
-        if (item.OwnerId != EntityRefId.Null)
-            return false;
-        if (this.TempIgnore.ContainsKey(item.RefId))
-            return false;
-        this.TryEnqueue(item);
-        return true;
-    }
+   
 
     Control GetGui()
     {
@@ -204,7 +191,22 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         this.alreadyQueued.Add(item.RefId);
         return true;
     }
-  
+
+    private bool EnqueueItemInt(Entity item)
+    {
+        if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
+        {
+            $"tried to enqueue already known item".ToConsole();
+            return false;
+        }
+        if (item.OwnerId != EntityRefId.Null)
+            return false;
+        if (this.TempIgnore.ContainsKey(item.RefId))
+            return false;
+        this.TryEnqueue(item);
+        return true;
+    }
+
     static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
 
     static List<ItemRoleDef> GenerateItemRolesAll()
@@ -251,7 +253,11 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         {
             oldItemId = oldPref.ItemRefId;
             var oldItem = this.Actor.World.Get(oldItemId);
-            this.ItemsToPrefs.Remove(oldItem);
+            //this.ItemsToPrefs.Remove(oldItem);
+            var existingList = this.ItemsToPrefs[oldItem];
+            existingList.RemoveAll(p => p.Role == oldPref.Role);
+            if (existingList.Count == 0)
+                this.ItemsToPrefs.Remove(oldItem);
         }
         var pref = new ItemPreference(role, item, score);
         this.PrefsInternal[role] = pref;
@@ -722,9 +728,10 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         foreach (var item in this.Actor.Inventory.GetItems())
         {
-            if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
-                continue;
-            this.TryCommit(item);
+            //if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
+            //    continue;
+            this.EnqueueItemInt(item);
+            //this.TryCommit(item);
         }
     }
 

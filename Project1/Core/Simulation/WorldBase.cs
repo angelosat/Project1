@@ -91,7 +91,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         {
             this.EntityRegistry.Add(e);
             this.Events.Post(new EntityRegisteredEvent(e, immediate));
-            e.OnAttachedToWorld();
+            //e.OnAttachedToWorld();
         }
     }
     public Entity Get(EntityRefId refId)

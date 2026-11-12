@@ -9,6 +9,12 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
     {
         var actor = state.Owner;
         var world = (StaticWorld)actor.World;
+
+        var manager = actor.AI.State.ItemPreferences;
+
+        while (manager.DequeueUnevaluated() is Entity item)
+            manager.TryCommit(item);
+
         if (world.Actions.HasActiveAction(actor))
             return;
     }

@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
+using Project1.Core.Systems;
 using Project1.Core.Towns.Services.Shops;
+using Project1.Core.World.Actions;
 
 namespace Project1.Core.AI.Thought;
 internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
@@ -17,6 +19,12 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
 
         if (world.Actions.HasActiveAction(actor))
             return;
+
+        var result = SmartEquipSystem.EvaluateEquipmentChange(actor);
+        if (result.ItemId != EntityRefId.Null)
+        {
+            world.Actions.Begin(WorldActionDefOf.Equip, new WorldActionData_Equip(world.Space.GetFrontier(actor), actor) { Decision = result });
+        }
     }
 
     internal override void TickOnMap(AIState state)

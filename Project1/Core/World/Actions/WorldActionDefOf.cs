@@ -25,6 +25,7 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef Explore = new("Exploring", typeof(WorldActionWorker_Exploration), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef LootTreasure = new("LootTreasure", typeof(WorldActionWorker_LootTreasure), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Combat = new("Combat", typeof(WorldActionWorker_CombatBegin), duration: Ticks.FromMinutes(1));
+    static public readonly WorldActionDef Equip = new("Equip", typeof(WorldActionWorker_Equip), duration: Ticks.FromMinutes(5));
     static public readonly WorldActionDef Attack = new("Attacking",
                                                        workerType: typeof(WorldActionWorker_Attack),
                                                        dataType: typeof(WorldActionWorker_Attack.Data),

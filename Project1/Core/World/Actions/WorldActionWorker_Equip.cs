@@ -8,18 +8,18 @@ namespace Project1.Core.World.Actions;
 
 internal sealed record WorldActionData_Equip(FrontierRuntime Frontier, Actor Actor) : WorldActionData(Frontier, Actor)
 {
-    internal required EquipDecision Decision;
+    internal required EquipStatusDecision Decision;
 
     public override void Write(IDataWriter w)
     {
         w.Write(this.Decision.ItemId);
-        w.Write(this.Decision.Score);
+        w.Write(this.Decision.Delta);
     }
 
     public override ISerializable Read(IDataReader r)
     {
         this.Decision.ItemId = r.ReadEntityRefId();
-        this.Decision.Score = r.ReadInt32();
+        this.Decision.Delta = r.ReadInt32();
         return this;
     }
 }

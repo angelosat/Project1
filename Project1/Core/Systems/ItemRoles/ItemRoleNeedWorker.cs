@@ -11,7 +11,7 @@ sealed class ItemRoleNeedWorker : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
     {
-        var needDef = (NeedDef)role.Def;
+        var needDef = (NeedDef)role.Source;
         if (actor.Needs.GetPercentage(needDef) > .9f)
             return -100;
         if (!item.TryGetComponent<ConsumableComp>(out var consumableComp))
@@ -27,7 +27,7 @@ sealed class ItemRoleNeedWorker : ItemRoleWorker
     {
         if (!item.TryGetComponent<ConsumableComp>(out var consumableComp))
             return -1;
-        var benefit = consumableComp.EffectsNew.Where(e => e.Target == role.Def).Sum(e => e.Budget);
+        var benefit = consumableComp.EffectsNew.Where(e => e.Target == role.Source).Sum(e => e.Budget);
         return (int)(benefit.HasValue ? benefit.Value * item.StackMax : 0);
     }
 

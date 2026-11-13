@@ -511,7 +511,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         //var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item);
         var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.ItemRefId == item.RefId);
-        return (pref.Role, pref.Role?.Def);
+        return (pref.Role, pref.Role?.Source);
         // if itempreferences are struct, then the default returned will have role == null
     }
 
@@ -634,7 +634,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
             yield return t;
     }
 
-    internal IEnumerable<EquipDecision> GetItemsBySituationalScoreNewNew(Actor actor, Func<Entity, bool> filter)
+    internal IEnumerable<EquipStatusDecision> GetItemsBySituationalScoreNewNew(Actor actor, Func<Entity, bool> filter)
     {
         var potential = this.ItemsToPrefs
                 .Where(e => filter(e.Key))

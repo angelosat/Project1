@@ -8,15 +8,9 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems;
 
-internal record struct EquipDecision(EntityRefId ItemId, int Score) 
-{
-    internal readonly bool IsEquip => this.Score > 0;
-    internal readonly bool IsUnequip => this.Score < 0;
-}
-
 static internal class SmartEquipSystem
 {
-    static internal EquipDecision EvaluateEquipmentChange(Actor actor)
+    static internal EquipStatusDecision EvaluateEquipmentChange(Actor actor)
     {
         var manager = actor.ItemPreferences;
         var world = actor.World;
@@ -57,25 +51,25 @@ static internal class SmartEquipSystem
             mostImpactfulPerSlot[gt] = new(gt, current, mostImpactfulInSlot.item, mostImpactfulInSlot.score);
         }
 
-        (Entity item, int score) mostImpactful = (null, 0);
-
+        (Entity? item, int delta) mostImpactful = (null, 0);
         foreach (var (slot, currentItem, newItem, newScore) in mostImpactfulPerSlot.Values)
         {
             var current = currentPerSlot[slot];
             if (newScore > 0)
             {
-                if (newScore > current.score && newScore > mostImpactful.score)
-                    mostImpactful = (newItem, newScore);
+                var delta = newScore - current.score;
+                if (delta > 0 && delta > mostImpactful.delta)
+                    mostImpactful = (newItem, delta);
                 continue;
             }
             if (current.score < 0)
             {
                 var harm = Math.Abs(current.score);
-                if (harm > mostImpactful.score)
+                if (harm > mostImpactful.delta)
                     mostImpactful = (current.item, current.score);
             }
         }
 
-        return new(mostImpactful.item?.RefId ?? EntityRefId.Null, mostImpactful.score);
+        return new(mostImpactful.item?.RefId ?? EntityRefId.Null, mostImpactful.delta);
     }
 }

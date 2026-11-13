@@ -14,7 +14,7 @@ sealed class ItemRoleGearWorker : ItemRoleWorker
     public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
     {
         var props = item.Def.ApparelProperties;
-        if (props?.GearType != context.Def)
+        if (props?.GearType != context.Source)
             return -1;
         return props.ArmorValue;
     }

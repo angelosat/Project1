@@ -23,7 +23,7 @@ sealed class ItemRole_Tool : ItemRoleWorker
         //if (durability.Percentage < 1)
         //        return (int)(100 * (durability.Percentage - 1));
         var tooluse = interaction.ToolUse;
-        if (tooluse == role.Def)
+        if (tooluse == role.Source)
             return 100;
         return -100;
     }
@@ -34,7 +34,7 @@ sealed class ItemRole_Tool : ItemRoleWorker
             return -1;
         if (item.Profile is not GearProfileDef toolProfile)
             return -1;
-        if (toolProfile.ToolUse != role.Def)
+        if (toolProfile.ToolUse != role.Source)
             return -1;
         return (int)StatDefOf.ItemPower.CalculateFor(item);
     }

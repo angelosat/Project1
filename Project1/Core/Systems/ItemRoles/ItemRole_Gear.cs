@@ -14,7 +14,7 @@ sealed class ItemRole_Gear : ItemRoleWorker
         var gearRole = profile.Role;
         var slot = gearRole.Slot;
         var inSlot = actor.Gear.GetGear(slot);
-        var stat = (StatDef)role.Def;
+        var stat = (StatDef)role.Source;
         var statValue = ToolSystem.CalculateStat(item, stat);
         var inSlotStatValue = inSlot is Entity existing ? ToolSystem.CalculateStat(existing, stat) : null;
         var diff = statValue.Value - (inSlotStatValue ?? 0);
@@ -27,7 +27,7 @@ sealed class ItemRole_Gear : ItemRoleWorker
             return -1;
         if (item.Profile is not GearProfileDef profile)
             return -1;
-        var statDef = (StatDef)role.Def;
+        var statDef = (StatDef)role.Source;
         // TODO need to differentiate between intrinsic gear stats like damage and speed
         // and actor stat bonuses that are rolled on the item
         // also i have to rethink the fact that itemrole gear prefs should be per slot 

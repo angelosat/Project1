@@ -8,7 +8,7 @@ namespace Project1.Core.Systems.ItemRoles
     {
         internal readonly ItemRoleWorker Worker = Activator.CreateInstance(context.WorkerType) as ItemRoleWorker;
         internal readonly ItemRoleContextDef Context = context;
-        internal readonly Def Def = specific;
+        internal readonly Def Source = specific;
 
         internal int GetSituationalScore(Actor actor, Entity item)
         {

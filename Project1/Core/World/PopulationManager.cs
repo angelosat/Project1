@@ -161,6 +161,9 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
         inventory.Insert(damagedTool);
 
+        foreach (var slot in actor.Gear.SlotDefs)
+            if(ToolSystem.CreateRandom(slot, this.World.Random) is Entity item)
+                inventory.Insert(item);
 
         var healPot = ConsumableSystem.Create(ConsumableDefOf.Potion, PotionSystem.GetMaterialRequired(EffectDefOf.RestoreResource, ResourceDefOf.Health), QualityDefOf.Common);
         inventory.Insert(healPot);

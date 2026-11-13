@@ -13,6 +13,7 @@ internal class Planner_SmartEquip : Planner
     protected override Plan TryPlan(Actor actor)
     {
         var manager = actor.ItemPreferences;
+        var world = actor.World;
         Dictionary<GearSlotDef, (GearSlotDef slot, Entity currentItem, Entity newItem, int score)> mostImpactfulPerSlot = [];
         Dictionary<GearSlotDef, (GearSlotDef slot, Entity item, int score)> currentPerSlot = [];
         foreach (var gt in actor.GetGearTypes())
@@ -21,13 +22,15 @@ internal class Planner_SmartEquip : Planner
 
             var current = actor.GetEquipmentSlot(gt);
             var currentItemScore = current is not null ? manager.GetTotalSituationalScoreFor(current) : 0;
-            var candidates = manager.GetItemsBySituationalScore(actor, i => i.Def.GearType == gt);
+            //var candidates = manager.GetItemsBySituationalScore(actor, i => i.Def.GearType == gt);
+            var candidates = manager.GetItemsBySituationalScoreNewNew(actor, i => i.Def.GearType == gt);
             currentPerSlot[gt] = (gt, current, currentItemScore);
             if (currentItemScore > 0)
                 mostImpactfulInSlot = (slot: gt, item: current, score: currentItemScore);
 
-            foreach (var (item, score) in candidates)
+            foreach (var (itemId, score) in candidates)
             {
+                var item = world.Get(itemId);
                 if (score > 0)
                 {
                     if (!actor.Inventory.Contains(item))

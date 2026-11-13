@@ -428,7 +428,7 @@ public sealed class Actor : Entity
     {
         return this.GetComponent<GearComp>().Equipment.Slots.Where(sl => sl.Object != null).Select(sl => sl.Object as Entity).ToArray();
     }
-    internal Entity GetEquipmentSlot(GearSlotDef type)
+    internal Entity? GetEquipmentSlot(GearSlotDef type)
     {
         return this.Gear.GetSlot(type).Object as Entity;
     }

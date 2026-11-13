@@ -216,6 +216,9 @@ public sealed class GearComp : EntityComp
     //    return (value, type);
     //}
 
+    public IEnumerable<GearSlotDef> SlotDefs 
+        => this.Gear.SlotDefs;
+
     public float GetModifier(StatDef stat)
         => this.GetGear().Sum(g => g.ToolComponent.Modifiers.GetValueOrDefault(stat));
 

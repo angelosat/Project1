@@ -633,6 +633,17 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         foreach (var t in scored)
             yield return t;
     }
+
+    internal IEnumerable<EquipDecision> GetItemsBySituationalScoreNewNew(Actor actor, Func<Entity, bool> filter)
+    {
+        var potential = this.ItemsToPrefs
+                .Where(e => filter(e.Key))
+                .Select(e => (e.Key, e.Value.Sum(p => p.Role.Worker.GetSituationalScore(actor, e.Key, p.Role))));
+
+        foreach (var t in potential.OrderByDescending(a => a.Item2))
+            yield return new(t.Key.RefId, t.Item2);
+    }
+
     public IEnumerable<ItemPreference> GetItemsBySituationalScoreNew(Actor actor, Func<Entity, bool> filter)
     {
         // Collect all valid preferences with their computed score

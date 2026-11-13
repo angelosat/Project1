@@ -2,6 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Gear;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
 using Project1.Core.Networking;
@@ -18,6 +19,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -36,6 +38,8 @@ internal static class ToolSystem
 
     static readonly HashSet<GearProfileDef> _allDefs;
 
+    static readonly Dictionary<GearSlotDef, List<GearProfileDef>> _defsBySlot;
+
     static ToolSystem()
     {
         CreateRuleFor(BoneDefOf.ToolHandle)
@@ -44,6 +48,10 @@ internal static class ToolSystem
             .Allow(MaterialRefinementDefOf.Ingots, MaterialRefinementDefOf.Planks, MaterialRefinementDefOf.Chunk);
 
         _allDefs = [.. Def.Get<GearProfileDef>()];
+
+        _defsBySlot = _allDefs
+            .GroupBy(d => d.Role.Slot)
+            .ToDictionary(d => d.Key, d => d.ToList());
 
         AllBonusDefs = [.. Def.Get<StatBonusDef>()];
         AllPrefixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
@@ -192,15 +200,40 @@ internal static class ToolSystem
         return CreateToolOrWeapon(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
     }
 
-    internal static Entity CreateRandomNew(Random rand)
+    internal static Entity? CreateRandomNew(Random rand)
     {
+        var slot = _defsBySlot.Keys.SelectRandom(rand);
+        var item = CreateRandom(slot, rand);
+        return item;
+        //var item = ItemDefOf.Gear.Create();
+        //var profile = _allDefs.SelectRandom(rand);
+        //item.Profile = profile;
+        //item.ToolComponent.ToolDef = profile;
+        //item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
+        //item.SpriteComp.BodyDef = profile.Role.Bones;
+        //item.Randomize(Server.Random);
+        //return item;
+    }
+    internal static Entity? CreateRandom(GearSlotDef slot, Random random)
+    {
+        if (!_defsBySlot.ContainsKey(slot))
+            return null;
+        var profiles = _defsBySlot[slot];
+        var profile = profiles.SelectRandom(random);
+        var item = Create(profile, random);
+        return item;
+    }
+    internal static Entity Create(GearProfileDef profile, Random random)
+    {
+        //var profiles = _defsBySlot[slot];
+        //var profile = profiles.SelectRandom(random);
         var item = ItemDefOf.Gear.Create();
-        var profile = _allDefs.SelectRandom(rand);
         item.Profile = profile;
         item.ToolComponent.ToolDef = profile;
         item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
         item.SpriteComp.BodyDef = profile.Role.Bones;
-        item.Randomize(Server.Random);
+        //item.Randomize(Server.Random);
+        Randomize(item, random);
         return item;
     }
 

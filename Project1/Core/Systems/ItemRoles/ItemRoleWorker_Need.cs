@@ -7,7 +7,15 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleNeedWorker : ItemRoleWorker
+sealed class ItemRoleContextWorker_Need : ItemRoleContextWorker
+{
+    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
+    {
+        return this.GenerateRolesSimple<NeedDef>(contextDef, typeof(ItemRoleWorker_Need));
+    }
+}
+
+sealed class ItemRoleWorker_Need : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
     {

@@ -10,12 +10,12 @@ namespace Project1.Core.Systems.ItemRoles;
 //{
   
 
-record struct ItemPref
-{
-    internal ItemRoleKey Key;
-    internal EntityRefId EntityId;
-    internal int Score;
-}
+//record struct ItemPref
+//{
+//    internal ItemRoleKey Key;
+//    internal EntityRefId EntityId;
+//    internal int Score;
+//}
 public record struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>
 {
     internal ItemRoleDef Role;

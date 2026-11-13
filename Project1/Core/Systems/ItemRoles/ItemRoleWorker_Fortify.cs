@@ -8,10 +8,16 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRole_Restore : ItemRoleWorker
+sealed class ItemRoleContextWorker_Fortify : ItemRoleContextWorker
+{
+    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
+        => this.GenerateRolesSimple<ResourceDef>(r => r.SupportsFortify, contextDef, typeof(ItemRoleWorker_Fortify));
+}
+
+sealed class ItemRoleWorker_Fortify : ItemRoleWorker
 {
     public override IEnumerable<Def> GetValidTargetDefs()
-       => Def.Get<ResourceDef>().Where(r => r.SupportsRestore);
+        => Def.Get<ResourceDef>().Where(r => r.SupportsFortify);
 
     public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
     {
@@ -20,7 +26,7 @@ sealed class ItemRole_Restore : ItemRoleWorker
         var resource = (ResourceDef)context.Source;
         if (comp.Effect is not EntityEffectWrapper effect)
             return -1;
-        if (effect.Def != EffectDefOf.RestoreResource)
+        if (effect.Def != EffectDefOf.FortifyResource)
             return -1;
         if (effect.Target != resource)
             return -1;
@@ -29,14 +35,13 @@ sealed class ItemRole_Restore : ItemRoleWorker
 
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
     {
-        var def = (ResourceDef)context.Source;
+        var def = context.Source;
+        if (actor.Effects.Any(EffectDefOf.FortifyResource, def))
+            return 0;
         var comp = item.GetComponent<ConsumableComp>();
-        var effect = comp.Effect;
-        if (!(effect.Def == EffectDefOf.RestoreResource && effect.Target == def))
+        if (!(comp.Effect.Def == EffectDefOf.FortifyResource && comp.Effect.Target == def))
             throw new System.Exception();
-
-        var deficit = actor.Resources.GetDeficit(def);
-        //return deficit;
-        return deficit > effect.MagnitudeFinal ? deficit : -1;
+        return (int)comp.Effect.MagnitudeFinal;
     }
+
 }

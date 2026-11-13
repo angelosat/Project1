@@ -6,7 +6,12 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleNutritionWorker : ItemRoleWorker
+sealed class ItemRoleContextWorker_Nutrition : ItemRoleContextWorker
+{
+    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
+        => this.GenerateAtomic(contextDef, typeof(ItemRoleWorker_Nutrition));
+}
+sealed class ItemRoleWorker_Nutrition : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
     {

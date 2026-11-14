@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRole_Tool : ItemRoleWorker
+sealed class ItemRoleWorker_Tool(ToolUseDef toolUse) : ItemRoleWorker
 {
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
         var task = actor.AI.State.Behavior?.Plan;
         if (task is null)
@@ -17,24 +17,26 @@ sealed class ItemRole_Tool : ItemRoleWorker
         var interaction = task.Def.Interaction;
         if (interaction is null)
             return 0;
-        var durability = item.Resources.ViewOld(ResourceDefOf.Durability);
+        var durability = item.Resources.View(ResourceDefOf.Durability);
         if (durability.Value == 0)
             return -100;
         //if (durability.Percentage < 1)
         //        return (int)(100 * (durability.Percentage - 1));
         var tooluse = interaction.ToolUse;
-        if (tooluse == role.Source)
+        if (tooluse == toolUse)
             return 100;
         return -100;
     }
     
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (item.Def != ItemDefOf.Gear)
             return -1;
         if (item.Profile is not GearProfileDef toolProfile)
             return -1;
-        if (toolProfile.ToolUse != role.Source)
+        //if (toolProfile.ToolUse != role.Source)
+        //    return -1;
+        if (toolProfile.ToolUse != toolUse)
             return -1;
         return (int)StatDefOf.ItemPower.CalculateFor(item);
     }

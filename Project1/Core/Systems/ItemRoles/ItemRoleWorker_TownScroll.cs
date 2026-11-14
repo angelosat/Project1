@@ -13,7 +13,7 @@ sealed class ItemRoleContextWorker_TownScroll : ItemRoleContextWorker
 
 sealed class ItemRoleWorker_TownScroll : ItemRoleWorker
 {
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (item.Def != ItemDefOf.Consumable)
             return 0;
@@ -22,7 +22,7 @@ sealed class ItemRoleWorker_TownScroll : ItemRoleWorker
         return 100;
     }
 
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
         return -1;
     }

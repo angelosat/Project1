@@ -303,7 +303,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         foreach (var role in FlatItemRolesList)
         {
-            var score = role.Worker.GetInventoryScore(this.Actor, item, role);
+            var score = role.Worker.GetInventoryScore(this.Actor, item);
             if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
                 score += bias.Value;
             if (score > 0)
@@ -340,7 +340,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         List<(ItemRoleDef role, int score)> results = [];
         foreach (var role in FlatItemRolesList)
         {
-            var score = role.Worker.GetInventoryScore(this.Actor, item, role);
+            var score = role.Worker.GetInventoryScore(this.Actor, item);
             if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
                 score += bias.Value;
             if (score > 0)
@@ -532,7 +532,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         foreach (var (role, pref) in this.PrefsInternal)
         {
-            var score = role.Worker.GetInventoryScore(this.Actor, item, role);
+            var score = role.Worker.GetInventoryScore(this.Actor, item);
             if (score < 0)
                 continue;
             if (score > pref.InventoryScore)
@@ -626,7 +626,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
         var scored = potential
             //.Select(pref => (pref.Item, pref.Role.Worker.GetSituationalScore(actor, pref.Item, pref.Role)))
-            .Select(pref => (this.Resolve(pref.ItemRefId), pref.Role.Worker.GetSituationalScore(actor, this.Resolve(pref.ItemRefId), pref.Role)))
+            .Select(pref => (this.Resolve(pref.ItemRefId), pref.Role.Worker.GetSituationalScore(actor, this.Resolve(pref.ItemRefId))))
             .Where(t => t.Item2 != 0)
             .ToList();
         scored.Sort((a, b) => b.Item2.CompareTo(a.Item2));
@@ -638,7 +638,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         var potential = this.ItemsToPrefs
                 .Where(e => filter(e.Key))
-                .Select(e => (e.Key, e.Value.Sum(p => p.Role.Worker.GetSituationalScore(actor, e.Key, p.Role))));
+                .Select(e => (e.Key, e.Value.Sum(p => p.Role.Worker.GetSituationalScore(actor, e.Key))));
 
         foreach (var t in potential.OrderByDescending(a => a.Item2))
             yield return new(t.Key.RefId, t.Item2);
@@ -650,7 +650,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         var scoredList = this.PrefsInternal.Values
             //.Where(p => p.Item != null && filter(p.Item))
             .Where(p => p.ItemRefId != EntityRefId.Null && filter(this.Resolve(p.ItemRefId)))
-            .Select(p => (pref: p, score: p.Role.Worker.GetSituationalScore(actor, this.Resolve(p.ItemRefId), p.Role)))
+            .Select(p => (pref: p, score: p.Role.Worker.GetSituationalScore(actor, this.Resolve(p.ItemRefId))))
             .ToList();
 
         // Sort descending by score
@@ -669,7 +669,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         var relevantRoles = this.PrefsInternal.Where(pref => pref.Value.ItemRefId == item.RefId);
         int total = 0;
         foreach(var (role, pref) in relevantRoles)
-            total += role.GetSituationalScore(this.Actor, item);
+            total += role.Worker.GetSituationalScore(this.Actor, item);
         return total;
     }
 

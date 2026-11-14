@@ -14,7 +14,7 @@ sealed class ItemRoleWorker_Cash : ItemRoleWorker
     public override IEnumerable<Def> GetValidTargetDefs()
         => [null];
 
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (actor.IsTownMember)
             return 0;
@@ -23,6 +23,6 @@ sealed class ItemRoleWorker_Cash : ItemRoleWorker
         return 100;
     }
 
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetSituationalScore(Actor actor, Entity item)
         => 0;
 }

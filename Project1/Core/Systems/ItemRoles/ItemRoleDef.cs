@@ -21,13 +21,13 @@ public sealed class ItemRoleDef : Def// Def($"ItemRole:{context.Name}:{specific.
     public ItemRoleDef(string name, ItemRoleContextDef context, Def specific)
         : base(name)// Def($"ItemRole:{context.Name}:{specific.Name}")
     {
-        Worker = Activator.CreateInstance(context.WorkerType) as ItemRoleWorker;
+        //Worker = Activator.CreateInstance(context.WorkerType) as ItemRoleWorker;
         Context = context;
         Source = specific;
     }
 
-    internal int GetSituationalScore(Actor actor, Entity item)
-    {
-        return this.Worker.GetSituationalScore(actor, item, this);
-    }
+    //internal int GetSituationalScore(Actor actor, Entity item)
+    //{
+    //    return this.Worker.GetSituationalScore(actor, item);
+    //}
 }

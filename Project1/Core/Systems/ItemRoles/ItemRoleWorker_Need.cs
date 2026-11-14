@@ -11,15 +11,15 @@ sealed class ItemRoleContextWorker_Need : ItemRoleContextWorker
 {
     internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
     {
-        return this.GenerateRolesSimple<NeedDef>(contextDef, typeof(ItemRoleWorker_Need));
+        foreach (var def in Def.Get<NeedDef>())
+            yield return GenerateAdvanced(contextDef, typeof(ItemRoleWorker_Need), def);
     }
 }
 
-sealed class ItemRoleWorker_Need : ItemRoleWorker
+sealed class ItemRoleWorker_Need(NeedDef needDef) : ItemRoleWorker
 {
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
-        var needDef = (NeedDef)role.Source;
         if (actor.Needs.GetPercentage(needDef) > .9f)
             return -100;
         if (!item.TryGetComponent<ConsumableComp>(out var consumableComp))
@@ -31,11 +31,11 @@ sealed class ItemRoleWorker_Need : ItemRoleWorker
         var needDeficit = need.Max - need.Value;// need.Deficit;
         return (int)(needRestore * needDeficit);
     }
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (!item.TryGetComponent<ConsumableComp>(out var consumableComp))
             return -1;
-        var benefit = consumableComp.EffectsNew.Where(e => e.Target == role.Source).Sum(e => e.Budget);
+        var benefit = consumableComp.EffectsNew.Where(e => e.Target == needDef).Sum(e => e.Budget);
         return (int)(benefit.HasValue ? benefit.Value * item.StackMax : 0);
     }
 

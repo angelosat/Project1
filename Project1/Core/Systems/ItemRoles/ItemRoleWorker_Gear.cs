@@ -9,65 +9,64 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRole_GearNew(GearSlotDef slotDef, StatDef statDef) : ItemRoleWorker
-{
-    GearSlotDef SlotDef = slotDef;
-    StatDef StatDef = statDef;
+//sealed class ItemRole_GearNew(GearSlotDef slotDef, StatDef statDef) : ItemRoleWorker
+//{
+//    GearSlotDef SlotDef = slotDef;
+//    StatDef StatDef = statDef;
 
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef _)
+//    public override int GetInventoryScore(Actor actor, Entity item)
+//    {
+//        var profile = (GearProfileDef)item.Profile;
+//        var gearRole = profile.Role;
+//        var slot = gearRole.Slot;
+//        var inSlot = actor.Gear.GetGear(slot);
+//        var stat = this.StatDef;// (StatDef)role.Source;
+//        var statValue = ToolSystem.CalculateStat(item, stat);
+//        var inSlotStatValue = inSlot is Entity existing ? ToolSystem.CalculateStat(existing, stat) : null;
+//        var diff = statValue.Value - (inSlotStatValue ?? 0);
+//        return (int)diff;
+//    }
+
+//    public override int GetSituationalScore(Actor actor, Entity item)
+//    {
+//        if (item.Def != ItemDefOf.Gear)
+//            return -1;
+//        if (item.Profile is not GearProfileDef profile)
+//            return -1;
+//        var statDef = this.StatDef;// (StatDef)role.Source;
+//        // TODO need to differentiate between intrinsic gear stats like damage and speed
+//        // and actor stat bonuses that are rolled on the item
+//        // also i have to rethink the fact that itemrole gear prefs should be per slot 
+//        var value = ToolSystem.CalculateStat(item, statDef);
+//        return value.HasValue ? (int)value.Value : -1;
+//    }
+
+//    public override IEnumerable<Def> GetValidTargetDefs()
+//    {
+//        throw new System.NotImplementedException();
+//    }
+//}
+sealed class ItemRoleWorker_Gear(GearSlotDef slotDef, StatDef statDef) : ItemRoleWorker
+{
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
         var profile = (GearProfileDef)item.Profile;
         var gearRole = profile.Role;
         var slot = gearRole.Slot;
         var inSlot = actor.Gear.GetGear(slot);
-        var stat = this.StatDef;// (StatDef)role.Source;
+        var stat = statDef;
         var statValue = ToolSystem.CalculateStat(item, stat);
         var inSlotStatValue = inSlot is Entity existing ? ToolSystem.CalculateStat(existing, stat) : null;
         var diff = statValue.Value - (inSlotStatValue ?? 0);
         return (int)diff;
     }
 
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef _)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (item.Def != ItemDefOf.Gear)
             return -1;
         if (item.Profile is not GearProfileDef profile)
             return -1;
-        var statDef = this.StatDef;// (StatDef)role.Source;
-        // TODO need to differentiate between intrinsic gear stats like damage and speed
-        // and actor stat bonuses that are rolled on the item
-        // also i have to rethink the fact that itemrole gear prefs should be per slot 
-        var value = ToolSystem.CalculateStat(item, statDef);
-        return value.HasValue ? (int)value.Value : -1;
-    }
-
-    public override IEnumerable<Def> GetValidTargetDefs()
-    {
-        throw new System.NotImplementedException();
-    }
-}
-sealed class ItemRole_Gear : ItemRoleWorker
-{
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
-    {
-        var profile = (GearProfileDef)item.Profile;
-        var gearRole = profile.Role;
-        var slot = gearRole.Slot;
-        var inSlot = actor.Gear.GetGear(slot);
-        var stat = (StatDef)role.Source;
-        var statValue = ToolSystem.CalculateStat(item, stat);
-        var inSlotStatValue = inSlot is Entity existing ? ToolSystem.CalculateStat(existing, stat) : null;
-        var diff = statValue.Value - (inSlotStatValue ?? 0);
-        return (int)diff;
-    }
-
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
-    {
-        if (item.Def != ItemDefOf.Gear)
-            return -1;
-        if (item.Profile is not GearProfileDef profile)
-            return -1;
-        var statDef = (StatDef)role.Source;
         // TODO need to differentiate between intrinsic gear stats like damage and speed
         // and actor stat bonuses that are rolled on the item
         // also i have to rethink the fact that itemrole gear prefs should be per slot 
@@ -105,10 +104,11 @@ internal sealed class ItemRoleContextWorker_Gear : ItemRoleContextWorker
         {
             foreach (var statDef in statDefs)
             {
-                yield return new ItemRoleDef($"{contextDef.LabelReadable}:{slotDef.LabelReadable}:{statDef.LabelReadable}", contextDef, null)
-                { 
-                    Worker = new ItemRole_GearNew(slotDef, statDef) 
-                };
+                yield return GenerateAdvanced(contextDef, typeof(ItemRoleWorker_Gear), slotDef, statDef);
+                //yield return new ItemRoleDef($"{contextDef.LabelReadable}:{slotDef.LabelReadable}:{statDef.LabelReadable}", contextDef, null)
+                //{ 
+                //    Worker = new ItemRoleWorker_Gear(slotDef, statDef) 
+                //};
             }
         }
     }
@@ -123,7 +123,7 @@ internal sealed class ItemRoleContextWorker_Tool : ItemRoleContextWorker
         {
             yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef, null)
             {
-                Worker = new ItemRole_Tool()
+                Worker = new ItemRoleWorker_Tool(def)
             };
         }
     }

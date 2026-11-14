@@ -7,7 +7,7 @@ namespace Project1.Core.Systems.Equipment;
 
 internal class ItemRole_Equipment : ItemRoleWorker
 {
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (!item.TryGetComponent<EquipmentComp>(out var comp))
             return 0;
@@ -15,7 +15,7 @@ internal class ItemRole_Equipment : ItemRoleWorker
         return value;
     }
 
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
         var comp = item.GetComponent<EquipmentComp>();
         var profile = (EquipmentDef)item.Profile;

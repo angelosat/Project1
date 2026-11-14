@@ -11,19 +11,21 @@ namespace Project1.Core.Systems.ItemRoles;
 sealed class ItemRoleContextWorker_Fortify : ItemRoleContextWorker
 {
     internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
-        => this.GenerateRolesSimple<ResourceDef>(r => r.SupportsFortify, contextDef, typeof(ItemRoleWorker_Fortify));
+    {
+        foreach (var def in Def.Get<ResourceDef>().Where(r => r.SupportsFortify))
+            yield return GenerateAdvanced(contextDef, typeof(ItemRoleWorker_Fortify), def);
+    }
 }
 
-sealed class ItemRoleWorker_Fortify : ItemRoleWorker
+sealed class ItemRoleWorker_Fortify(ResourceDef resource) : ItemRoleWorker
 {
     public override IEnumerable<Def> GetValidTargetDefs()
         => Def.Get<ResourceDef>().Where(r => r.SupportsFortify);
 
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (!item.TryGetComponent<ConsumableComp>(out var comp))
             return -1;
-        var resource = (ResourceDef)context.Source;
         if (comp.Effect is not EntityEffectWrapper effect)
             return -1;
         if (effect.Def != EffectDefOf.FortifyResource)
@@ -33,13 +35,12 @@ sealed class ItemRoleWorker_Fortify : ItemRoleWorker
         return (int)effect.MagnitudeFinal;
     }
 
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
-        var def = context.Source;
-        if (actor.Effects.Any(EffectDefOf.FortifyResource, def))
+        if (actor.Effects.Any(EffectDefOf.FortifyResource, resource))
             return 0;
         var comp = item.GetComponent<ConsumableComp>();
-        if (!(comp.Effect.Def == EffectDefOf.FortifyResource && comp.Effect.Target == def))
+        if (!(comp.Effect.Def == EffectDefOf.FortifyResource && comp.Effect.Target == resource))
             throw new System.Exception();
         return (int)comp.Effect.MagnitudeFinal;
     }

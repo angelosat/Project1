@@ -13,7 +13,7 @@ sealed class ItemRoleContextWorker_Nutrition : ItemRoleContextWorker
 }
 sealed class ItemRoleWorker_Nutrition : ItemRoleWorker
 {
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef role)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
         if (item.Def != ItemDefOf.Ingredient)
             return -100;
@@ -27,7 +27,7 @@ sealed class ItemRoleWorker_Nutrition : ItemRoleWorker
         var needDeficit = actor.Needs.GetDeficit(NeedDefOf.Hunger);
         return nutrition * needDeficit;
     }
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef role)
+    public override int GetInventoryScore(Actor actor, Entity item)
         => HungerUtility.GetNutrition(actor, item) * item.StackMax;
 
     public override IEnumerable<Def> GetValidTargetDefs()

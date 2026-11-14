@@ -10,7 +10,7 @@ public class ItemRoleContextDef(string name, Type targetType, Type workerType, T
     [Obsolete]
     internal Type TargetType = targetType;
     internal Type WorkerType = workerType;
-    internal ItemRoleWorker WorkerRole = ActivatorSafe<ItemRoleWorker>.CreateInstance(workerType);
+    //internal ItemRoleWorker WorkerRole = ActivatorSafe<ItemRoleWorker>.CreateInstance(workerType);
     internal ItemRoleContextWorker WorkerContext => field ??= ActivatorSafe<ItemRoleContextWorker>.CreateInstance(contextWorkerType);
     //internal ItemRoleGenerator Gen;
 }
@@ -39,6 +39,11 @@ internal abstract class ItemRoleContextWorker
     {
         yield return new ItemRoleDef($"{contextDef.LabelReadable}", contextDef, null)
         { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType) };
+    }
+    protected static ItemRoleDef GenerateAdvanced(ItemRoleContextDef contextDef, Type roleWorkerType, params Def[] targets)
+    {
+        var label = string.Join(":", targets.Select(d => d.LabelReadable).Prepend(contextDef.LabelReadable).ToArray());
+        return new(label, contextDef, null) { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType, targets) };
     }
 }
 

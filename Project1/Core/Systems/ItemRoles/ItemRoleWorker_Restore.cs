@@ -11,19 +11,22 @@ namespace Project1.Core.Systems.ItemRoles;
 sealed class ItemRoleContextWorker_Restore : ItemRoleContextWorker
 {
     internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
-            => this.GenerateRolesSimple<ResourceDef>(r => r.SupportsRestore, contextDef, typeof(ItemRoleWorker_Restore));
+    //=> this.GenerateRolesSimple<ResourceDef>(r => r.SupportsRestore, contextDef, typeof(ItemRoleWorker_Restore));
+    {
+        foreach (var def in Def.Get<ResourceDef>().Where(r => r.SupportsRestore))
+            yield return GenerateAdvanced(contextDef, typeof(ItemRoleWorker_Restore), def);
+    }
 }
 
-sealed class ItemRoleWorker_Restore : ItemRoleWorker
+sealed class ItemRoleWorker_Restore(ResourceDef resource) : ItemRoleWorker
 {
     public override IEnumerable<Def> GetValidTargetDefs()
        => Def.Get<ResourceDef>().Where(r => r.SupportsRestore);
 
-    public override int GetInventoryScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (!item.TryGetComponent<ConsumableComp>(out var comp))
             return -1;
-        var resource = (ResourceDef)context.Source;
         if (comp.Effect is not EntityEffectWrapper effect)
             return -1;
         if (effect.Def != EffectDefOf.RestoreResource)
@@ -33,15 +36,15 @@ sealed class ItemRoleWorker_Restore : ItemRoleWorker
         return (int)effect.MagnitudeFinal;
     }
 
-    public override int GetSituationalScore(Actor actor, Entity item, ItemRoleDef context)
+    public override int GetSituationalScore(Actor actor, Entity item)
     {
-        var def = (ResourceDef)context.Source;
+        //var def = (ResourceDef)context.Source;
         var comp = item.GetComponent<ConsumableComp>();
         var effect = comp.Effect;
-        if (!(effect.Def == EffectDefOf.RestoreResource && effect.Target == def))
+        if (!(effect.Def == EffectDefOf.RestoreResource && effect.Target == resource))
             throw new System.Exception();
 
-        var deficit = actor.Resources.GetDeficit(def);
+        var deficit = actor.Resources.GetDeficit(resource);
         //return deficit;
         return deficit > effect.MagnitudeFinal ? deficit : -1;
     }

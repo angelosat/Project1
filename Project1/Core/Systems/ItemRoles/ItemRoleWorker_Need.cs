@@ -7,15 +7,6 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleContextWorker_Need : ItemRoleContextWorker
-{
-    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
-    {
-        foreach (var def in Def.Get<NeedDef>())
-            yield return GenerateAdvanced(contextDef, typeof(ItemRoleWorker_Need), def);
-    }
-}
-
 sealed class ItemRoleWorker_Need(NeedDef needDef) : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item)
@@ -31,6 +22,7 @@ sealed class ItemRoleWorker_Need(NeedDef needDef) : ItemRoleWorker
         var needDeficit = need.Max - need.Value;// need.Deficit;
         return (int)(needRestore * needDeficit);
     }
+
     public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (!item.TryGetComponent<ConsumableComp>(out var consumableComp))
@@ -38,21 +30,4 @@ sealed class ItemRoleWorker_Need(NeedDef needDef) : ItemRoleWorker
         var benefit = consumableComp.EffectsNew.Where(e => e.Target == needDef).Sum(e => e.Budget);
         return (int)(benefit.HasValue ? benefit.Value * item.StackMax : 0);
     }
-
-    public override IEnumerable<Def> GetValidTargetDefs()
-        => Def.Get<NeedDef>();
-    //public override IEnumerable<ItemRoleKey> GenerateKeys()
-    //{
-    //    return Def.Get<NeedDef>().Select(n=> new ItemRoleKey_Need(n));
-    //}
-
-    //public override int GetInventoryScore(Actor actor, Entity item, ItemRoleKey key)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
-
-    //public override int GetSituationalScore(Actor actor, Entity item, ItemRoleKey key)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
 }

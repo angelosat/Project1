@@ -3,7 +3,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Tools;
-using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
@@ -34,35 +33,8 @@ sealed class ItemRoleWorker_Tool(ToolUseDef toolUse) : ItemRoleWorker
             return -1;
         if (item.Profile is not GearProfileDef toolProfile)
             return -1;
-        //if (toolProfile.ToolUse != role.Source)
-        //    return -1;
         if (toolProfile.ToolUse != toolUse)
             return -1;
         return (int)StatDefOf.ItemPower.CalculateFor(item);
     }
-
-    public override IEnumerable<Def> GetValidTargetDefs()
-        => Def.Get<ToolUseDef>();
-    //public override IEnumerable<ItemRoleDef> GenerateDefs()
-    //{
-    //    return Def.Get<ToolUseDef>().Select(n => new ItemRoleDef(ItemRoleContextDefOf.Tool, n));
-    //}
-
-    //public override int GetInventoryScore(Actor actor, Entity item, ItemRoleKey key)
-    //{
-    //    if (item.Def != ItemDefOf.Tool)
-    //        return -1;
-    //    if (item.Profile is not ToolProfileDef toolProfile)
-    //        return -1;
-    //    var typedKey = (ItemRoleKey_Tool)key;
-    //    if (toolProfile.ToolUse != typedKey.ToolUse)
-    //        return -1;
-    //    return (int)StatDefOf.ToolEffectiveness.CalculateFor(item);
-    //}
-
-    //public override int GetSituationalScore(Actor actor, Entity item, ItemRoleKey key)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
-
 }

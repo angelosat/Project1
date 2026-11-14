@@ -5,12 +5,6 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleContextWorker_TownScroll : ItemRoleContextWorker
-{
-    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
-        => this.GenerateAtomic(contextDef, typeof(ItemRoleWorker_TownScroll));
-}
-
 sealed class ItemRoleWorker_TownScroll : ItemRoleWorker
 {
     public override int GetInventoryScore(Actor actor, Entity item)
@@ -26,7 +20,4 @@ sealed class ItemRoleWorker_TownScroll : ItemRoleWorker
     {
         return -1;
     }
-
-    public override IEnumerable<Def> GetValidTargetDefs()
-        => [null];
 }

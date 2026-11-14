@@ -6,16 +6,6 @@ using System;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-//public partial class ItemPreferencesManager
-//{
-  
-
-//record struct ItemPref
-//{
-//    internal ItemRoleKey Key;
-//    internal EntityRefId EntityId;
-//    internal int Score;
-//}
 public record struct ItemPreference : ISaveable, ISaveableNewNew<ItemPreference>, IDictionarySyncable<ItemRoleDef, ItemPreference>
 {
     internal ItemRoleDef Role;

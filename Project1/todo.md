@@ -1,4 +1,6 @@
 # todo 2026
+## item preferences
+- gui: decide how to display multiple roles per item instead of the first one found
 ## overworld exploration and encounters
 - separate explorationsystem that responds to actorexplorationevent?
 ## Future: Multi-specialist crafting pipeline

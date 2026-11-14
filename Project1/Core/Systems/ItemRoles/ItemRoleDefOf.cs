@@ -6,7 +6,7 @@ namespace Project1.Core.Systems.ItemRoles;
 [EnsureStaticCtorCall]
 public class ItemRoleDefOf
 {
-    public static readonly ItemRoleDef Nutrition = new(ItemRoleContextDefOf.Nutrition, null) { Worker = new ItemRoleWorker_Nutrition() };
+    //public static readonly ItemRoleDef Nutrition = new(ItemRoleContextDefOf.Nutrition) { Worker = new ItemRoleWorker_Nutrition() };
 
     static ItemRoleDefOf()
     {

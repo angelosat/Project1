@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.ItemRoles;
-using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Equipment;
 
@@ -25,7 +24,4 @@ internal class ItemRole_Equipment : ItemRoleWorker
         var diff = armor - currentArmor;
         return diff;
     }
-
-    public override IEnumerable<Def> GetValidTargetDefs()
-        => Def.Get<EquipmentDef>();
 }

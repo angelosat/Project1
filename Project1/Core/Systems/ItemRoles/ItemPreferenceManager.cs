@@ -504,16 +504,25 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         var p = this.GetPreference(entity);
         //return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
-        return new Label(p.target ?? p.role) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
+        //return new Label(p.target ?? p.role) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
+        return new LabelNew(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
     }
-
-    public (ItemRoleDef? role, Def? target) GetPreference(Entity item)
+    // TODO decide how to display multiple roles for one item
+    public ItemRoleDef? GetPreference(Entity item)
     {
         //var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item);
         var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.ItemRefId == item.RefId);
-        return (pref.Role, pref.Role?.Source);
+        return pref.Role;
         // if itempreferences are struct, then the default returned will have role == null
     }
+    //// TODO decide how to display multiple roles for one item
+    //public (ItemRoleDef? role, Def? target) GetPreference(Entity item)
+    //{
+    //    //var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item);
+    //    var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.ItemRefId == item.RefId);
+    //    return (pref.Role, pref.Role?.Source);
+    //    // if itempreferences are struct, then the default returned will have role == null
+    //}
 
     public Entity GetPreference(Def context)
     {

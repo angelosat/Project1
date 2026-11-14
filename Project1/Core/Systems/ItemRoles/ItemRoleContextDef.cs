@@ -23,7 +23,7 @@ internal abstract class ItemRoleContextWorker
     {
         foreach (var def in Def.Get<T>())
         {
-            yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef, null)
+            yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef)
             { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType) };
         }
     }
@@ -31,19 +31,19 @@ internal abstract class ItemRoleContextWorker
     {
         foreach (var def in Def.Get<T>().Where(filter))
         {
-            yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef, null)
+            yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef)
             { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType) };
         }
     }
     protected IEnumerable<ItemRoleDef> GenerateAtomic(ItemRoleContextDef contextDef, Type roleWorkerType)
     {
-        yield return new ItemRoleDef($"{contextDef.LabelReadable}", contextDef, null)
+        yield return new ItemRoleDef($"{contextDef.LabelReadable}", contextDef)
         { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType) };
     }
-    protected static ItemRoleDef GenerateAdvanced(ItemRoleContextDef contextDef, Type roleWorkerType, params Def[] targets)
+    protected static ItemRoleDef GenerateAdvanced(ItemRoleContextDef contextDef, Type roleWorkerType, params Def[] parameters)
     {
-        var label = string.Join(":", targets.Select(d => d.LabelReadable).Prepend(contextDef.LabelReadable).ToArray());
-        return new(label, contextDef, null) { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType, targets) };
+        var label = string.Join(":", parameters.Select(d => d.LabelReadable).Prepend(contextDef.LabelReadable).ToArray());
+        return new(label, contextDef) { Worker = (ItemRoleWorker)Activator.CreateInstance(roleWorkerType, parameters) };
     }
 }
 
@@ -56,7 +56,7 @@ internal sealed class ItemRoleContextWorkerSimple(Type targetDefType) : ItemRole
     {
         var defs = Def.Get(this.TargetDefType);
         foreach (var def in defs)
-            yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef, null) 
+            yield return new ItemRoleDef($"{contextDef.LabelReadable}:{def.LabelReadable}", contextDef) 
             { 
                 Worker = ActivatorSafe<ItemRoleWorker>.CreateInstance(contextDef.WorkerType) 
             };

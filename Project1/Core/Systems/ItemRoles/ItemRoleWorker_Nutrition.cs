@@ -1,16 +1,10 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Needs;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleContextWorker_Nutrition : ItemRoleContextWorker
-{
-    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
-        => this.GenerateAtomic(contextDef, typeof(ItemRoleWorker_Nutrition));
-}
 sealed class ItemRoleWorker_Nutrition : ItemRoleWorker
 {
     public override int GetSituationalScore(Actor actor, Entity item)
@@ -27,24 +21,7 @@ sealed class ItemRoleWorker_Nutrition : ItemRoleWorker
         var needDeficit = actor.Needs.GetDeficit(NeedDefOf.Hunger);
         return nutrition * needDeficit;
     }
+
     public override int GetInventoryScore(Actor actor, Entity item)
         => HungerUtility.GetNutrition(actor, item) * item.StackMax;
-
-    public override IEnumerable<Def> GetValidTargetDefs()
-        => [null];
-
-    //public override IEnumerable<ItemRoleKey> GenerateKeys()
-    //{
-    //    yield return new ItemRoleKey_Nutrition();
-    //}
-
-    //public override int GetInventoryScore(Actor actor, Entity item, ItemRoleKey key)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
-
-    //public override int GetSituationalScore(Actor actor, Entity item, ItemRoleKey key)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
 }

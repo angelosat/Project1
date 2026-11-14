@@ -8,20 +8,8 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-sealed class ItemRoleContextWorker_Fortify : ItemRoleContextWorker
-{
-    internal override IEnumerable<ItemRoleDef> GenerateRoles(ItemRoleContextDef contextDef)
-    {
-        foreach (var def in Def.Get<ResourceDef>().Where(r => r.SupportsFortify))
-            yield return GenerateAdvanced(contextDef, typeof(ItemRoleWorker_Fortify), def);
-    }
-}
-
 sealed class ItemRoleWorker_Fortify(ResourceDef resource) : ItemRoleWorker
 {
-    public override IEnumerable<Def> GetValidTargetDefs()
-        => Def.Get<ResourceDef>().Where(r => r.SupportsFortify);
-
     public override int GetInventoryScore(Actor actor, Entity item)
     {
         if (!item.TryGetComponent<ConsumableComp>(out var comp))
@@ -44,5 +32,4 @@ sealed class ItemRoleWorker_Fortify(ResourceDef resource) : ItemRoleWorker
             throw new System.Exception();
         return (int)comp.Effect.MagnitudeFinal;
     }
-
 }

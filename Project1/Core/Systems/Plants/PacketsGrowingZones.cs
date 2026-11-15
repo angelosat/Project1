@@ -48,7 +48,7 @@ namespace Project1.Core.Systems.Plants
 
             //var w = zone.Map.Net.GetOutgoingStreamOrderedReliable();
             //w.Write(pSync);
-            var w = zone.Map.Net.BeginPacketOld(pSync);
+            var w = zone.Map.Net.BeginPacket(pSync);
             w.Write(zone.Map.ID);
             w.Write(zone.ID);
             zone.Plant.Write(w);

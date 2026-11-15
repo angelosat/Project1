@@ -36,11 +36,25 @@ namespace Project1.Core.Networking
         {
             return new ArraySegment<byte>(this.Memory.GetBuffer(), 0, (int)this.Memory.Position);
         }
-        public byte[] GetBytes(MemoryStream append)
+        public byte[] GetBytesOld(MemoryStream append)
         {
             this.Memory.Write(append.GetBuffer(), 0, (int)append.Length);
             append.SetLength(0);
             return this.Memory.ToArray();
+        }
+        public byte[] GetBytes(MemoryStream append)
+        {
+            var memoryLength = (int)this.Memory.Length;
+            var appendLength = (int)append.Length;
+
+            var data = new byte[memoryLength + appendLength];
+
+            Buffer.BlockCopy(this.Memory.GetBuffer(), 0, data, 0, memoryLength);
+            Buffer.BlockCopy(append.GetBuffer(), 0, data, memoryLength, appendLength);
+
+            append.SetLength(0);
+
+            return data;
         }
         public byte[] GetBytes()
         {

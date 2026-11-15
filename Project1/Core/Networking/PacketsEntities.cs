@@ -107,13 +107,24 @@ internal class PacketsEntities
     {
         var w = e.Immediate ? Server.Instance.BeginPacketImmediate(_pRegister) : Server.Instance.BeginPacket(_pRegister);
         e.Entity.Write(w);
+        //var end = w.Position;
+        //if(e.Entity.RefId == 99)
+        //{
+        //    "test".ToConsole();
+        //}
     }
     private static void OnRegister(NetEndpoint endpoint, Packet packet)
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
+        //var start = r.Position;
         var obj = GameObject.Create(r, client.World);
+        //var end = r.Position;
         client.World.RegisterInt(obj);
+        //if(obj.RefId == 99)
+        //{
+        //    "test".ToConsole();
+        //}
     }
     private static void SendEntityDisposed(EntityDisposedEvent @event)
     {

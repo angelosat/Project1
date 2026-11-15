@@ -5,6 +5,7 @@ namespace Project1.Framework.Serialization
 {
     public interface IDataReader
     {
+        internal long Position { get; }
         internal byte ReadByte();
         internal string ReadString();
         internal bool ReadBoolean();

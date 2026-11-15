@@ -27,12 +27,12 @@ public abstract partial class NetEndpoint : INetEndpoint
         throw new Exception("Stream not found");
     }
 
-    public BinaryWriter BeginPacketOld(int pType)
-    {
-        var w = this.GetStream(ReliabilityType.OrderedReliable).Writer;
-        w.Write(pType);
-        return w;
-    }
+    //public BinaryWriter BeginPacketOld(int pType)
+    //{
+    //    var w = this.GetStream(ReliabilityType.OrderedReliable).Writer;
+    //    w.Write(pType);
+    //    return w;
+    //}
     public IDataWriter BeginPacketNew(ReliabilityType rType, int pType)
     {
         return PacketBuilder.Create(this.GetStream(rType).Writer, pType);
@@ -44,9 +44,14 @@ public abstract partial class NetEndpoint : INetEndpoint
     }
     public void HandlePacket(int pType, Packet pck)
     {
-        if (Registry.PacketHandlers.TryGet(pType, out var hhh))
-            hhh(this, pck);
-        // silently drop packet if next data is garbage
+        if (Registry.PacketHandlers.TryGet(pType, out var handler))
+        {
+            handler(this, pck);
+            return;
+        }
+
+        throw new InvalidOperationException(
+            $"No packet handler registered for packet ID {pType}.");
     }
     public ChatService ChatService { get; init; }
     public abstract ConsoleBoxAsync ConsoleBox { get; }

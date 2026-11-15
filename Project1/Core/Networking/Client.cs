@@ -520,7 +520,10 @@ public sealed class Client : NetEndpoint
                 base.HandlePacket(id, packet);
 
             if (r.Position == lastPos)
-                break;
+                //break;
+                throw new InvalidOperationException(
+                        $"Packet handler consumed no data: ID {id} ({type}). " +
+                        $"Position: {r.Position}, Length: {r.Length}, Packets handled: {packetsHandled}");
             packetsHandled++;
             lastHandled = id;
         }

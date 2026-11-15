@@ -6,6 +6,7 @@ namespace Project1.Framework.Serialization
 {
     public interface IDataWriter
     {
+        public long Position => this.ww.BaseStream.Position;
         BinaryWriter ww { get; }
         internal IDataWriter Write(byte v);
         internal IDataWriter Write(string v);

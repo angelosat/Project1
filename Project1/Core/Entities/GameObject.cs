@@ -175,7 +175,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
    
     public virtual IEnumerable<Control> GetInspectorControls()
     {
-        yield return new LabelNew(() => $"Owner: {this.World.Get(this.OwnerId)?.Name ?? "<unassigned>"}");
+        yield return new LabelNew(() => $"Owner: {this.World.Resolve(this.OwnerId)?.Name ?? "<unassigned>"}");
         foreach (var comp in this.Components.Values)
         {
             var groupbox = new GroupBox();
@@ -941,7 +941,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     }
   
     internal List<GameObject> GetPossesions()
-        => NpcComponent.GetPossessions(this).Select(id => this.World.Get(id) as GameObject).ToList();
+        => NpcComponent.GetPossessions(this).Select(id => this.World.Resolve(id) as GameObject).ToList();
     
     internal NeedRuntime GetNeed(NeedDef def)
         => this.GetComponent<NeedsComp>().NeedsNew[def];//.First(n => n.NeedDef == def);
@@ -1179,7 +1179,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     private static void SyncSetStacksize(NetEndpoint net, Packet packet)
     {
         var r = packet.PacketReader;
-        var obj = net.World.Get(r.ReadEntityRefId());
+        var obj = net.World.Resolve(r.ReadEntityRefId());
         var value = r.ReadInt32();
         if (net is Client)
             obj.SetStackSize(value);
@@ -1214,8 +1214,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (net is Server)
             throw new Exception();
 
-        var master = net.World.Get(r.ReadEntityRefId());
-        var slave = net.World.Get(r.ReadEntityRefId());
+        var master = net.World.Resolve(r.ReadEntityRefId());
+        var slave = net.World.Resolve(r.ReadEntityRefId());
         master.Absorb(slave);
     }
     #endregion

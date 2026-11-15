@@ -30,6 +30,14 @@ internal static class IOHelpers
             list.Add(r.ReadEntityRefId());
         return list;
     }
+    public static EntityRefId[] ReadArrayEntityRefId(this IDataReader r)
+    {
+        var count = r.ReadInt32();
+        var list = new EntityRefId[count];
+        for (int i = 0; i < count; i++)
+            list[i] = r.ReadEntityRefId();
+        return list;
+    }
     public static T ReadDef<T>(this IDataReader r) where T : Def => Def.Get<T>(r.ReadString());
     public static Def ReadDef(this IDataReader r) => Def.GetDef(r.ReadString());
     public static T TryReadDef<T>(this IDataReader r) where T : Def => r.ReadString() is string defName && !defName.IsNullEmptyOrWhiteSpace() ? Def.Get<T>(defName) : null!;

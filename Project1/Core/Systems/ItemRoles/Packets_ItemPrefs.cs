@@ -53,8 +53,8 @@ internal static class Packets_ItemPrefs
             var role = r.ReadDef<ItemRoleDef>();
             var olditemid = r.ReadEntityRefId();
             var newitemid = r.ReadEntityRefId();
-            var olditem = olditemid > 0 ? actor.World.Get(olditemid) : null;
-            var newitem = newitemid > 0 ? actor.World.Get(newitemid) : null;
+            var olditem = olditemid > 0 ? actor.World.Resolve(olditemid) : null;
+            var newitem = newitemid > 0 ? actor.World.Resolve(newitemid) : null;
             var score = r.ReadInt32();
             manager.UpdatePref(role, newitem, score);
         }

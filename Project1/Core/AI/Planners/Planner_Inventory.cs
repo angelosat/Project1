@@ -87,7 +87,7 @@ sealed class Planner_Inventory : Planner
             //    return new Plan(PlanDefOf.GoPlace, actor.Map, actor.Cell);
             return null;
         }
-        foreach (var item in entitlements.Select(world.Get))
+        foreach (var item in entitlements.Select(world.Resolve))
         {
             if (!item.IsSpawned)
                 continue;

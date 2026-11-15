@@ -29,7 +29,7 @@ internal sealed class WorldActionWorker_Equip : WorldActionWorker
     internal override void Resolve(WorldActionData data)
     {
         var typed = (WorldActionData_Equip)data;
-        var item = data.Actor.World.Get(typed.Decision.ItemId);
+        var item = data.Actor.World.Resolve(typed.Decision.ItemId);
         if (typed.Decision.IsEquip)
             data.Actor.Gear.EquipToggle(item);
         else if (typed.Decision.IsUnequip)

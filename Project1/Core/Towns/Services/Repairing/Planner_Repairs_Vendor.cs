@@ -24,7 +24,7 @@ internal sealed class Planner_Repairs_Vendor : Planner
         if (map.Town.ServiceRequests.TryGetByVendor(actor, out ServiceRequest_Repair req))
         {
             var counter = req.Counter.Value;
-            var item = world.Get(req.Item);
+            var item = world.Resolve(req.Item);
             var durability = item.Resources.GetPercentage(ResourceDefOf.Durability);
 
             if (durability < 1)
@@ -42,7 +42,7 @@ internal sealed class Planner_Repairs_Vendor : Planner
             }
             else
             {
-                if (map.World.Get(req.Money) is Entity money)
+                if (map.World.Resolve(req.Money) is Entity money)
                 {
                     if (actor.Hauled == money)
                         // deposit money inside cash register
@@ -79,7 +79,7 @@ internal sealed class Planner_Repairs_Vendor : Planner
         {
             if (pending is not ServiceRequest_Repair typed)
                 continue;
-            var customer = world.Get(pending.Customer);
+            var customer = world.Resolve(pending.Customer);
             if (!actor.CanReachAndReserve(customer))
                 continue;
             //manager.AssignVendor(typed, actor);

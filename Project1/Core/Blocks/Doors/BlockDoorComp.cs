@@ -43,7 +43,7 @@ namespace Project1.Core.Blocks.Doors
             var nextEntities = new HashSet<EntityRefId>();
             foreach(var entityID in this.CurrentlyOccupying)
             {
-                var entity = this.Map.World.Get(entityID);
+                var entity = this.Map.World.Resolve(entityID);
                 if (entity.Physics.CurrentAABB.Intersects(this.AABB))
                     nextEntities.Add(entityID);
             }

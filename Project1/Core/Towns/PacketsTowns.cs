@@ -34,7 +34,7 @@ internal static class PacketsTowns
     private static void ReceiveToggleTownMembers(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var actors = endpoint.World.GetEntities<Actor>(r.ReadListEntityRefId());
+        var actors = endpoint.World.Resolve<Actor>(r.ReadListEntityRefId());
         endpoint.World.MainMap.Town.ToggleMembers(actors);
         if (endpoint is Server)
             Send(endpoint, [.. actors]);

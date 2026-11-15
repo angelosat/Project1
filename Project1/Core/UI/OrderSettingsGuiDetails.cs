@@ -15,7 +15,7 @@ internal class OrderSettingsGuiDetails : GroupBox
     public OrderSettingsGuiDetails(CraftingOrder order)
     {
         var map = order.Workstation.Map;
-        this.LabelWorker = new(() => $"Current Worker: {map.World.Get(order.CurrentWorker)?.Name ?? "none"}");
+        this.LabelWorker = new(() => $"Current Worker: {map.World.Resolve(order.CurrentWorker)?.Name ?? "none"}");
 
         this.Order = order;
         this.SliderMastery = new(

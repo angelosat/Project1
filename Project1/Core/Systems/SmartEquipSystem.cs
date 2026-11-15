@@ -30,7 +30,7 @@ static internal class SmartEquipSystem
 
             foreach (var (itemId, score) in candidates)
             {
-                var item = world.Get(itemId);
+                var item = world.Resolve(itemId);
                 if (score > 0)
                 {
                     if (!actor.Inventory.Contains(item))

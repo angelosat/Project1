@@ -29,7 +29,7 @@ namespace Project1.Core.Networking.Packets
             if (endpoint is Server)
                 throw new Exception();
             var r = packet.PacketReader;
-            var actor = endpoint.World.Get(r.ReadEntityRefId());
+            var actor = endpoint.World.Resolve(r.ReadEntityRefId());
             var velocity = r.ReadVector3();
             var amount = r.ReadInt32();
             actor.Inventory.Throw(velocity, amount);

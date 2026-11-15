@@ -195,7 +195,7 @@ public sealed class TownComp_Shops : TownComp
     internal IEnumerable<(Entity entity, PriceTag price)> GetPriceList()
     {
         foreach (var pricetag in this._itemsForSale)
-            yield return (this.World.Get(pricetag.Key), pricetag.Value);
+            yield return (this.World.Resolve(pricetag.Key), pricetag.Value);
     }
     internal int CountForSale(Def d)
        => this._itemsForSaleByProfile.TryGetValue(d, out var set) ? set.Count : 0;
@@ -408,7 +408,7 @@ public sealed class TownComp_Shops : TownComp
         .SelectMany(s => s.Items);
     internal IEnumerable<Entity> GetItemsMarkedForSale()
         //=> this._itemsForSale.Keys.Select(id => this.World.Get(id));
-        => this.World.Get(this._itemsForSale.Keys);
+        => this.World.Resolve(this._itemsForSale.Keys);
     internal IEnumerable<(Entity item, IEnumerable<IntVec3> shelves)> GetRestockingOptions()
     {
         foreach(var item in this.GetItemsMarkedForSale())

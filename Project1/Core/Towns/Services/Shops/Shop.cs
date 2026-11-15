@@ -117,7 +117,7 @@ namespace Project1.Core.Towns.Services.Shops
         }
         public void RemoveCustomer(EntityRefId actorID)
         {
-            var actor = this.Town.Map.World.Get(actorID) as Actor;
+            var actor = this.Town.Map.World.Resolve(actorID) as Actor;
             if (this.GetNextCustomer() != actor)
                 return;
             this.CustomerQueue.Dequeue();

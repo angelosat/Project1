@@ -49,7 +49,7 @@ internal static class Packets_Personality
         var actorid = r.ReadEntityRefId();
         var trait = r.ReadDef<TraitDef>();
         var val = r.ReadSingle();
-        var actor = endpoint.World.Get(actorid);
+        var actor = endpoint.World.Resolve(actorid);
         var comp = actor.GetComponent<PersonalityComponent>();
         comp.SetValue(trait, val);
 

@@ -72,7 +72,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         var table = new Table<ItemPreference>()
             .AddColumn("role", 128, p => new Label(p.Role.LabelReadable))
             //.AddColumn("item", 64, p => new Label(() => p.Item?.LabelReadable ?? "none", () => p.Item?.Select()))
-            .AddColumn("item", 64, p => new Label(() => this.Actor.World.Get(p.ItemRefId)?.LabelReadable ?? "none", () => this.Actor.World.Get(p.ItemRefId)?.Select()))
+            .AddColumn("item", 64, p => new Label(() => this.Actor.World.Resolve(p.ItemRefId)?.LabelReadable ?? "none", () => this.Actor.World.Resolve(p.ItemRefId)?.Select()))
             .AddColumn("score", 32, p => new Label(() => p.InventoryScore.ToString()));
         table.AddItems(this.PrefsInternal.Values);
 
@@ -177,7 +177,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         {
             this.TempIgnore.Remove(key);
 
-            var item = this.Actor.Map.World.Get((EntityRefId)key);
+            var item = this.Actor.Map.World.Resolve((EntityRefId)key);
             if (item.ExistsOn(this.Actor.Map))
                 this.TryEnqueue(item);
         }
@@ -252,7 +252,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         if (this.PrefsInternal.TryGetValue(role, out var oldPref))
         {
             oldItemId = oldPref.ItemRefId;
-            var oldItem = this.Actor.World.Get(oldItemId);
+            var oldItem = this.Actor.World.Resolve(oldItemId);
             //this.ItemsToPrefs.Remove(oldItem);
             var existingList = this.ItemsToPrefs[oldItem];
             existingList.RemoveAll(p => p.Role == oldPref.Role);
@@ -365,7 +365,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     }
 
     Entity Resolve(EntityRefId id)
-        => this.Actor.World.Get(id);
+        => this.Actor.World.Resolve(id);
 
     internal int GetExistingScore(ItemRoleDef role)
         => this.PrefsInternal.TryGetValue(role, out var pref) ? pref.InventoryScore : 0;
@@ -490,7 +490,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         var items = actor.Inventory.GetItems();
         foreach (var i in this.ToDiscard.ToArray())
         {
-            var item = net.World.Get((EntityRefId)i);
+            var item = net.World.Resolve((EntityRefId)i);
             if (!items.Contains(item))
             {
                 this.RemoveJunk(item);

@@ -219,7 +219,7 @@ public sealed class CraftingManager : TownComp
     internal Entity? ProductToMove(Actor actor)
     {
         if (this.commitmentsByActor.TryGetValue(actor, out var com))
-            return com.Product.HasValue ? this.World.Get(com.Product.Value) : null; // maybe check if the order actually involves a product? (eg. repairing)
+            return com.Product.HasValue ? this.World.Resolve(com.Product.Value) : null; // maybe check if the order actually involves a product? (eg. repairing)
         return null;
     }
     //internal Contract Commit(Actor actor, BlockWorkstationComp workstation, CraftingOrder order, IEnumerable<Entity> ingredients)

@@ -24,7 +24,7 @@ namespace Project1.Core.Networking.Entities
         {
             var r = pck.PacketReader;
             var id = r.ReadEntityRefId();
-            var entity = net.World.Get(id) as Actor;
+            var entity = net.World.Resolve(id) as Actor;
             entity.Jump();
             if (net is Server)
                 Send(net, entity.RefId);

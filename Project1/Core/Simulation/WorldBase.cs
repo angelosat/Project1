@@ -24,7 +24,7 @@ namespace Project1.Core.Simulation;
 
 public interface IEntityProvider
 {
-    Entity Get(EntityRefId refId);
+    Entity Resolve(EntityRefId refId);
     T Get<T>(EntityRefId refId) where T : Entity;
 
 }
@@ -94,7 +94,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
             //e.OnAttachedToWorld();
         }
     }
-    public Entity Get(EntityRefId refId)
+    public Entity Resolve(EntityRefId refId)
     {
         if (refId == EntityRefId.Null)
             return null!;
@@ -113,22 +113,19 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         foreach (var o in this.EntityRegistry.Values)
             yield return o;
     }
+
     public IEnumerable<TEntity> GetEntities<TEntity>() where TEntity : Entity
-    {
-        return this.EntityRegistry.Values.OfType<TEntity>();
-    }
-    public IEnumerable<Entity> GetEntities(IEnumerable<int> netIds)
-    {
-        return this.EntityRegistry.GetEntities(netIds);
-    }
-    public IEnumerable<Entity> Get(IEnumerable<EntityRefId> netIds)
-    {
-        return this.EntityRegistry.GetEntities(netIds);
-    }
-    public IEnumerable<T> GetEntities<T>(IEnumerable<EntityRefId> netIds) where T : Entity
-    {
-        return this.EntityRegistry.GetEntities(netIds).OfType<T>();
-    }
+        =>this.EntityRegistry.Values.OfType<TEntity>();
+    
+    public IEnumerable<Entity> Resolve(IEnumerable<int> netIds)
+        => this.EntityRegistry.GetEntities(netIds);
+    
+    public IEnumerable<Entity> Resolve(IEnumerable<EntityRefId> netIds)
+        => this.EntityRegistry.GetEntities(netIds);
+    
+    public IEnumerable<T> Resolve<T>(IEnumerable<EntityRefId> netIds) where T : Entity
+        => this.EntityRegistry.GetEntities(netIds).OfType<T>();
+
     public bool TryGetEntity(int netID, out Entity obj)
     {
         if(  this.EntityRegistry.TryGetValue(netID, out var entity))
@@ -156,7 +153,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     }
     public bool TryDisposeEntity(EntityRefId id)
     {
-        var entity = this.Get(id);
+        var entity = this.Resolve(id);
         if (entity is not null)
             return this.DisposeEntity(entity);
         return false;

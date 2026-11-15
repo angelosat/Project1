@@ -23,7 +23,7 @@ static class PacketEntityWalkToggle
     {
         var r = p.PacketReader;
         var id = r.ReadEntityRefId();
-        var entity = net.World.Get(id) as Actor;
+        var entity = net.World.Resolve(id) as Actor;
         var toggle = r.ReadBoolean();
         entity.WalkToggle(toggle);
 

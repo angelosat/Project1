@@ -32,7 +32,7 @@ internal sealed class PacketPlayerForbidItem
         var r = packet.PacketReader;
         var list = r.ReadListEntityRefId();
         foreach (var id in list)
-            endpoint.World.Get(id).ToggleForbidden();
+            endpoint.World.Resolve(id).ToggleForbidden();
         if (endpoint is Server server)
             SendPlayerForbidItem(server, list);
     }

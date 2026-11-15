@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Gear;
 using Project1.Core.Networking.Inventory;
 using Project1.Framework.Helpers;
 using Project1.Framework.UI;

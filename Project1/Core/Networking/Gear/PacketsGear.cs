@@ -34,15 +34,15 @@ namespace Project1.Core.Gear
         {
             var client = net as Client;
             var r = packet.PacketReader;
-            var actor = net.World.Get(r.ReadEntityRefId()) as Actor;
-            var item = net.World.Get(r.ReadEntityRefId());
+            var actor = net.World.Resolve(r.ReadEntityRefId()) as Actor;
+            var item = net.World.Resolve(r.ReadEntityRefId());
             actor.Gear.Equip(item);
         }
         static void ReceiveUnequip(NetEndpoint net, Packet packet)
         {
             var client = net as Client;
             var r = packet.PacketReader;
-            var actor = net.World.Get(r.ReadEntityRefId()) as Actor;
+            var actor = net.World.Resolve(r.ReadEntityRefId()) as Actor;
             var slot = r.ReadDef<GearSlotDef>();
             actor.Gear.Unequip(slot);
         }

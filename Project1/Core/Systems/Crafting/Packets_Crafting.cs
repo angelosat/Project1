@@ -134,7 +134,7 @@ static class Packets_Crafting
         if (endpoint.IsClient)
             throw new InvalidOperationException("Operation should never occur on a client");
         var r = packet.PacketReader;
-        var item = endpoint.World.Get(r.ReadEntityRefId());
+        var item = endpoint.World.Resolve(r.ReadEntityRefId());
         ToolSystem.CancelUnfinished(item);
     }
 

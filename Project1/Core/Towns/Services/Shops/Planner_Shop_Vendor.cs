@@ -23,7 +23,7 @@ class Planner_Shop_Vendor : Planner
             if (req.IsPaidFor && actor.Hauled?.RefId == req.Money)
                 return new Plan(PlanDefOf.GoPlace, map, counter) { Continuation = PlanContinuationPolicy.Yield };
 
-            var item = map.World.Get(req.Item);
+            var item = map.World.Resolve(req.Item);
 
             if (actor.Hauled == item)
             {

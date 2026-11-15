@@ -182,7 +182,7 @@ namespace Project1.Core.Systems.Inventory
         {
             if (tag.TryLoadListInt("Contents", out var list))
             {
-                var items = this.Parent.World.GetEntities(list);
+                var items = this.Parent.World.Resolve(list);
                 foreach (var i in items)
                 {
                     this.Contents.Add(i);

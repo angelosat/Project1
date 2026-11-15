@@ -67,7 +67,7 @@ internal static class CombatSystem
         var weapon = gear.Weapon;
         if (weapon is null)
             return ((int)actor.Stats.Get(StatDefOf.Unarmed), DamageDefOf.Blunt);
-        var value = (int)weapon.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage).Value;
+        var value = (int)weapon.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.ItemPower).Value;
         var profile = weapon.Profile as GearProfileDef;
         var type = profile.Damage;
         return (value, type);

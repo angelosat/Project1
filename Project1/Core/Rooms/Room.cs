@@ -351,7 +351,7 @@ public sealed class Room : Inspectable, ISelectable, ISaveable, ISerializableNew
 
     public Actor GetOwner()
     {
-        return this.Map.World.Get(this.OwnerRef) as Actor;
+        return this.Map.World.Resolve(this.OwnerRef) as Actor;
     }
     public override string ToString()
     {

@@ -29,7 +29,7 @@ namespace Project1.Core.AI.Packets
             var npcids = r.ReadListInt32();
             var target = InteractionTarget.Read(net.World, r);
             var enqueue = r.ReadBoolean();
-            foreach(var npc in net.World.GetEntities(npcids))
+            foreach(var npc in net.World.Resolve(npcids))
                 npc.MoveOrder(target, enqueue);
         }
     }

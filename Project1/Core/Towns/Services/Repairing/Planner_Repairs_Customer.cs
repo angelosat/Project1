@@ -19,7 +19,7 @@ internal sealed class Planner_Repairs_Customer : Planner
         {
             var counter = existing.Counter.Value;
 
-            var item = actor.World.Get(existing.Item);
+            var item = actor.World.Resolve(existing.Item);
             var durability = item.Resources.GetPercentage(ResourceDefOf.Durability);
             if (durability >= 1)
             {
@@ -42,7 +42,7 @@ internal sealed class Planner_Repairs_Customer : Planner
                 {
                     if (existing.Money != EntityRefId.Null)
                     {
-                        var itemMoney = actor.World.Get(existing.Money);
+                        var itemMoney = actor.World.Resolve(existing.Money);
                         if (itemMoney.Cell == counter.Above)
                             return new Plan(ServiceRepairsDefOf.PlanCustomerWaitItemAvailable) { ServiceRequest = existing.Id };
                     }

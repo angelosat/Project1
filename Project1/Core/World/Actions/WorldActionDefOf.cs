@@ -30,6 +30,11 @@ static public class WorldActionDefOf
                                                        workerType: typeof(WorldActionWorker_Attack),
                                                        dataType: typeof(WorldActionWorker_Attack.Data),
                                                        duration: Ticks.FromMinutes(5));
+
+    static public readonly WorldActionDef Loot = new("Looting",
+                                                     workerType: typeof(WorldActionWorker_Loot),
+                                                     dataType: typeof(WorldActionData_Loot),
+                                                     duration: Ticks.FromMinutes(15));
     static WorldActionDefOf()
     {
         Def.Register(typeof(WorldActionDefOf));

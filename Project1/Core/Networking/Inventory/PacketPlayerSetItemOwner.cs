@@ -22,7 +22,7 @@ namespace Project1.Core.Networking.Inventory
             var r = pck.PacketReader;
             var itemID = r.ReadEntityRefId();
             var ownerID = r.ReadEntityRefId();
-            var item = net.World.Get(itemID);
+            var item = net.World.Resolve(itemID);
             
             item.SetOwner(ownerID);
          

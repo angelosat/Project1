@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+#nullable enable
+
 namespace Project1.Core.World.Combat;
 
 internal sealed class CombatRuntime(int id, Actor first, Actor second)
@@ -26,10 +28,39 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     internal bool IsResolved { get; private set; }
 
+    internal Actor? Winner
+    {
+        get
+        {
+            if (!this.IsResolved)
+                return null;
+            if (this.First.Biology.IsIncapacitated)
+                return this.Second;
+            else if (this.Second.Biology.IsIncapacitated)
+                return this.First;
+            throw new UnreachableException();
+        }
+    }
+
+    internal Actor? Loser
+    {
+        get
+        {
+            if (!this.IsResolved)
+                return null;
+            if (this.First.Biology.IsIncapacitated)
+                return this.First;
+            else if (this.Second.Biology.IsIncapacitated)
+                return this.Second;
+            throw new UnreachableException();
+        }
+    }
+
     internal void Tick()
     {
         if (this.IsResolved)
             throw new InvalidOperationException("Ticked a resolved combat encounter");
+
         var world = (StaticWorld)this.First.World;
         if(this.CooldownFirst > 0)
             this.CooldownFirst -= 1;

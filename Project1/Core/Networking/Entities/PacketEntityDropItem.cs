@@ -28,8 +28,8 @@ namespace Project1.Core.Networking.Entities
                 throw new Exception();
             var actorId = packet.PacketReader.ReadEntityRefId();
             var targetId = packet.PacketReader.ReadEntityRefId();
-            var actor = endpoint.World.Get(actorId);
-            var target = endpoint.World.Get(targetId);
+            var actor = endpoint.World.Resolve(actorId);
+            var target = endpoint.World.Resolve(targetId);
             actor.Inventory.Drop(target);
         }
     }

@@ -92,7 +92,7 @@ public class PacketsWorkplaces
         var actorID = r.ReadEntityRefId();
         var shopID = r.ReadInt32();
         var manager = map.Town.Shops;
-        var actor = net.World.Get(actorID) as Actor;
+        var actor = net.World.Resolve(actorID) as Actor;
         var shop = manager.GetShop(shopID);
         shop.AddWorker(actor);
         if (net is Server)

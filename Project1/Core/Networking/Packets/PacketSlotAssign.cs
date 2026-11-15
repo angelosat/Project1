@@ -31,7 +31,7 @@ namespace Project1.Core.Networking.Packets
             var owner = client.World.Get<Actor>(ownerId);
             var slotId = r.ReadInt32();
             var itemId = r.ReadEntityRefId();
-            var item = itemId > 0 ? client.World.Get(itemId) : null;
+            var item = itemId > 0 ? client.World.Resolve(itemId) : null;
             owner.GetSlot(slotId).Assign(item);
         }
     }

@@ -120,7 +120,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
     }
     public BlockEntity BlockEntity;
     Entity? _resolvedEntity;
-    public Entity? Entity => this._resolvedEntity ??= this.World?.Get(this.EntityID);
+    public Entity? Entity => this._resolvedEntity ??= this.World?.Resolve(this.EntityID);
     public GameObject Object
     {
         get
@@ -130,7 +130,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
                 if (this.EntityID == -1)
                     throw new Exception();
                 if (this._resolvedEntity == null)
-                    this._resolvedEntity = this.World.Get(this.EntityID);
+                    this._resolvedEntity = this.World.Resolve(this.EntityID);
             }
 
             else if (this.Type == TargetType.Slot || this.Type == TargetType.BlockEntitySlot)
@@ -160,7 +160,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
             switch (this.Type)
             {
                 case TargetType.Slot:
-                    GameObject parent = this.World.Get(this.ParentID);
+                    GameObject parent = this.World.Resolve(this.ParentID);
                     return parent.GetChild(this.ContainerID, this.SlotID);
 
                 case TargetType.BlockEntitySlot:
@@ -517,7 +517,7 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
                 return new InteractionTarget(mapCell, reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
 
             case TargetType.Slot:
-                var parent = world.Get(reader.ReadEntityRefId());
+                var parent = world.Resolve(reader.ReadEntityRefId());
                 byte slotID = reader.ReadByte();
                 int containerID = reader.ReadInt32();
                 var slot = parent.GetChild(containerID, slotID);

@@ -24,7 +24,7 @@ namespace Project1.Core.AI.Net.Packets
             if (net is not Client client)
                 throw new System.Exception();
             var r = pck.PacketReader;
-            var entity = net.World.Get(r.ReadEntityRefId());
+            var entity = net.World.Resolve(r.ReadEntityRefId());
             if (entity == null)
                 return;
             var taskString = r.ReadString();

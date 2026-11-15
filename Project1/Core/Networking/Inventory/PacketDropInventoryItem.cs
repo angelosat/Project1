@@ -27,7 +27,7 @@ namespace Project1.Core.Networking.Inventory
             var actorID = r.ReadEntityRefId();
             var itemID = r.ReadEntityRefId();
             var amount = r.ReadInt32();
-            var item = net.World.Get(itemID);
+            var item = net.World.Resolve(itemID);
             var actor = net.World.Get<Actor>(actorID);
             actor.Inventory.Drop(item, amount); // TODO: this happens immediately when the game is paused. maybe create an interaction with a 1 frame duration? NO it's good that it happens while the game is paused
             if (amount == item.StackSize)

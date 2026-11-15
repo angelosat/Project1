@@ -111,7 +111,7 @@ public sealed class GearComp : EntityComp
             yield return slot;
     }
 
-    internal IEnumerable<Entity> GetGear()
+    internal IEnumerable<Entity> GetItems()
         => this.Gear.AllSlots.Where(s => s.HasValue).Select(s => s.Object as Entity);
 
     internal void Equip(Entity item)
@@ -191,14 +191,14 @@ public sealed class GearComp : EntityComp
 
     public override IEnumerable<(StatBonusDef target, float value)> GetBonuses()
     {
-        foreach (var gear in this.GetGear())
+        foreach (var gear in this.GetItems())
             foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
                 yield return (bonusDef, bonusVal);
     }
 
     public override IEnumerable<(StatDef target, float value)> GetModifiers()
     {
-        foreach (var gear in this.GetGear())
+        foreach (var gear in this.GetItems())
             foreach (var (bonusDef, bonusVal) in gear.ToolComponent.Modifiers)
                 yield return (bonusDef, bonusVal);
     }
@@ -220,16 +220,16 @@ public sealed class GearComp : EntityComp
         => this.Gear.SlotDefs;
 
     public float GetModifier(StatDef stat)
-        => this.GetGear().Sum(g => g.ToolComponent.Modifiers.GetValueOrDefault(stat));
+        => this.GetItems().Sum(g => g.ToolComponent.Modifiers.GetValueOrDefault(stat));
 
     public float GetArmor()
-        => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
+        => this.GetItems().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
 
     public float GetDamage()
-      => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage)?.Value ?? 0f);
+      => this.GetItems().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage)?.Value ?? 0f);
 
     public float GetMoveSpeed()
-     => this.GetGear().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.MoveSpeed)?.Value ?? 0f);
+     => this.GetItems().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.MoveSpeed)?.Value ?? 0f);
 
     public DamageDef GetDamageType()
     {

@@ -40,7 +40,7 @@ namespace Project1.Core.Legacy.Crafting
                 var r = pck.PacketReader;
                 var player = net.GetPlayer(r.ReadInt32());
                 var refIDs = r.ReadListInt32();
-                var items = net.World.GetEntities(refIDs);
+                var items = net.World.Resolve(refIDs);
                 foreach (var i in items.ToList()) // tolist because cancelling changes the networkobjects collection
                     i.GetComponent<UnfinishedItemComp>().Cancel();
                 if (net is Server)

@@ -62,7 +62,7 @@ public abstract class ServiceRequest : ISaveableNewNew<ServiceRequest>, ISeriali
     }
 
     internal bool IsItemSubmitted(WorldBase world)
-       => world.Get(this.Item).Cell == this.Counter!.Value.Above;
+       => world.Resolve(this.Item).Cell == this.Counter!.Value.Above;
 
     internal void AllocateMoney(Entity money)
     => this.Money = money.RefId;

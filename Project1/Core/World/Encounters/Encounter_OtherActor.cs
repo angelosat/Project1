@@ -91,7 +91,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         {
             actor.World.Events.Post(new ActorHelpedIncapacitatedEvent(actor, other, potion));
             $"{actor} used {potion.LabelReadable} and healed {other} for {heal}".ToConsole();
-            if (actor.World.Get((EntityRefId)other.RefId) is null)
+            if (actor.World.Resolve((EntityRefId)other.RefId) is null)
                 throw new System.Exception();
         }
         return true;
@@ -104,7 +104,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         health.ApplyDelta(heal);
         actor.World.Events.Post(new ActorHelpedIncapacitatedEvent(actor, other, null));
         $"{actor} healed {other} for {heal}".ToConsole();
-        if (actor.World.Get((EntityRefId)other.RefId) is null)
+        if (actor.World.Resolve((EntityRefId)other.RefId) is null)
             throw new System.Exception();
     }
 

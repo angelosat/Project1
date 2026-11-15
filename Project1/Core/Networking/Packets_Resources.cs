@@ -82,7 +82,7 @@ namespace Project1.Core.Networking
             var actorid = r.ReadId<EntityRefId>();
             var resDef = r.ReadDef<ResourceDef>();
             var delta = r.ReadInt32();
-            var actor = endpoint.World.Get(actorid);
+            var actor = endpoint.World.Resolve(actorid);
             actor.Resources.ApplyDelta(resDef, delta);
             //endpoint.World
             //    .Get(packet.PacketReader.ReadEntityRefId())

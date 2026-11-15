@@ -21,7 +21,7 @@ namespace Project1.Core.Towns.Services.Repairing
             //    return true;
             //return false;
 
-            var money = i.Actor.World.Get(typed.Request.Money);
+            var money = i.Actor.World.Resolve(typed.Request.Money);
             if (money is null)
                 return false;
             if (money.HasOwner)

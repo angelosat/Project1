@@ -11,7 +11,7 @@ namespace Project1.Core.Towns.Services.Repairing
             //var req = (ServiceRequest_Repair)i.Actor.CurrentPlan.ServiceRequest;
             var reqid = i.Actor.CurrentPlan.ServiceRequest;
             var req = (ServiceRequest_Repair)i.Actor.Town.ServiceRequests.Get(reqid);
-            var item = i.Actor.World.Get(req.Item);
+            var item = i.Actor.World.Resolve(req.Item);
             if (item.IsSpawned)
                 return true;
             return false;

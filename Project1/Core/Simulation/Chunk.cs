@@ -1050,7 +1050,7 @@ public sealed class Chunk : Inspectable
 
         var entityRefIds = reader.ReadListEntityRefId();
         foreach (var refId in entityRefIds)
-            this.Add(this.Map.World.Get(refId));
+            this.Add(this.Map.World.Resolve(refId));
         this.ReadBlockEntitiesDistinct(reader);
         for (int j = 0; j < Size; j++)
             for (int i = 0; i < Size; i++)
@@ -1210,7 +1210,7 @@ public sealed class Chunk : Inspectable
 
         var list = chunktag.LoadListEntityRefId("Entities");
         foreach (var refId in list)
-            this.Add(this.Map.World.Get(refId));
+            this.Add(this.Map.World.Resolve(refId));
 
         this.LoadBlockEntitiesDistinct(chunktag);
 

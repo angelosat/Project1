@@ -200,7 +200,7 @@ internal static class ToolSystem
         return CreateToolOrWeapon(_allDefs.SelectRandom(rand), mats.SelectRandom(rand), mats.SelectRandom(rand));
     }
 
-    internal static Entity? CreateRandomNew(Random rand)
+    internal static Entity CreateRandomNew(Random rand)
     {
         var slot = _defsBySlot.Keys.SelectRandom(rand);
         var item = CreateRandom(slot, rand);

@@ -39,7 +39,7 @@ internal static class Packets_Shops
     private static void ReceiveToggledForSale(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var item = endpoint.World.Get(r.ReadEntityRefId());
+        var item = endpoint.World.Resolve(r.ReadEntityRefId());
         var toggle = r.ReadBoolean();
         item.Map.Town.Shops.ToggleForSale(item);
 
@@ -63,7 +63,7 @@ internal static class Packets_Shops
     {
         var r = packet.PacketReader;
         //var item = endpoint.World.Get(r.ReadEntityRefId());
-        var items = endpoint.World.Get(r.ReadListEntityRefId());
+        var items = endpoint.World.Resolve(r.ReadListEntityRefId());
         var map = items.First().Map;
         foreach(var i in items)
             map.Town.Shops.ToggleForSale(i);

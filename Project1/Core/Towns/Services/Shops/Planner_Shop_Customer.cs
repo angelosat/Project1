@@ -30,7 +30,7 @@ sealed class Planner_Shop_Customer : Planner
         if (shops.TryGetTransaction(actor, out var req))
         {
             var seller = map.World.Get<Actor>(req.Vendor);
-            var item = map.World.Get(req.Item);
+            var item = map.World.Resolve(req.Item);
             var counter = req.Counter.Value;
             if (carried is null)
             {

@@ -20,7 +20,7 @@ public sealed class ConversationSystem : TownComp
 
     public override string Name => "Conversations";
 
-    internal IEnumerable<Actor> GetAvailableActors() => this.Map.World.GetEntities<Actor>(this._availableActors);
+    internal IEnumerable<Actor> GetAvailableActors() => this.Map.World.Resolve<Actor>(this._availableActors);
 
     internal bool TryGetConversation(Actor actor, out ConversationRuntime convo)
         => this.ActiveConversationsByActor.TryGetValue(actor.RefId, out convo);

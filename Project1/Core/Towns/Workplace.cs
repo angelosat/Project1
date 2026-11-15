@@ -352,7 +352,7 @@ public abstract class Workplace : ISerializable, ISaveable
     internal IEnumerable<Actor> GetWorkers()
     {
         foreach (var actor in this.Workers)
-            yield return this.Town.Map.World.Get(actor) as Actor;
+            yield return this.Town.Map.World.Resolve(actor) as Actor;
     }
 
     internal virtual void OnBlocksChanged(IEnumerable<IntVec3> positions) { }
@@ -476,7 +476,7 @@ public abstract class Workplace : ISerializable, ISaveable
                     };
                 });
             }
-            table.AddItems(tav.Workers.Select((Func<EntityRefId, Entities.Entity>)(i => (Entities.Entity)tav.Map.World.Get(i))).Cast<Actor>());
+            table.AddItems(tav.Workers.Select((Func<EntityRefId, Entities.Entity>)(i => (Entities.Entity)tav.Map.World.Resolve(i))).Cast<Actor>());
         }));
 
         box.AddControlsVertically(

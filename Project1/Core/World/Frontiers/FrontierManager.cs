@@ -3,6 +3,7 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Tools;
 using Project1.Core.World.Actions;
@@ -19,7 +20,8 @@ using System.Linq;
 #nullable enable
 
 namespace Project1.Core.World.Frontiers;
-public class FrontierManager : WorldComp, IWorldSpaceManager
+
+public sealed class FrontierManager : WorldComp, IWorldSpaceManager
 {
     readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
@@ -119,7 +121,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
             return;
         var frontier = this.GetFrontier(actor);
         var loot = actor.GetSelfAndChildren(includeSelf: false);
-        foreach(var item in loot)
+        foreach (var item in loot)
             frontier.AddTreasure(item);
     }
 
@@ -128,10 +130,10 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         //if (this.World.Net.IsClient)
         //    return;
         var targetloot = 20;
-        foreach(var f in this.Frontiers.Values)
+        foreach (var f in this.Frontiers.Values)
         {
             f.EnsurePoICount();
-            while(f.Treasures.Count < targetloot)
+            while (f.Treasures.Count < targetloot)
             //for (int i = 0; i < 10; i++)
             {
                 //var item = ToolSystem.CreateRandom(this.World.Random, f.Def.Tier);
@@ -164,8 +166,9 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
         foreach (var (actor, distance) in snapshot)
         {
             //if (!this.IsEngaged(actor))
-            if (!this.World.Actions.HasActiveAction(actor) && !this.World.Combat.IsEngaged(actor))
-                {
+            if (!this.World.Actions.HasActiveAction(actor) && 
+                !this.World.Combat.IsEngaged(actor))
+            {
                 var prevFrontier = this.GetFrontier(actor);
                 var target = actor.AI.Meta.TargetFrontier?.Tier ?? 0;
                 // if current distance from town is not the target distance, step towards it
@@ -173,7 +176,8 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
                 if (distance != target)
                 {
                     // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
-                    nextDistance = distance + ((target - .5f < distance) ? -step : step);
+                    var moveSpeed = actor.Stats.Get(StatDefOf.MoveSpeed);
+                    nextDistance = distance + moveSpeed * ((target - .5f < distance) ? -step : step);
                     nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
                     this.Notifier.Notify();
                 }
@@ -215,7 +219,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
 
     void TickActiveEncounters()
     {
-        foreach(var (actor, encounter) in this.ActiveEncounters)
+        foreach (var (actor, encounter) in this.ActiveEncounters)
         {
             encounter.Tick(this.GetFrontier(actor), actor);
             //if(result.FollowUpEncounter is EncounterRuntime nextEncounter)
@@ -326,7 +330,8 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
     {
         // TODO uncommment the line below
         var tier = 1;// + entity.World.Random.Next(this.Frontiers.Count);
-        /*return*/ this.PlaceAt(entity, tier);
+        /*return*/
+        this.PlaceAt(entity, tier);
         return this.GetFrontier(entity).Def;
     }
     public void PlaceAt(Entity entity, WorldSpacePosition pos)
@@ -348,8 +353,8 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
     {
         this.EventSchedulers.Add(
                     actor,
-                    new(() => this.TriggerEncounter(actor), 
-                    this.World.CurrentTick, 
+                    new(() => this.TriggerEncounter(actor),
+                    this.World.CurrentTick,
                     //Ticks.FromMinutes(1), 
                     //Ticks.FromMinutes(3),
                     Ticks.FromMinutes(10),
@@ -382,7 +387,7 @@ public class FrontierManager : WorldComp, IWorldSpaceManager
     internal string GetStatusText(Actor actor)
     {
         var poi = this.GetPoi(actor);
-        if(poi is not null)
+        if (poi is not null)
             return $"{poi.Def.LabelReadable}";// {frontier.Exploration.ToStringPercentage()}";
         var frontier = this.GetFrontier(actor);
         if (frontier is not null)

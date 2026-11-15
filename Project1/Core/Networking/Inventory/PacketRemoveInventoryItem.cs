@@ -25,8 +25,8 @@ namespace Project1.Core.Networking.Inventory
         {
             var client = endpoint as Client;
             var r = packet.PacketReader;
-            var actor = client.World.Get(r.ReadEntityRefId());
-            var item = client.World.Get(r.ReadEntityRefId());
+            var actor = client.World.Resolve(r.ReadEntityRefId());
+            var item = client.World.Resolve(r.ReadEntityRefId());
             actor.Inventory.Remove(item);
         }
     }

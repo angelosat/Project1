@@ -32,7 +32,7 @@ internal class PacketsEntities
         var r = packet.PacketReader;
         var entityid = r.ReadEntityRefId();
         var compindex = r.ReadEntityRefId();
-        var entity = client.World.Get(entityid);
+        var entity = client.World.Resolve(entityid);
         var comp = entity.Components.GetComp(compindex);
         comp.Read(r);
     }
@@ -54,7 +54,7 @@ internal class PacketsEntities
     private static void OnDespawn(NetEndpoint endpoint, Packet packet)
     {
         var entityId = packet.PacketReader.ReadEntityRefId();
-        var entity = endpoint.World.Get(entityId);
+        var entity = endpoint.World.Resolve(entityId);
         if (entity is null)
             return;
         entity.Map.Despawn(entity);
@@ -82,7 +82,7 @@ internal class PacketsEntities
         var map = endpoint.World.Get(mapid);
         var global = r.ReadVector3();
         var vel = r.ReadVector3();
-        var entity = endpoint.World.Get(id);
+        var entity = endpoint.World.Resolve(id);
         map.Spawn(entity, global, vel);
     }
 
@@ -96,7 +96,7 @@ internal class PacketsEntities
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var entity = client.World.Get(r.ReadEntityRefId());
+        var entity = client.World.Resolve(r.ReadEntityRefId());
         var amount = r.ReadInt32();
         if (amount < 0)
             entity.Consume(-amount);

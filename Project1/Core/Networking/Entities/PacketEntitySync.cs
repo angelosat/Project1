@@ -28,7 +28,7 @@ namespace Project1.Core.Networking.Entities
             var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
-            var entity = net.World.Get(r.ReadEntityRefId());
+            var entity = net.World.Resolve(r.ReadEntityRefId());
             entity.SyncRead(r);
         }
     }

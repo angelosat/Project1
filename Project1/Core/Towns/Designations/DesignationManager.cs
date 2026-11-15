@@ -383,7 +383,7 @@ public sealed class DesignationManager : TownComp
         {
             foreach (var des in this.EntityDesignations)
             {
-                var entities = this.Map.World.GetEntities(entitiesTag.LoadListInt(des.Key.Name));
+                var entities = this.Map.World.Resolve(entitiesTag.LoadListInt(des.Key.Name));
                 foreach (var i in entities)
                     this.EntityDesignations[des.Key].Add(i);
             }
@@ -428,7 +428,7 @@ public sealed class DesignationManager : TownComp
         {
             var count = r.ReadInt32();
             for (int i = 0; i < count; i++)
-                d.Value.Add(this.Map.World.Get(r.ReadEntityRefId()));
+                d.Value.Add(this.Map.World.Resolve(r.ReadEntityRefId()));
         }
     }
     internal override IEnumerable<(Func<string>, Action)> OnQuickMenuCreated()

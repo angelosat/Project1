@@ -10,7 +10,7 @@ sealed class InteractionPayTransaction : InteractionLogic
     sealed class Context : InteractionContext
     {
         internal ServiceRequest_Shop Transaction => field ??= this.Actor.Map.Town.Shops.GetTransaction(this.Actor);
-        internal int? Price => field ??= this.Actor.World.Get(this.Transaction.Item).GetValueTotal();
+        internal int? Price => field ??= this.Actor.World.Resolve(this.Transaction.Item).GetValueTotal();
         public override float ProgressBarPercentage => 0;
     }
     protected override InteractionContext CreateContextInt() => new Context();

@@ -141,7 +141,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
     }
     public void Assign(EntityRefId refId)
     {
-        var item = this.Owner.World.Get(refId);
+        var item = this.Owner.World.Resolve(refId);
         var prevItem = this.Object;
         if (item is not null)
         {

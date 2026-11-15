@@ -755,7 +755,13 @@ public sealed class Client : NetEndpoint
         {
             // very old packet
             //this.ConsoleBox.Write(Color.Orange, "CLIENT", "Warning! Received severely outdated packet: " + packet.PacketType.ToString());
-            this.ConsoleBox.Write(Color.Orange, "CLIENT", $"Warning! Received severely outdated packet: {packet.PacketType.ToString()} / Packet ID: {id} / RemoteSequence: {this.RemoteSequence}");
+            //this.ConsoleBox.Write(Color.Orange, "CLIENT", $"Warning! Received severely outdated packet: {packet.PacketType.ToString()} / Packet ID: {id} / RemoteSequence: {this.RemoteSequence}");
+            this.ConsoleBox.Write(
+                                    Color.Orange,
+                                    "CLIENT",
+                                    $"Discarded outdated packet: {packet.PacketType} / " +
+                                    $"ID: {id} / RemoteSequence: {this.RemoteSequence} / " +
+                                    $"Age: {distance} packets / Reliability: {packet.Reliability}");
             // this can occur on a bad connection, or even if the client's ack for this specific initial packet was lost and never reached the server
             return false;
         }

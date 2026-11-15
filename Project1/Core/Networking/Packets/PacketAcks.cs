@@ -1,7 +1,8 @@
-﻿using System;
-using System.IO;
-using Project1.Core.Networking;
+﻿using Project1.Core.Networking;
 using Project1.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Project1.Core.Networking.Packets
 {
@@ -38,47 +39,83 @@ namespace Project1.Core.Networking.Packets
         {
             Send(player.StreamUnreliable, player);
         }
+
         internal static void Send(Client client, PlayerData player)
         {
-
-            //if (net is Client client)
-            //{
-            //var stream = client.OutgoingStream;
-            // the client will write the whole batch of the acks to send back to the server
-            var stream = client.OutgoingStreamUnreliable;
-            var ackqueue = player.AckQueue;
-            if (ackqueue.IsEmpty)
-                return;
-            stream.Write(p);
-            stream.Write(ackqueue.Count);
-            while (!ackqueue.IsEmpty)
-            {
-                if (ackqueue.TryDequeue(out long id))
-                    stream.Write(id);
-            }
-            //}
-            //else if (net is Server server)
-            //{
-            //    if(player is null)
-            //        throw new Exception("Server handler called without player");
-            //    //var stream = server.GetOutgoingStream();
-            //    // TODO: the server will write all the packetids that it received from the player last frame?
-            //}
+            Send(client.OutgoingStreamUnreliable, player);
         }
-        internal static void Send(BinaryWriter stream, PlayerData player)
+
+        private static void Send(BinaryWriter stream, PlayerData player)
         {
             var ackqueue = player.AckQueue;
+
             if (ackqueue.IsEmpty)
                 return;
-            stream.Write(p);
-            stream.Write(ackqueue.Count);
-            while (!ackqueue.IsEmpty)
+
+            // Capture a fixed batch before writing its count.
+            var acks = new List<long>();
+            int count = ackqueue.Count;
+
+            for (int i = 0; i < count; i++)
             {
                 if (ackqueue.TryDequeue(out long id))
-                    stream.Write(id);
+                    acks.Add(id);
             }
-           
+
+            if (acks.Count == 0)
+                return;
+
+            stream.Write(p);
+            stream.Write(acks.Count);
+
+            foreach (long id in acks)
+                stream.Write(id);
         }
-        internal static void Init() { }
+        //internal static void Send(PlayerData player)
+        //{
+        //    Send(player.StreamUnreliable, player);
+        //}
+        //internal static void Send(Client client, PlayerData player)
+        //{
+
+        //    //if (net is Client client)
+        //    //{
+        //    //var stream = client.OutgoingStream;
+        //    // the client will write the whole batch of the acks to send back to the server
+        //    var stream = client.OutgoingStreamUnreliable;
+        //    var ackqueue = player.AckQueue;
+        //    if (ackqueue.IsEmpty)
+        //        return;
+        //    stream.Write(p);
+        //    stream.Write(ackqueue.Count);
+        //    while (!ackqueue.IsEmpty)
+        //    {
+        //        if (ackqueue.TryDequeue(out long id))
+        //            stream.Write(id);
+        //    }
+        //    //}
+        //    //else if (net is Server server)
+        //    //{
+        //    //    if(player is null)
+        //    //        throw new Exception("Server handler called without player");
+        //    //    //var stream = server.GetOutgoingStream();
+        //    //    // TODO: the server will write all the packetids that it received from the player last frame?
+        //    //}
+        //}
+        //internal static void Send(BinaryWriter stream, PlayerData player)
+        //{
+        //    var ackqueue = player.AckQueue;
+        //    if (ackqueue.IsEmpty)
+        //        return;
+        //    stream.Write(p);
+        //    stream.Write(ackqueue.Count);
+        //    while (!ackqueue.IsEmpty)
+        //    {
+        //        if (ackqueue.TryDequeue(out long id))
+        //            stream.Write(id);
+        //    }
+
+        //}
+        //internal static void Init() { }
     }
 }

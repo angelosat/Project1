@@ -708,9 +708,12 @@ public class Server : NetEndpoint
     {
         var player = packet.Player;
         var r = packet.PacketReader as DataReader;
+        var lastHandled = -1;
+
         while (r.Position < r.Length)
         {
             var typeID = r.ReadInt32();
+            //var typed = (PacketId)typeID;
             var lastPos = r.Position;
 
             Instance.HandlePacket(typeID, packet);
@@ -718,6 +721,7 @@ public class Server : NetEndpoint
                 // if the stream position hasn't changed, and we're still not at the end, it means that there are no packet handlers registered to read the next set of data. break or throw?
                 //throw new Exception();
                 break; // i think that's the price of not sending the length as the header and just continuing to read until the packethandler is invalid, which implies we reached the end. but that doesnt sound very clean
+            lastHandled = typeID;
         }
     }
 

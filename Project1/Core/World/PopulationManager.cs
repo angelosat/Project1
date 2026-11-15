@@ -80,8 +80,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
 
     public void Tick()
     {
-        if(this.Schedule.OnSchedule(this.World.CurrentTick))
-            this.PopulateRuntime();
+        //if(this.Schedule.OnSchedule(this.World.CurrentTick))
+        //    this.PopulateRuntime();
     }
 
     internal void Initialize()

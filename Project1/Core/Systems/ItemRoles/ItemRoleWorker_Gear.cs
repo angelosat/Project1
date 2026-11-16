@@ -15,12 +15,15 @@ sealed class ItemRoleWorker_Gear(GearSlotDef slotDef, StatDef statDef) : ItemRol
         var slot = gearRole.Slot;
         if (slot != slotDef)
             return 0;
-        var inSlot = actor.Gear.GetGear(slot);
+        //var inSlot = actor.Gear.GetGear(slot);
         var stat = statDef;
         var statValue = ToolSystem.CalculateStat(item, stat);
-        var inSlotStatValue = inSlot is Entity existing ? ToolSystem.CalculateStat(existing, stat) : null;
-        var diff = statValue.Value - (inSlotStatValue ?? 0);
-        return (int)diff;
+        //var inSlotStatValue = inSlot is Entity existing ? ToolSystem.CalculateStat(existing, stat) : null;
+        //var diff = statValue.Value - (inSlotStatValue ?? 0);
+        // compare to the currently equipped item here?
+        // or just return the item's situational score and let the caller compare ?
+        return (int)statValue.Value;
+        //return (int)diff;
     }
 
     public override int GetInventoryScore(Actor actor, Entity item)

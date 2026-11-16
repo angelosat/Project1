@@ -308,23 +308,65 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     //    this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [(role, oldItem, item, score)]));
     //    this.PreCommitScanCache.Remove(role);
     //}
+    //internal void UpdatePrefInt(ItemRoleDef role, Entity item, int score)
+    //{
+    //    if (score <= 0)
+    //    {
+    //        if (this.PrefsInternal.TryGetValue(role, out var existing))
+    //            this.PrefRemoved?.Invoke(existing);
+    //        this.PrefsInternal.Remove(role);
+    //        return;
+    //    }
+    //    var pref = new ItemPreference(role, item, score);
+    //    this.PrefsInternal[role] = pref;
+    //    if (!this.ItemsToPrefs.TryGetValue(item, out var list))
+    //        this.ItemsToPrefs[item] = list = [];
+    //    list.Add(pref);
+    //    this.PrefUpdated?.Invoke(pref);
+    //    this.Notifier.Notify();
+    //}
     internal void UpdatePrefInt(ItemRoleDef role, Entity item, int score)
     {
-        if (score <= 0)
+        if (this.PrefsInternal.TryGetValue(role, out var existing))
         {
-            if (this.PrefsInternal.TryGetValue(role, out var existing))
+            this.RemoveFromItemsToPrefs(existing);
+
+            if (score <= 0)
+            {
+                this.PrefsInternal.Remove(role);
                 this.PrefRemoved?.Invoke(existing);
-            this.PrefsInternal.Remove(role);
-            return;
+                this.Notifier.Notify();
+                return;
+            }
         }
+        else if (score <= 0)
+            //return;
+            throw new InvalidOperationException(
+                $"Cannot remove preference for role '{role}' because no preference exists.");
+
         var pref = new ItemPreference(role, item, score);
         this.PrefsInternal[role] = pref;
+
         if (!this.ItemsToPrefs.TryGetValue(item, out var list))
             this.ItemsToPrefs[item] = list = [];
+
         list.Add(pref);
+
         this.PrefUpdated?.Invoke(pref);
         this.Notifier.Notify();
     }
+    void RemoveFromItemsToPrefs(ItemPreference pref)
+    {
+        var item = this.Resolve(pref.ItemRefId);
+        if (!this.ItemsToPrefs.TryGetValue(item, out var list))
+            return;
+
+        list.RemoveAll(p => p.Role == pref.Role);
+
+        if (list.Count == 0)
+            this.ItemsToPrefs.Remove(item);
+    }
+
     readonly ChangeNotifier Notifier = new();
     
 

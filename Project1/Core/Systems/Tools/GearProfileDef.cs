@@ -13,7 +13,7 @@ namespace Project1.Core.Systems.Tools;
 #nullable enable
 public class GearProfileDef(string name, GearRoleDef role) : Def(name), IItemDefVariator
 {
-    public GearRoleDef? Role = role;
+    public GearRoleDef Role = role;
     public ToolUseDef? ToolUse;
     public ToolUseDef[] ToolUses = [];
     public Dictionary<ToolUseDef, float> ToolUsesModifiers = [];

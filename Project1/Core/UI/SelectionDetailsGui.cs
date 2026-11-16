@@ -11,7 +11,8 @@ public class SelectionDetailsGui : SelectionBoundControl
     PanelWithVerticalTabs<Label> PanelMain;
     public SelectionDetailsGui()
     {
-        this.PanelMain = new();
+        //this.PanelMain = new();
+        this.PanelMain = new(400,400);
         this.AddControls(this.PanelMain);
     }
 

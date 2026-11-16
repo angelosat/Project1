@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
+using Project1.Core.Systems.Tools;
 using System;
 using System.Collections.Generic;
 
@@ -23,7 +24,8 @@ static internal class SmartEquipSystem
             var current = actor.GetEquipmentSlot(gt);
             var currentItemScore = current is not null ? manager.GetTotalSituationalScoreFor(current) : 0;
             //var candidates = manager.GetItemsBySituationalScore(actor, i => i.Def.GearType == gt);
-            var candidates = manager.GetItemsBySituationalScoreNewNew(actor, i => i.Def.GearType == gt);
+            //var candidates = manager.GetItemsBySituationalScoreNewNew(actor, i => i.Def.GearType == gt);
+            var candidates = manager.GetItemsBySituationalScoreNewNew(actor, i => (i.Profile as GearProfileDef)?.Role.Slot == gt);
             currentPerSlot[gt] = (gt, current, currentItemScore);
             if (currentItemScore > 0)
                 mostImpactfulInSlot = (slot: gt, item: current, score: currentItemScore);

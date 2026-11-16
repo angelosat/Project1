@@ -108,6 +108,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         if (this.ChooseRole() is RoleMetaDef role)
         {
             var actor = GenerateInhabitant(role);
+            this.World.Register(actor);
             var chosenPlace = this.World.PlaceAtRandom(actor);
             actor.AI.Meta.SetTargetFrontier(chosenPlace);
             net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
@@ -169,10 +170,10 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var healPot = ConsumableSystem.Create(ConsumableDefOf.Potion, PotionSystem.GetMaterialRequired(EffectDefOf.RestoreResource, ResourceDefOf.Health), QualityDefOf.Common);
         inventory.InsertAndClaim(healPot);
 
-        this.World.Register(actor);
+        //this.World.Register(actor);
 
-        foreach (var i in inventory.Items)
-            i.SetOwnerNew(actor);
+        //foreach (var i in inventory.Items)
+        //    i.SetOwnerNew(actor);
 
         return actor;
     }

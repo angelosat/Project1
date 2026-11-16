@@ -40,7 +40,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     public readonly StaticWorld World;
     const int WorldPopulationCap = 6;//3;//1;//0;//6;
     //const int TargetCount_Adventurers = 10, TargetCount_Bandits = 8;
-    const int TargetCount_Adventurers = 1, TargetCount_Bandits = 1;
+    const int TargetCount_Adventurers = 1, TargetCount_Bandits = 0;
     public int WorldPopulationCount { get; private set; }
     const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
     const int InitialApproval = 50;
@@ -80,8 +80,8 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
 
     public void Tick()
     {
-        //if(this.Schedule.OnSchedule(this.World.CurrentTick))
-        //    this.PopulateRuntime();
+        if (this.Schedule.OnSchedule(this.World.CurrentTick))
+            this.PopulateRuntime();
     }
 
     internal void Initialize()
@@ -144,11 +144,12 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     private Actor GenerateInhabitant(RoleMetaDef role)
     {
         var actor = ActorSystem.Create(ActorDnaDefOf.Npc, role);
+        this.World.AllocateRefId(actor);
         var coins = ItemDefOf.Coins.Create().SetStackSize(500);
         var townscroll = ConsumableSystem.CreateScroll(SpellDefOf.Teleporting, MaterialDefOf.ShrubStem, QualitySystem.Random);
         var inventory = actor.Inventory;
-        inventory.Insert(coins);
-        inventory.Insert(townscroll);
+        inventory.InsertAndClaim(coins);
+        inventory.InsertAndClaim(townscroll);
         //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
         //need.Value = this.World.Random.Next(0, 100);
         //actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
@@ -159,14 +160,14 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
         var damagedTool = ToolSystem.CreateRandomNew(this.World.Random);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
-        inventory.Insert(damagedTool);
+        inventory.InsertAndClaim(damagedTool);
 
-        foreach (var slot in actor.Gear.SlotDefs)
-            if(ToolSystem.CreateRandom(slot, this.World.Random) is Entity item)
-                inventory.Insert(item);
+        //foreach (var slot in actor.Gear.SlotDefs)
+        //    if(ToolSystem.CreateRandom(slot, this.World.Random) is Entity item)
+        //        inventory.InsertAndClaim(item);
 
         var healPot = ConsumableSystem.Create(ConsumableDefOf.Potion, PotionSystem.GetMaterialRequired(EffectDefOf.RestoreResource, ResourceDefOf.Health), QualityDefOf.Common);
-        inventory.Insert(healPot);
+        inventory.InsertAndClaim(healPot);
 
         this.World.Register(actor);
 

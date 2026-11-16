@@ -19,7 +19,7 @@ internal class Encounter_ResourceNode : EncounterWorker
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     {
         int targetCount = 10;
-        return 1;
+        return 0;// 1;
     }
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)

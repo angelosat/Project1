@@ -40,8 +40,8 @@ internal class WorldComp_Actions : WorldComp
             //action.Current++;
             if (action.IsFinished && this.World.Net.IsServer)
             {
-                action.Resolve();
-                this.Finish(action.Actor);
+                this.Finish(action.Actor); // moved this before resolve() because a new action might be chained
+                action.Resolve(); 
             }
         }
     }

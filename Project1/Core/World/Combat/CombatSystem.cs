@@ -7,13 +7,13 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Thoughts;
 using Project1.Core.Systems.Tools;
+using Project1.Core.World.Actions;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.World.Combat;
 
@@ -98,8 +98,18 @@ internal static class CombatSystem
                 throw new UnreachableException();
         }
         $"{attacker} {result.Type} {defender} {result.Damage}".ToConsole();
-        attacker.World.Events.Post(new WorldCombatEvent(runtime, attacker, result));
+        world.Events.Post(new WorldCombatEvent(runtime, attacker, result));
         runtime.Record(result);
+
+        // if combat over do subsequent post combat actions here like looting
+        if (runtime.Winner is Actor winner && winner == attacker)
+        {
+            var loser = runtime.Loser;
+            var invItems = loser.Inventory.GetItems();
+            var gear = loser.Gear.GetItems();
+            var loot = invItems.Union(gear).Select(i => (EntityRefId)i.RefId).ToArray();
+            world.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(world.Space.GetFrontier(winner), winner) { Loot = loot });
+        }
     }
 }
 

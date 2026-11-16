@@ -12,241 +12,311 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Project1.Core.Systems.Inventory
+namespace Project1.Core.Systems.Inventory;
+
+public sealed class ContainerList : Inspectable, IEnumerable<Entity>, ISerializableNew<ContainerList>, ISaveable
 {
-    public sealed class ContainerList : Inspectable, IList<Entity>, ISerializableNew<ContainerList>, ISaveable
+    TableObservable<Entity> _gui;
+    public Control Gui
     {
-        TableObservable<Entity> _gui;
-        public Control Gui
+        get
         {
-            get
-            {
-                var actor = this.Parent as Actor;
-                _gui ??= new TableObservable<Entity>()
-                        .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
-                        .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o))
-                        .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
-                        .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));
+            var actor = this.Parent as Actor;
+            _gui ??= new TableObservable<Entity>()
+                    .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
+                    .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o))
+                    .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
+                    .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));
 
-                throw new Exception();
-                return null;// _gui.Bind(this.Contents);
-                void drop(Entity o)
-                {
-                    if (actor.IsSpawned && actor.IsTownMember)
-                        Ingame.Instance.Events.Post(new PlayerForcedDropInventoryItemEvent(this.Parent, o, o.StackSize));
-                }
+            throw new Exception();
+            return null;// _gui.Bind(this.Contents);
+            void drop(Entity o)
+            {
+                if (actor.IsSpawned && actor.IsTownMember)
+                    Ingame.Instance.Events.Post(new PlayerForcedDropInventoryItemEvent(this.Parent, o, o.StackSize));
             }
         }
-        public event Action<Entity> ItemAdded, ItemRemoved; 
-        readonly List<Entity> Contents = [];
-        public Entity Parent;
+    }
+    public event Action<Entity> ItemAdded, ItemRemoved; 
+    readonly List<Entity> Contents = [];
+    public Entity Parent;
 
-        public int Count => ((ICollection<Entity>)this.Contents).Count;
+    public int Count //=> ((ICollection<Entity>)this.Contents).Count;
+        => this.Contents.Count;
 
-        public bool IsReadOnly => ((ICollection<Entity>)this.Contents).IsReadOnly;
+    //public bool IsReadOnly => ((ICollection<Entity>)this.Contents).IsReadOnly;
 
-        public override string LabelReadable => this.ToString();
+    public override string LabelReadable => this.ToString();
 
-        public Entity this[int index] { get => ((IList<Entity>)this.Contents)[index]; set => ((IList<Entity>)this.Contents)[index] = value; }
+    //public Entity this[int index] { get => ((IList<Entity>)this.Contents)[index]; set => ((IList<Entity>)this.Contents)[index] = value; }
 
-        public int IndexOf(Entity item)
+    //public int IndexOf(Entity item)
+    //{
+    //    return ((IList<Entity>)this.Contents).IndexOf(item);
+    //}
+
+    //public void Insert(int index, Entity item)
+    //{
+    //    if (item.Container == this)
+    //        throw new Exception();
+    //    ((IList<Entity>)this.Contents).Insert(index, item);
+    //    item.Container?.Remove(item);
+    //    item.Container = this;
+    //}
+
+    //public void RemoveAt(int index)
+    //{
+    //    var item = this[index];
+    //    if (item.Container != this)
+    //        throw new Exception();
+    //    item.Container = null;
+    //    ((IList<Entity>)this.Contents).RemoveAt(index);
+    //}
+    internal void Add(IEnumerable<Entity> items)
+    {
+        foreach (var item in items)
+            this.Add(item);
+    }
+    public void Add(Entity item)
+    {
+        if (item.Container == this)
+            throw new Exception();
+
+        if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
         {
-            return ((IList<Entity>)this.Contents).IndexOf(item);
+            if (item.StackSize > existing.StackAvailableSpace)
+                throw new NotImplementedException();
+            var amount = item.StackSize;
+            existing.Add(amount);
+            item.Consume(amount);
+            item.World?.Events.Post(new InventoryItemMergedEvent(this.Parent as Actor, existing, amount));
+            return;
         }
 
-        public void Insert(int index, Entity item)
-        {
-            if (item.Container == this)
-                throw new Exception();
-            ((IList<Entity>)this.Contents).Insert(index, item);
-            item.Container?.Remove(item);
-            item.Container = this;
-        }
+        if (item.World is null)
+            this.Parent.World?.Register(item);
 
-        public void RemoveAt(int index)
+        item.Detach();
+
+        ((ICollection<Entity>)this.Contents).Add(item);
+        item.Container = this;
+        item.Parent = this.Parent;
+
+        this.Parent.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
+        this.ItemAdded?.Invoke(item);
+    }
+    //public void Add(Entity item)
+    //{
+    //    //ArgumentNullException.ThrowIfNull(item.World);
+    //    if (item.Container == this)
+    //        throw new Exception();
+    //    if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
+    //    {
+    //        //existing.StackSize += item.StackSize;
+    //        if (item.StackSize > existing.StackAvailableSpace)
+    //            throw new NotImplementedException();
+    //        var amount = item.StackSize;
+    //        existing.Add(amount);
+    //        item.Consume(amount);
+    //        item.World?.Events.Post(new InventoryItemMergedEvent(this.Parent as Actor, existing, amount));
+    //        return;
+    //        //throw new NotImplementedException();
+    //    }
+    //    if (item.World is null)
+    //        this.Parent.World?.Register(item);
+    //    ((ICollection<Entity>)this.Contents).Add(item);
+    //    //item.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
+    //    this.Parent.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
+    //    item.Detach();
+    //    item.Container = this;
+    //    item.Owner = this.Parent;
+    //    //(this.Parent as Actor).Log.Write($"Stored {item} in inventory");
+    //    this.ItemAdded?.Invoke(item);
+    //}
+    //internal void AddInternal(Entity item)
+    //{
+    //    this.Contents.Add(item);
+    //    item.Container = this;
+    //    this.ItemAdded?.Invoke(item);
+    //}
+    //internal void RemoveInternal(Entity item)
+    //{
+    //    if (item.Container != this)
+    //        throw new Exception();
+    //    if (this.Contents.Remove(item))
+    //        item.Container = null;
+    //    this.ItemRemoved ?.Invoke(item);
+    //}
+    internal void AddInternal(Entity item)
+    {
+        this.Contents.Add(item);
+        item.Container = this;
+        item.Parent = this.Parent;
+        this.ItemAdded?.Invoke(item);
+    }
+
+    internal void RemoveInternal(Entity item)
+    {
+        if (item.Container != this)
+            throw new Exception();
+
+        if (!this.Contents.Remove(item))
+            throw new InvalidOperationException("Item container reference is inconsistent with its contents.");
+
+        item.Container = null;
+        item.Parent = null;
+
+        this.ItemRemoved?.Invoke(item);
+    }
+    public void Clear()
+    {
+        foreach (var i in this.Contents)
+            i.Container = null;
+        ((ICollection<GameObject>)this.Contents).Clear();
+    }
+    public bool Contains(Entity item)
+    {
+        return ((ICollection<Entity>)this.Contents).Contains(item);
+    }
+    public void CopyTo(Entity[] array, int arrayIndex)
+    {
+        ((ICollection<Entity>)this.Contents).CopyTo(array, arrayIndex);
+    }
+    public bool Remove(Entity item)
+    {
+        if (item.Container != this)
+            throw new Exception();
+
+        if (!((ICollection<Entity>)this.Contents).Remove(item))
+            throw new InvalidOperationException("Item container reference is inconsistent with its contents.");
+
+        item.Container = null;
+        item.Parent = null;
+
+        this.ItemRemoved?.Invoke(item);
+        item.World.Events.Post(new InventoryItemRemovedEvent(this.Parent as Actor, item));
+
+        return true;
+    }
+    //public bool Remove(Entity item)
+    //{
+    //    if (item.Container != this)
+    //        throw new Exception();
+    //    item.Container = null;
+    //    item.Owner = null;
+    //    this.ItemRemoved?.Invoke(item);
+    //    item.World.Events.Post(new InventoryItemRemovedEvent(this.Parent as Actor, item));
+    //    return ((ICollection<Entity>)this.Contents).Remove(item);
+
+    //}
+
+    public IEnumerator<Entity> GetEnumerator()
+    {
+        return ((IEnumerable<Entity>)this.Contents).GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)this.Contents).GetEnumerator();
+    }
+    public void Write(IDataWriter w)
+    {
+        w.Write(this.Contents.Count);
+        foreach (var o in this.Contents)
+            w.Write(o.RefId);
+    }
+    public ContainerList Read(IDataReader r)
+    {
+        var count = r.ReadInt32();
+        for (int i = 0; i < count; i++)
         {
-            var item = this[index];
-            if (item.Container != this)
-                throw new Exception();
-            item.Container = null;
-            ((IList<Entity>)this.Contents).RemoveAt(index);
+            var id = r.ReadEntityRefId();
+            var obj = this.Parent.World.Get<Entity>(id);
+            this.Contents.Add(obj);
+            obj.Container = this;
         }
-        public void Add(Entity item)
+        return this;
+    }
+
+    public SaveTag Save(string name = "")
+    {
+        var save = new SaveTag(SaveTag.Types.Compound, name);
+        //var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
+        //foreach (var i in this.Contents)
+        //    listtag.Add(i.Save());
+        //save.Add(listtag);
+        save.Save("Contents", this.Contents.Select(e => e.RefId).ToList());
+        //this.Contents.Select(e => (int)e.RefId).ToList().Save()
+        return save;
+    }
+    public ISaveable Load(SaveTag tag)
+    {
+        if (tag.TryLoadListInt("Contents", out var list))
         {
-            //ArgumentNullException.ThrowIfNull(item.World);
-            if (item.Container == this)
-                throw new Exception();
-            if (this.Contents.FirstOrDefault(i => i.CanAbsorb(item)) is Entity existing)
+            var items = this.Parent.World.Resolve(list);
+            foreach (var i in items)
             {
-                //existing.StackSize += item.StackSize;
-                if (item.StackSize > existing.StackAvailableSpace)
-                    throw new NotImplementedException();
-                var amount = item.StackSize;
-                existing.Add(amount);
-                item.Consume(amount);
-                item.World?.Events.Post(new InventoryItemMergedEvent(this.Parent as Actor, existing, amount));
-                return;
-                //throw new NotImplementedException();
+                this.Contents.Add(i);
+                i.Container = this;
             }
-            if (item.World is null)
-                this.Parent.World?.Register(item);
-            ((ICollection<Entity>)this.Contents).Add(item);
-            //item.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
-            this.Parent.World?.Events.Post(new InventoryItemAddedEvent(this.Parent as Actor, item));
-            item.Detach();
-            item.Container = this;
-            item.Owner = this.Parent;
-            //(this.Parent as Actor).Log.Write($"Stored {item} in inventory");
-            this.ItemAdded?.Invoke(item);
         }
-        internal void AddInternal(Entity item)
-        {
-            this.Contents.Add(item);
-            item.Container = this;
-            this.ItemAdded?.Invoke(item);
-        }
-        internal void RemoveInternal(Entity item)
-        {
-            if (item.Container != this)
-                throw new Exception();
-            if (this.Contents.Remove(item))
-                item.Container = null;
-            this.ItemRemoved ?.Invoke(item);
-        }
-        public void Clear()
-        {
-            foreach (var i in this.Contents)
-                i.Container = null;
-            ((ICollection<GameObject>)this.Contents).Clear();
-        }
-        public bool Contains(Entity item)
-        {
-            return ((ICollection<Entity>)this.Contents).Contains(item);
-        }
-        public void CopyTo(Entity[] array, int arrayIndex)
-        {
-            ((ICollection<Entity>)this.Contents).CopyTo(array, arrayIndex);
-        }
-        public bool Remove(Entity item)
-        {
-            if (item.Container != this)
-                throw new Exception();
-            item.Container = null;
-            item.Owner = null;
-            this.ItemRemoved?.Invoke(item);
-            item.World.Events.Post(new InventoryItemRemovedEvent(this.Parent as Actor, item));
-            return ((ICollection<Entity>)this.Contents).Remove(item);
-
-        }
-
-        public IEnumerator<Entity> GetEnumerator()
-        {
-            return ((IEnumerable<Entity>)this.Contents).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)this.Contents).GetEnumerator();
-        }
-        public void Write(IDataWriter w)
-        {
-            w.Write(this.Contents.Count);
-            foreach (var o in this.Contents)
-                w.Write(o.RefId);
-        }
-        public ContainerList Read(IDataReader r)
-        {
-            var count = r.ReadInt32();
-            for (int i = 0; i < count; i++)
-            {
-                var id = r.ReadEntityRefId();
-                var obj = this.Parent.World.Get<Entity>(id);
-                this.Contents.Add(obj);
-                obj.Container = this;
-            }
-            return this;
-        }
-
-        public SaveTag Save(string name = "")
-        {
-            var save = new SaveTag(SaveTag.Types.Compound, name);
-            //var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
-            //foreach (var i in this.Contents)
-            //    listtag.Add(i.Save());
-            //save.Add(listtag);
-            save.Save("Contents", this.Contents.Select(e => e.RefId).ToList());
-            //this.Contents.Select(e => (int)e.RefId).ToList().Save()
-            return save;
-        }
-        public ISaveable Load(SaveTag tag)
-        {
-            if (tag.TryLoadListInt("Contents", out var list))
-            {
-                var items = this.Parent.World.Resolve(list);
-                foreach (var i in items)
-                {
-                    this.Contents.Add(i);
-                    i.Container = this;
-                }
-            }
-            //var itemList = tag["Contents"].Value as List<SaveTag>;
-            //foreach (var itemTag in itemList)
-            //    if (GameObject.Load(itemTag) is Entity obj)
-            //    {
-            //        this.Contents.Add(obj);
-            //        obj.Container = this;
-            //    }
-            return this;
-        }
-        //public void Write(IDataWriter w)
-        //{
-        //    w.Write(this.Contents.Count);
-        //    foreach (var o in this.Contents)
-        //        o.Write(w);
-        //}
-        //public ContainerList Read(IDataReader r)
-        //{
-        //    var count = r.ReadInt32();
-        //    for (int i = 0; i < count; i++)
+        //var itemList = tag["Contents"].Value as List<SaveTag>;
+        //foreach (var itemTag in itemList)
+        //    if (GameObject.Load(itemTag) is Entity obj)
         //    {
-        //        var obj = GameObject.Create(r) as Entity;
         //        this.Contents.Add(obj);
         //        obj.Container = this;
         //    }
-        //    return this;
-        //}
-
-        //public SaveTag Save(string name = "")
-        //{
-        //    var save = new SaveTag(SaveTag.Types.Compound, name);
-        //    var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
-        //    foreach (var i in this.Contents)
-        //        listtag.Add(i.Save());
-        //    save.Add(listtag);
-        //    return save;
-        //}
-        //public ISaveable Load(SaveTag tag)
-        //{
-        //    //return this; // added this to reset inventory contents of every entity to do some work that will break existing items
-        //    var itemList = tag["Contents"].Value as List<SaveTag>;
-        //    foreach (var itemTag in itemList)
-        //        if(GameObject.Load(itemTag) is Entity obj)
-        //        {
-        //            this.Contents.Add(obj);
-        //            obj.Container = this;
-        //        }
-        //    return this;
-        //}
-        internal void Instantiate(Action<GameObject> instantiator)
-        {
-            foreach (var o in this.Contents)
-                instantiator(o);
-        }
-        public override IEnumerable<(string item, object value)> Inspect()
-        {
-            yield return (nameof(this.Parent), this.Parent);
-            yield return (nameof(this.Contents), this.Contents);
-        }
-        public static ContainerList Create(IDataReader r) => new ContainerList().Read(r);
+        return this;
     }
+    //public void Write(IDataWriter w)
+    //{
+    //    w.Write(this.Contents.Count);
+    //    foreach (var o in this.Contents)
+    //        o.Write(w);
+    //}
+    //public ContainerList Read(IDataReader r)
+    //{
+    //    var count = r.ReadInt32();
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        var obj = GameObject.Create(r) as Entity;
+    //        this.Contents.Add(obj);
+    //        obj.Container = this;
+    //    }
+    //    return this;
+    //}
+
+    //public SaveTag Save(string name = "")
+    //{
+    //    var save = new SaveTag(SaveTag.Types.Compound, name);
+    //    var listtag = new SaveTag(SaveTag.Types.List, "Contents", SaveTag.Types.Compound);
+    //    foreach (var i in this.Contents)
+    //        listtag.Add(i.Save());
+    //    save.Add(listtag);
+    //    return save;
+    //}
+    //public ISaveable Load(SaveTag tag)
+    //{
+    //    //return this; // added this to reset inventory contents of every entity to do some work that will break existing items
+    //    var itemList = tag["Contents"].Value as List<SaveTag>;
+    //    foreach (var itemTag in itemList)
+    //        if(GameObject.Load(itemTag) is Entity obj)
+    //        {
+    //            this.Contents.Add(obj);
+    //            obj.Container = this;
+    //        }
+    //    return this;
+    //}
+    //internal void Instantiate(Action<GameObject> instantiator)
+    //{
+    //    foreach (var o in this.Contents)
+    //        instantiator(o);
+    //}
+    public override IEnumerable<(string item, object value)> Inspect()
+    {
+        yield return (nameof(this.Parent), this.Parent);
+        yield return (nameof(this.Contents), this.Contents);
+    }
+    public static ContainerList Create(IDataReader r) => new ContainerList().Read(r);
 }

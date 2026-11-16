@@ -45,17 +45,7 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
             if (combat.IsResolved)
                 toRemove.Add(combat);
             else
-            {
                 combat.Tick();
-                if(combat.Winner is Actor winner)
-                {
-                    var loser = combat.Loser;
-                    var invItems = loser.Inventory.GetItems();
-                    var gear = loser.Gear.GetItems();
-                    var loot = invItems.Union(gear).Select(i => (EntityRefId)i.RefId).ToArray();
-                    this.World.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(this.World.Space.GetFrontier(winner), winner) { Loot = loot });
-                }
-            }
         }
         foreach (var combat in toRemove)
             this.UnregisterCombat(combat);

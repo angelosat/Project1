@@ -1,9 +1,7 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Project1.Core.World.Actions;
@@ -19,12 +17,12 @@ internal class WorldActionWorker_LootTreasure : WorldActionWorker
             actor.AI.State.Log.Write($"Searched for treasure but found nothing");
             return;
         }
-        if (!actor.AI.ItemPreferences.ShouldPickUp(treasure))
+        if (!actor.AI.ItemPreferences.Wants(treasure))
         {
             actor.AI.State.Log.Write($"I found [{treasure.Name}] but I already have something better");
             return;
         }
-        actor.Inventory.Insert(treasure);
+        actor.Inventory.InsertAndClaim(treasure);
         actor.AI.State.Log.Write($"Treasure found! [{treasure.Name}]");
     }
 }
@@ -52,8 +50,9 @@ internal class WorldActionWorker_Loot : WorldActionWorker
         var actor = data.Actor;
         var typed = (WorldActionData_Loot)data;
         var items = actor.World.Resolve(typed.Loot);
-        foreach(var treasure in items)
-            actor.Inventory.Insert(treasure);
+        foreach (var treasure in items)
+            //ItemTransferSystem.Loot(actor, treasure);
+            actor.Inventory.InsertAndClaim(treasure);
         actor.AI.State.Log.Write($"Treasure found! {string.Join(",", items.Select(i=>$"[{i.Name}]"))}");
     }
 }

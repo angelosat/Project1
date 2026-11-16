@@ -246,7 +246,7 @@ public class Entity : GameObject
         this.Slot?.Assign(null, out var _);
         this.Slot = null;
         this.Transform.Detach();
-        this.Owner = null;
+        this.Parent = null;
     }
     public IEnumerable<Entity> GetSelfAndChildren()
     {

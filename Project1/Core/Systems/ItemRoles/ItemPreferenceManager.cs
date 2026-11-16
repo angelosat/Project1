@@ -4,9 +4,11 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
 using Project1.Core.Simulation;
+using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Ownership;
 using Project1.Core.Towns.Duties;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -67,7 +69,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
    
 
-    Control GetGui()
+    Window GetGui()
     {
         var table = new Table<ItemPreference>()
             .AddColumn("role", 128, p => new Label(p.Role.LabelReadable))
@@ -81,8 +83,10 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
         void addOrUpdate(ItemPreference pref)
         {
-            if (table.GetControlFromItem(pref) is Control control) control.Invalidate(true);
-            else table.AddItem(pref);
+            if (table.GetControlFromItem(pref) is Control control) 
+                control.Invalidate(true);
+            else 
+                table.AddItem(pref);
         }
         
         var box = new ScrollableBoxNewNewNew(table, table.RowWidth, 200, ScrollModes.Vertical)
@@ -138,12 +142,34 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         foreach (var (role, score) in result.Roles)
         {
-            if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
-                continue;
-            if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+            //if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
+            //    continue;
+            //if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
+            //    continue;
+            if (this.Compare(role, score))
                 continue;
             this.PreCommitScanCache[role] = (item, score);
         }
+    }
+
+    public bool Wants(Entity item)
+    {
+        var result = this.EvaluateAndRegister(item);
+        foreach (var (role, score) in result.Roles)
+        {
+            if (this.Compare(role, score))
+                return true;
+        }
+        return false;
+    }
+
+    private bool Compare(ItemRoleDef role, int score)
+    {
+        if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
+            return true;
+        if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
+            return true;
+        return false;
     }
 
     private bool StillValid(Entity i)
@@ -196,10 +222,16 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
         {
+            // if the actor already has knowledge/evaluation of the item,
+            // compare it and update existing roles immediately if it's an upgrade
+            //throw new InvalidOperationException($"Tried to enqueue item already existing in Knowledge [{item}]");
             $"tried to enqueue already known item".ToConsole();
+            //throw new Exception();
             return false;
         }
-        if (item.OwnerId != EntityRefId.Null)
+        //if (item.OwnerId != EntityRefId.Null)
+        //    return false;
+        if (item.OwnerId != this.Actor.RefId) // if this item's owner isn't the parent actor, dont evaluate it?
             return false;
         if (this.TempIgnore.ContainsKey(item.RefId))
             return false;
@@ -218,22 +250,12 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
     event Action<ItemPreference> PrefRemoved;
 
-    internal void UpdatePref(ItemRoleDef role, Entity item, int score)
-    {
-        if (score <= 0)
-        {
-            if(this.PrefsInternal.TryGetValue(role, out var existing))
-                this.PrefRemoved?.Invoke(existing);
-            this.PrefsInternal.Remove(role);
-            return;
-        }
-        var pref = new ItemPreference(role, item, score);
-        this.PrefsInternal[role] = pref;
-        this.PrefUpdated?.Invoke(pref);
-    }
+   
 
     internal bool TryCommit(Entity item)
     {
+        if (item.World is null)
+            throw new InvalidOperationException($"Tried to evaluate disposed item {item}");
         var results = this.EvaluateAndRegister(item);
         bool commited = false;
         // commit item for roles where it scores higher than existing items
@@ -264,6 +286,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         if (!this.ItemsToPrefs.TryGetValue(item, out var list))
             this.ItemsToPrefs[item] = list = [];
         list.Add(pref);
+        this.Notifier.Notify();
         //Packets_ItemPrefs.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
         this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [(role, oldItemId, item.RefId, score)]));
         this.PreCommitScanCache.Remove(role);
@@ -285,19 +308,25 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     //    this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [(role, oldItem, item, score)]));
     //    this.PreCommitScanCache.Remove(role);
     //}
-
-    public bool ShouldPickUp(Entity item)
+    internal void UpdatePrefInt(ItemRoleDef role, Entity item, int score)
     {
-        var result = this.EvaluateAndRegister(item);
-        foreach (var (role, score) in result.Roles)
+        if (score <= 0)
         {
-            if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
-                return true;
-            if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
-                return true;
+            if (this.PrefsInternal.TryGetValue(role, out var existing))
+                this.PrefRemoved?.Invoke(existing);
+            this.PrefsInternal.Remove(role);
+            return;
         }
-        return false;
+        var pref = new ItemPreference(role, item, score);
+        this.PrefsInternal[role] = pref;
+        if (!this.ItemsToPrefs.TryGetValue(item, out var list))
+            this.ItemsToPrefs[item] = list = [];
+        list.Add(pref);
+        this.PrefUpdated?.Invoke(pref);
+        this.Notifier.Notify();
     }
+    readonly ChangeNotifier Notifier = new();
+    
 
     internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
     {
@@ -502,10 +531,17 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
     public Control GetListControl(Entity entity)
     {
-        var p = this.GetPreference(entity);
+        //var p = this.GetPreference(entity);
         //return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
         //return new Label(p.target ?? p.role) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
-        return new LabelNew(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
+        return new LabelNew(()=>
+        {
+            return this.GetPreference(entity);//?.ToString() ?? "null";
+        })// () =>$"{p}") 
+        //{ 
+        //    HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" 
+        //}
+            .InvalidateOn(this.Notifier);
     }
     // TODO decide how to display multiple roles for one item
     public ItemRoleDef? GetPreference(Entity item)
@@ -546,7 +582,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
                 continue;
             if (score > pref.InventoryScore)
             {
-                this.UpdatePref(role, item, score);
+                this.UpdatePrefInt(role, item, score);
                 return; // TODO check 
             }
         }
@@ -738,15 +774,26 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         // TODO dont do this because this will get called
         // whether the actor and/or the item are in seperate maps/overworld locations
-        this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
-
+        //this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
+        this.Actor.World.Events.ListenTo<InventoryItemAddedEvent>(HandleInventoryItemAdded);
         // TODO initial inventory scan
         this.InitialInventoryScan();
     }
 
+    private void HandleInventoryItemAdded(InventoryItemAddedEvent e)
+    {
+        if (e.Actor != this.Actor)
+            return;
+        //this.EnqueueItemInt(e.Item);
+        this.TryCommit(e.Item);
+    }
+
     private void InitialInventoryScan()
     {
-        foreach (var item in this.Actor.Inventory.GetItems())
+        if (this.Actor.Net?.IsClient ?? true)
+            return;
+        var items = this.Actor.Inventory.GetItems();
+        foreach (var item in items)
         {
             //if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
             //    continue;

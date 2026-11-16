@@ -23,7 +23,7 @@ public class LabelNew : ButtonBaseNew
     public Alignment.Vertical Valign;// = Alignment.Vertical.Center;
     public Color TextBackground = Color.Transparent;
     public Func<Color> TextBackgroundFunc = () => Color.Transparent;
-
+    //public Func<Inspectable> ObjGetter;
     public override string ToString()
         => $"{nameof(LabelNew)}: {this.TextFunc()}";
     //{
@@ -61,6 +61,7 @@ public class LabelNew : ButtonBaseNew
         //var finalpos = pos * this.Dimensions + outlineOffset;5
         var finalpos = pos * this.Dimensions +  new Vector2(outlineOffset, 0);
         var finalposInt = new IntVec2(finalpos);
+ 
         if (this.TextFunc is not null)
             this.Text = this.TextFunc();
         //if (UIManager.Font.LineSpacing + 4 != UIManager.DefaultLabelHeight)
@@ -125,6 +126,8 @@ public class LabelNew : ButtonBaseNew
         this.TextFunc = textFunc;
     }
 
+    
+
     public LabelNew(string text) : this(Vector2.Zero, text) { }
     
     public LabelNew(object obj)
@@ -146,6 +149,35 @@ public class LabelNew : ButtonBaseNew
             }
             this.HoverText = this.Text;
         }
+    }
+
+    //void InitFromObjGetter()
+    //{
+    //    var obj = this.ObjGetter.Invoke();
+    //    if (obj is Inspectable objdetails)
+    //    {
+    //        this.Active = true;
+    //        this.LeftClickAction = () => Inspector.Refresh(objdetails);
+    //        this.Font = UIManager.FontBold;
+    //        this.Text = $"[{objdetails.LabelReadable}]";
+    //        this.TextColor = Color.LightBlue;
+    //    }
+    //    else
+    //    {
+    //        this.Active = false;
+    //        this.Text = obj?.ToString() ?? "null";
+    //    }
+    //    this.HoverText = this.Text;
+    //}
+
+    public LabelNew(Func<Inspectable> objFunc)// : this(objFunc.Invoke())
+    {
+        //this.ObjGetter = objFunc;
+        this.Active = true;
+        this.LeftClickAction = () => Inspector.Refresh(objFunc());
+        this.TextFunc = ()=> objFunc() is Inspectable obj ? $"[{obj.LabelReadable}]" : string.Empty;
+        this.TextColor = Color.LightBlue;
+        this.Font = UIManager.FontBold;
     }
 
     public LabelNew(object obj, Action action) : this(Vector2.Zero, obj.ToString())

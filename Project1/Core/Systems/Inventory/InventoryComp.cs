@@ -189,13 +189,16 @@ public sealed class InventoryComp : EntityComp
         return this.Insert(obj as Entity);
     }
 
-    public bool Insert(Entity obj)
+    public bool Insert(Entity item)
     {
-        if (obj == null)
-            return false;
-        this.Contents.Add(obj);
-
+        ArgumentNullException.ThrowIfNull(item);
+        this.Contents.Add(item);
         return true;
+    }
+    public void InsertAndClaim(Entity item)
+    {
+        item.SetOwnerNew(this.Owner.RefId);
+        this.Insert(item);
     }
     public bool Insert(Entity obj, out int newTotal)
     {

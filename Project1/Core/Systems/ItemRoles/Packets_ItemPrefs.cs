@@ -44,6 +44,7 @@ internal static class Packets_ItemPrefs
         var r = packet.PacketReader;
         var actorId = r.ReadEntityRefId();
         var actor = endpoint.World.Get<Actor>(actorId);
+        ArgumentNullException.ThrowIfNull(actor);
         var manager = actor.ItemPreferences;
 
         // read deltas
@@ -55,8 +56,9 @@ internal static class Packets_ItemPrefs
             var newitemid = r.ReadEntityRefId();
             var olditem = olditemid > 0 ? actor.World.Resolve(olditemid) : null;
             var newitem = newitemid > 0 ? actor.World.Resolve(newitemid) : null;
+            ArgumentNullException.ThrowIfNull(newitem);
             var score = r.ReadInt32();
-            manager.UpdatePref(role, newitem, score);
+            manager.UpdatePrefInt(role, newitem, score);
         }
     }
 }

@@ -204,7 +204,7 @@ public sealed class ReservationManager : TownComp
     }
     internal bool CanReserve(GameObject actor, InteractionTarget target, int stackcount = -1, bool ignoreOtherReservations = false)
     {
-        if (target.Type == TargetType.Entity && target.Object.Owner == actor)
+        if (target.Type == TargetType.Entity && target.Object.Parent == actor)
             return true;
         if (target.Type == TargetType.Cell && stackcount > 1)
             throw new Exception();

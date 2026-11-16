@@ -357,8 +357,8 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
                     this.World.CurrentTick,
                     //Ticks.FromMinutes(1), 
                     //Ticks.FromMinutes(3),
-                    Ticks.FromMinutes(10),
-                    Ticks.FromMinutes(30),
+                    Ticks.FromMinutes(4),
+                    Ticks.FromMinutes(6),
                     //new()));
                     actor.World.Random));
     }

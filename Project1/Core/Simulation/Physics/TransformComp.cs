@@ -34,8 +34,6 @@ public sealed class TransformComp : EntityComp
     public void Detach()
     {
         this.Anchor = null;
-        //if (!this.IsSpawned)
-        //    return;
         this.Map?.Despawn(this.Owner);
         this.Map = null;
     }

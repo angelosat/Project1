@@ -120,13 +120,16 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public EntityRefId OwnerId { get; private set; } = EntityRefId.Null;
     public bool HasOwner => this.OwnerId != EntityRefId.Null;
+    public void SetOwnerNew(Entity actor)
+        => this.SetOwnerNew(actor.RefId);
+
     public void SetOwnerNew(EntityRefId actorId)
     {
         var old = this.OwnerId;
         if (old == actorId)
             return;
         this.OwnerId = actorId;
-        this.World.Events.Post(new ItemOwnerChangedEvent(this as Entity, old));
+        this.World?.Events.Post(new ItemOwnerChangedEvent(this as Entity, old));
     }
 
     public void SetOwnerNew(Actor actor)
@@ -239,7 +242,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         return this.GetComponent<QualityComp>()?.Tier.Color ?? Color.White;
     }
-    public GameObject Owner
+    public GameObject Parent
     {
         get => this.Transform.ParentEntity;
         set => this.Transform.ParentEntity = value;
@@ -591,7 +594,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         //this.Net = newMap.Net;
         //this.Container?.Remove(this);
-        this.Owner = null;
+        this.Parent = null;
         this.Map = newMap;
         if (!newMap.TryGetChunk(this.Global, out var chunk))
             throw new Exception("Chunk not loaded");

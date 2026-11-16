@@ -36,7 +36,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         {
             this._parent = value;
             if (this.HasValue)
-                this.Object.Owner = value;
+                this.Object.Parent = value;
         }
     }
     public int ID { get; set; } = -1;
@@ -146,7 +146,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         if (item is not null)
         {
             item.Detach();
-            item.Owner = this.Owner;
+            item.Parent = this.Owner;
             item.Transform.Anchor = this.Owner;
         }
         this.Object = item;
@@ -166,7 +166,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         if (prevItem is not null)
         {
             prevItem.Slot = null;
-            prevItem.Owner = null;
+            prevItem.Parent = null;
         }
         this.Object = newItem;
         this.ObjectChangedAction(newItem);
@@ -224,7 +224,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
             return;
         // set backing field instead of property so inventorychanged event isn't raised
         this._object = GameObject.Create(reader);
-        this._object.Owner = this.Owner;
+        this._object.Parent = this.Owner;
         this._object.Slot = this;
         // no need to set stacksize here since it's saved along with the object
         // PLUS i don't want to raise inventorychanged event that's raised in the property setter

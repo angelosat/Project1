@@ -472,6 +472,8 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
             sb.Begin();
             this.OnAfterPaint(sb);
             sb.End();
+            //this.Valid = true;
+
         }
 
         if (cascade)

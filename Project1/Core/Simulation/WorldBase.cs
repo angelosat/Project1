@@ -72,7 +72,7 @@ public abstract class WorldBase : Inspectable, IEntityProvider
     public readonly Dictionary<FactionId, Faction> FactionRegistry = [];
     public abstract Faction GetFaction(FactionId id);
     internal readonly List<WorldComp> Comps = [];
-    public IReadOnlyDictionary<int, Entity> Entities => this.EntityRegistry;
+    public IReadOnlyDictionary<EntityRefId, Entity> Entities => this.EntityRegistry;
     public ReadOnlyObservableCollection<Entity> EntitiesObservable => this.EntityRegistry.Entities;
     protected WorldBase()
     {
@@ -94,6 +94,9 @@ public abstract class WorldBase : Inspectable, IEntityProvider
             //e.OnAttachedToWorld();
         }
     }
+    public EntityRefId AllocateRefId(Entity entity)
+        => this.EntityRegistry.AllocateId(entity);
+
     public Entity Resolve(EntityRefId refId)
     {
         if (refId == EntityRefId.Null)
@@ -170,9 +173,9 @@ public abstract class WorldBase : Inspectable, IEntityProvider
             //$"{this.Net} disposing {obj.DebugName} on tick {this.Net.CurrentTick}".ToConsole();
             obj.OnDispose();
             this.EntityRegistry.Remove(obj.RefId);
-            //obj.Net = null;
-            obj.World = null;
+            //obj.World = null;
             obj.Detach();
+            obj.World = null;
         }
         this.Events.Post(new EntityDisposedEvent(o));
         return true;

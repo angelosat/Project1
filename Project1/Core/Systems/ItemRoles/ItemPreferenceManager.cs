@@ -261,7 +261,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         // commit item for roles where it scores higher than existing items
         foreach(var (Role, Score) in results.Roles)
         {
-            if (this.PrefsInternal.TryGetValue(Role, out var existing) && existing.InventoryScore > Score)
+            if (this.PrefsInternal.TryGetValue(Role, out var existing) && existing.InventoryScore >= Score)
                 continue;
             commited = true;
             this.Commit(Role, item, Score);

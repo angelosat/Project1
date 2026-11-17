@@ -58,7 +58,7 @@ internal static class Packets_ItemPrefs
             var newitem = newitemid > 0 ? actor.World.Resolve(newitemid) : null;
             ArgumentNullException.ThrowIfNull(newitem);
             var score = r.ReadInt32();
-            manager.UpdatePrefInt(role, newitem, score);
+            manager.ApplyPreferenceDelta(role, newitem, score);
         }
     }
 }

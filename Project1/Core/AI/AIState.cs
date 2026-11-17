@@ -16,38 +16,38 @@ using System.Linq;
 
 namespace Project1.Core.AI;
 
-public sealed class ItemEvaluationQueue
-{
-    readonly Queue<EntityRefId> Queue = [];
-    readonly HashSet<EntityRefId> Queued = [];
+//public sealed class ItemEvaluationQueue
+//{
+//    readonly Queue<EntityRefId> Queue = [];
+//    readonly HashSet<EntityRefId> Queued = [];
 
-    public bool TryEnqueue(EntityRefId itemId)
-    {
-        if (!this.Queued.Add(itemId))
-            return false;
+//    public bool TryEnqueue(EntityRefId itemId)
+//    {
+//        if (!this.Queued.Add(itemId))
+//            return false;
 
-        this.Queue.Enqueue(itemId);
-        return true;
-    }
+//        this.Queue.Enqueue(itemId);
+//        return true;
+//    }
 
-    public EntityRefId? Dequeue()
-    {
-        if (!this.Queue.TryDequeue(out var itemId))
-            return null;
+//    public EntityRefId? Dequeue()
+//    {
+//        if (!this.Queue.TryDequeue(out var itemId))
+//            return null;
 
-        this.Queued.Remove(itemId);
-        return itemId;
-    }
+//        this.Queued.Remove(itemId);
+//        return itemId;
+//    }
 
-    public EntityRefId? Peek()
-        => this.Queue.TryPeek(out var itemId) ? itemId : null;
+//    public EntityRefId? Peek()
+//        => this.Queue.TryPeek(out var itemId) ? itemId : null;
 
-    public void Clear()
-    {
-        this.Queue.Clear();
-        this.Queued.Clear();
-    }
-}
+//    public void Clear()
+//    {
+//        this.Queue.Clear();
+//        this.Queued.Clear();
+//    }
+//}
 
 public sealed class AIState : Inspectable
 {
@@ -63,7 +63,7 @@ public sealed class AIState : Inspectable
     public AILog Log;
     public bool InSync;
     public ItemPreferenceManager ItemPreferences;
-    public ItemEvaluationQueue ItemEvaluationQueue = new();
+    //public ItemEvaluationQueue ItemEvaluationQueue = new();
     public int JobFindTimer;
     internal Knowledge Knowledge;
     internal KnowledgeManager KnowledgeManager;

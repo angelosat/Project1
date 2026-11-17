@@ -22,21 +22,24 @@ public record struct ItemEvaluation(EntityRefId Item, (ItemRoleDef Role, int Sco
 
 internal sealed class Knowledge : Inspectable
 {
-    internal readonly Dictionary<EntityRefId, ItemEvaluation> KnowledgeItems = [];
+    internal readonly Dictionary<EntityRefId, ItemEvaluation> Items = [];
 
     internal void Register(Entity item, ItemEvaluation evaluation)
-        => this.KnowledgeItems.Add(item.RefId, evaluation);
+        => this.Items.Add(item.RefId, evaluation);
 
     internal ItemEvaluation Query(Entity item)
-        => this.KnowledgeItems.TryGetValue(item.RefId, out var entry) ? entry : default;
+        => this.Items.TryGetValue(item.RefId, out var entry) ? entry : default;
 
     internal bool TryQuery(Entity item, out ItemEvaluation entry)
-        => this.KnowledgeItems.TryGetValue(item.RefId, out entry);
+        => this.Items.TryGetValue(item.RefId, out entry);
 }
 
 internal sealed class KnowledgeManager(Actor actor)
 {
-    Actor Actor = actor;
+    readonly Actor Actor = actor;
+
+    Knowledge Knowldge => field ??= this.Actor.AI.State.Knowledge;
+
     internal void OnAttachedToWorld()
     {
         var world = this.Actor.World;
@@ -45,7 +48,6 @@ internal sealed class KnowledgeManager(Actor actor)
 
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
-        var knowledge = this.Actor.AI.State.Knowledge;
-        knowledge.KnowledgeItems.Remove(e.Entity.RefId);
+        this.Knowldge.Items.Remove(e.Entity.RefId);
     }
 }

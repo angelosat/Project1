@@ -6,14 +6,12 @@ using Project1.Core.Networking;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Inventory;
 using Project1.Core.Systems.Ownership;
-using Project1.Core.Towns.Duties;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,20 +19,23 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-[EnsureStaticCtorCall]
-public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
+public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
-    static List<ItemRoleDef> _flatItemRolesList;// = [];
+    bool IsScanning => notScannedYet.Count > 0;
 
-    readonly EntityQueryEnumerator EntityQuery = new();
+    event Action<ItemPreference> PrefUpdated;
 
-    Control _gui;
+    event Action<ItemPreference> PrefRemoved;
+
+    readonly ChangeNotifier Notifier = new();
 
     readonly Actor Actor;
 
     readonly Dictionary<ItemRoleDef, (Entity item, int score)> PreCommitScanCache = [];
 
-    readonly Dictionary<int, ItemBias> ItemBiases = [];
+    readonly Dictionary<EntityRefId, ItemBias> ItemBiases = [];
+
+    public Control Gui => field ??= this.GetGui();
 
     readonly Queue<EntityRefId> notScannedYet = [];
 
@@ -72,8 +73,6 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         TryScheduleEvaluation(e.Entity);
     }
 
-   
-
     Window GetGui()
     {
         var table = new Table<ItemPreference>()
@@ -103,45 +102,6 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         };
         return box;
     }
-
-    //private void EvaluateOneNew()
-    //{
-    //    if (!this.EntityQuery.TryGetNext(this.Actor.Map, out var item))
-    //        return;
-
-    //    if (item == this.Actor)
-    //        return;
-
-    //    var roles = this.Evaluate(item);
-
-    //    foreach (var (role, score) in roles)
-    //    {
-    //        if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score &&
-    //            this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
-    //            continue;
-
-    //        this.PreCommitScanCache[role] = (item, score);
-    //    }
-    //}
-
-    //internal void EvaluateOne()
-    //{
-    //    if (notScannedYet.Count == 0)
-    //        return;
-    //    var item = this.DequeueUnevaluated();
-    //    if (this.Actor.Map != item.Map)
-    //        return;
-    //    EvaluateInt(item);
-    //}
-
-    //internal Entity Peek()
-    //    => this.notScannedYet.TryPeek(out var entity) ? entity : null;
-
-    //internal void EvaluateInt(Entity item)
-    //{
-    //    var result = this.EvaluateAndRegister(item);
-    //    this.TryPreCommit(item, result);
-    //}
 
     internal void TryPreCommit(Entity item, ItemEvaluation result)
     {
@@ -177,6 +137,20 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         return false;
     }
 
+    private bool Desires(Entity item)
+    {
+        var bias = this.ItemBiases.GetValueOrDefault(item.RefId)?.Value ?? 0;
+        var result = this.EvaluateAndRegister(item);
+        foreach (var (role, score) in result.Roles.Select(r => (r.Role, r.Score + bias)))
+        {
+            if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
+                return true;
+            if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
+                return true;
+        }
+        return false;
+    }
+
     private bool StillValid(Entity i)
     {
         return i.ExistsOn(this.Actor.Map);
@@ -184,7 +158,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
     private void UpdateBiases()
     {
-        List<int> toRemove = [];
+        List<EntityRefId> toRemove = [];
 
         foreach (var (key, bias) in this.ItemBiases)
             if (bias.Tick() == 0)
@@ -196,7 +170,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
     private void UpdateTempIgnore()
     {
-        List<int> toRemove = [];
+        List<EntityRefId> toRemove = [];
 
         foreach (var (key, cooldown) in this.TempIgnore)
             if (cooldown == 0)
@@ -208,7 +182,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         {
             this.TempIgnore.Remove(key);
 
-            var item = this.Actor.Map.World.Resolve((EntityRefId)key);
+            var item = this.Actor.Map.World.Resolve(key);
             if (item.ExistsOn(this.Actor.Map))
                 this.TryAddPendingEvaluation(item);
         }
@@ -244,18 +218,6 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         return true;
     }
 
-    static List<ItemRoleDef> FlatItemRolesList => _flatItemRolesList ??= GenerateItemRolesAll();
-
-    static List<ItemRoleDef> GenerateItemRolesAll()
-        => [.. Def.Get<ItemRoleDef>()];
-
-    bool IsScanning => notScannedYet.Count > 0;
-
-    event Action<ItemPreference> PrefUpdated;
-
-    event Action<ItemPreference> PrefRemoved;
-
-   
 
     internal bool TryCommit(Entity item)
     {
@@ -296,41 +258,8 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [(role, oldItemId, item.RefId, score)]));
         this.PreCommitScanCache.Remove(role);
     }
-    //internal void Commit(ItemRoleDef role, Entity item, int score)
-    //{
-    //    Entity oldItem = null;
-    //    if (this.PrefsInternal.TryGetValue(role, out var oldPref))
-    //    {
-    //        oldItem = oldPref.Item;
-    //        this.ItemsToPrefs.Remove(oldItem);
-    //    }
-    //    var pref = new ItemPreference(role, item, score);
-    //    this.PrefsInternal[role] = pref;
-    //    if (!this.ItemsToPrefs.TryGetValue(item, out var list))
-    //        this.ItemsToPrefs[item] = list = [];
-    //    list.Add(pref);
-    //    //Packets_ItemPrefs.SyncDeltas(this.Actor, [(role, oldItem, item, score)]);
-    //    this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [(role, oldItem, item, score)]));
-    //    this.PreCommitScanCache.Remove(role);
-    //}
-    //internal void UpdatePrefInt(ItemRoleDef role, Entity item, int score)
-    //{
-    //    if (score <= 0)
-    //    {
-    //        if (this.PrefsInternal.TryGetValue(role, out var existing))
-    //            this.PrefRemoved?.Invoke(existing);
-    //        this.PrefsInternal.Remove(role);
-    //        return;
-    //    }
-    //    var pref = new ItemPreference(role, item, score);
-    //    this.PrefsInternal[role] = pref;
-    //    if (!this.ItemsToPrefs.TryGetValue(item, out var list))
-    //        this.ItemsToPrefs[item] = list = [];
-    //    list.Add(pref);
-    //    this.PrefUpdated?.Invoke(pref);
-    //    this.Notifier.Notify();
-    //}
-    internal void UpdatePrefInt(ItemRoleDef role, Entity item, int score)
+    
+    internal void ApplyPreferenceDelta(ItemRoleDef role, Entity item, int score)
     {
         if (this.PrefsInternal.TryGetValue(role, out var existing))
         {
@@ -372,20 +301,6 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
             this.ItemsToPrefs.Remove(pref.ItemRefId);
     }
 
-    readonly ChangeNotifier Notifier = new();
-    
-
-    internal IEnumerable<(ItemRoleDef role, int score)> Evaluate(Entity item)
-    {
-        foreach (var role in FlatItemRolesList)
-        {
-            var score = role.Worker.GetInventoryScore(this.Actor, item);
-            if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
-                score += bias.Value;
-            if (score > 0)
-                yield return (role, score);
-        }
-    }
 
     internal ItemEvaluation EvaluateAndRegister(Entity item)
     {
@@ -398,7 +313,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         if (knowledge.TryQuery(item, out var existing))
             return existing;
 
-        var result = this.EvaluateInternal(item);
+        var result = ItemEvaluationSystem.Evaluate(this.Actor, item);
         knowledge.Register(item, result);
         return result;
     }
@@ -408,36 +323,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         var knowledge = this.Actor.AI.State.Knowledge;
         if (knowledge.TryQuery(item, out var existing))
             return existing;
-        return this.EvaluateInternal(item);
-    }
-
-    private ItemEvaluation EvaluateInternal(Entity item)
-    {
-        List<(ItemRoleDef role, int score)> results = [];
-        foreach (var role in FlatItemRolesList)
-        {
-            var score = role.Worker.GetInventoryScore(this.Actor, item);
-            if (this.ItemBiases.TryGetValue(item.RefId, out var bias))
-                score += bias.Value;
-            if (score > 0)
-                results.Add((role, score));
-        }
-        var result = new ItemEvaluation(item.RefId, [.. results]);
-        return result;
-    }
-
-    internal bool TryGetExistingScore(ItemRoleDef role, out Entity item, out int score)
-    {
-        if (this.PrefsInternal.TryGetValue(role, out var pref))
-        {
-            //item = pref.Item;
-            item = this.Resolve(pref.ItemRefId);
-            score = pref.InventoryScore;
-            return true;
-        }
-        item = null;
-        score = -1;
-        return false;
+        return ItemEvaluationSystem.Evaluate(this.Actor, item);
     }
 
     internal int GetExistingScore(ItemRoleDef role)
@@ -446,9 +332,9 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     [Obsolete]
     internal (ItemRoleDef role, int score) FindBestRole(Entity item)
     {
-        var allRoles = this.Evaluate(item);
-        return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
-
+        var allRoles = this.EvaluateWithoutRegistering(item);
+        throw new NotImplementedException();
+        //return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
     }
 
     internal Entity? GetExistingPreference(ItemRoleDef role, out int score)
@@ -467,38 +353,19 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         if (this.IsScanning)
         {
-            //ScanOne();
             yield break;
         }
         foreach (var v in this.GetPotentialInt())
             yield return v;
-        //if (this.PreCommitScanCache.Count == 0)
-        //    yield break;
-        //var toRemove = new List<ItemRoleDef>();
-        //foreach (var (con, (i, score)) in this.PreCommitScanCache)
-        //{
-        //    if (!StillValid(i))
-        //        toRemove.Add(con);
-        //    else
-        //        yield return (con, i, score);
-        //}
-        //// if there's been invalidations, rescan map
-        //if(toRemove.Count > 0)
-        //{
-        //    foreach (var item in this.Actor.Map.Entities)
-        //        this.TryEnqueue(item);
-        //}
-        //foreach (var r in toRemove)
-        //    this.PreCommitScanCache.Remove(r);
     }
 
-    internal (ItemRoleDef role, int score) GetPotential(Entity item)
-    {
-        foreach (var vk in this.PreCommitScanCache)
-            if (vk.Value.item == item)
-                return (vk.Key, vk.Value.score);
-        return default;
-    }
+    //internal (ItemRoleDef role, int score) GetPotential(Entity item)
+    //{
+    //    foreach (var vk in this.PreCommitScanCache)
+    //        if (vk.Value.item == item)
+    //            return (vk.Key, vk.Value.score);
+    //    return default;
+    //}
 
     internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialInt()
     {
@@ -522,37 +389,58 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
             this.PreCommitScanCache.Remove(r);
     }
 
-    internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialAll()
-    {
-        if (notScannedYet.Count == 0)
-            yield break;
-        var jobs = this.Actor.ActiveDuties;
-        var dic = new Dictionary<ItemRoleDef, (Entity item, int score)>();
-        while (notScannedYet.Count > 0)
-        {
-            var item = this.DequeuePendingEvaluation();
-            if (this.Actor.Map != item.Map)
-                continue;
-            var roles = this.Evaluate(item);
-            if (!roles.Any())
-                continue;
-            var finalRoles = roles
-                .Where(r => this.GetExistingPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
+    //internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialAll()
+    //{
+    //    if (notScannedYet.Count == 0)
+    //        yield break;
+    //    var jobs = this.Actor.ActiveDuties;
+    //    var dic = new Dictionary<ItemRoleDef, (Entity item, int score)>();
+    //    while (notScannedYet.Count > 0)
+    //    {
+    //        var item = this.DequeuePendingEvaluation();
+    //        if (this.Actor.Map != item.Map)
+    //            continue;
+    //        var roles = this.Evaluate(item);
+    //        if (!roles.Any())
+    //            continue;
+    //        var finalRoles = roles
+    //            .Where(r => this.GetExistingPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
 
-            foreach (var r in finalRoles)
-            {
-                if (dic.TryGetValue(r.role, out var existing))
-                {
-                    if (r.score > existing.score)
-                        dic[r.role] = (item, r.score);
-                }
-                else
-                    dic.Add(r.role, (item, r.score));
-            }
+    //        foreach (var r in finalRoles)
+    //        {
+    //            if (dic.TryGetValue(r.role, out var existing))
+    //            {
+    //                if (r.score > existing.score)
+    //                    dic[r.role] = (item, r.score);
+    //            }
+    //            else
+    //                dic.Add(r.role, (item, r.score));
+    //        }
+    //    }
+
+    //    foreach (var (context, pref) in dic)
+    //        yield return (context, pref.item, pref.score);
+    //}
+
+    private void RemovePreferencesForItem(EntityRefId itemId)
+    {
+        if (!this.ItemsToPrefs.TryGetValue(itemId, out var prefs))
+            return;
+
+        List<(ItemRoleDef role, EntityRefId oldItem, EntityRefId newItem, int score)> deltas = [];
+
+        foreach (var pref in prefs)
+        {
+            this.PrefsInternal.Remove(pref.Role);
+            this.PrefRemoved?.Invoke(pref);
+
+            deltas.Add((pref.Role, itemId, EntityRefId.Null, 0));
         }
 
-        foreach (var (context, pref) in dic)
-            yield return (context, pref.item, pref.score);
+        this.ItemsToPrefs.Remove(itemId);
+
+        this.Notifier.Notify();
+        this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. deltas]));
     }
 
     public IEnumerable<Entity> GetJunk()
@@ -596,13 +484,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         // if itempreferences are struct, then the default returned will have role == null
     }
     //// TODO decide how to display multiple roles for one item
-    //public (ItemRoleDef? role, Def? target) GetPreference(Entity item)
-    //{
-    //    //var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.Item == item);
-    //    var pref = this.PrefsInternal.Values.FirstOrDefault(p => p.ItemRefId == item.RefId);
-    //    return (pref.Role, pref.Role?.Source);
-    //    // if itempreferences are struct, then the default returned will have role == null
-    //}
+ 
 
     public Entity GetPreference(Def context)
     {
@@ -626,7 +508,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
                 continue;
             if (score > pref.InventoryScore)
             {
-                this.UpdatePrefInt(role, item, score);
+                this.ApplyPreferenceDelta(role, item, score);
                 return; // TODO check 
             }
         }
@@ -669,20 +551,20 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
     {
         this.ModifyBias(item, -200);
         this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
+        this.RemovePreferencesForItem(item.RefId);
+        //List<ItemPreference> toSync = [];
+        //var id = item.RefId;
+        //if (this.ItemsToPrefs.TryGetValue(id, out var prefs))
+        //    foreach (var pref in prefs)
+        //    {
+        //        this.PrefsInternal.Remove(pref.Role);
+        //        toSync.Add(pref);
+        //    }
+        //this.ItemsToPrefs.Remove(id);
 
-        List<ItemPreference> toSync = [];
-        var id = item.RefId;
-        if (this.ItemsToPrefs.TryGetValue(id, out var prefs))
-            foreach (var pref in prefs)
-            {
-                this.PrefsInternal.Remove(pref.Role);
-                toSync.Add(pref);
-            }
-        this.ItemsToPrefs.Remove(id);
-
-        //Packets_ItemPrefs.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
-        //this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]));
-        this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. toSync.Select(r => (r.Role, r.ItemRefId, EntityRefId.Null, 0))]));
+        ////Packets_ItemPrefs.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
+        ////this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]));
+        //this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. toSync.Select(r => (r.Role, r.ItemRefId, EntityRefId.Null, 0))]));
 
         foreach (var i in this.Actor.Map.Entities)
             if (i != item)
@@ -734,25 +616,6 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
             yield return new(t.item.RefId, t.sum);
     }
 
-    //public IEnumerable<ItemPreference> GetItemsBySituationalScoreNew(Actor actor, Func<Entity, bool> filter)
-    //{
-    //    // Collect all valid preferences with their computed score
-    //    var scoredList = this.PrefsInternal.Values
-    //        //.Where(p => p.Item != null && filter(p.Item))
-    //        .Where(p => p.ItemRefId != EntityRefId.Null && filter(this.Resolve(p.ItemRefId)))
-    //        .Select(p => (pref: p, score: p.Role.Worker.GetSituationalScore(actor, this.Resolve(p.ItemRefId))))
-    //        .ToList();
-
-    //    // Sort descending by score
-    //    scoredList.Sort((a, b) => b.score.CompareTo(a.score));
-
-    //    // Yield only the ItemPreference part
-    //    //foreach (var (pref, score) in scoredList)
-    //    //    yield return pref;
-
-    //    return scoredList.Select(a => a.pref);
-    //}
-
     public int GetTotalSituationalScoreFor(Entity item)
     {
         //var relevantRoles = this.PrefsInternal.Where(pref => pref.Value.Item == item);
@@ -793,7 +656,6 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         this.ResetPreferences();
     }
 
-    public Control Gui => this._gui ??= this.GetGui();
 
     public ISaveable Load(SaveTag tag)
     {
@@ -828,12 +690,7 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
 
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
-        var id = e.Entity.RefId;
-        if (!this.ItemsToPrefs.TryGetValue(id, out var list))
-            return;
-        foreach (var entry in list)
-            this.PrefsInternal.Remove(entry.Role);
-        this.ItemsToPrefs.Remove(id);
+        this.RemovePreferencesForItem(e.Entity.RefId);
     }
 
     private void OnInventoryItemAdded(InventoryItemAddedEvent e)
@@ -877,6 +734,11 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
         
     }
 
+    public void Write(IDataWriter w)
+    {
+        w.WriteValues(this.PrefsInternal);
+    }
+
     public ItemPreferenceManager Read(IDataReader r)
     {
         r.ReadValuesWithInferredKeys(this.PrefsInternal, r => r.Role);
@@ -896,10 +758,5 @@ public /*partial*/ class ItemPreferenceManager : Inspectable, ISaveable, ISerial
                 this.ItemsToPrefs[pref.ItemRefId] = roleList = [];
             roleList.Add(pref);
         }
-    }
-
-    public void Write(IDataWriter w)
-    {
-        w.WriteValues(this.PrefsInternal);
     }
 }

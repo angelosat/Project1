@@ -14,7 +14,7 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
 
         var manager = actor.AI.State.ItemPreferences;
 
-        while (manager.DequeueUnevaluated() is Entity item)
+        while (manager.DequeuePendingEvaluation() is Entity item)
             manager.TryCommit(item);
 
         if (world.Actions.HasActiveAction(actor))
@@ -35,7 +35,7 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
         var manager = state.ItemPreferences;
         var list = actor.Map.Town.Shops.GetShoppingListEmpty(actor);
 
-        while (manager.DequeueUnevaluated() is Entity nextEntity)
+        while (manager.DequeuePendingEvaluation() is Entity nextEntity)
         {
             if (!nextEntity.IsForSale)
                 continue;
@@ -79,7 +79,7 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
         if (!state.Owner.IsSpawned)
             return;
         var manager = state.ItemPreferences;
-        if(manager.DequeueUnevaluated() is Entity item)
+        if(manager.DequeuePendingEvaluation() is Entity item)
         {
             if (item.Map is null) // item has despawned since being enqueued for evaluation
                 return;

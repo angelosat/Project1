@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,16 +20,32 @@ public record struct ItemEvaluation(EntityRefId Item, (ItemRoleDef Role, int Sco
     public readonly int SumScore => this.Roles.Length > 0 ? this.Roles.Sum(r => r.Score) : 0;
 }
 
-public sealed class Knowledge : Inspectable
+internal sealed class Knowledge : Inspectable
 {
-    readonly Dictionary<Entity, ItemEvaluation> KnowledgeItems = [];
+    internal readonly Dictionary<EntityRefId, ItemEvaluation> KnowledgeItems = [];
 
-    public void Register(Entity item, ItemEvaluation evaluation)
-        => this.KnowledgeItems.Add(item, evaluation);
+    internal void Register(Entity item, ItemEvaluation evaluation)
+        => this.KnowledgeItems.Add(item.RefId, evaluation);
 
-    public ItemEvaluation Query(Entity item)
-        => this.KnowledgeItems.TryGetValue(item, out var entry) ? entry : default;
+    internal ItemEvaluation Query(Entity item)
+        => this.KnowledgeItems.TryGetValue(item.RefId, out var entry) ? entry : default;
 
-    public bool TryQuery(Entity item, out ItemEvaluation entry)
-        => this.KnowledgeItems.TryGetValue(item, out entry);
+    internal bool TryQuery(Entity item, out ItemEvaluation entry)
+        => this.KnowledgeItems.TryGetValue(item.RefId, out entry);
+}
+
+internal sealed class KnowledgeManager(Actor actor)
+{
+    Actor Actor = actor;
+    internal void OnAttachedToWorld()
+    {
+        var world = this.Actor.World;
+        world.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
+    }
+
+    private void OnEntityDisposed(EntityDisposedEvent e)
+    {
+        var knowledge = this.Actor.AI.State.Knowledge;
+        knowledge.KnowledgeItems.Remove(e.Entity.RefId);
+    }
 }

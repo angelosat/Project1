@@ -16,6 +16,39 @@ using System.Linq;
 
 namespace Project1.Core.AI;
 
+public sealed class ItemEvaluationQueue
+{
+    readonly Queue<EntityRefId> Queue = [];
+    readonly HashSet<EntityRefId> Queued = [];
+
+    public bool TryEnqueue(EntityRefId itemId)
+    {
+        if (!this.Queued.Add(itemId))
+            return false;
+
+        this.Queue.Enqueue(itemId);
+        return true;
+    }
+
+    public EntityRefId? Dequeue()
+    {
+        if (!this.Queue.TryDequeue(out var itemId))
+            return null;
+
+        this.Queued.Remove(itemId);
+        return itemId;
+    }
+
+    public EntityRefId? Peek()
+        => this.Queue.TryPeek(out var itemId) ? itemId : null;
+
+    public void Clear()
+    {
+        this.Queue.Clear();
+        this.Queued.Clear();
+    }
+}
+
 public sealed class AIState : Inspectable
 {
     public ProgressFloat Attention = new();
@@ -30,8 +63,10 @@ public sealed class AIState : Inspectable
     public AILog Log;
     public bool InSync;
     public ItemPreferenceManager ItemPreferences;
+    public ItemEvaluationQueue ItemEvaluationQueue = new();
     public int JobFindTimer;
-    public Knowledge Knowledge;
+    internal Knowledge Knowledge;
+    internal KnowledgeManager KnowledgeManager;
     public BehaviorExecutePlan LastBehavior;
     public Vector3? Leash;
     public Queue<InteractionTarget> MoveOrders = new();
@@ -52,6 +87,7 @@ public sealed class AIState : Inspectable
     {
         this.Owner = actor;
         this.ItemPreferences = new ItemPreferenceManager(actor);
+        this.KnowledgeManager = new(actor);
         this.Log = new(actor);
     }
     private void Enqueue(PlanExecutor bhav)
@@ -148,6 +184,7 @@ public sealed class AIState : Inspectable
     internal void OnAttachedToWorld()
     {
         this.ItemPreferences.OnAttachedToWorld();
+        this.KnowledgeManager.OnAttachedToWorld();
     }
     public void Assign(PlanExecutor bhav, PlannerDef source)
     {

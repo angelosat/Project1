@@ -56,7 +56,7 @@ public sealed class ConsumableComp : EntityComp
     public void Add(EntityEffectWrapper effect)
         => this.EffectsNew.Add(effect);
 
-    internal override void ResolveReferencesNew()
+    internal override void PostMapLoad()
     {
         var profile = (ConsumableDef)this.Owner.Profile;
         this.Owner.Name = profile.Worker.GetLabel(this);

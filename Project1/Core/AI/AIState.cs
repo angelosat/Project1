@@ -7,10 +7,12 @@ using Project1.Core.AI.Planners;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -55,18 +57,20 @@ public sealed class AIState : Inspectable
     public float AttentionDecay = 1;
     public float AttentionDecayDefault = 1;
     public bool Autonomy = true;
-    public Dictionary<string, object> Blackboard = new();
-    public Dictionary<Actor, ConversationTopic> CommunicationPending = new();
+    public Dictionary<string, object> Blackboard = [];
+    public Dictionary<Actor, ConversationTopic> CommunicationPending = [];
     public Actor ConversationPartner, TradingPartner;
     public PlannerDef CurrentPlanner;
     public Plan ForcedTask;
     public AILog Log;
     public bool InSync;
-    public ItemPreferenceManager ItemPreferences;
+
+    internal ItemEvaluationManager ItemEvaluation => field ??= new(this.Owner);
+    public ItemPreferenceManager ItemPreferences => field ??= new(this.Owner);
     //public ItemEvaluationQueue ItemEvaluationQueue = new();
     public int JobFindTimer;
     internal Knowledge Knowledge;
-    internal KnowledgeManager KnowledgeManager;
+    //internal KnowledgeManager KnowledgeManager;
     public BehaviorExecutePlan LastBehavior;
     public Vector3? Leash;
     public Queue<InteractionTarget> MoveOrders = new();
@@ -86,8 +90,6 @@ public sealed class AIState : Inspectable
     public AIState(Actor actor)
     {
         this.Owner = actor;
-        this.ItemPreferences = new ItemPreferenceManager(actor);
-        this.KnowledgeManager = new(actor);
         this.Log = new(actor);
     }
     private void Enqueue(PlanExecutor bhav)
@@ -177,14 +179,15 @@ public sealed class AIState : Inspectable
 
     }
 
-    internal void OnAttachedToMap()
+    internal void PostMapLoad()
     {
-        this.ItemPreferences.ResolveReferences();
+        this.ItemPreferences.PostMapLoad();
+        this.ItemEvaluation.PostMapLoad();
     }
     internal void OnAttachedToWorld()
     {
         this.ItemPreferences.OnAttachedToWorld();
-        this.KnowledgeManager.OnAttachedToWorld();
+        this.ItemEvaluation.OnAttachedToWorld();
     }
     public void Assign(PlanExecutor bhav, PlannerDef source)
     {
@@ -308,6 +311,18 @@ public sealed class AIState : Inspectable
     public void Tick()
     {
         this.ItemPreferences.Tick();
+    }
+
+    internal void OnSpawn(MapBase newMap)
+    {
+        this.ItemPreferences.OnSpawn(newMap);
+        this.ItemEvaluation.OnSpawn(newMap);
+    }
+
+    internal void OnDespawn(MapBase oldmap)
+    {
+        this.ItemPreferences.OnDespawn(oldmap);
+        this.ItemEvaluation.OnDespawn(oldmap);
     }
 
     public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);

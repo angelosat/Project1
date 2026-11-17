@@ -1226,9 +1226,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public IEnumerable<IntVec3> GetOccupyingCells()
         => this.Def.OccupyingCellsStanding(this.Global.ToCell());
     
-    public void ResolveReferences()
+    public void PostMapLoad()
     {
-        this.Components.ResolveReferences();
+        this.Components.PostMapLoad();
     }
 
     public IEnumerable<Control> GetTooltipControls()

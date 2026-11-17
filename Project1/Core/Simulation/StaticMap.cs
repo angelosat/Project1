@@ -312,7 +312,7 @@ public sealed class StaticMap : MapBase, ITooltippable
         }
         this.InitChunks();
         foreach (var entity in this.Entities)
-            entity.ResolveReferences();
+            entity.PostMapLoad();
     }
     public override void GenerateThumbnails()
     {

@@ -110,7 +110,7 @@ public sealed class TownComp_Shops : TownComp
             return;
         foreach(var item in e.Stockpile.Items)
             foreach(var actorid in this._shoppingListsByActor.Keys)
-                this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryAddPendingEvaluation(item);
+                this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryEnqueue(item);
     }
 
     //private void HandleBlocksChanged(BlocksChangedEvent e)

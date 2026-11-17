@@ -5,6 +5,7 @@ using Project1.Core.Towns.Services.Shops;
 using Project1.Core.World.Actions;
 
 namespace Project1.Core.AI.Thought;
+
 internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
 {
     internal override void TickOffMap(AIState state)
@@ -12,10 +13,11 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
         var actor = state.Owner;
         var world = (StaticWorld)actor.World;
 
-        var manager = actor.AI.State.ItemPreferences;
+        var managerPreferences = actor.AI.State.ItemPreferences;
+        var managerEvaluation = actor.AI.State.ItemEvaluation;
 
-        while (manager.DequeuePendingEvaluation() is Entity item)
-            manager.TryCommit(item);
+        while (managerEvaluation.Dequeue() is Entity item)
+            managerPreferences.TryCommit(item);
 
         if (world.Actions.HasActiveAction(actor))
             return;
@@ -32,14 +34,16 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
         var actor = state.Owner;
         if (!actor.IsSpawned)
             return;
-        var manager = state.ItemPreferences;
+        var preferences = state.ItemPreferences;
+        var evaluations = state.ItemEvaluation;
         var list = actor.Map.Town.Shops.GetShoppingListEmpty(actor);
 
-        while (manager.DequeuePendingEvaluation() is Entity nextEntity)
+        //while (preferences.Dequeue() is Entity nextEntity)
+        while (evaluations.Dequeue() is Entity nextEntity)
         {
             if (!nextEntity.IsForSale)
                 continue;
-            var tempEvaluation = manager.EvaluateWithoutRegistering(nextEntity);
+            var tempEvaluation = preferences.EvaluateWithoutRegistering(nextEntity);
 
 
             if (tempEvaluation.Roles.Length == 0)
@@ -50,7 +54,7 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
             // consider the difference of the sums? or the difference of scores of the best role the item fulfils?
             var existingRolesScoreSum = 0;
             foreach (var (Role, Score) in tempEvaluation.Roles)
-                existingRolesScoreSum += manager.GetExistingScore(Role);
+                existingRolesScoreSum += preferences.GetExistingScore(Role);
             var scoreDiff = evaluationSum - existingRolesScoreSum;
             if (existingRolesScoreSum == 0)
                 scoreDiff += 100; // if the item isn't replacing anything, boost its interest
@@ -78,8 +82,11 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
     {
         if (!state.Owner.IsSpawned)
             return;
-        var manager = state.ItemPreferences;
-        if(manager.DequeuePendingEvaluation() is Entity item)
+        //var manager = state.ItemPreferences;
+        var preferences = state.ItemPreferences;
+        var evaluations = state.ItemEvaluation;
+        //if (preferences.Dequeue() is Entity item)
+        if (evaluations.Dequeue() is Entity item)
         {
             if (item.Map is null) // item has despawned since being enqueued for evaluation
                 return;
@@ -87,11 +94,11 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
                 return;
             if (item.IsForSale)
                 return;
-            var result = manager.EvaluateAndRegister(item);
+            var result = preferences.EvaluateAndRegister(item);
             //state.Knowledge.Register(item, result);
             if (state.Owner.Map.Town.IsClaimedBySystem(item))
                 return;
-            manager.TryPreCommit(item, result);
+            preferences.TryPreCommit(item, result);
         }
     }
 }

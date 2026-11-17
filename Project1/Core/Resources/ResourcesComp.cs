@@ -135,7 +135,7 @@ public sealed class ResourcesComp : EntityComp
         foreach (var r in this.Resources.Values)
             tooltip.AddControlsBottomLeft(r.GetControlLabel());
     }
-    internal override void ResolveReferencesNew()
+    internal override void PostMapLoad()
     {
         foreach (var r in this.Resources.Values)
         {

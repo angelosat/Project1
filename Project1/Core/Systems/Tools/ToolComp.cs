@@ -44,7 +44,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
     public float BaseWork => this.baseWork ??= this.CalculateBaseWorkAmount();
-    internal override void ResolveReferencesNew()
+    internal override void PostMapLoad()
     {
         ToolSystem.BakeStats(this.Owner);
         this.RefreshStats();

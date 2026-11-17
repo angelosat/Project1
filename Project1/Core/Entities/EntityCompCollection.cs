@@ -109,10 +109,10 @@ public class EntityCompCollection : Inspectable
             comp.InitializeOnce();
     }
 
-    internal void ResolveReferences()
+    internal void PostMapLoad()
     {
         foreach (var c in this._inner.Values)
-            c.ResolveReferencesNew();
+            c.PostMapLoad();
     }
     internal EntityComp GetComp(int compindex)
     {

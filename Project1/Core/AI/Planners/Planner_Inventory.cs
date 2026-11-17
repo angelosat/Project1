@@ -29,7 +29,7 @@ sealed class Planner_Inventory : Planner
             return claimPlan;
 
         var manager = actor.ItemPreferences;
-
+        var evaluations = actor.AI.State.ItemEvaluation;
         // if carrying an item that's set as an itempreference, then store it in inventory
         if (actor.Hauled is Entity carried)
         {
@@ -44,6 +44,8 @@ sealed class Planner_Inventory : Planner
             return null; // TODO instead of doing this, check if the tool is claimable
         // Query manager for potential map items to go carry/pick up
         //manager.EvaluateOne();
+        if (evaluations.IsScanning)
+            return null;
         var potentialAll = manager.TryGetPotential();
         foreach (var (role, item, score) in potentialAll)
         {

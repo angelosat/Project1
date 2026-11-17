@@ -1,5 +1,4 @@
-﻿using Project1.Core.AI;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
@@ -21,7 +20,7 @@ namespace Project1.Core.Systems.ItemRoles;
 
 public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
-    bool IsScanning => notScannedYet.Count > 0;
+    bool IsScanning => PendingItemQueue.Count > 0;
 
     event Action<ItemPreference> PrefUpdated;
 
@@ -37,9 +36,9 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
     public Control Gui => field ??= this.GetGui();
 
-    readonly Queue<EntityRefId> notScannedYet = [];
+    readonly Queue<EntityRefId> PendingItemQueue = [];
 
-    readonly HashSet<EntityRefId> alreadyQueued = [];
+    readonly HashSet<EntityRefId> QueuedItems = [];
 
     readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
 
@@ -49,12 +48,12 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
     readonly HashSet<EntityRefId> ToDiscard = [];
 
-    public Entity? DequeuePendingEvaluation()
+    public Entity? Dequeue()
     {
-        if (this.notScannedYet.Count == 0)
+        if (this.PendingItemQueue.Count == 0)
             return null;
-        var refId = this.notScannedYet.Dequeue();
-        this.alreadyQueued.Remove(refId);
+        var refId = this.PendingItemQueue.Dequeue();
+        this.QueuedItems.Remove(refId);
         var entity = this.Resolve(refId);
         return entity;
     }
@@ -68,10 +67,7 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         //populate();
     }
 
-    private void HandleEntitySpawned(EntitySpawnedEvent e)
-    {
-        TryScheduleEvaluation(e.Entity);
-    }
+   
 
     Window GetGui()
     {
@@ -112,8 +108,7 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
             //if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
             //    continue;
             if (this.Compare(role, score))
-                continue;
-            this.PreCommitScanCache[role] = (item, score);
+                this.PreCommitScanCache[role] = (item, score);
         }
     }
 
@@ -184,39 +179,54 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
             var item = this.Actor.Map.World.Resolve(key);
             if (item.ExistsOn(this.Actor.Map))
-                this.TryAddPendingEvaluation(item);
+                this.TryEnqueue(item);
         }
     }
 
-    internal bool TryAddPendingEvaluation(Entity item)
-    {
-        if (this.alreadyQueued.Contains(item.RefId))
-            return false;
-        this.notScannedYet.Enqueue(item.RefId);
-        this.alreadyQueued.Add(item.RefId);
-        return true;
-    }
-
-    private bool TryScheduleEvaluation(Entity item)
+    internal bool TryEnqueue(Entity item)
     {
         if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
         {
-            // if the actor already has knowledge/evaluation of the item,
-            // compare it and update existing roles immediately if it's an upgrade
-            //throw new InvalidOperationException($"Tried to enqueue item already existing in Knowledge [{item}]");
-            $"tried to enqueue already known item".ToConsole();
-            //throw new Exception();
+            $"{this.Actor} tried to enqueue already known item {item}".ToConsole();
             return false;
         }
-        //if (item.OwnerId != EntityRefId.Null)
-        //    return false;
-        if (item.OwnerId != this.Actor.RefId) // if this item's owner isn't the parent actor, dont evaluate it?
+        if (this.QueuedItems.Contains(item.RefId))
             return false;
-        if (this.TempIgnore.ContainsKey(item.RefId))
+        if (this.IsIgnored(item))
             return false;
-        this.TryAddPendingEvaluation(item);
+        if (!this.QueuedItems.Add(item.RefId))
+            return false;
+        this.PendingItemQueue.Enqueue(item.RefId);
         return true;
     }
+
+    //[Obsolete]
+    //private bool TryScheduleEvaluation(Entity item)
+    //{
+    //    if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
+    //    {
+    //        // if the actor already has knowledge/evaluation of the item,
+    //        // compare it and update existing roles immediately if it's an upgrade
+    //        //throw new InvalidOperationException($"Tried to enqueue item already existing in Knowledge [{item}]");
+    //        $"tried to enqueue already known item".ToConsole();
+    //        //throw new Exception();
+    //        return false;
+    //    }
+
+    //    //if (item.OwnerId != this.Actor.RefId) // if this item's owner isn't the parent actor, dont evaluate it?
+    //    //    return false;
+
+    //    if (item.OwnerId != EntityRefId.Null)
+    //        return false;
+    //    if (this.TempIgnore.ContainsKey(item.RefId))
+    //        return false;
+
+    //    this.TryEnqueue(item);
+    //    return true;
+    //}
+
+    internal bool IsIgnored(Entity item)
+        => this.TempIgnore.ContainsKey(item.RefId);
 
 
     internal bool TryCommit(Entity item)
@@ -351,10 +361,10 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
     internal IEnumerable<(ItemRoleDef role, Entity item, int score)> TryGetPotential()
     {
-        if (this.IsScanning)
-        {
-            yield break;
-        }
+        //if (this.IsScanning)
+        //{
+        //    yield break;
+        //}
         foreach (var v in this.GetPotentialInt())
             yield return v;
     }
@@ -380,11 +390,11 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
                 yield return (con, i, score);
         }
         // if there's been invalidations, rescan map
-        if (toRemove.Count > 0)
-        {
-            foreach (var item in this.Actor.Map.Entities)
-                this.TryAddPendingEvaluation(item);
-        }
+        //if (toRemove.Count > 0)
+        //{
+        //    foreach (var item in this.Actor.Map.Entities)
+        //        this.TryEnqueue(item);
+        //}
         foreach (var r in toRemove)
             this.PreCommitScanCache.Remove(r);
     }
@@ -541,9 +551,10 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         else
             bias.Value += value;
     }
+
     public void OnDespawn(MapBase oldMap)
     {
-        this.notScannedYet.Clear();
+        this.PendingItemQueue.Clear();
         oldMap.Events.Unsubscribe(this);
     }
 
@@ -552,23 +563,10 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         this.ModifyBias(item, -200);
         this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
         this.RemovePreferencesForItem(item.RefId);
-        //List<ItemPreference> toSync = [];
-        //var id = item.RefId;
-        //if (this.ItemsToPrefs.TryGetValue(id, out var prefs))
-        //    foreach (var pref in prefs)
-        //    {
-        //        this.PrefsInternal.Remove(pref.Role);
-        //        toSync.Add(pref);
-        //    }
-        //this.ItemsToPrefs.Remove(id);
 
-        ////Packets_ItemPrefs.SyncDeltas(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]);
-        ////this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. toSync.Select(r => (r.Role, r.Item, (Entity)null, 0))]));
-        //this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [.. toSync.Select(r => (r.Role, r.ItemRefId, EntityRefId.Null, 0))]));
-
-        foreach (var i in this.Actor.Map.Entities)
-            if (i != item)
-                this.TryAddPendingEvaluation(i);
+        //foreach (var i in this.Actor.Map.Entities)
+        //    if (i != item)
+        //        this.TryEnqueue(i);
     }
 
     internal void DiscardPotential(Entity item)
@@ -583,9 +581,9 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
         // TODO sync precommit cache?
 
-        foreach (var i in this.Actor.Map.Entities)
-            if (i != item)
-                this.TryAddPendingEvaluation(i);
+        //foreach (var i in this.Actor.Map.Entities)
+        //    if (i != item)
+        //        this.TryEnqueue(i);
     }
 
     public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
@@ -629,8 +627,8 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
     public void OnSpawn(MapBase newMap)
     {
         foreach (var i in newMap.Entities)
-            this.TryAddPendingEvaluation(i);
-        newMap.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
+            this.TryEnqueue(i);
+        newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
     public void RemoveJunk(Entity item)
@@ -670,11 +668,11 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         return this;
     }
 
-    internal void ResolveReferences() 
+    internal void PostMapLoad() 
     {
         foreach (var i in this.Actor.Map.Entities)
-            this.TryAddPendingEvaluation(i);
-        this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(HandleEntitySpawned);
+            this.TryEnqueue(i);
+        this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
     internal void OnAttachedToWorld()
@@ -692,6 +690,11 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
     {
         this.RemovePreferencesForItem(e.Entity.RefId);
     }
+    private void OnEntitySpawned(EntitySpawnedEvent e)
+    {
+        //this.TryScheduleEvaluation(e.Entity);
+        this.TryEnqueue(e.Entity);
+    }
 
     private void OnInventoryItemAdded(InventoryItemAddedEvent e)
     {
@@ -708,16 +711,18 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         var items = this.Actor.Inventory.GetItems();
         foreach (var item in items)
         {
-            //if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
-            //    continue;
-            this.TryScheduleEvaluation(item);
-            //this.TryCommit(item);
+            ////if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
+            ////    continue;
+            this.TryEnqueue(item);
+            //this.TryScheduleEvaluation(item);
+            ////this.TryCommit(item);
         }
     }
 
     private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
     {
-        TryScheduleEvaluation(e.Item);
+        //this.TryScheduleEvaluation(e.Item);
+        this.TryEnqueue(e.Item);
     }
 
     public SaveTag Save(string name = "")

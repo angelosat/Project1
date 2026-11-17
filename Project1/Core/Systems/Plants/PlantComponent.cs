@@ -81,7 +81,7 @@ public sealed class PlantComponent : EntityComp<PlantComponent.Spec>
             this._fruitBone.Material = this.Species.FruitMaterial;
         this.UpdateFruitTexture();
     }
-    internal override void ResolveReferencesNew()
+    internal override void PostMapLoad()
     {
         this.UpdateFruitTexture();
     }

@@ -95,9 +95,9 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     //{
     //    this.State.ResolveReferences();
     //}
-    internal override void ResolveReferencesNew()
+    internal override void PostMapLoad()
     {
-        this.State.OnAttachedToMap();
+        this.State.PostMapLoad();
     }
     internal override void OnAttachedToWorld()
     {
@@ -136,12 +136,14 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     {
         //this.State.Leash = this.Owner.Global;
         this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-        this.State.ItemPreferences.OnSpawn(newMap);
+        //this.State.ItemPreferences.OnSpawn(newMap);
+        this.State.OnSpawn(newMap);
     }
 
     public override void OnDespawnExtra(MapBase oldmap)
     {
-        this.State.ItemPreferences.OnDespawn(oldmap);
+        //this.State.ItemPreferences.OnDespawn(oldmap);
+        this.State.OnDespawn(oldmap);
     }
     public override void OnObjectSynced(GameObject parent)
     {

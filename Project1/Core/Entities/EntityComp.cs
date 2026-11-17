@@ -109,7 +109,7 @@ public abstract class EntityComp : Inspectable
     internal virtual void CopyFrom(EntityComp source) { }
     internal virtual IEnumerable<GameObjectSlot> GetSlots() { yield break; }
     internal virtual void OnKill() { }
-    internal virtual void ResolveReferencesNew() { }
+    internal virtual void PostMapLoad() { }
     internal virtual void Resolve() { }
 
     internal virtual void OnAttachedToWorld() { }

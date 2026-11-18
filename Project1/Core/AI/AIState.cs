@@ -324,6 +324,12 @@ public sealed class AIState : Inspectable
         this.ItemEvaluation.OnDespawn(oldmap);
     }
 
+    internal void OnDispose()
+    {
+        this.ItemPreferences.OnDispose();
+        this.ItemEvaluation.OnDispose();
+    }
+
     public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);
     public Behavior Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);
     public InteractionTarget MoveOrder => this.MoveOrders.Any() ? this.MoveOrders.Peek() : InteractionTarget.Null;

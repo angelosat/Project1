@@ -46,13 +46,18 @@ public abstract class EntityComp : Inspectable
     public void OnDespawn(MapBase oldmap) 
     {
         oldmap.Events.Unsubscribe(this);
-        this.OnDespawnExtra(oldmap);
+        this.OnDespawnInt(oldmap);
     }
-    public virtual void OnDespawnExtra(MapBase oldmap) { }
+    public virtual void OnDespawnInt(MapBase oldmap) { }
     public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
     public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
     public virtual float? GetStatMod(StatDef target) => null;
-    public virtual void OnDispose() { }
+    protected virtual void OnDisposeInt() { }
+    internal void OnDispose()
+    {
+        this.World.Events.Unsubscribe(this);
+        this.OnDisposeInt();
+    }
     //internal virtual void ResolveReferences() { }
     internal virtual void InitializeOnce() { }
     public virtual void OnObjectLoaded(GameObject parent) { }

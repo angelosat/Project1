@@ -200,42 +200,9 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         this.Actor.World.Events.Post(new ItemPrefsDeltaEvent(this.Actor, [(role, oldItemId, item.RefId, score)]));
         this.PreCommitScanCache.Remove(role);
     }
-    
-    internal void ApplyPreferenceDelta(ItemRoleDef role, Entity? item, int score)
-    {
-        this.ApplyPreferenceDelta(role, item?.RefId ?? EntityRefId.Null, score);
-        //if (this.PrefsInternal.TryGetValue(role, out var existing))
-        //{
-        //    this.RemoveFromItemsToPrefs(existing);
-
-        //    if (score <= 0)
-        //    {
-        //        this.PrefsInternal.Remove(role);
-        //        this.PrefRemoved?.Invoke(existing);
-        //        this.Notifier.Notify();
-        //        return;
-        //    }
-        //}
-        //else if (score <= 0)
-        //    //return;
-        //    throw new InvalidOperationException(
-        //        $"Cannot remove preference for role '{role}' because no preference exists.");
-
-        //var pref = new ItemPreference(role, item, score);
-        //this.PrefsInternal[role] = pref;
-        //var itemid = item.RefId;
-        //if (!this.ItemsToPrefs.TryGetValue(itemid, out var list))
-        //    this.ItemsToPrefs[itemid] = list = [];
-
-        //list.Add(pref);
-
-        //this.PrefUpdated?.Invoke(pref);
-        //this.Notifier.Notify();
-    }
+  
     internal void ApplyPreferenceDelta(ItemRoleDef role, EntityRefId itemId, int score)
     {
-        if (itemId == 199)
-            "asdasd".ToConsole();
         if (this.PrefsInternal.TryGetValue(role, out var existing))
         {
             this.RemoveFromItemsToPrefs(existing);
@@ -265,6 +232,7 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         this.PrefUpdated?.Invoke(pref);
         this.Notifier.Notify();
     }
+
     void RemoveFromItemsToPrefs(ItemPreference pref)
     {
         //var item = this.Resolve(pref.ItemRefId);
@@ -525,12 +493,17 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         //this.InitialInventoryScan();
     }
 
+    internal void OnDispose()
+        => this.Actor.World.Events.Unsubscribe(this);
+
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
-        if (e.Entity.Net == null && this.Actor.Net == null)
+        if (e.Entity == this.Actor)
             return;
-        if (this.Actor.Net.IsClient)
+
+        if (this.Actor.Net?.IsClient == true)
             return;
+
         this.RemovePreferencesForItem(e.Entity.RefId);
     }
 

@@ -140,11 +140,16 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.State.OnSpawn(newMap);
     }
 
-    public override void OnDespawnExtra(MapBase oldmap)
+    public override void OnDespawnInt(MapBase oldmap)
     {
         //this.State.ItemPreferences.OnDespawn(oldmap);
         this.State.OnDespawn(oldmap);
     }
+    protected override void OnDisposeInt()
+    {
+        this.State.OnDispose();
+    }
+
     public override void OnObjectSynced(GameObject parent)
     {
         this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);

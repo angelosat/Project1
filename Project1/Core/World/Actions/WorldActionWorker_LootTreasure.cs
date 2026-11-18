@@ -1,6 +1,6 @@
 ﻿namespace Project1.Core.World.Actions;
 
-internal class WorldActionWorker_LootTreasure : WorldActionWorker
+internal sealed class WorldActionWorker_LootTreasure : WorldActionWorker
 {
     internal override void Resolve(WorldActionData data)
     {

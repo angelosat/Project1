@@ -831,11 +831,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public bool IsDisposed { get; private set; }
 
+
     [Obsolete("use world.disposeandsync")]
     internal void SyncDispose()
     {
         throw new Exception();
     }
+
     internal void OnDispose()
     {
         this.IsDisposed = true;
@@ -878,14 +880,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             comp.OnMapLoaded(this);
     }
 
-    
-
     public bool HasMatchingBody(GameObject otherItem)
     {
         return this.SpriteComp.HasMatchingBody(otherItem);
     }
 
-    public int StackAvailableSpace { get { return this.StackMax - this.StackSize; } }
+    public int StackAvailableSpace => this.StackMax - this.StackSize;
+
     public bool CanAbsorb(GameObject otherItem, int amount = -1)
     {
         ArgumentNullException.ThrowIfNull(otherItem);

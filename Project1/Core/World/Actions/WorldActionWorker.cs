@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.World.Frontiers;
 
 namespace Project1.Core.World.Actions;
 
@@ -15,6 +14,4 @@ public abstract class WorldActionWorker
         => runtime.Def.LabelReadable;
 
     internal abstract void Resolve(WorldActionData data);
-
-
 }

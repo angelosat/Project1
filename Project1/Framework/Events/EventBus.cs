@@ -30,6 +30,7 @@ public sealed class EventBus
             foreach (var i in list.ToList())
                 i.WrappedHandler(a);
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -48,6 +49,7 @@ public sealed class EventBus
 
         return () => _unsubscribe(handler);
     }
+
     public Action ListenTo(Type payloadType, Action<IEventPayload> handler)
     {
         var id = Registry.GameEvents.Register(payloadType);
@@ -58,6 +60,7 @@ public sealed class EventBus
 
         return () => _unsubscribe(handler);
     }
+
     void _unsubscribe<TPayload>(Action<TPayload> handler) where TPayload : IEventPayload
     {
         var id = Registry.GameEvents.Register<TPayload>();
@@ -67,6 +70,7 @@ public sealed class EventBus
             if (sub != null) list.Remove(sub);
         }
     }
+
     public void Unsubscribe(object owner)
     {
         foreach (var list in _eventBus.Values)

@@ -29,16 +29,6 @@ internal class EntityRegistry : IEnumerable<Entity>, INotifyCollectionChanged, I
         this.Entities = new ReadOnlyObservableCollection<Entity>(this._innerObservable);
     }
 
-    //public EntityRefId AllocateId(Entity entity)
-    //{
-    //    if (entity.RefId != EntityRefId.Null)
-    //        return entity.RefId;
-
-    //    entity.RefId = this._nextEntityId;
-    //    this._nextEntityId = EntityRefId.Create(this._nextEntityId.Value + 1);
-
-    //    return entity.RefId;
-    //}
     public EntityRefId AllocateId(Entity entity)
     {
         if (entity.RefId != EntityRefId.Null)
@@ -53,6 +43,7 @@ internal class EntityRegistry : IEnumerable<Entity>, INotifyCollectionChanged, I
 
         return entity.RefId;
     }
+
     public bool Add(Entity entity)
     {
         this.AllocateId(entity);
@@ -68,24 +59,6 @@ internal class EntityRegistry : IEnumerable<Entity>, INotifyCollectionChanged, I
 
         return true;
     }
-    //public bool Add(Entity entity)
-    //{
-    //    if (this._inner.ContainsKey(entity.RefId)) throw new Exception("Attempted to register entity with duplicate Id");
-
-    //    if (entity.RefId == 0)
-    //        entity.RefId = _nextEntityId++;
-    //    else
-    //        _nextEntityId = Math.Max(_nextEntityId, entity.RefId + 1);
-
-    //    this._inner.Add(entity.RefId, entity);
-    //    this._innerObservable.Add(entity);
-
-    //    entity.World = this.World;
-
-    //    entity.OnAttachedToWorld();
-
-    //    return true;
-    //}
 
     public bool Remove(EntityRefId refId)
     {

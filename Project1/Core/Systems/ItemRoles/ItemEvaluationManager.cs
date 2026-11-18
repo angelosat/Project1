@@ -55,6 +55,9 @@ internal sealed class ItemEvaluationManager(Actor actor)
         newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
+    internal void OnDispose()
+        => this.Actor.World.Events.Unsubscribe(this);
+
     private void OnEntitySpawned(EntitySpawnedEvent e)
     {
         this.TryEnqueue(e.Entity);
@@ -85,4 +88,5 @@ internal sealed class ItemEvaluationManager(Actor actor)
         foreach (var item in items)
             this.TryEnqueue(item);
     }
+
 }

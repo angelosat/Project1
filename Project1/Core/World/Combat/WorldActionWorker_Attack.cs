@@ -1,17 +1,15 @@
 ﻿using Project1.Core.Attributes;
-using Project1.Core.Components;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.World.Actions;
-using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
 using System.Linq;
 
 namespace Project1.Core.World.Combat;
 
-internal class WorldActionWorker_Attack : WorldActionWorker
+internal sealed class WorldActionWorker_Attack : WorldActionWorker
 {
     internal sealed record Data(Actor Actor) : WorldActionData(Actor)
     {
@@ -28,8 +26,6 @@ internal class WorldActionWorker_Attack : WorldActionWorker
         }
     }
 
-    //internal override Data CreateData(FrontierRuntime frontier, Actor actor)
-    //    => new(frontier, actor);
     static Data Typed(WorldActionData data) => (Data)data;
 
     internal override void Resolve(WorldActionData data)
@@ -44,8 +40,6 @@ internal class WorldActionWorker_Attack : WorldActionWorker
             var invItems = target.Inventory.GetItems();
             var gear = target.Gear.GetItems();
             var loot = invItems.Union(gear).Select(i => (EntityRefId)i.RefId).ToArray();
-            //world.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
-            //world.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
             WorldActionWorker_Loot.Begin(actor, loot);
         }
     }

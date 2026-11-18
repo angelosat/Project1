@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Project1.Core.World.Actions;
 
-internal class WorldActionWorker_Loot : WorldActionWorker
+internal sealed class WorldActionWorker_Loot : WorldActionWorker
 {
     internal override void Resolve(WorldActionData data)
     {
@@ -12,13 +12,10 @@ internal class WorldActionWorker_Loot : WorldActionWorker
         var typed = (WorldActionData_Loot)data;
         var items = actor.World.Resolve(typed.Loot);
         foreach (var treasure in items)
-            //ItemTransferSystem.Loot(actor, treasure);
             actor.Inventory.InsertAndClaim(treasure);
         actor.AI.State.Log.Write($"Treasure found! {string.Join(",", items.Select(i => $"[{i.Name}]"))}");
     }
 
     static public void Begin(Actor actor, EntityRefId[] loot)
-    {
-        (actor.World as StaticWorld).Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
-    }
+        => (actor.World as StaticWorld).Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
 }

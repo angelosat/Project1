@@ -398,7 +398,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
     public EntityCompCollection Components;
 
-    public T GetComponent<T>(string name) where T : EntityComp
+    internal T GetComponent<T>(string name) where T : EntityComp
         => this.GetComponent<T>();
     
     public EntityComp GetComponent(Type type)

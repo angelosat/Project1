@@ -50,13 +50,14 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
 
     Behavior Root;
     readonly Knowledge Knowledge;
-    public AIState State;
+    internal AIState State;
     public RoleMetaWrapper Meta;
     public T GetMeta<T>() where T : RoleMetaWrapper => this.Meta as T;
     bool Enabled = true;
     public AIComp()
     {
         this.Knowledge = new Knowledge();
+        this.AddChild(this.State);
     }
     internal override void CopyFrom(EntityComp source)
     {
@@ -140,15 +141,15 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.State.OnSpawn(newMap);
     }
 
-    public override void OnDespawnInt(MapBase oldmap)
-    {
-        //this.State.ItemPreferences.OnDespawn(oldmap);
-        this.State.OnDespawn(oldmap);
-    }
-    protected override void OnDisposeInt()
-    {
-        this.State.OnDispose();
-    }
+    //public override void OnDespawnInt(MapBase oldmap)
+    //{
+    //    //this.State.ItemPreferences.OnDespawn(oldmap);
+    //    this.State.OnDespawn(oldmap);
+    //}
+    //protected override void OnDisposeInt()
+    //{
+    //    this.State.OnDispose();
+    //}
 
     public override void OnObjectSynced(GameObject parent)
     {

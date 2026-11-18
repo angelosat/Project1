@@ -1,7 +1,9 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Events;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Inventory;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -16,8 +18,10 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
+public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
+    protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
+
     event Action<ItemPreference> PrefUpdated;
 
     event Action<ItemPreference> PrefRemoved;

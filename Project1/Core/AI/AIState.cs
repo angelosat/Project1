@@ -7,6 +7,7 @@ using Project1.Core.AI.Planners;
 using Project1.Core.AI.Reservations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Events;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Framework;
@@ -50,8 +51,10 @@ namespace Project1.Core.AI;
 //    }
 //}
 
-public sealed class AIState : Inspectable
+public sealed class AIState : EventOwner// Inspectable
 {
+    protected override StaticWorld World => field ??= (StaticWorld)this.Owner.World;
+
     public ProgressFloat Attention = new();
     public float AttentionDecay = 1;
     public float AttentionDecayDefault = 1;
@@ -90,6 +93,8 @@ public sealed class AIState : Inspectable
     {
         this.Owner = actor;
         this.Log = new(actor);
+        this.AddChild(this.ItemEvaluation);
+        this.AddChild(this.ItemPreferences);
     }
     private void Enqueue(PlanExecutor bhav)
     {
@@ -318,17 +323,17 @@ public sealed class AIState : Inspectable
         this.ItemEvaluation.OnSpawn(newMap);
     }
 
-    internal void OnDespawn(MapBase oldmap)
-    {
-        //this.ItemPreferences.OnDespawn(oldmap);
-        this.ItemEvaluation.OnDespawn(oldmap);
-    }
+    //internal void OnDespawn(MapBase oldmap)
+    //{
+    //    //this.ItemPreferences.OnDespawn(oldmap);
+    //    this.ItemEvaluation.OnDespawn(oldmap);
+    //}
 
-    internal void OnDispose()
-    {
-        this.ItemPreferences.OnDispose();
-        this.ItemEvaluation.OnDispose();
-    }
+    //internal void OnDispose()
+    //{
+    //    this.ItemPreferences.OnDispose();
+    //    this.ItemEvaluation.OnDispose();
+    //}
 
     public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);
     public Behavior Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);

@@ -152,7 +152,7 @@ namespace Project1.Core.Entities.Actors
             tag.TryGetTagValue<string>("FirstName", v => this.FirstName = v);
             tag.TryGetTagValue<string>("LastName", v => this.LastName = v);
         }
-        public override void OnDespawnInt(MapBase oldMap)
+        protected override void OnDespawnInt(MapBase oldMap)
         {
             NpcDirectory.Remove(this.Owner);
         }

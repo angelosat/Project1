@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Events;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using System.Collections.Generic;
@@ -8,9 +9,11 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-internal sealed class ItemEvaluationManager(Actor actor)
+internal sealed class ItemEvaluationManager(Actor actor) : EventOwner
 {
     public Actor Actor = actor;
+
+    protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
 
     Entity Resolve(EntityRefId id)
         => this.Actor.World.Resolve(id);

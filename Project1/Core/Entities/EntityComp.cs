@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Events;
 using Project1.Core.Graphics;
 using Project1.Core.Interactions;
 using Project1.Core.Rendering;
@@ -24,7 +25,7 @@ where TConfig : EntityComp.Spec
 {
     public new TConfig Defaults => (TConfig)base.Defaults;
 }
-public abstract class EntityComp : Inspectable
+public abstract class EntityComp : EventOwner
 {
     public abstract EntityCompDef CompDef { get; }
     public int RuntimeIndex;
@@ -33,7 +34,7 @@ public abstract class EntityComp : Inspectable
     public override string ToString() => this.LabelReadable;
     internal Spec Defaults { get; private set; }
 
-    public WorldBase World => this.Owner.World;
+    protected override StaticWorld World => field ??= (StaticWorld)this.Owner.World;
     public virtual void OnNameplateCreated(GameObject parent, Nameplate plate) { }
     public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate) { }
     public Entity Owner;
@@ -43,21 +44,21 @@ public abstract class EntityComp : Inspectable
     public virtual void Initialize(GameObject parent) { }
     public virtual void Randomize(GameObject parent, RandomThreaded random) { this.Initialize(parent); }
     public virtual void OnSpawn(MapBase newMap) { }
-    public void OnDespawn(MapBase oldmap) 
-    {
-        oldmap.Events.Unsubscribe(this);
-        this.OnDespawnInt(oldmap);
-    }
-    public virtual void OnDespawnInt(MapBase oldmap) { }
+    //public void OnDespawn(MapBase oldmap) 
+    //{
+    //    oldmap.Events.Unsubscribe(this);
+    //    this.OnDespawnInt(oldmap);
+    //}
+    //public virtual void OnDespawnInt(MapBase oldmap) { }
     public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
     public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
     public virtual float? GetStatMod(StatDef target) => null;
-    protected virtual void OnDisposeInt() { }
-    internal void OnDispose()
-    {
-        this.World.Events.Unsubscribe(this);
-        this.OnDisposeInt();
-    }
+    //protected virtual void OnDisposeInt() { }
+    //internal void OnDispose()
+    //{
+    //    this.World.Events.Unsubscribe(this);
+    //    this.OnDisposeInt();
+    //}
     //internal virtual void ResolveReferences() { }
     internal virtual void InitializeOnce() { }
     public virtual void OnObjectLoaded(GameObject parent) { }

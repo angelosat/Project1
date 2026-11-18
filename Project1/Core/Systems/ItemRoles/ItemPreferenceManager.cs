@@ -201,8 +201,41 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         this.PreCommitScanCache.Remove(role);
     }
     
-    internal void ApplyPreferenceDelta(ItemRoleDef role, Entity item, int score)
+    internal void ApplyPreferenceDelta(ItemRoleDef role, Entity? item, int score)
     {
+        this.ApplyPreferenceDelta(role, item?.RefId ?? EntityRefId.Null, score);
+        //if (this.PrefsInternal.TryGetValue(role, out var existing))
+        //{
+        //    this.RemoveFromItemsToPrefs(existing);
+
+        //    if (score <= 0)
+        //    {
+        //        this.PrefsInternal.Remove(role);
+        //        this.PrefRemoved?.Invoke(existing);
+        //        this.Notifier.Notify();
+        //        return;
+        //    }
+        //}
+        //else if (score <= 0)
+        //    //return;
+        //    throw new InvalidOperationException(
+        //        $"Cannot remove preference for role '{role}' because no preference exists.");
+
+        //var pref = new ItemPreference(role, item, score);
+        //this.PrefsInternal[role] = pref;
+        //var itemid = item.RefId;
+        //if (!this.ItemsToPrefs.TryGetValue(itemid, out var list))
+        //    this.ItemsToPrefs[itemid] = list = [];
+
+        //list.Add(pref);
+
+        //this.PrefUpdated?.Invoke(pref);
+        //this.Notifier.Notify();
+    }
+    internal void ApplyPreferenceDelta(ItemRoleDef role, EntityRefId itemId, int score)
+    {
+        if (itemId == 199)
+            "asdasd".ToConsole();
         if (this.PrefsInternal.TryGetValue(role, out var existing))
         {
             this.RemoveFromItemsToPrefs(existing);
@@ -219,12 +252,13 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
             //return;
             throw new InvalidOperationException(
                 $"Cannot remove preference for role '{role}' because no preference exists.");
-
-        var pref = new ItemPreference(role, item, score);
+        if (itemId == EntityRefId.Null)
+            throw new InvalidCastException(
+                $"Tried to assign a preference with a null {nameof(itemId)} for role '{role}' with score '{score}'.");
+        var pref = new ItemPreference(role, itemId, score);
         this.PrefsInternal[role] = pref;
-        var itemid = item.RefId;
-        if (!this.ItemsToPrefs.TryGetValue(itemid, out var list))
-            this.ItemsToPrefs[itemid] = list = [];
+        if (!this.ItemsToPrefs.TryGetValue(itemId, out var list))
+            this.ItemsToPrefs[itemId] = list = [];
 
         list.Add(pref);
 
@@ -493,11 +527,17 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
 
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
+        if (e.Entity.Net == null && this.Actor.Net == null)
+            return;
+        if (this.Actor.Net.IsClient)
+            return;
         this.RemovePreferencesForItem(e.Entity.RefId);
     }
 
     private void OnInventoryItemAdded(InventoryItemAddedEvent e)
     {
+        if (this.Actor.Net.IsClient)
+            return;
         if (e.Actor != this.Actor)
             return;
         //this.EnqueueItemInt(e.Item);

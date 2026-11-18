@@ -1,6 +1,7 @@
 # todo 2026
 ## item preferences
 - gui: decide how to display multiple roles per item instead of the first one found
+- batch process items and item prefs delta event and packet dispatching
 ## overworld exploration and encounters
 - separate explorationsystem that responds to actorexplorationevent?
 ## Future: Multi-specialist crafting pipeline

@@ -140,7 +140,10 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         //this.State.ItemPreferences.OnSpawn(newMap);
         this.State.OnSpawn(newMap);
     }
-
+    protected override void OnAttachedToMapInt()
+    {
+        base.OnAttachedToMapInt();
+    }
     //public override void OnDespawnInt(MapBase oldmap)
     //{
     //    //this.State.ItemPreferences.OnDespawn(oldmap);

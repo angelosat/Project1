@@ -112,12 +112,14 @@ public class EntityCompCollection : Inspectable
     internal void PostMapLoad()
     {
         foreach (var c in this._inner.Values)
+        {
             c.PostMapLoad();
+            c.OnAttachedToMap();
+        }
     }
+
     internal EntityComp GetComp(int compindex)
     {
         return this._innerList[compindex];
     }
-
-    
 }

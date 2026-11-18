@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-internal sealed class ItemEvaluationManager(Actor actor) : EventOwner
+internal sealed class ItemEvaluationManager : EventOwner
 {
-    public Actor Actor = actor;
+    public Actor Actor;
 
     protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
     protected override MapBase Map => field ??= this.Actor.Map;
@@ -24,6 +24,13 @@ internal sealed class ItemEvaluationManager(Actor actor) : EventOwner
     readonly Queue<EntityRefId> PendingItemQueue = [];
 
     readonly HashSet<EntityRefId> QueuedItems = [];
+
+    public ItemEvaluationManager(Actor actor)
+    {
+        this.Actor = actor;
+        //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+        this.AddMapEventHandler<EntitySpawnedEvent>(OnEntitySpawned);
+    }
 
     internal bool TryEnqueue(Entity item)
     {
@@ -56,7 +63,7 @@ internal sealed class ItemEvaluationManager(Actor actor) : EventOwner
     {
         foreach (var i in newMap.Entities)
             this.TryEnqueue(i);
-        newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+        //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
     //internal void OnDispose()

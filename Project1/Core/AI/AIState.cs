@@ -189,11 +189,11 @@ public sealed class AIState : EventOwner// Inspectable
         //this.ItemPreferences.PostMapLoad();
         this.ItemEvaluation.PostMapLoad();
     }
-    internal void OnAttachedToWorld()
-    {
-        this.ItemPreferences.OnAttachedToWorld();
-        this.ItemEvaluation.OnAttachedToWorld();
-    }
+    //internal void OnAttachedToWorld()
+    //{
+    //    this.ItemPreferences.OnAttachedToWorld();
+    //    this.ItemEvaluation.OnAttachedToWorld();
+    //}
     public void Assign(PlanExecutor bhav, PlannerDef source)
     {
         bhav.Plan.Actor = this.Owner;

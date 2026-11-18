@@ -41,6 +41,7 @@ public abstract class EventOwner : Inspectable
 
     public void OnAttachedToMap()
     {
+        this.OnAttachedToMapInt();
         foreach (var registration in this.MapEventHandlers)
             registration.Subscribe(this.Map.Events);
         foreach (var child in this.Children)
@@ -57,6 +58,7 @@ public abstract class EventOwner : Inspectable
     }
 
     protected virtual void OnAttachedToWorldInt() { }
+    protected virtual void OnAttachedToMapInt() { }
 
     public void OnDispose()
     {

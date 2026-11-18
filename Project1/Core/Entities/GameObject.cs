@@ -600,7 +600,10 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
             throw new Exception("Chunk not loaded");
 
         foreach (var comp in this.Components.Values)
+        {
             comp.OnSpawn(newMap);
+            comp.OnAttachedToMap();
+        }
     }
   
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e)
@@ -1227,7 +1230,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public IEnumerable<IntVec3> GetOccupyingCells()
         => this.Def.OccupyingCellsStanding(this.Global.ToCell());
     
-    public void PostMapLoad()
+    public void OnAttachedToMap()
     {
         this.Components.PostMapLoad();
     }

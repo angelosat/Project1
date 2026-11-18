@@ -32,10 +32,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
 
     public Control Gui => field ??= this.GetGui();
 
-    //readonly Queue<EntityRefId> PendingItemQueue = [];
-
-    //readonly HashSet<EntityRefId> QueuedItems = [];
-
     readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
 
     readonly Dictionary<EntityRefId, List<ItemPreference>> ItemsToPrefs = [];
@@ -44,17 +40,13 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
 
     readonly HashSet<EntityRefId> ToDiscard = [];
    
-
     Entity Resolve(EntityRefId id)
         => this.Actor.World.Resolve(id);
 
     public ItemPreferenceManager(Actor actor)
     {
         this.Actor = actor;
-        //populate();
     }
-
-   
 
     Window GetGui()
     {
@@ -88,18 +80,13 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
 
     internal void TryPreCommit(Entity item, ItemEvaluation result)
     {
+        if (this.IsIgnored(item))
+            return;
+
         foreach (var (role, score) in result.Roles)
-        {
-            //if (this.PreCommitScanCache.TryGetValue(role, out var cached) && score <= cached.score)
-            //    continue;
-            //if (this.PrefsInternal.TryGetValue(role, out var committed) && score <= committed.InventoryScore)
-            //    continue;
             if (this.Compare(role, score))
                 this.PreCommitScanCache[role] = (item, score);
-        }
     }
-
-   
 
     private bool Compare(ItemRoleDef role, int score)
     {
@@ -110,23 +97,12 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         return false;
     }
 
-    //private bool Desires(Entity item)
-    //{
-    //    var bias = this.ItemBiases.GetValueOrDefault(item.RefId)?.Value ?? 0;
-    //    var result = this.EvaluateAndRegister(item);
-    //    foreach (var (role, score) in result.Roles.Select(r => (r.Role, r.Score + bias)))
-    //    {
-    //        if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
-    //            return true;
-    //        if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
-    //            return true;
-    //    }
-    //    return false;
-    //}
-
     public bool Wants(Entity item)
     {
         //var result = this.EvaluateAndRegister(item);
+        if (this.IsIgnored(item))
+            return false;
+
         var result = ItemEvaluationSystem.GetOrEvaluate(this.Actor, item);
         foreach (var (role, score) in result.Roles)
         {
@@ -176,54 +152,15 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         }
     }
 
-    //internal bool TryEnqueue(Entity item)
-    //{
-    //    if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
-    //    {
-    //        $"{this.Actor} tried to enqueue already known item {item}".ToConsole();
-    //        return false;
-    //    }
-    //    if (this.QueuedItems.Contains(item.RefId))
-    //        return false;
-    //    if (this.IsIgnored(item))
-    //        return false;
-    //    if (!this.QueuedItems.Add(item.RefId))
-    //        return false;
-    //    this.PendingItemQueue.Enqueue(item.RefId);
-    //    return true;
-    //}
-
-    //[Obsolete]
-    //private bool TryScheduleEvaluation(Entity item)
-    //{
-    //    if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
-    //    {
-    //        // if the actor already has knowledge/evaluation of the item,
-    //        // compare it and update existing roles immediately if it's an upgrade
-    //        //throw new InvalidOperationException($"Tried to enqueue item already existing in Knowledge [{item}]");
-    //        $"tried to enqueue already known item".ToConsole();
-    //        //throw new Exception();
-    //        return false;
-    //    }
-
-    //    //if (item.OwnerId != this.Actor.RefId) // if this item's owner isn't the parent actor, dont evaluate it?
-    //    //    return false;
-
-    //    if (item.OwnerId != EntityRefId.Null)
-    //        return false;
-    //    if (this.TempIgnore.ContainsKey(item.RefId))
-    //        return false;
-
-    //    this.TryEnqueue(item);
-    //    return true;
-    //}
-
     internal bool IsIgnored(Entity item)
         => this.TempIgnore.ContainsKey(item.RefId);
 
 
     internal bool TryCommit(Entity item)
     {
+        if (this.IsIgnored(item))
+            return false;
+
         if (item.World is null)
             throw new InvalidOperationException($"Tried to evaluate disposed item {item}");
         //var results = this.EvaluateAndRegister(item);
@@ -239,22 +176,7 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         }
         return commited;
     }
-    //internal bool TryCommit(Entity item, ItemEvaluation eval)
-    //{
-    //    if (item.World is null)
-    //        throw new InvalidOperationException($"Tried to evaluate disposed item {item}");
-    //    //var results = this.EvaluateAndRegister(item);
-    //    bool commited = false;
-    //    // commit item for roles where it scores higher than existing items
-    //    foreach (var (Role, Score) in eval.Roles)
-    //    {
-    //        if (this.PrefsInternal.TryGetValue(Role, out var existing) && existing.InventoryScore >= Score)
-    //            continue;
-    //        commited = true;
-    //        this.Commit(Role, item, Score);
-    //    }
-    //    return commited;
-    //}
+    
     internal void Commit(ItemRoleDef role, Entity item, int score)
     {
         EntityRefId oldItemId = EntityRefId.Null;
@@ -321,31 +243,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
             this.ItemsToPrefs.Remove(pref.ItemRefId);
     }
 
-
-    //internal ItemEvaluation EvaluateAndRegister(Entity item)
-    //{
-    //    //if (item.OwnerId != EntityRefId.Null)
-    //        //throw new InvalidOperationException("shouldn't be evaluating an owned item");
-
-    //    if (item.HasOwner && item.OwnerId != this.Actor.RefId)
-    //        throw new InvalidOperationException("shouldn't be evaluating to register an item owned by another actor");
-    //    var knowledge = this.Actor.AI.State.Knowledge;
-    //    if (knowledge.TryQuery(item, out var existing))
-    //        return existing;
-
-    //    var result = ItemEvaluationSystem.Evaluate(this.Actor, item);
-    //    knowledge.Register(item, result);
-    //    return result;
-    //}
-
-    //internal ItemEvaluation EvaluateWithoutRegistering(Entity item)
-    //{
-    //    var knowledge = this.Actor.AI.State.Knowledge;
-    //    if (knowledge.TryQuery(item, out var existing))
-    //        return existing;
-    //    return ItemEvaluationSystem.Evaluate(this.Actor, item);
-    //}
-
     internal int GetExistingScore(ItemRoleDef role)
         => this.PrefsInternal.TryGetValue(role, out var pref) ? pref.InventoryScore : 0;
 
@@ -380,14 +277,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
             yield return v;
     }
 
-    //internal (ItemRoleDef role, int score) GetPotential(Entity item)
-    //{
-    //    foreach (var vk in this.PreCommitScanCache)
-    //        if (vk.Value.item == item)
-    //            return (vk.Key, vk.Value.score);
-    //    return default;
-    //}
-
     internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialInt()
     {
         if (this.PreCommitScanCache.Count == 0)
@@ -409,39 +298,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         foreach (var r in toRemove)
             this.PreCommitScanCache.Remove(r);
     }
-
-    //internal IEnumerable<(ItemRoleDef role, Entity item, int score)> GetPotentialAll()
-    //{
-    //    if (notScannedYet.Count == 0)
-    //        yield break;
-    //    var jobs = this.Actor.ActiveDuties;
-    //    var dic = new Dictionary<ItemRoleDef, (Entity item, int score)>();
-    //    while (notScannedYet.Count > 0)
-    //    {
-    //        var item = this.DequeuePendingEvaluation();
-    //        if (this.Actor.Map != item.Map)
-    //            continue;
-    //        var roles = this.Evaluate(item);
-    //        if (!roles.Any())
-    //            continue;
-    //        var finalRoles = roles
-    //            .Where(r => this.GetExistingPreference(r.role, out var existingScore) is var existing && r.score > existingScore);
-
-    //        foreach (var r in finalRoles)
-    //        {
-    //            if (dic.TryGetValue(r.role, out var existing))
-    //            {
-    //                if (r.score > existing.score)
-    //                    dic[r.role] = (item, r.score);
-    //            }
-    //            else
-    //                dic.Add(r.role, (item, r.score));
-    //        }
-    //    }
-
-    //    foreach (var (context, pref) in dic)
-    //        yield return (context, pref.item, pref.score);
-    //}
 
     private void RemovePreferencesForItem(EntityRefId itemId)
     {
@@ -484,16 +340,10 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
 
     public Control GetListControl(Entity entity)
     {
-        //var p = this.GetPreference(entity);
-        //return new Label(p) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
-        //return new Label(p.target ?? p.role) { HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" };
         return new LabelNew(()=>
         {
-            return this.GetPreference(entity);//?.ToString() ?? "null";
-        })// () =>$"{p}") 
-        //{ 
-        //    HoverText = $"[{this.Actor.Name}] prefers [{entity.Name}] for [{p}]" 
-        //}
+            return this.GetPreference(entity);
+        })
             .InvalidateOn(this.Notifier);
     }
     // TODO decide how to display multiple roles for one item
@@ -520,23 +370,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
                 yield return i;
     }
 
-    //public void HandleItem(Entity item)
-    //{
-    //    foreach (var (role, pref) in this.PrefsInternal)
-    //    {
-    //        var score = role.Worker.GetInventoryScore(this.Actor, item);
-    //        if (score < 0)
-    //            continue;
-    //        if (score > pref.InventoryScore)
-    //        {
-    //            this.ApplyPreferenceDelta(role, item, score);
-    //            return; // TODO check 
-    //        }
-    //    }
-    //    if (!this.IsUseful(item))
-    //        this.ToDiscard.Add(item.RefId);
-    //}
-
     public bool IsPreference(Entity item)
     {
         //return this.PrefsInternal.Values.Any(p => item == p.Item);
@@ -545,8 +378,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
 
     public bool IsUseful(Entity item)
     {
-        //if (item.Def == ItemDefOf.Coins) // HACK
-        //    return true; // TODO create an itemrolecash
         if (this.ItemsToPrefs.ContainsKey(item.RefId))
             return true;
         return false;
@@ -563,21 +394,11 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
             bias.Value += value;
     }
 
-    //public void OnDespawn(MapBase oldMap)
-    //{
-    //    this.PendingItemQueue.Clear();
-    //    oldMap.Events.Unsubscribe(this);
-    //}
-
     public void ForceDrop(Entity item)
     {
         this.ModifyBias(item, -200);
         this.TempIgnore[item.RefId] = (int)Ticks.FromSeconds(10);
         this.RemovePreferencesForItem(item.RefId);
-
-        //foreach (var i in this.Actor.Map.Entities)
-        //    if (i != item)
-        //        this.TryEnqueue(i);
     }
 
     internal void DiscardPotential(Entity item)
@@ -635,36 +456,16 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         return total;
     }
 
-    //public void OnSpawn(MapBase newMap)
-    //{
-    //    foreach (var i in newMap.Entities)
-    //        this.TryEnqueue(i);
-    //    newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-    //}
-
     public void RemoveJunk(Entity item)
     {
         this.ToDiscard.Remove(item.RefId);
     }
-
-    //public void ResetPreferences()
-    //{
-    //    var items = this.Actor.Inventory.GetItems();
-    //    foreach (var i in items)
-    //        this.HandleItem(i);
-    //}
 
     public void Tick()
     {
         this.UpdateBiases();
         this.UpdateTempIgnore();
     }
-
-    //public void Validate()
-    //{
-    //    this.ResetPreferences();
-    //}
-
 
     public ISaveable Load(SaveTag tag)
     {
@@ -678,13 +479,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         this.BuildItemsToPrefsCache();
         return this;
     }
-
-    //internal void PostMapLoad() 
-    //{
-    //    foreach (var i in this.Actor.Map.Entities)
-    //        this.TryEnqueue(i);
-    //    this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-    //}
 
     internal void OnAttachedToWorld()
     {
@@ -701,11 +495,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
     {
         this.RemovePreferencesForItem(e.Entity.RefId);
     }
-    //private void OnEntitySpawned(EntitySpawnedEvent e)
-    //{
-    //    //this.TryScheduleEvaluation(e.Entity);
-    //    this.TryEnqueue(e.Entity);
-    //}
 
     private void OnInventoryItemAdded(InventoryItemAddedEvent e)
     {
@@ -714,27 +503,6 @@ public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializabl
         //this.EnqueueItemInt(e.Item);
         this.TryCommit(e.Item);
     }
-
-    //private void InitialInventoryScan()
-    //{
-    //    if (this.Actor.Net?.IsClient ?? true)
-    //        return;
-    //    var items = this.Actor.Inventory.GetItems();
-    //    foreach (var item in items)
-    //    {
-    //        ////if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
-    //        ////    continue;
-    //        this.TryEnqueue(item);
-    //        //this.TryScheduleEvaluation(item);
-    //        ////this.TryCommit(item);
-    //    }
-    //}
-
-    //private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
-    //{
-    //    //this.TryScheduleEvaluation(e.Item);
-    //    this.TryEnqueue(e.Item);
-    //}
 
     public SaveTag Save(string name = "")
     {

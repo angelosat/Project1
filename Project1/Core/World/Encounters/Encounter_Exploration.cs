@@ -21,6 +21,6 @@ internal class Encounter_Exploration : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.Exploration, new(frontier, actor), (int)((1 - frontier.Exploration.Percentage) * 100));
+        yield return (EncounterDefOf.Exploration, new(actor), (int)((1 - frontier.Exploration.Percentage) * 100));
     }
 }

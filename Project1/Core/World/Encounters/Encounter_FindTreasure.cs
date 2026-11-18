@@ -24,7 +24,7 @@ internal sealed class Encounter_FindTreasure : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.FindTreasure, new(frontier, actor), frontier.Treasures.Count * 100);
+        yield return (EncounterDefOf.FindTreasure, new(actor), frontier.Treasures.Count * 100);
     }
 
     internal override WorldActionDef? DecideAction(WorldActionData context)

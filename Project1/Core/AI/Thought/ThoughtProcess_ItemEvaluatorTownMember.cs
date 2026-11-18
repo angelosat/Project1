@@ -26,7 +26,7 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
         var result = SmartEquipSystem.EvaluateEquipmentChange(actor);
         if (result.ItemId != EntityRefId.Null)
         {
-            world.Actions.Begin(WorldActionDefOf.Equip, new WorldActionData_Equip(world.Space.GetFrontier(actor), actor) { Decision = result });
+            world.Actions.Begin(WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
         }
     }
 

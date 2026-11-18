@@ -91,7 +91,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     void PerformAttackNew(Actor attacker, Actor defender)
     {
         var world = (StaticWorld)attacker.World;
-        world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker.Frontier, attacker) { TargetId = defender.RefId });
+        world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker) { TargetId = defender.RefId });
     }
 
     private void PerformAttack(Actor attacker, Actor defender)

@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
 using System.Linq;
@@ -27,7 +28,7 @@ internal class WorldActionWorker_LootTreasure : WorldActionWorker
     }
 }
 
-internal sealed record WorldActionData_Loot(FrontierRuntime Frontier, Actor Actor) : WorldActionData(Frontier, Actor)
+internal sealed record WorldActionData_Loot(Actor Actor) : WorldActionData(Actor)
 {
     internal required EntityRefId[] Loot;
 
@@ -54,5 +55,10 @@ internal class WorldActionWorker_Loot : WorldActionWorker
             //ItemTransferSystem.Loot(actor, treasure);
             actor.Inventory.InsertAndClaim(treasure);
         actor.AI.State.Log.Write($"Treasure found! {string.Join(",", items.Select(i=>$"[{i.Name}]"))}");
+    }
+
+    static public void Begin(Actor actor, EntityRefId[] loot)
+    {
+        (actor.World as StaticWorld).Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
     }
 }

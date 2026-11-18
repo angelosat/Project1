@@ -48,9 +48,9 @@ static class Packets_WorldActions
         var frontierDef = r.ReadDef<FrontierDef>();
         var actionDef = r.ReadDef<WorldActionDef>();
         var actionDuration = r.ReadInt32();
-        var frontier = ((FrontierManager)world.Space).Get(frontierDef);
+        //var frontier = ((FrontierManager)world.Space).Get(frontierDef);
         //var runtime = world.Actions.Start(actionDef, actor!, frontierDef);
-        var data = WorldActionSystem.CreateData(actionDef, frontier, actor);
+        var data = WorldActionSystem.CreateData(actionDef, actor);
         data.Read(r);
         var runtime = world.Actions.Begin(actionDef, data);
     }

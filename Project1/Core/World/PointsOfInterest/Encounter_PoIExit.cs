@@ -17,7 +17,7 @@ internal class Encounter_PoIExit : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.PoIExit, new(frontier, actor), ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0);
+        yield return (EncounterDefOf.PoIExit, new(actor), ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0);
     }
 
     internal override WorldActionDef? DecideAction(WorldActionData context)

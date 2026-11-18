@@ -102,14 +102,15 @@ internal static class CombatSystem
         runtime.Record(result);
 
         // if combat over do subsequent post combat actions here like looting
-        if (runtime.Winner is Actor winner && winner == attacker)
-        {
-            var loser = runtime.Loser;
-            var invItems = loser.Inventory.GetItems();
-            var gear = loser.Gear.GetItems();
-            var loot = invItems.Union(gear).Select(i => (EntityRefId)i.RefId).ToArray();
-            world.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(world.Space.GetFrontier(winner), winner) { Loot = loot });
-        }
+        // should the new action be chained from here or from worldactionworker_attack?
+        //if (runtime.Winner is Actor winner && winner == attacker)
+        //{
+        //    var loser = runtime.Loser;
+        //    var invItems = loser.Inventory.GetItems();
+        //    var gear = loser.Gear.GetItems();
+        //    var loot = invItems.Union(gear).Select(i => (EntityRefId)i.RefId).ToArray();
+        //    world.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(world.Space.GetFrontier(winner), winner) { Loot = loot });
+        //}
     }
 }
 

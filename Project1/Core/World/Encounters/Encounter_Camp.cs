@@ -25,7 +25,7 @@ internal sealed class Encounter_Camp : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.Camp, new(frontier, actor), (int)((1 - actor.Resources.GetPercentage(ResourceDefOf.Health)) * 10));
+        yield return (EncounterDefOf.Camp, new(actor), (int)((1 - actor.Resources.GetPercentage(ResourceDefOf.Health)) * 10));
     }
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)

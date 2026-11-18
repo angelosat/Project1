@@ -25,7 +25,7 @@ internal class Encounter_ResourceNode : EncounterWorker
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
         foreach (var ((matRef, mat), weight) in frontier.Def.ResourceTypes)
-            yield return (EncounterDefOf.Resource, new WorldActionData_HarvestResource(frontier, actor) { Refinement = matRef, Material = mat }, weight);
+            yield return (EncounterDefOf.Resource, new WorldActionData_HarvestResource(actor) { Refinement = matRef, Material = mat }, weight);
     }
 
     //internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)

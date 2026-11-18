@@ -17,7 +17,7 @@ internal class WorldActionWorker_CombatBegin : WorldActionWorker
     }
 }
 
-internal sealed record WorldActionData_Combat(FrontierRuntime Frontier, Actor Actor) : WorldActionData(Frontier, Actor)
+internal sealed record WorldActionData_Combat(Actor Actor) : WorldActionData(Actor)
 {
     internal required EntityRefId Other;
 

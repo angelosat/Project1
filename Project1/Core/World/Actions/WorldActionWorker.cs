@@ -5,8 +5,8 @@ namespace Project1.Core.World.Actions;
 
 public abstract class WorldActionWorker
 {
-    internal virtual WorldActionData CreateData(FrontierRuntime frontier, Actor actor)
-        => new(frontier, actor);
+    internal virtual WorldActionData CreateData(Actor actor)
+        => new(actor);
 
     internal virtual float GetDurationMultiplier(WorldActionData data)
         => 1;

@@ -40,7 +40,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     public readonly StaticWorld World;
     const int WorldPopulationCap = 6;//3;//1;//0;//6;
     //const int TargetCount_Adventurers = 10, TargetCount_Bandits = 8;
-    const int TargetCount_Adventurers = 1, TargetCount_Bandits = 0;
+    const int TargetCount_Adventurers = 1, TargetCount_Bandits = 1;
     public int WorldPopulationCount { get; private set; }
     const float TickRate = 1 / 3f, InitialChance = .05f, VisitChanceBaseRate = .001f;// 2 seconds per tick //1 tick per second 
     const int InitialApproval = 50;

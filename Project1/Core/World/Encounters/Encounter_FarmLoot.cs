@@ -31,7 +31,7 @@ internal sealed class Encounter_FarmLoot : EncounterWorker
             yield break;
         var desiredLoot = adventurer.NextDesiredLoot;
         var weight = desiredLoot.HasValue ? 1 : 0;
-        yield return (EncounterDefOf.FarmLoot, new(frontier, actor), weight);
+        yield return (EncounterDefOf.FarmLoot, new(actor), weight);
     }
 
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)

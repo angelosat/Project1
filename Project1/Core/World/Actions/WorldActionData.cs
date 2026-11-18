@@ -1,15 +1,16 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions;
 
-internal record WorldActionData(FrontierRuntime Frontier, Actor Actor) : ISerializable
+internal record WorldActionData(Actor Actor) : ISerializable
 {
-    //internal readonly FrontierRuntime Frontier = frontier;
+    internal FrontierRuntime Frontier => field ??= this.Actor.Frontier;
 
     //internal readonly Actor Actor = actor;
-
+    internal StaticWorld World => field ??= (StaticWorld)this.Actor.World;
     public virtual ISerializable Read(IDataReader r) { return this; }
 
     public virtual void Write(IDataWriter w) 

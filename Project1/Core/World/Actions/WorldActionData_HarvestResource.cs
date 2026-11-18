@@ -6,7 +6,7 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions
 {
-    internal sealed record WorldActionData_HarvestResource(FrontierRuntime Frontier, Actor Actor) : WorldActionData(Frontier, Actor)
+    internal sealed record WorldActionData_HarvestResource(Actor Actor) : WorldActionData(Actor)
     {
         internal required MaterialRefinementDef Refinement;
         internal required MaterialDef Material;

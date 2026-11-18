@@ -19,6 +19,6 @@ internal sealed class Encounter_RecoverHealth : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        yield return (EncounterDefOf.RecoverHealth, new(frontier, actor), 0);
+        yield return (EncounterDefOf.RecoverHealth, new(actor), 0);
     }
 }

@@ -21,6 +21,7 @@ namespace Project1.Core.Systems.ItemRoles;
 public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
     protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
+    protected override MapBase Map => field ??= this.Actor.Map;
 
     event Action<ItemPreference> PrefUpdated;
 
@@ -47,10 +48,17 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
     Entity Resolve(EntityRefId id)
         => this.Actor.World.Resolve(id);
 
-    public ItemPreferenceManager(Actor actor)
+    public ItemPreferenceManager(Actor actor) : this()
     {
         this.Actor = actor;
     }
+
+    public ItemPreferenceManager()
+    {
+        this.AddWorldEventHandler<InventoryItemAddedEvent>(this.OnInventoryItemAdded);
+        this.AddWorldEventHandler<EntityDisposedEvent>(this.OnEntityDisposed);
+    }
+    
 
     Window GetGui()
     {
@@ -486,19 +494,20 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
         return this;
     }
 
-    internal void OnAttachedToWorld()
-    {
-        // TODO dont do this because this will get called
-        // whether the actor and/or the item are in seperate maps/overworld locations
-        //this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
-        this.Actor.World.Events.ListenTo<InventoryItemAddedEvent>(OnInventoryItemAdded);
-        this.Actor.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
-        // TODO initial inventory scan
-        //this.InitialInventoryScan();
-    }
+    //internal void OnAttachedToWorld()
+    //{
+    //    // TODO dont do this because this will get called
+    //    // whether the actor and/or the item are in seperate maps/overworld locations
+    //    //this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
+    //    this.Actor.World.Events.ListenTo<InventoryItemAddedEvent>(OnInventoryItemAdded);
+    //    this.Actor.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
+    //    // TODO initial inventory scan
+    //    //this.InitialInventoryScan();
+    //}
+   
 
-    internal void OnDispose()
-        => this.Actor.World.Events.Unsubscribe(this);
+    //internal void OnDispose()
+    //    => this.Actor.World.Events.Unsubscribe(this);
 
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
@@ -530,10 +539,7 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
 
     public static ItemPreferenceManager Create(IDataReader r) => new ItemPreferenceManager().Read(r);
 
-    public ItemPreferenceManager()
-    {
-        
-    }
+   
 
     public void Write(IDataWriter w)
     {

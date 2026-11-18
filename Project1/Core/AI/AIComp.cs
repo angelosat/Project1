@@ -57,7 +57,6 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     public AIComp()
     {
         this.Knowledge = new Knowledge();
-        this.AddChild(this.State);
     }
     internal override void CopyFrom(EntityComp source)
     {
@@ -91,6 +90,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.Root = profile.Behavior.Clone() as Behavior;
         this.Root.AttachTo(this.Owner as Actor);
         this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
+        this.AddChild(this.State);
     }
     //internal override void ResolveReferences()
     //{
@@ -100,10 +100,10 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     {
         this.State.PostMapLoad();
     }
-    internal override void OnAttachedToWorld()
-    {
-        this.State.OnAttachedToWorld();
-    }
+    //internal override void OnAttachedToWorld()
+    //{
+    //    this.State.OnAttachedToWorld();
+    //}
     public AIComp Initialize(Behavior root)
     {
         return this;

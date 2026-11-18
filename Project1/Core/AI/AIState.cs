@@ -54,6 +54,7 @@ namespace Project1.Core.AI;
 public sealed class AIState : EventOwner// Inspectable
 {
     protected override StaticWorld World => field ??= (StaticWorld)this.Owner.World;
+    protected override MapBase Map => field ??= this.Owner.Map;
 
     public ProgressFloat Attention = new();
     public float AttentionDecay = 1;

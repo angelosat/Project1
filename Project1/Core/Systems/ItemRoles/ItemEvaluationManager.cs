@@ -14,6 +14,7 @@ internal sealed class ItemEvaluationManager(Actor actor) : EventOwner
     public Actor Actor = actor;
 
     protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
+    protected override MapBase Map => field ??= this.Actor.Map;
 
     Entity Resolve(EntityRefId id)
         => this.Actor.World.Resolve(id);
@@ -58,25 +59,28 @@ internal sealed class ItemEvaluationManager(Actor actor) : EventOwner
         newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
-    internal void OnDispose()
-        => this.Actor.World.Events.Unsubscribe(this);
+    //internal void OnDispose()
+    //    => this.Actor.World.Events.Unsubscribe(this);
 
     private void OnEntitySpawned(EntitySpawnedEvent e)
     {
         this.TryEnqueue(e.Entity);
     }
 
-    public void OnDespawn(MapBase oldMap)
+    protected override void OnDespawnInt(MapBase oldMap)
     {
         this.PendingItemQueue.Clear();
         this.QueuedItems.Clear();
-        oldMap.Events.Unsubscribe(this);
+        //oldMap.Events.Unsubscribe(this);
     }
-
-    internal void OnAttachedToWorld()
+    protected override void OnAttachedToWorldInt()
     {
         this.InitialInventoryScan();
     }
+    //internal void OnAttachedToWorld()
+    //{
+    //    this.InitialInventoryScan();
+    //}
 
     internal void PostMapLoad()
     {

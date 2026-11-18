@@ -2,9 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
-using Project1.Core.Simulation;
 using Project1.Core.Systems.Inventory;
-using Project1.Core.Systems.Ownership;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
@@ -18,7 +16,7 @@ using System.Linq;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
+public sealed class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
     event Action<ItemPreference> PrefUpdated;
 
@@ -34,9 +32,9 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
     public Control Gui => field ??= this.GetGui();
 
-    readonly Queue<EntityRefId> PendingItemQueue = [];
+    //readonly Queue<EntityRefId> PendingItemQueue = [];
 
-    readonly HashSet<EntityRefId> QueuedItems = [];
+    //readonly HashSet<EntityRefId> QueuedItems = [];
 
     readonly Dictionary<ItemRoleDef, ItemPreference> PrefsInternal = [];
 
@@ -45,16 +43,7 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
     readonly Dictionary<EntityRefId, int> TempIgnore = [];
 
     readonly HashSet<EntityRefId> ToDiscard = [];
-
-    public Entity? Dequeue()
-    {
-        if (this.PendingItemQueue.Count == 0)
-            return null;
-        var refId = this.PendingItemQueue.Dequeue();
-        this.QueuedItems.Remove(refId);
-        var entity = this.Resolve(refId);
-        return entity;
-    }
+   
 
     Entity Resolve(EntityRefId id)
         => this.Actor.World.Resolve(id);
@@ -180,26 +169,29 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
             var item = this.Actor.Map.World.Resolve(key);
             if (item.ExistsOn(this.Actor.Map))
-                this.TryEnqueue(item);
+            {
+                throw new NotImplementedException();
+                //this.TryEnqueue(item);
+            }
         }
     }
 
-    internal bool TryEnqueue(Entity item)
-    {
-        if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
-        {
-            $"{this.Actor} tried to enqueue already known item {item}".ToConsole();
-            return false;
-        }
-        if (this.QueuedItems.Contains(item.RefId))
-            return false;
-        if (this.IsIgnored(item))
-            return false;
-        if (!this.QueuedItems.Add(item.RefId))
-            return false;
-        this.PendingItemQueue.Enqueue(item.RefId);
-        return true;
-    }
+    //internal bool TryEnqueue(Entity item)
+    //{
+    //    if (this.Actor.AI.State.Knowledge.TryQuery(item, out _))
+    //    {
+    //        $"{this.Actor} tried to enqueue already known item {item}".ToConsole();
+    //        return false;
+    //    }
+    //    if (this.QueuedItems.Contains(item.RefId))
+    //        return false;
+    //    if (this.IsIgnored(item))
+    //        return false;
+    //    if (!this.QueuedItems.Add(item.RefId))
+    //        return false;
+    //    this.PendingItemQueue.Enqueue(item.RefId);
+    //    return true;
+    //}
 
     //[Obsolete]
     //private bool TryScheduleEvaluation(Entity item)
@@ -474,13 +466,13 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
 
     public IEnumerable<Entity> GetJunk()
     {
-        this.Validate();
+        //this.Validate();
         var actor = this.Actor;
         var net = actor.Net;
         var items = actor.Inventory.GetItems();
         foreach (var i in this.ToDiscard.ToArray())
         {
-            var item = net.World.Resolve((EntityRefId)i);
+            var item = net.World.Resolve(i);
             if (!items.Contains(item))
             {
                 this.RemoveJunk(item);
@@ -528,22 +520,22 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
                 yield return i;
     }
 
-    public void HandleItem(Entity item)
-    {
-        foreach (var (role, pref) in this.PrefsInternal)
-        {
-            var score = role.Worker.GetInventoryScore(this.Actor, item);
-            if (score < 0)
-                continue;
-            if (score > pref.InventoryScore)
-            {
-                this.ApplyPreferenceDelta(role, item, score);
-                return; // TODO check 
-            }
-        }
-        if (!this.IsUseful(item))
-            this.ToDiscard.Add(item.RefId);
-    }
+    //public void HandleItem(Entity item)
+    //{
+    //    foreach (var (role, pref) in this.PrefsInternal)
+    //    {
+    //        var score = role.Worker.GetInventoryScore(this.Actor, item);
+    //        if (score < 0)
+    //            continue;
+    //        if (score > pref.InventoryScore)
+    //        {
+    //            this.ApplyPreferenceDelta(role, item, score);
+    //            return; // TODO check 
+    //        }
+    //    }
+    //    if (!this.IsUseful(item))
+    //        this.ToDiscard.Add(item.RefId);
+    //}
 
     public bool IsPreference(Entity item)
     {
@@ -571,11 +563,11 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
             bias.Value += value;
     }
 
-    public void OnDespawn(MapBase oldMap)
-    {
-        this.PendingItemQueue.Clear();
-        oldMap.Events.Unsubscribe(this);
-    }
+    //public void OnDespawn(MapBase oldMap)
+    //{
+    //    this.PendingItemQueue.Clear();
+    //    oldMap.Events.Unsubscribe(this);
+    //}
 
     public void ForceDrop(Entity item)
     {
@@ -643,24 +635,24 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         return total;
     }
 
-    public void OnSpawn(MapBase newMap)
-    {
-        foreach (var i in newMap.Entities)
-            this.TryEnqueue(i);
-        newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-    }
+    //public void OnSpawn(MapBase newMap)
+    //{
+    //    foreach (var i in newMap.Entities)
+    //        this.TryEnqueue(i);
+    //    newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+    //}
 
     public void RemoveJunk(Entity item)
     {
         this.ToDiscard.Remove(item.RefId);
     }
 
-    public void ResetPreferences()
-    {
-        var items = this.Actor.Inventory.GetItems();
-        foreach (var i in items)
-            this.HandleItem(i);
-    }
+    //public void ResetPreferences()
+    //{
+    //    var items = this.Actor.Inventory.GetItems();
+    //    foreach (var i in items)
+    //        this.HandleItem(i);
+    //}
 
     public void Tick()
     {
@@ -668,10 +660,10 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         this.UpdateTempIgnore();
     }
 
-    public void Validate()
-    {
-        this.ResetPreferences();
-    }
+    //public void Validate()
+    //{
+    //    this.ResetPreferences();
+    //}
 
 
     public ISaveable Load(SaveTag tag)
@@ -687,12 +679,12 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         return this;
     }
 
-    internal void PostMapLoad() 
-    {
-        foreach (var i in this.Actor.Map.Entities)
-            this.TryEnqueue(i);
-        this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-    }
+    //internal void PostMapLoad() 
+    //{
+    //    foreach (var i in this.Actor.Map.Entities)
+    //        this.TryEnqueue(i);
+    //    this.Actor.Map.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+    //}
 
     internal void OnAttachedToWorld()
     {
@@ -702,18 +694,18 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         this.Actor.World.Events.ListenTo<InventoryItemAddedEvent>(OnInventoryItemAdded);
         this.Actor.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
         // TODO initial inventory scan
-        this.InitialInventoryScan();
+        //this.InitialInventoryScan();
     }
 
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
         this.RemovePreferencesForItem(e.Entity.RefId);
     }
-    private void OnEntitySpawned(EntitySpawnedEvent e)
-    {
-        //this.TryScheduleEvaluation(e.Entity);
-        this.TryEnqueue(e.Entity);
-    }
+    //private void OnEntitySpawned(EntitySpawnedEvent e)
+    //{
+    //    //this.TryScheduleEvaluation(e.Entity);
+    //    this.TryEnqueue(e.Entity);
+    //}
 
     private void OnInventoryItemAdded(InventoryItemAddedEvent e)
     {
@@ -723,26 +715,26 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         this.TryCommit(e.Item);
     }
 
-    private void InitialInventoryScan()
-    {
-        if (this.Actor.Net?.IsClient ?? true)
-            return;
-        var items = this.Actor.Inventory.GetItems();
-        foreach (var item in items)
-        {
-            ////if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
-            ////    continue;
-            this.TryEnqueue(item);
-            //this.TryScheduleEvaluation(item);
-            ////this.TryCommit(item);
-        }
-    }
+    //private void InitialInventoryScan()
+    //{
+    //    if (this.Actor.Net?.IsClient ?? true)
+    //        return;
+    //    var items = this.Actor.Inventory.GetItems();
+    //    foreach (var item in items)
+    //    {
+    //        ////if (this.Actor.AI.State.Knowledge.TryQuery(item, out var _))
+    //        ////    continue;
+    //        this.TryEnqueue(item);
+    //        //this.TryScheduleEvaluation(item);
+    //        ////this.TryCommit(item);
+    //    }
+    //}
 
-    private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
-    {
-        //this.TryScheduleEvaluation(e.Item);
-        this.TryEnqueue(e.Item);
-    }
+    //private void HandleItemOwnerChanged(ItemOwnerChangedEvent e)
+    //{
+    //    //this.TryScheduleEvaluation(e.Item);
+    //    this.TryEnqueue(e.Item);
+    //}
 
     public SaveTag Save(string name = "")
     {

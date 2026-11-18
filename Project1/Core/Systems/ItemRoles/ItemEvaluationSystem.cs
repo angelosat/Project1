@@ -1,5 +1,4 @@
-﻿using Project1.Core.AI;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Framework;
 using System.Collections.Generic;

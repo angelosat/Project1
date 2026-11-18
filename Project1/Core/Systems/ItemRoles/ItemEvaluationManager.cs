@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.ItemRoles;
 
-internal class ItemEvaluationManager(Actor actor)
+internal sealed class ItemEvaluationManager(Actor actor)
 {
     public Actor Actor = actor;
 

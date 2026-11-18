@@ -108,9 +108,12 @@ public sealed class TownComp_Shops : TownComp
     {
         if (!e.Stockpile.ForSale)
             return;
-        foreach(var item in e.Stockpile.Items)
-            foreach(var actorid in this._shoppingListsByActor.Keys)
-                this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryEnqueue(item);
+        foreach (var item in e.Stockpile.Items)
+            foreach (var actorid in this._shoppingListsByActor.Keys)
+            {
+                throw new NotImplementedException();
+                //this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryEnqueue(item);
+            }
     }
 
     //private void HandleBlocksChanged(BlocksChangedEvent e)

@@ -108,6 +108,8 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
             //state.Knowledge.Register(item, result);
             if (actor.Map.Town.IsClaimedBySystem(item))
                 return;
+            if (preferences.IsIgnored(item))
+                return;
             preferences.TryPreCommit(item, result);
         }
     }

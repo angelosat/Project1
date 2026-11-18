@@ -12,7 +12,6 @@ using Project1.Core.Systems.ItemRoles;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -181,7 +180,7 @@ public sealed class AIState : Inspectable
 
     internal void PostMapLoad()
     {
-        this.ItemPreferences.PostMapLoad();
+        //this.ItemPreferences.PostMapLoad();
         this.ItemEvaluation.PostMapLoad();
     }
     internal void OnAttachedToWorld()
@@ -315,13 +314,13 @@ public sealed class AIState : Inspectable
 
     internal void OnSpawn(MapBase newMap)
     {
-        this.ItemPreferences.OnSpawn(newMap);
+        //this.ItemPreferences.OnSpawn(newMap);
         this.ItemEvaluation.OnSpawn(newMap);
     }
 
     internal void OnDespawn(MapBase oldmap)
     {
-        this.ItemPreferences.OnDespawn(oldmap);
+        //this.ItemPreferences.OnDespawn(oldmap);
         this.ItemEvaluation.OnDespawn(oldmap);
     }
 

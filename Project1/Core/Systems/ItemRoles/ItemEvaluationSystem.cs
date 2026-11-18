@@ -13,7 +13,7 @@ public static class ItemEvaluationSystem
 {
     private static ItemRoleDef[] ItemRoles => field ??= [.. Def.Get<ItemRoleDef>()];
 
-    public static ItemEvaluation Evaluate(Actor actor, Entity item)
+    static ItemEvaluation Evaluate(Actor actor, Entity item)
     {
         var results = new List<(ItemRoleDef Role, int Score)>();
 
@@ -26,5 +26,28 @@ public static class ItemEvaluationSystem
         }
 
         return new ItemEvaluation(item.RefId, [.. results]);
+    }
+    
+    public static ItemEvaluation GetOrEvaluate(Actor actor, Entity item)
+    {
+        var knowledge = actor.AI.State.Knowledge;
+
+        if (knowledge.TryQuery(item, out var evaluation))
+            return evaluation;
+
+        return Evaluate(actor, item);
+    }
+
+    public static ItemEvaluation GetOrEvaluateAndRegister(Actor actor, Entity item)
+    {
+        var knowledge = actor.AI.State.Knowledge;
+
+        if (knowledge.TryQuery(item, out var evaluation))
+            return evaluation;
+
+        evaluation = Evaluate(actor, item);
+        knowledge.Register(item, evaluation);
+
+        return evaluation;
     }
 }

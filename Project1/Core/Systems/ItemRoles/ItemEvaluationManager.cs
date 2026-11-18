@@ -63,6 +63,7 @@ internal class ItemEvaluationManager(Actor actor)
     public void OnDespawn(MapBase oldMap)
     {
         this.PendingItemQueue.Clear();
+        this.QueuedItems.Clear();
         oldMap.Events.Unsubscribe(this);
     }
 

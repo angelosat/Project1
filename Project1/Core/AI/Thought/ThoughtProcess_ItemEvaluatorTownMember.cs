@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
 using Project1.Core.Systems;
+using Project1.Core.Systems.ItemRoles;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Core.World.Actions;
 
@@ -43,8 +44,10 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
         {
             if (!nextEntity.IsForSale)
                 continue;
-            var tempEvaluation = preferences.EvaluateWithoutRegistering(nextEntity);
-
+            //var tempEvaluation = preferences.EvaluateWithoutRegistering(nextEntity);
+            //if (!state.Knowledge.TryQuery(nextEntity, out var tempEvaluation))
+            //    tempEvaluation = ItemEvaluationSystem.Evaluate(actor, nextEntity);
+            var tempEvaluation = ItemEvaluationSystem.GetOrEvaluate(actor, nextEntity);
 
             if (tempEvaluation.Roles.Length == 0)
                 continue;
@@ -80,7 +83,8 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
 
     internal override void TickOnMap(AIState state)
     {
-        if (!state.Owner.IsSpawned)
+        var actor = state.Owner;
+        if (!actor.IsSpawned)
             return;
         //var manager = state.ItemPreferences;
         var preferences = state.ItemPreferences;
@@ -94,9 +98,15 @@ internal class ThoughtProcess_ItemEvaluatorTownMember : ThoughtProcess
                 return;
             if (item.IsForSale)
                 return;
-            var result = preferences.EvaluateAndRegister(item);
+            //var result = preferences.EvaluateAndRegister(item);
+            //if (!state.Knowledge.TryQuery(item, out var result))
+            //{
+            //    result = ItemEvaluationSystem.Evaluate(actor, item);
+            //    state.Knowledge.Register(item, result);
+            //}
+            var result = ItemEvaluationSystem.GetOrEvaluateAndRegister(actor, item);
             //state.Knowledge.Register(item, result);
-            if (state.Owner.Map.Town.IsClaimedBySystem(item))
+            if (actor.Map.Town.IsClaimedBySystem(item))
                 return;
             preferences.TryPreCommit(item, result);
         }

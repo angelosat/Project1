@@ -14,7 +14,11 @@ internal sealed class Knowledge : Inspectable
 
     internal void Register(Entity item, ItemEvaluation evaluation)
         => this.Items.Add(item.RefId, evaluation);
-
+    //{
+    //    if (item.HasOwner && item.OwnerId != this.Actor.RefId)
+    //        throw new InvalidOperationException("shouldn't be evaluating to register an item owned by another actor");
+    //    this.Items.Add(item.RefId, evaluation);
+    //}
     internal ItemEvaluation Query(Entity item)
         => this.Items.TryGetValue(item.RefId, out var entry) ? entry : default;
 

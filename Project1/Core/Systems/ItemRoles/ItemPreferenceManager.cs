@@ -20,8 +20,6 @@ namespace Project1.Core.Systems.ItemRoles;
 
 public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
-    bool IsScanning => PendingItemQueue.Count > 0;
-
     event Action<ItemPreference> PrefUpdated;
 
     event Action<ItemPreference> PrefRemoved;
@@ -112,16 +110,7 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         }
     }
 
-    public bool Wants(Entity item)
-    {
-        var result = this.EvaluateAndRegister(item);
-        foreach (var (role, score) in result.Roles)
-        {
-            if (this.Compare(role, score))
-                return true;
-        }
-        return false;
-    }
+   
 
     private bool Compare(ItemRoleDef role, int score)
     {
@@ -132,15 +121,27 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         return false;
     }
 
-    private bool Desires(Entity item)
+    //private bool Desires(Entity item)
+    //{
+    //    var bias = this.ItemBiases.GetValueOrDefault(item.RefId)?.Value ?? 0;
+    //    var result = this.EvaluateAndRegister(item);
+    //    foreach (var (role, score) in result.Roles.Select(r => (r.Role, r.Score + bias)))
+    //    {
+    //        if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
+    //            return true;
+    //        if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
+    //            return true;
+    //    }
+    //    return false;
+    //}
+
+    public bool Wants(Entity item)
     {
-        var bias = this.ItemBiases.GetValueOrDefault(item.RefId)?.Value ?? 0;
-        var result = this.EvaluateAndRegister(item);
-        foreach (var (role, score) in result.Roles.Select(r => (r.Role, r.Score + bias)))
+        //var result = this.EvaluateAndRegister(item);
+        var result = ItemEvaluationSystem.GetOrEvaluate(this.Actor, item);
+        foreach (var (role, score) in result.Roles)
         {
-            if (!this.PreCommitScanCache.TryGetValue(role, out var cached) || score > cached.score)
-                return true;
-            if (!this.PrefsInternal.TryGetValue(role, out var committed) || score > committed.InventoryScore)
+            if (this.Compare(role, score))
                 return true;
         }
         return false;
@@ -233,10 +234,11 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
     {
         if (item.World is null)
             throw new InvalidOperationException($"Tried to evaluate disposed item {item}");
-        var results = this.EvaluateAndRegister(item);
+        //var results = this.EvaluateAndRegister(item);
+        var results = ItemEvaluationSystem.GetOrEvaluateAndRegister(this.Actor, item);
         bool commited = false;
         // commit item for roles where it scores higher than existing items
-        foreach(var (Role, Score) in results.Roles)
+        foreach (var (Role, Score) in results.Roles)
         {
             if (this.PrefsInternal.TryGetValue(Role, out var existing) && existing.InventoryScore >= Score)
                 continue;
@@ -245,6 +247,22 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
         }
         return commited;
     }
+    //internal bool TryCommit(Entity item, ItemEvaluation eval)
+    //{
+    //    if (item.World is null)
+    //        throw new InvalidOperationException($"Tried to evaluate disposed item {item}");
+    //    //var results = this.EvaluateAndRegister(item);
+    //    bool commited = false;
+    //    // commit item for roles where it scores higher than existing items
+    //    foreach (var (Role, Score) in eval.Roles)
+    //    {
+    //        if (this.PrefsInternal.TryGetValue(Role, out var existing) && existing.InventoryScore >= Score)
+    //            continue;
+    //        commited = true;
+    //        this.Commit(Role, item, Score);
+    //    }
+    //    return commited;
+    //}
     internal void Commit(ItemRoleDef role, Entity item, int score)
     {
         EntityRefId oldItemId = EntityRefId.Null;
@@ -312,29 +330,29 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
     }
 
 
-    internal ItemEvaluation EvaluateAndRegister(Entity item)
-    {
-        //if (item.OwnerId != EntityRefId.Null)
-            //throw new InvalidOperationException("shouldn't be evaluating an owned item");
+    //internal ItemEvaluation EvaluateAndRegister(Entity item)
+    //{
+    //    //if (item.OwnerId != EntityRefId.Null)
+    //        //throw new InvalidOperationException("shouldn't be evaluating an owned item");
 
-        if (item.HasOwner && item.OwnerId != this.Actor.RefId)
-            throw new InvalidOperationException("shouldn't be evaluating to register an item owned by another actor");
-        var knowledge = this.Actor.AI.State.Knowledge;
-        if (knowledge.TryQuery(item, out var existing))
-            return existing;
+    //    if (item.HasOwner && item.OwnerId != this.Actor.RefId)
+    //        throw new InvalidOperationException("shouldn't be evaluating to register an item owned by another actor");
+    //    var knowledge = this.Actor.AI.State.Knowledge;
+    //    if (knowledge.TryQuery(item, out var existing))
+    //        return existing;
 
-        var result = ItemEvaluationSystem.Evaluate(this.Actor, item);
-        knowledge.Register(item, result);
-        return result;
-    }
+    //    var result = ItemEvaluationSystem.Evaluate(this.Actor, item);
+    //    knowledge.Register(item, result);
+    //    return result;
+    //}
 
-    internal ItemEvaluation EvaluateWithoutRegistering(Entity item)
-    {
-        var knowledge = this.Actor.AI.State.Knowledge;
-        if (knowledge.TryQuery(item, out var existing))
-            return existing;
-        return ItemEvaluationSystem.Evaluate(this.Actor, item);
-    }
+    //internal ItemEvaluation EvaluateWithoutRegistering(Entity item)
+    //{
+    //    var knowledge = this.Actor.AI.State.Knowledge;
+    //    if (knowledge.TryQuery(item, out var existing))
+    //        return existing;
+    //    return ItemEvaluationSystem.Evaluate(this.Actor, item);
+    //}
 
     internal int GetExistingScore(ItemRoleDef role)
         => this.PrefsInternal.TryGetValue(role, out var pref) ? pref.InventoryScore : 0;
@@ -342,8 +360,9 @@ public class ItemPreferenceManager : Inspectable, ISaveable, ISerializableNew<It
     [Obsolete]
     internal (ItemRoleDef role, int score) FindBestRole(Entity item)
     {
-        var allRoles = this.EvaluateWithoutRegistering(item);
         throw new NotImplementedException();
+
+        //var allRoles = this.EvaluateWithoutRegistering(item);
         //return allRoles.OrderByDescending(i => i.score).FirstOrDefault();
     }
 

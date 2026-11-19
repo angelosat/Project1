@@ -157,7 +157,7 @@ namespace Project1.Framework.UI
                 sb.Draw(UIManager.Highlight, new Rectangle(this.BoundsScreen.X + (int)textbounds.X, this.BoundsScreen.Y, CursorWidth, this.Height), Color.White);
             }
         }
-        public override void Dispose()
+        protected override void DisposeInternal()
         {
             this.Texture.Dispose();
         }

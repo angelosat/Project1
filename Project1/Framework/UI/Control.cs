@@ -725,13 +725,16 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         this.OnLostFocus();
     }
 
-    public virtual void Dispose()
+    public /*virtual*/ void Dispose()
     {
+        this.DisposeInternal();
         this.Detach();
         if (this.HasChildren)
             foreach (Control control in this.Controls)
                 control.Dispose();
+        GC.SuppressFinalize(this);
     }
+    protected virtual void DisposeInternal() { }
     public int Top
     {
         get => (int)this.Location.Y;
@@ -1068,7 +1071,6 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     public override void Update()
     {
         this.InvalidatePosition();
-        //this.CachePosition();
         this.OnUpdate();
 
         base.Update();

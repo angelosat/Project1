@@ -17,7 +17,7 @@ namespace Project1.Core.UI;
 public class TooltipManager
 {
     public static bool MouseTooltips = true;
-    public static float DelayInterval = Ticks.PerSecond / 4;
+    public static float DelayInterval = Ticks.PerSecond / 5;
     float DelayValue;
     public static int Width = 300;
     protected static TooltipManager _Instance;
@@ -52,8 +52,8 @@ public class TooltipManager
             this.DelayValue = DelayInterval;
             if (this.Tooltip is null)
                 this.Build();
-            else
-                this.Tooltip.Update();
+            //else
+            //    this.Tooltip.Update();
         }
         this.Tooltip?.Update();
     }

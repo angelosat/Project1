@@ -288,8 +288,9 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
     {
         if (!this.ActorPositions.ContainsKey(actor))
             return;
+        //this.ActorPositions.Remove(actor);
+        this.GetFrontier(actor).RemoveActor(actor); // why have i put this after this.ActorPositions.Remove(actor);?
         this.ActorPositions.Remove(actor);
-        this.GetFrontier(actor).RemoveActor(actor);
         this.EventSchedulers.Remove(actor);
     }
 

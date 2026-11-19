@@ -42,7 +42,8 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
                 return this.Second;
             else if (this.Second.Biology.IsIncapacitated)
                 return this.First;
-            throw new UnreachableException();
+            return null;
+            //throw new UnreachableException();
         }
     }
 
@@ -56,7 +57,8 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
                 return this.First;
             else if (this.Second.Biology.IsIncapacitated)
                 return this.Second;
-            throw new UnreachableException();
+            return null;
+            //throw new UnreachableException();
         }
     }
 

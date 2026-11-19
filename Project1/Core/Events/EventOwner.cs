@@ -19,23 +19,9 @@ public abstract class EventOwner : Inspectable
 
     protected abstract MapBase Map { get; }
 
-    //private readonly List<IEventHandlerDeclaration> WorldEventHandlers = [];
-    //private readonly List<IEventHandlerDeclaration> MapEventHandlers = [];
-
     internal virtual EventHandlerDeclarations MapEventHandlers { get; } = new();
+
     internal virtual EventHandlerDeclarations WorldEventHandlers { get; } = new();
-
-    //protected void AddWorldEventHandler<T>(Action<T> handler)
-    //    where T : IEventPayload
-    //{
-    //    this.WorldEventHandlers.Add(new EventRegistration<T>(handler));
-    //}
-
-    //protected void AddMapEventHandler<T>(Action<T> handler)
-    //   where T : IEventPayload
-    //{
-    //    this.MapEventHandlers.Add(new EventRegistration<T>(handler));
-    //}
 
     protected void AddChild(EventOwner child)
     {
@@ -60,8 +46,6 @@ public abstract class EventOwner : Inspectable
     public void OnAttachedToMap()
     {
         this.OnAttachedToMapInt();
-        //foreach (var registration in this.MapEventHandlers)
-        //    registration.Subscribe(this.Map.Events);
         this.MapEventHandlers.Subscribe(this.Map.Events);
         foreach (var child in this.Children)
             child.OnAttachedToMap();
@@ -70,8 +54,6 @@ public abstract class EventOwner : Inspectable
     public void OnAttachedToWorld()
     {
         this.OnAttachedToWorldInt();
-        //foreach (var registration in this.WorldEventHandlers)
-            //registration.Subscribe(this.World.Events);
         this.WorldEventHandlers.Subscribe(this.World.Events);
         foreach (var child in this.Children)
             child.OnAttachedToWorld();
@@ -119,14 +101,9 @@ internal sealed record EventRegistration<T>(Action<T> Handler)
     }
 }
 
-internal sealed class EventHandlerDeclarations
+internal sealed class EventHandlerDeclarations(params IEventHandlerDeclaration[] items)
 {
-    private readonly ImmutableArray<IEventHandlerDeclaration> _items;
-
-    public EventHandlerDeclarations(params IEventHandlerDeclaration[] items)
-    {
-        this._items = [.. items];
-    }
+    private readonly ImmutableArray<IEventHandlerDeclaration> _items = [.. items];
 
     public void Subscribe(EventBus bus)
     {

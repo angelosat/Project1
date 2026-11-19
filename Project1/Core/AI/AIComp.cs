@@ -6,7 +6,6 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
 using Project1.Core.Rendering;
-using Project1.Core.Simulation;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Core.UI.Hud;
 using Project1.Framework;
@@ -92,18 +91,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.State = new AIState(this.Owner as Actor) { Knowledge = this.Knowledge };
         this.AddChild(this.State);
     }
-    //internal override void ResolveReferences()
-    //{
-    //    this.State.ResolveReferences();
-    //}
-    //internal override void PostMapLoad()
-    //{
-    //    this.State.PostMapLoad();
-    //}
-    //internal override void OnAttachedToWorld()
-    //{
-    //    this.State.OnAttachedToWorld();
-    //}
+   
     public AIComp Initialize(Behavior root)
     {
         return this;
@@ -133,40 +121,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
             return;
         this.Meta.TickOffMap();
     }
-    //public override void OnSpawn(MapBase newMap)
-    //{
-    //    //this.State.Leash = this.Owner.Global;
-    //    this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-    //    //this.State.ItemPreferences.OnSpawn(newMap);
-    //    this.State.OnSpawn(newMap);
-    //}
-    protected override void OnAttachedToMapInt()
-    {
-        base.OnAttachedToMapInt();
-    }
-    //public override void OnDespawnInt(MapBase oldmap)
-    //{
-    //    //this.State.ItemPreferences.OnDespawn(oldmap);
-    //    this.State.OnDespawn(oldmap);
-    //}
-    //protected override void OnDisposeInt()
-    //{
-    //    this.State.OnDispose();
-    //}
-
-    //public override void OnObjectSynced(GameObject parent)
-    //{
-    //    this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-    //}
-
-    //void HandleBlocksChange(CellsInvalidatedEvent e)
-    //{
-    //    return;
-    //    if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
-    //    {
-    //        this.State.Path = null;
-    //    }
-    //}
+   
     internal override List<SaveTag> Save()
     {
         var save = new List<SaveTag>
@@ -178,6 +133,7 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         };
         return save;
     }
+
     internal override void LoadExtra(SaveTag save)
     {
         save.TryGetTagValue<byte[]>("Guid", v => this.Guid = new Guid(v));

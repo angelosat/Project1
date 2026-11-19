@@ -54,19 +54,13 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
         this.Actor = actor;
     }
 
-    internal override EventHandlerDeclarations MapEventHandlers => field ??=
+    internal override EventHandlerDeclarations WorldEventHandlers => field ??=
         new(
             new EventRegistration<InventoryItemAddedEvent>(this.OnInventoryItemAdded),
             new EventRegistration<EntityDisposedEvent>(this.OnEntityDisposed)
         );
 
-    public ItemPreferenceManager()
-    {
-        //this.AddWorldEventHandler<InventoryItemAddedEvent>(this.OnInventoryItemAdded);
-        //this.AddWorldEventHandler<EntityDisposedEvent>(this.OnEntityDisposed);
-       
-    }
-    
+    public ItemPreferenceManager() { }
 
     Window GetGui()
     {

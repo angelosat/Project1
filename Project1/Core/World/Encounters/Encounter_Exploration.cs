@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace Project1.Core.World.Encounters;
 
-internal class Encounter_Exploration : EncounterWorker
+internal sealed class Encounter_Exploration : EncounterWorker
 {
-    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
-    {
-        throw new NotImplementedException();
-    }
+    //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-        => (int)((1 - frontier.Exploration.Percentage) * 100);
+    //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
+    //    => (int)((1 - frontier.Exploration.Percentage) * 100);
 
     internal override WorldActionDef DecideAction(WorldActionData context)
         => WorldActionDefOf.Explore;

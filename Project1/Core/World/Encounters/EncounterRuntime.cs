@@ -50,15 +50,15 @@ internal sealed class EncounterRuntime : IProgressBar
         this.Max = def.DurationInMinutes;// * def.Worker.GetDurationMultiplier(this.Context!);
     }
 
-    internal void Tick(FrontierRuntime frontier, Actor actor)
-    {
-        this.Def.Worker.Tick(this, frontier, actor);
-    }
+    //internal void Tick(FrontierRuntime frontier, Actor actor)
+    //{
+    //    this.Def.Worker.Tick(this, frontier, actor);
+    //}
 
     public string GetTextStatus() => this.Def.Worker.GetTextStatus(this);
 
-    internal void Begin(FrontierRuntime frontier)
-        => this.Def.Worker.Begin(frontier, this);
+    //internal void Begin(FrontierRuntime frontier)
+    //    => this.Def.Worker.Begin(frontier, this);
 
     internal EncounterStates State => Def.Worker.GetState(this);
 

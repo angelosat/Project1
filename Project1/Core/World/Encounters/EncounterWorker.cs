@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.Frontiers;
 using Project1.Framework.Helpers;
-using System;
 using System.Collections.Generic;
 
 #nullable enable
@@ -17,31 +16,31 @@ internal abstract class EncounterWorker
         return context;
     }
     protected virtual EncounterContext CreateContextInt() => new();
-    internal void Tick(EncounterRuntime runtime, FrontierRuntime frontier, Actor actor)
-    {
-        //if (runtime.Percentage == 0)
-        //    this.OnBegin(frontier, runtime); 
-        // TODO guard against onbegin accidentally called more than once
+    //internal void Tick(EncounterRuntime runtime, FrontierRuntime frontier, Actor actor)
+    //{
+    //    //if (runtime.Percentage == 0)
+    //    //    this.OnBegin(frontier, runtime); 
+    //    // TODO guard against onbegin accidentally called more than once
 
-        //ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(runtime.Percentage, 1);
-        if (runtime.Percentage >= 1)
-            throw new InvalidOperationException("Encounter has already completed.");
-        var prevPercentage = runtime.Percentage;
-        runtime.Current += this.GetProgressStep(actor, frontier);
-        var nextPercentage = runtime.Percentage;
-        this.Tick(runtime, prevPercentage, nextPercentage);
-        if (runtime.Percentage >= 1)
-            this.Success(frontier, runtime);
-    }
+    //    //ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(runtime.Percentage, 1);
+    //    if (runtime.Percentage >= 1)
+    //        throw new InvalidOperationException("Encounter has already completed.");
+    //    var prevPercentage = runtime.Percentage;
+    //    runtime.Current += this.GetProgressStep(actor, frontier);
+    //    var nextPercentage = runtime.Percentage;
+    //    this.Tick(runtime, prevPercentage, nextPercentage);
+    //    if (runtime.Percentage >= 1)
+    //        this.Success(frontier, runtime);
+    //}
 
-    protected abstract void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter);
-    void Success(FrontierRuntime frontier, EncounterRuntime encounter)
-    {
-        if (encounter.Context.Actor.Net.IsServer)
-            this.OnSuccess(frontier, encounter);
-    }
-    internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter)
-        => this.OnBegin(frontier, encounter);
+    //protected abstract void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter);
+    //void Success(FrontierRuntime frontier, EncounterRuntime encounter)
+    //{
+    //    if (encounter.Context.Actor.Net.IsServer)
+    //        this.OnSuccess(frontier, encounter);
+    //}
+    //internal void Begin(FrontierRuntime frontier, EncounterRuntime encounter)
+    //    => this.OnBegin(frontier, encounter);
 
     protected virtual void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter) { }
 
@@ -52,7 +51,7 @@ internal abstract class EncounterWorker
         if (encounter.Context.Actor.Net.IsServer)
             this.TickInt(encounter, prevPercentage, nextPercentage);
     }
-    internal abstract int GetWeight(FrontierRuntime frontier, Actor actor);
+    //internal abstract int GetWeight(FrontierRuntime frontier, Actor actor);
 
     //internal virtual EncounterRuntime Start(FrontierRuntime frontier, Actor actor) => null;
 

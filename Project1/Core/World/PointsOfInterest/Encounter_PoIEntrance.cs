@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Simulation;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Diagnostics;
 
 namespace Project1.Core.World.PointsOfInterest;
 
-internal class Encounter_PoIEntrance : EncounterWorker
+internal sealed class Encounter_PoIEntrance : EncounterWorker
 {
     internal sealed class Context : EncounterContext
     {
@@ -44,17 +43,17 @@ internal class Encounter_PoIEntrance : EncounterWorker
         // TODO award exploration skill xp to actor
     }
 
-    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
-    {
-        // TODO produce and apply exploration completion rewards
-        Typed(encounter.Context).PoI.Remove(encounter.Context.Actor);
-    }
+    //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
+    //{
+    //    // TODO produce and apply exploration completion rewards
+    //    Typed(encounter.Context).PoI.Remove(encounter.Context.Actor);
+    //}
 
     internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
         => 1/* + (actor exploration skill * .01f)*/;
 
-    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-       => frontier.PoIs.Count * 50;
+    //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
+    //   => frontier.PoIs.Count * 50;
 
     internal override int GetDurationMultiplier(EncounterContext context)
         => Typed(context).PoI.Size;

@@ -2,7 +2,6 @@
 using Project1.Core.Systems.Materials;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
-using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.World.Encounters;
@@ -11,16 +10,16 @@ internal class Encounter_ResourceNode : EncounterWorker
 {
     static readonly List<MaterialRefinementDef> ValidItems = [MaterialRefinementDefOf.Logs, MaterialRefinementDefOf.Ore];
 
-    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
-    {
-        throw new NotImplementedException();
-    }
+    //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
+    //{
+    //    throw new NotImplementedException();
+    //}
 
-    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-    {
-        int targetCount = 10;
-        return 0;// 1;
-    }
+    //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
+    //{
+    //    int targetCount = 10;
+    //    return 0;// 1;
+    //}
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {

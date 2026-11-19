@@ -5,13 +5,10 @@ using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
-using Project1.Core.Systems.Factions;
 using Project1.Core.Systems.Thoughts;
-using Project1.Core.World.Combat;
 using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
-using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,43 +19,43 @@ namespace Project1.Core.World.Actions;
 
 internal sealed class Encounter_OtherActor : EncounterWorker
 {
-    internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-        //=> frontier.IncapacitatedActors.Count * 10;
-        => ((StaticWorld)actor.World).Combat.IsAvailableForNewCombat(actor) ? (frontier.OccupantCount - 1) : 0;// * 100;
+    //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
+    //    //=> frontier.IncapacitatedActors.Count * 10;
+    //    => ((StaticWorld)actor.World).Combat.IsAvailableForNewCombat(actor) ? (frontier.OccupantCount - 1) : 0;// * 100;
 
-    protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
-    {
-        var actor = encounter.Context.Actor;
-        var otherActorIds = frontier.ActorsActiveNew.Except([actor.RefId]).ToList();
-        //if (otherActors.Count == 0)
-        //    return;
-        var world = (StaticWorld)actor.World;
+    //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
+    //{
+    //    var actor = encounter.Context.Actor;
+    //    var otherActorIds = frontier.ActorsActiveNew.Except([actor.RefId]).ToList();
+    //    //if (otherActors.Count == 0)
+    //    //    return;
+    //    var world = (StaticWorld)actor.World;
 
-        var other = actor.World.Get<Actor>(otherActorIds.SelectRandom(world.Random));
-        if (!world.Combat.AreAvailableForNewCombat(actor, other))
-            throw new InvalidOperationException(
-                $"{actor} is unavailable for combat"
-                );
-        ArgumentNullException.ThrowIfNull(other);
-        if (FactionsSystem.AreEnemies(actor, other))
-        {
-            if (!world.Combat.IsEngaged(other))
-                world.Combat.Engage(actor, other);
-            return;
-        }
+    //    var other = actor.World.Get<Actor>(otherActorIds.SelectRandom(world.Random));
+    //    if (!world.Combat.AreAvailableForNewCombat(actor, other))
+    //        throw new InvalidOperationException(
+    //            $"{actor} is unavailable for combat"
+    //            );
+    //    ArgumentNullException.ThrowIfNull(other);
+    //    if (FactionsSystem.AreEnemies(actor, other))
+    //    {
+    //        if (!world.Combat.IsEngaged(other))
+    //            world.Combat.Engage(actor, other);
+    //        return;
+    //    }
 
-        if (other.Biology.IsIncapacitated)
-        {
-            TryUsePotion(actor, other);
-            //HealArbitrary(actor, other);
-        }
-        else
-        {
-            actor.Relationships.ApplyDelta(other, 1);
-            other.Relationships.ApplyDelta(actor, 1);
-            actor.World.Events.Post(new ActorsMetOffMapEvent(actor, other));
-        }
-    }
+    //    if (other.Biology.IsIncapacitated)
+    //    {
+    //        TryUsePotion(actor, other);
+    //        //HealArbitrary(actor, other);
+    //    }
+    //    else
+    //    {
+    //        actor.Relationships.ApplyDelta(other, 1);
+    //        other.Relationships.ApplyDelta(actor, 1);
+    //        actor.World.Events.Post(new ActorsMetOffMapEvent(actor, other));
+    //    }
+    //}
 
     private static bool TryUsePotion(Actor actor, Actor other)
     {

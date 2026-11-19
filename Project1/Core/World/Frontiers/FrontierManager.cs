@@ -205,7 +205,7 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
             actor.TickOffMap();
         }
         this.TickIncapacitatedActors();
-        this.TickActiveEncounters(); // moved the client guard inside so i can increment its progress on clients
+        //this.TickActiveEncounters(); // moved the client guard inside so i can increment its progress on clients
 
         if (isServer)
         {
@@ -215,17 +215,17 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
         }
     }
 
-    void TickActiveEncounters()
-    {
-        foreach (var (actor, encounter) in this.ActiveEncounters)
-        {
-            encounter.Tick(this.GetFrontier(actor), actor);
-            //if(result.FollowUpEncounter is EncounterRuntime nextEncounter)
-            //{
+    //void TickActiveEncounters()
+    //{
+    //    foreach (var (actor, encounter) in this.ActiveEncounters)
+    //    {
+    //        encounter.Tick(this.GetFrontier(actor), actor);
+    //        //if(result.FollowUpEncounter is EncounterRuntime nextEncounter)
+    //        //{
 
-            //}
-        }
-    }
+    //        //}
+    //    }
+    //}
 
     void CleanupActiveEncounters()
     {
@@ -355,7 +355,8 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
         this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
         if (this.World.Net.IsServer)
         {
-            runtime.Begin(frontier);
+            throw new NotImplementedException();
+            //runtime.Begin(frontier);
             $"{actor} begins {runtime.Def.LabelReadable} on tick {this.World.CurrentTick}".ToConsole();
         }
         this.Notifier.Notify();

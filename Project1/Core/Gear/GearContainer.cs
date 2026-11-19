@@ -20,7 +20,7 @@ namespace Project1.Core.Gear
         public GameObjectSlot GetSlot(GearSlotDef def) => this.Slots[def];
         public Entity GetSlotContent(GearSlotDef def) => this.Slots[def].Object as Entity;
 
-        public IEnumerable<GearSlotDef> SlotDefs
+        public ICollection<GearSlotDef> SlotDefs
             => this.Slots.Keys;
 
         public GroupBox GetGui()

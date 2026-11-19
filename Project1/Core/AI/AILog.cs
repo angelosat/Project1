@@ -6,11 +6,11 @@ using System.Linq;
 
 namespace Project1.Core.AI;
 
-public class AILog
+public sealed class AILog
 {
     const int Capacity = 64;
-    public readonly ObservableCollection<Entry> Inner = new();
-    private Actor Owner;
+    public readonly ObservableCollection<Entry> Inner = [];
+    private readonly Actor Owner;
 
     public AILog(Actor owner)
     {

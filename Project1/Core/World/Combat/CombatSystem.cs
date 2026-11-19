@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
@@ -48,13 +49,20 @@ internal static class CombatSystem
       
         var (damageValue, damageType) = GetAttackDamage(attacker);
 
-        var armor = defender.Stats.Get(StatDefOf.Armor);
+        var bodyPartTargetDef = defender.Gear.SlotDefs.SelectRandom(random); // TODO make bodypart selection weighted
+        var bodyPartGear = defender.Gear.GetGear(bodyPartTargetDef);
+        float armor = bodyPartGear?.ToolComponent.Armor ?? 0f;
+
         var resistandeDef = DamageToResistanceDefs[damageType];
         var resistanceStat = StatSystem.GetDerivedStat(resistandeDef);
         var resistance = defender.Stats.Get(resistanceStat);
 
-        var finalDamage = new DamageInfo(damageValue * (isCrit ? 2 : 1), damageType) ;
-        // TODO calculate damage mitigation
+        var multiplier = isCrit ? 1.5f : 1f;
+
+        var rawValue = damageValue * multiplier;
+        var finalValue = rawValue * 100f / (100f + armor);
+
+        var finalDamage = new DamageInfo((int)finalValue, damageType);
 
         return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage);
     }
@@ -94,8 +102,8 @@ internal static class CombatSystem
             case AttackResultTypes.Dodge:
             case AttackResultTypes.Parry:
                 break;
-            case AttackResultTypes.Hit:
             case AttackResultTypes.Critical:
+            case AttackResultTypes.Hit:
                 var damage = result.Damage;
                 defender.Resources.ApplyDelta(ResourceDefOf.Health, -damage.Value);
                 if (defender.Biology.IsIncapacitated)

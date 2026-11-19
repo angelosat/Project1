@@ -33,8 +33,8 @@ class NpcLogUINewNew : SelectionBoundControl
         this.ClearControls();
         var descWidth = availableWidth - timeWidth;
         this.Table = new TableScrollableCompact<AILog.Entry>()
-                .AddColumn(null, "Time", timeWidth, (e) => new Label(e.Time.ToString("HH:mm:ss")), 0)
-                .AddColumn(null, "Description", descWidth, (e) => new GroupBox().AddControlsLineWrap(Label.ParseNewNew(e.Text), descWidth), 0);
+                .AddColumn(null, "Time", timeWidth, (e) => new LabelNew(e.Time.ToString("HH:mm:ss")), 0)
+                .AddColumn(null, "Description", descWidth, (e) => new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(e.Text), descWidth), 0);
         if(this.CurrentSelection is Actor actor)
             this.Table.Bind(actor.AI.State.Log.Inner);
         this.Controls.Add(this.Table);

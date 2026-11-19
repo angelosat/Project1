@@ -1,29 +1,33 @@
-﻿using Project1.Core.World.Frontiers;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Networking;
+using Project1.Core.World.Frontiers;
 using Project1.Framework;
-using Project1.Core.Networking;
 
 namespace Project1.Core.AI
 {
     [EnsureStaticCtorCall]
     internal static class PacketsAI
     {
-        static readonly PacketId _pLocationDecision, _pLogEntry;
+        static readonly PacketId 
+            _pLocationDecision = Registry.PacketHandlers.Register(OnLocationDecision), 
+            _pLogEntry = Registry.PacketHandlers.Register(OnLogEntry);
+
         static PacketsAI()
         {
-            _pLocationDecision = Registry.PacketHandlers.Register(OnLocationDecision);
-            _pLogEntry = Registry.PacketHandlers.Register(OnLogEntry);
+            //_pLocationDecision = Registry.PacketHandlers.Register(OnLocationDecision);
+            //_pLogEntry = Registry.PacketHandlers.Register(OnLogEntry);
             Registry.WorldEventHooksServer.Register<AILocationDecisionEvent>(SendLocationDecision);
             Registry.WorldEventHooksServer.Register<AILogEntryEvent>(SendLogEntry);
         }
+
         private static void SendLogEntry(AILogEntryEvent e)
         {
             Server.Instance.BeginPacket(_pLogEntry)
                 .Write(e.Actor.RefId)
                 .Write(e.Text);
         }
+
         private static void OnLogEntry(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
@@ -31,6 +35,7 @@ namespace Project1.Core.AI
             var text = r.ReadString();
             actor.AI.State.Log.Write(text);
         }
+
         private static void SendLocationDecision(AILocationDecisionEvent e)
         {
             Server.Instance.BeginPacket(_pLocationDecision)

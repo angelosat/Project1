@@ -41,6 +41,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     public readonly Dictionary<StatDef, float> Modifiers = [];
     public readonly Dictionary<StatDef, StatRuntime> IntrinsicStats = [];
 
+    public float Armor => this.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f;
+
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
     public float BaseWork => this.baseWork ??= this.CalculateBaseWorkAmount();

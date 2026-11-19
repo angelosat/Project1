@@ -4,17 +4,16 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
-namespace Project1.Core.UI
+namespace Project1.Core.UI;
+
+public interface ISelectable
 {
-    public interface ISelectable
-    {
-        string Name { get; }
-        IEnumerable<Control> GetInspectorControls();
-        IEnumerable<(string label, Type type)> GetInspectorTabs();
-        IEnumerable<Control> GetSelectionDetails();
-        bool Exists { get; }
-        Vector3 Global { get; }
-        MapBase Map { get; }
-        IEnumerable<(string Label, Type GuiType)> GetTabs() { yield break; }
-    }
+    string Name { get; }
+    IEnumerable<Control> GetInspectorControls();
+    IEnumerable<(string label, Type type)> GetInspectorTabs();
+    IEnumerable<Control> GetSelectionDetails();
+    bool Exists { get; }
+    Vector3 Global { get; }
+    MapBase Map { get; }
+    IEnumerable<(string Label, Type GuiType)> GetTabs() { yield break; }
 }

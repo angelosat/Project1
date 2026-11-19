@@ -216,14 +216,15 @@ public sealed class GearComp : EntityComp
     //    return (value, type);
     //}
 
-    public IEnumerable<GearSlotDef> SlotDefs 
+    public ICollection<GearSlotDef> SlotDefs 
         => this.Gear.SlotDefs;
 
     public float GetModifier(StatDef stat)
         => this.GetItems().Sum(g => g.ToolComponent.Modifiers.GetValueOrDefault(stat));
 
     public float GetArmor()
-        => this.GetItems().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
+        //=> this.GetItems().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f);
+        => this.GetItems().Sum(g => g.ToolComponent.Armor);
 
     public float GetDamage()
       => this.GetItems().Sum(g => g.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.Damage)?.Value ?? 0f);

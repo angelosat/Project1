@@ -202,7 +202,10 @@ internal static class ToolSystem
 
     internal static Entity CreateRandomNew(Random rand)
     {
-        var slot = _defsBySlot.Keys.SelectRandom(rand);
+        var slot = _defsBySlot.Keys
+            //.Where(_defsBySlot.ContainsKey)
+            //.ToArray() // TODO cache this
+            .SelectRandom(rand);
         var item = CreateRandom(slot, rand);
         return item;
         //var item = ItemDefOf.Gear.Create();
@@ -214,11 +217,13 @@ internal static class ToolSystem
         //item.Randomize(Server.Random);
         //return item;
     }
-    internal static Entity? CreateRandom(GearSlotDef slot, Random random)
+    internal static Entity CreateRandom(GearSlotDef slot, Random random)
     {
-        if (!_defsBySlot.ContainsKey(slot))
-            return null;
-        var profiles = _defsBySlot[slot];
+        if (!_defsBySlot.TryGetValue(slot, out List<GearProfileDef> profiles))
+            //return null;
+            throw new InvalidOperationException(
+                $"No item templates for {slot} exist.")
+                ;
         var profile = profiles.SelectRandom(random);
         var item = Create(profile, random);
         return item;

@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Project1.Core;
+using Project1.Core.Input;
+using Project1.Core.Screens;
 using Project1.Core.UI;
+using Project1.Core.UI.Hud;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -423,31 +427,30 @@ public class LabelNew : ButtonBaseNew
     }
     internal static IEnumerable<LabelNew> ParseNewNew(object value)
     {
-        //if (value is string str)
-        //    return ParseNew(str);
-        //else if (value is Inspectable objInspectable)
-        //    return new Label[] { new Label(value) };
-        //else if (value is IEnumerable<string> strEnum)
-        //    return strEnum.SelectMany(s => ParseNew(s));
-        //else if (value is IEnumerable<object> objEnum)
-        //    return objEnum.Select(o => new Label(o));
-        //else if (value is Func<string> textFunc)
-        //    return new Label[] { new Label(textFunc) };
-        //else
-        //    return new Label[] { new Label(value) };
-
-        if (value is string str)
-            foreach (var i in ParseNew(str)) yield return i;
-        else if (value is Inspectable objInspectable)
-            yield return new LabelNew(value);
-        else if (value is IEnumerable<string> strEnum)
-            foreach (var i in strEnum.SelectMany(s => ParseNew(s))) yield return i;
-        else if (value is IEnumerable<object> objEnum)
-            foreach (var i in objEnum.Select(o => new LabelNew(o))) yield return i;
-        else if (value is Func<string> textFunc)
-            yield return new LabelNew(textFunc);
-        else
-            yield return new LabelNew(value);
+        switch (value)
+        {
+            case string str:
+                foreach (var i in ParseNew(str)) yield return i;
+                break;
+            //case ISelectable selectable:
+            //    yield return new LabelNew(value) { LeftClickAction = () => SelectionManager.Select(selectable) };
+            //    break;
+            case Inspectable objInspectable:
+                yield return new LabelNew(value);
+                break;
+            case IEnumerable<string> strEnum:
+                foreach (var i in strEnum.SelectMany(s => ParseNew(s))) yield return i;
+                break;
+            case IEnumerable<object> objEnum:
+                foreach (var i in objEnum.Select(o => new LabelNew(o))) yield return i;
+                break;
+            case Func<string> textFunc:
+                yield return new LabelNew(textFunc);
+                break;
+            default:
+                yield return new LabelNew(value);
+                break;
+        }
     }
     
     internal static GroupBox ParseWrap(int wrapWidth, params object[] values)

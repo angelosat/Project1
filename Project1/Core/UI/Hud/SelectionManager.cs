@@ -124,6 +124,10 @@ public sealed class SelectionManager
         };
         this.SelectSingle(selectable);
     }
+    public static void Select(ISelectable target)
+    {
+        Instance.SelectSingle(target);
+    }
     private void OnBlocksUpdated(CellsInvalidatedEvent e)
     {
         if (this.Selectable is CellSelection cell && e.Positions.Contains(cell.Global))

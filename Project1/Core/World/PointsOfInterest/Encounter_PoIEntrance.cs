@@ -2,7 +2,6 @@
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 #nullable enable
 
@@ -10,38 +9,38 @@ namespace Project1.Core.World.PointsOfInterest;
 
 internal sealed class Encounter_PoIEntrance : EncounterWorker
 {
-    internal sealed class Context : EncounterContext
-    {
-        internal PoIRuntime PoI => field ??= PoISystem.GetPoI(this.Actor)!;
+    //internal sealed class Context : EncounterContext
+    //{
+    //    internal PoIRuntime PoI => field ??= PoISystem.GetPoI(this.Actor)!;
 
-        //internal override float GetPercentage(EncounterRuntime e)
-        //=> e.Current / this.PoI.ExplorationTicksRequired;
-        internal override float GetMax(EncounterRuntime e)
-            => this.PoI.ExplorationTicksRequired;
-    }
+    //    //internal override float GetPercentage(EncounterRuntime e)
+    //    //=> e.Current / this.PoI.ExplorationTicksRequired;
+    //    internal override float GetMax(EncounterRuntime e)
+    //        => this.PoI.ExplorationTicksRequired;
+    //}
 
-    protected override Context CreateContextInt() => new();
+    //protected override Context CreateContextInt() => new();
 
-    static Context Typed(EncounterContext ctx) => (Context)ctx;
+    //static Context Typed(EncounterContext ctx) => (Context)ctx;
 
     //internal override int GetProgressMax(EncounterRuntime e)
     //    => Typed(e.Context).PoI.ExplorationTicksRequired;
 
-    protected override void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter)
-    {
-        throw new UnreachableException();
-        //var actor = encounter.Actor;
-        //var poi = PoISystem.SelectPoI(frontier, actor);
-        //poi.Add(actor);
-    }
+    //protected override void OnBegin(FrontierRuntime frontier, EncounterRuntime encounter)
+    //{
+    //    throw new UnreachableException();
+    //    //var actor = encounter.Actor;
+    //    //var poi = PoISystem.SelectPoI(frontier, actor);
+    //    //poi.Add(actor);
+    //}
 
-    protected override void TickInt(EncounterRuntime encounter, float prevPercentage, float nextPercentage)
-    {
-        var ctx = encounter.Context;
-        var poi = Typed(ctx).PoI;
-        poi.TryEvent(ctx.Actor, prevPercentage, nextPercentage);
-        // TODO award exploration skill xp to actor
-    }
+    //protected override void TickInt(EncounterRuntime encounter, float prevPercentage, float nextPercentage)
+    //{
+    //    var ctx = encounter.Context;
+    //    var poi = Typed(ctx).PoI;
+    //    poi.TryEvent(ctx.Actor, prevPercentage, nextPercentage);
+    //    // TODO award exploration skill xp to actor
+    //}
 
     //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     //{
@@ -49,17 +48,17 @@ internal sealed class Encounter_PoIEntrance : EncounterWorker
     //    Typed(encounter.Context).PoI.Remove(encounter.Context.Actor);
     //}
 
-    internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
-        => 1/* + (actor exploration skill * .01f)*/;
+    //internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
+    //    => 1/* + (actor exploration skill * .01f)*/;
 
     //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     //   => frontier.PoIs.Count * 50;
 
-    internal override int GetDurationMultiplier(EncounterContext context)
-        => Typed(context).PoI.Size;
+    //internal override int GetDurationMultiplier(EncounterContext context)
+    //    => Typed(context).PoI.Size;
 
-    internal override string GetTextStatus(EncounterRuntime encounter)
-        => $"Exploring: {Typed(encounter.Context).PoI.Def.LabelReadable}";
+    //internal override string GetTextStatus(EncounterRuntime encounter)
+    //    => $"Exploring: {Typed(encounter.Context).PoI.Def.LabelReadable}";
 
     internal override WorldActionDef DecideAction(WorldActionData context)
     {

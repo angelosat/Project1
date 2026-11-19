@@ -23,6 +23,14 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         return this.RegisterCombat(id, instigator, target);//, runtime);
     }
 
+    public void Cancel(Actor participant)
+    {
+        if (!this.ActorsToCombat.TryGetValue(participant.RefId, out int runtimeId))
+            return;
+        var runtime = this.ActiveCombatSessions[runtimeId];
+        runtime.MarkResolved();
+    }
+
     public bool IsEngaged(Actor actor)
     {
         if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combat))

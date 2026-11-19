@@ -26,7 +26,7 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
     readonly Dictionary<FrontierDef, FrontierRuntime> Frontiers = [];
     static readonly Dictionary<Tier, FrontierDef> FrontiersByTier = [];
     readonly Dictionary<Actor, WorldSpacePosition> ActorPositions = [];
-    readonly Dictionary<Actor, EncounterRuntime> ActiveEncounters = [];
+    //readonly Dictionary<Actor, EncounterRuntime> ActiveEncounters = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
     readonly Dictionary<Actor, PoIRuntime> ActorsInPoIs = [];
     static readonly HashSet<FrontierDef> _cachedDefs;
@@ -210,7 +210,7 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
         if (isServer)
         {
             //this.TickActiveEncounters();
-            this.CleanupActiveEncounters();
+            //this.CleanupActiveEncounters();
             this.EnsureFrontierContents();
         }
     }
@@ -227,26 +227,26 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
     //    }
     //}
 
-    void CleanupActiveEncounters()
-    {
-        foreach (var (actor, encounter) in this.ActiveEncounters.ToArray())
-        {
-            var state = encounter.State;
-            if (state == EncounterStates.Finished)
-            {
-                $"{actor}'s {encounter.Def.LabelReadable} finished after {encounter.Current} ticks".ToConsole();
-                this.EndEncounter(actor);
-                //this.ActiveEncounters.Remove(actor);
-                //this.World.Events.Post(new EncounterEndEvent(actor, encounter));
-            }
-        }
-    }
+    //void CleanupActiveEncounters()
+    //{
+    //    foreach (var (actor, encounter) in this.ActiveEncounters.ToArray())
+    //    {
+    //        var state = encounter.State;
+    //        if (state == EncounterStates.Finished)
+    //        {
+    //            $"{actor}'s {encounter.Def.LabelReadable} finished after {encounter.Current} ticks".ToConsole();
+    //            this.EndEncounter(actor);
+    //            //this.ActiveEncounters.Remove(actor);
+    //            //this.World.Events.Post(new EncounterEndEvent(actor, encounter));
+    //        }
+    //    }
+    //}
 
-    bool IsEngaged(Actor actor)
-        => this.ActiveEncounters.ContainsKey(actor);
+    //bool IsEngaged(Actor actor)
+    //    => this.ActiveEncounters.ContainsKey(actor);
 
-    internal EncounterRuntime GetEncounter(Actor actor)
-        => this.ActiveEncounters.GetValueOrDefault(actor);
+    //internal EncounterRuntime GetEncounter(Actor actor)
+    //    => this.ActiveEncounters.GetValueOrDefault(actor);
 
     static internal FrontierDef GetFrontier(Tier tier)
         => FrontiersByTier[tier];
@@ -349,25 +349,26 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
 
     internal void BeginEncounter(Actor actor, EncounterDef encounterDef)
     {
+        throw new NotImplementedException();
+
         var frontier = this.GetFrontier(actor);
-        var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
-        this.ActiveEncounters.Add(actor, runtime);
-        this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
+        //var runtime = new EncounterRuntime(encounterDef, actor, frontier.Def);
+        //this.ActiveEncounters.Add(actor, runtime);
+        //this.World.Events.Post(new EncounterBeginEvent(actor, runtime));
         if (this.World.Net.IsServer)
         {
-            throw new NotImplementedException();
             //runtime.Begin(frontier);
-            $"{actor} begins {runtime.Def.LabelReadable} on tick {this.World.CurrentTick}".ToConsole();
+            //$"{actor} begins {runtime.Def.LabelReadable} on tick {this.World.CurrentTick}".ToConsole();
         }
         this.Notifier.Notify();
     }
 
-    internal void EndEncounter(Actor actor)
-    {
-        this.ActiveEncounters.Remove(actor);
-        this.World.Events.Post(new EncounterEndEvent(actor));
-        this.Notifier.Notify();
-    }
+    //internal void EndEncounter(Actor actor)
+    //{
+    //    this.ActiveEncounters.Remove(actor);
+    //    this.World.Events.Post(new EncounterEndEvent(actor));
+    //    this.Notifier.Notify();
+    //}
 
     internal string GetStatusText(Actor actor)
     {

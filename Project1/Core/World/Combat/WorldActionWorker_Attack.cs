@@ -4,6 +4,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.World.Actions;
+using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
 using System.Linq;
 
@@ -36,9 +37,23 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
         // if this is the first attack on an ambushed opponent, this means that there is not compat runtime yet
         // so interuprt the target actor's worldaction if any, and create a combat runtime
         var target = typed.Target;
+        var world = data.World;
+        var frontiers = (FrontierManager)world.Space;
+
+        // check if the target is still in the relevant overworld context and cancel the combat if not
+        if (actor.Frontier != target.Frontier)
+        {
+            world.Combat.Cancel(actor);
+            return;
+        }
+
+        if (frontiers.GetPoi(actor) != frontiers.GetPoi(target))
+        {
+            world.Combat.Cancel(actor);
+            return;
+        }
 
         CombatSystem.PerformAttack(actor, target);
-        var world = data.World;
         if (target.Biology.IsIncapacitated)
         {
             var invItems = target.Inventory.GetItems();

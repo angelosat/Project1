@@ -106,7 +106,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         //    return null;
         //return WorldActionDefOf.Attack;
         var ctx = (WorldActionData_Combat)context;
-        var other = ctx.Actor.World.Get<Actor>(ctx.TargetId);
+        var other = ctx.Actor.World.Resolve<Actor>(ctx.TargetId);
         if (other.Biology.IsIncapacitated)
             throw new InvalidOperationException("Tried to initiate combat against incapacitated actor.");
         return WorldActionDefOf.Combat;

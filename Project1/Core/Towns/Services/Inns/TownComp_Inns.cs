@@ -128,7 +128,7 @@ public sealed class TownComp_Inns : TownComp
     internal bool RegisterGuest(ServiceRequest_Inn req)
     {
         var guestid = req.Customer;
-        var guest = this.World.Get<Actor>(guestid);
+        var guest = this.World.Resolve<Actor>(guestid);
         IntVec3? foundBed = default;
         foreach (var potentialBed in this.AvailableBeds)
         {

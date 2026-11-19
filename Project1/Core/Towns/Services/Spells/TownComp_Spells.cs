@@ -104,7 +104,7 @@ public class TownComp_Spells : TownComp
         req.AssignVendor(caster);
         if (req.RequiresPayment)
         {
-            var spellTarget = this.World.Get<Actor>(req.Customer);
+            var spellTarget = this.World.Resolve<Actor>(req.Customer);
             var payment = this.Town.Trades.Request(spellTarget, caster);
             req.PaymentId = payment.Id;
         }

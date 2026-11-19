@@ -40,7 +40,7 @@ internal class Planner_Healing_Customer : Planner
 
         var map = actor.Map;
      
-        var caster = map.World.Get<Actor>(existing.Vendor);
+        var caster = map.World.Resolve<Actor>(existing.Vendor);
         if (!actor.CanReachAndReserve(caster))
             return null;
         if (existing.IsPaidFor)

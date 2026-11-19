@@ -55,7 +55,7 @@ internal static class Packets_Healing
     private static void ReceiveCreate(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var target = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+        var target = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
         var spell = r.ReadDef<SpellDef>();
         var manager = target.Map.Town.Spells;
         manager.Request(target, spell);

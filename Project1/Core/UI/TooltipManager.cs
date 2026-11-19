@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Project1.Core.Entities;
 using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
@@ -9,7 +10,9 @@ using Project1.Framework.Events;
 using Project1.Framework.Input;
 using Project1.Framework.UI;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.UI;
 
@@ -57,6 +60,7 @@ public class TooltipManager
     void Build()
     {
         this.Tooltip = Build(this.Object);
+        this.Tooltip.OnAttached();
 
         if (this.Tooltip.Controls.Count > 0)
         {
@@ -76,6 +80,16 @@ public class TooltipManager
             tooltip.Controls.Add(new Label(item.LabelReadable));
         foreach (var ctrl in item.GetTooltipControls())
             tooltip.AddControlsBottomLeft(ctrl);
+
+        if (item is Control control)
+        {
+            //item = control.TagFunc?.Invoke() as ITooltippable;
+            if (control.TagFunc?.Invoke() is ITooltippable replacement)
+                item = replacement;
+        }
+        foreach (var provider in TooltipProviders)
+            foreach (var ctrl in provider(item))
+                tooltip.AddControlsBottomLeft(ctrl);
         foreach (var comp in Game1.Instance.GameComponents)
             comp.OnTooltipCreated(item, tooltip);
         if (item.TooltipColor.HasValue)
@@ -140,4 +154,11 @@ public class TooltipManager
     {
         UIManager.ToggleUnique<TooltipNew>(tooltippable as ISelectable);
     }
+
+    internal static void RegisterProvider(Func<ITooltippable, IEnumerable<Control>> provider)
+    {
+        TooltipProviders.Add(provider);
+    }
+
+    static readonly List<Func<ITooltippable, IEnumerable<Control>>> TooltipProviders = [];
 }

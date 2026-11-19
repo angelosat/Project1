@@ -66,7 +66,7 @@ internal static class Packets_Personality
     private static void ReceiveTraitValChanged(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+        var actor = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
         var trait = r.ReadDef<TraitDef>();
         var val = r.ReadSingle();
         actor.Personality.SetValue(trait, val);

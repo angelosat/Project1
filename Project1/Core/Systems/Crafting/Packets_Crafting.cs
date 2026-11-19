@@ -232,7 +232,7 @@ static class Packets_Crafting
         var mapid = r.ReadMapId();
         var map = endpoint.World.Get(mapid);
         var order = map.Town.Crafting.Get(r.ReadInt32());
-        var actor = endpoint.World.Get<Actor>(r.ReadInt32());
+        var actor = endpoint.World.Resolve<Actor>(r.ReadInt32());
         order.CompletedBy(actor);
     }
 

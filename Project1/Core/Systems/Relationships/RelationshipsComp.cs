@@ -67,8 +67,8 @@ namespace Project1.Core.Systems.Relationships
         public override string Name => "Relationships";
 
         internal Action<Actor, IProgressBar> EntryAdded;
-        internal IEnumerable<(Actor, RelationshipEntry)> AllEntries => this.Entries.Select(kv => (this.Owner.World.Get<Actor>(kv.Key), kv.Value));
-        internal IEnumerable<(Actor, IProgressBar)> AllProgress => this.Entries.Select(kv => (this.Owner.World.Get<Actor>(kv.Key), kv.Value.Progress));
+        internal IEnumerable<(Actor, RelationshipEntry)> AllEntries => this.Entries.Select(kv => (this.Owner.World.Resolve<Actor>(kv.Key), kv.Value));
+        internal IEnumerable<(Actor, IProgressBar)> AllProgress => this.Entries.Select(kv => (this.Owner.World.Resolve<Actor>(kv.Key), kv.Value.Progress));
 
         readonly Dictionary<EntityRefId, RelationshipEntry> Entries = [];
         public override void Tick()

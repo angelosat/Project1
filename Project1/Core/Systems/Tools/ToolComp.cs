@@ -40,12 +40,14 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
     public readonly Dictionary<StatDef, float> Modifiers = [];
     public readonly Dictionary<StatDef, StatRuntime> IntrinsicStats = [];
+    public readonly Dictionary<StatDef, StatRuntime> TrackingStats = [];
 
     public float Armor => this.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f;
 
     float? baseSpeed, baseWork;
     public float BaseSpeed => this.baseSpeed ??= this.CalculateBaseSpeed();
     public float BaseWork => this.baseWork ??= this.CalculateBaseWorkAmount();
+    
     internal override void PostMapLoad()
     {
         ToolSystem.BakeStats(this.Owner);
@@ -147,6 +149,21 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         if (this.Profile.ToolUse != toolUse)
             return null;
         return this.BaseWork;
+    }
+
+    public IEnumerable<StatRuntime> GetTrackingStats() => this.TrackingStats.Values;
+
+    internal void OnHit(float damagePrevented)
+    {
+        this.GetOrCreateStat(StatDefOf.TotalHits).Value++;
+        this.GetOrCreateStat(StatDefOf.TotalPreventedDamage).Value += damagePrevented;
+    }
+
+    StatRuntime GetOrCreateStat(StatDef stat, float initialValue = 0)
+    {
+        if (!this.TrackingStats.TryGetValue(stat, out var runtime))
+            this.TrackingStats.Add(stat, runtime = new(stat, initialValue));
+        return runtime;
     }
 
     public void AddActorEnhancement(StatBonusDef targetDef, float value)

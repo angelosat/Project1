@@ -5,7 +5,6 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.World.Actions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 #nullable enable
 

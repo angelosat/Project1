@@ -59,7 +59,7 @@ namespace Project1.Core.Rooms
             var map = net.World.Get(mapid);
             var roomID = r.ReadInt32();
             var room = map.Town.RoomManager.GetRoom(roomID);
-            var owner = r.ReadInt32() is int id && id != -1 ? net.World.Get<Actor>(id) : null;
+            var owner = r.ReadInt32() is int id && id != -1 ? net.World.Resolve<Actor>(id) : null;
             if (net is Server)
                 SetOwner(net, player, room, owner);
             else

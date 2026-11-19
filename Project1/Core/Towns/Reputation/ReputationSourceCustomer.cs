@@ -17,7 +17,7 @@ public sealed class ReputationSourceCustomer : ReputationSourceWorker
     {
         var map = e.Map;
         var transaction = e.Transaction;
-        if (map.World.Get<Actor>(transaction.Customer) is not Actor actor)
+        if (map.World.Resolve<Actor>(transaction.Customer) is not Actor actor)
             return;
         var patienceCurrent = (int)actor.Resources.GetValue(ResourceDefOf.Patience);
         var patienceMax = (int)actor.Resources.GetMax(ResourceDefOf.Patience);

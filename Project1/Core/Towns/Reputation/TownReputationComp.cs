@@ -66,7 +66,7 @@ public sealed class TownReputationComp : TownComp, IGuiNew
     {
         var box = new GroupBox();
         var table = new Table<EntityRefId>()
-            .AddColumn("name", 128, e => new LabelNew(() => this.Map.World.Get<Actor>(e).LabelReadable))
+            .AddColumn("name", 128, e => new LabelNew(() => this.Map.World.Resolve<Actor>(e).LabelReadable))
             .AddColumn("rep", 200, e => this._table[e].CreateControl());
         table.AddItems(this._table.Keys);
         box.Controls.Add(table);
@@ -85,7 +85,7 @@ sealed class TownComp_Reputation_Gui : GroupBox
         var comp = Ingame.MainViewportMap.Town.Reputation;
         var entries = comp.Entries;
         this.Table = new Table<ActorReputationEntry>()
-            .AddColumn("name", 128, e => new LabelNew(() => comp.World.Get<Actor>(e.ActorId).LabelReadable))
+            .AddColumn("name", 128, e => new LabelNew(() => comp.World.Resolve<Actor>(e.ActorId).LabelReadable))
             .AddColumn("rep", 200, e => e.CreateControl());
         this.Table.AddItems(entries);
         comp.Added += this.Table.AddItems;

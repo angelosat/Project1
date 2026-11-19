@@ -12,5 +12,7 @@ sealed class GearRoleWorker_Feet : GearRoleWorker
         var speed = StatDefOf.MoveSpeed.Worker.CalculateItemStat(item);
         comp.IntrinsicStats[StatDefOf.Armor] = new(StatDefOf.Armor, armor);
         comp.IntrinsicStats[StatDefOf.MoveSpeed] = new(StatDefOf.MoveSpeed, speed);
+        //comp.TrackingStats[StatDefOf.TotalHits] = new(StatDefOf.TotalHits, 0);
+        //comp.TrackingStats[StatDefOf.TotalPreventedDamage] = new(StatDefOf.TotalPreventedDamage, 0);
     }
 }

@@ -16,7 +16,7 @@ internal class Presentation_Relationships : IPresentationWorker
 
     private void HandleRelationshipDeltaApplied(RelationshipDeltaAppliedEvent e)
     {
-        var actor = Client.Instance.World.Get<Entity>(e.Owner);
+        var actor = Client.Instance.World.Resolve<Entity>(e.Owner);
         if (actor.Map is null)
             return;
         //FloatingText.Create(owner.Map, owner.Global, $"{e.Delta:}", ft => ft.Font = UIManager.FontBold);

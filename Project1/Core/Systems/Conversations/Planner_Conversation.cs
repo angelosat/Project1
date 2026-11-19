@@ -30,7 +30,7 @@ internal sealed class Planner_Conversation : Planner
                         return null;
                     }
                 }
-                var other = actor.Map.World.Get<Actor>(convo.CurrentListener);
+                var other = actor.Map.World.Resolve<Actor>(convo.CurrentListener);
                 if (!actor.CanReachAndReserve(other))
                     throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");
                 var manners = actor.Personality.GetPercentage(TraitDefOf.Manners);
@@ -54,7 +54,7 @@ internal sealed class Planner_Conversation : Planner
             {
                 if (actor.RefId == convo.Target && convo.IsRequested)
                     convo.MarkAccepted();
-                var other = actor.Map.World.Get<Actor>(convo.CurrentTalker);
+                var other = actor.Map.World.Resolve<Actor>(convo.CurrentTalker);
                 if (!actor.CanReachAndReserve(other))
                     return null;
                     //throw new InvalidOperationException("Conversation shouldn't continue if actors can't reach eachother");

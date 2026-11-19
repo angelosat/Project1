@@ -31,7 +31,7 @@ internal static class PacketsEffects
     private static void OnSpell(NetEndpoint endpoint, Packet packet)
     {
         var r = packet.PacketReader;
-        var entity = endpoint.World.Get<Entity>(r.ReadEntityRefId());
+        var entity = endpoint.World.Resolve<Entity>(r.ReadEntityRefId());
         var target = r.ReadTarget(endpoint.World);
         var spell = r.ReadDef<SpellDef>();
         entity.Map.Events.Post(new SpellCastEvent(entity, target, spell));

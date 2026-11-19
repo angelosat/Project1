@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Gear;
+using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Stats;
@@ -34,22 +36,22 @@ internal static class CombatSystem
         var toHit = (int)attacker.Stats.Get(StatDefOf.HitChance);
         var random = attacker.World.Random;
         if (!random.Roll100(toHit))
-            return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty);
+            return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, null);
 
         var dodge = defender.Stats.Get(StatDefOf.DodgeChance);
         if (random.Roll100((int)dodge))
-            return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty);
+            return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty, null);
 
         var parry = defender.Stats.Get(StatDefOf.ParryChance);
         if (random.Roll100((int)parry))
-            return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty);
+            return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty, null);
 
         var toCrit = (int)attacker.Stats.Get(StatDefOf.CriticalChance);
         var isCrit = random.Roll100((int)toCrit);
       
         var (damageValue, damageType) = GetAttackDamage(attacker);
 
-        var bodyPartTargetDef = defender.Gear.SlotDefs.SelectRandom(random); // TODO make bodypart selection weighted
+        var bodyPartTargetDef = GearSlotDefOf.Chest;// defender.Gear.SlotDefs.SelectRandom(random); // TODO make bodypart selection weighted
         var bodyPartGear = defender.Gear.GetGear(bodyPartTargetDef);
         float armor = bodyPartGear?.ToolComponent.Armor ?? 0f;
 
@@ -64,7 +66,10 @@ internal static class CombatSystem
 
         var finalDamage = new DamageInfo((int)finalValue, damageType);
 
-        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage);
+        var preventedDamage = rawValue - finalValue;
+        bodyPartGear?.ToolComponent.OnHit(preventedDamage);
+
+        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, bodyPartTargetDef);
     }
 
     static public (int value, DamageDef damage) GetAttackDamage(Actor actor)
@@ -113,7 +118,20 @@ internal static class CombatSystem
                 throw new UnreachableException();
         }
         $"{attacker} {result.Type} {defender} {result.Damage}".ToConsole();
-        world.Events.Post(new WorldCombatEvent(runtime, attacker, result));
+        world.Events.Post(new WorldCombatEvent(world, runtime.Id, attacker.RefId, result));
         runtime.Record(result);
+    }
+
+    internal static void ReplicateOnClient(WorldCombatEvent e)
+    {
+        var world = Client.Instance.World;
+        var actor = world.Resolve<Actor>(e.Actor);
+        var slotDef = e.Result.BodyPart;
+        if (slotDef is null)
+            return;
+        var gear = actor.Gear.GetGear(slotDef);
+        if (gear is null)
+            return;
+        gear.ToolComponent.OnHit(e.Result.Damage.Value);
     }
 }

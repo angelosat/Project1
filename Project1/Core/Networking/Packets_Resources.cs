@@ -43,7 +43,7 @@ namespace Project1.Core.Networking
         private static void ReceiveResourceChanged(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var entity = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+            var entity = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
             var def = r.ReadDef<ResourceDef>();
             //entity.Resources.View(def).Read(r);
             entity.Resources.Sync(def, r);

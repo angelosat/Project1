@@ -10,5 +10,7 @@ sealed class GearRoleWorker_Apparel : GearRoleWorker
         var comp = item.ToolComponent;
         var power = StatDefOf.Armor.Worker.CalculateItemStat(item);
         comp.IntrinsicStats[StatDefOf.Armor] = new(StatDefOf.Armor, power);
+        //comp.TrackingStats[StatDefOf.TotalHits] = new(StatDefOf.TotalHits, 0);
+        //comp.TrackingStats[StatDefOf.TotalPreventedDamage] = new(StatDefOf.TotalPreventedDamage, 0);
     }
 }

@@ -12,7 +12,7 @@ internal sealed class BehaviorSystem : SimulationSystem
 
     private void OnReservationInvalidated(ReservationInvalidatedEvent e)
     {
-        var actor = this.Map.World.Get<Actor>(e.Reservation.Actor);
+        var actor = this.Map.World.Resolve<Actor>(e.Reservation.Actor);
         actor.CurrentPlan.Cancel();
     }
 }

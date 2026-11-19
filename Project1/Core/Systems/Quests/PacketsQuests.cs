@@ -45,7 +45,7 @@ internal static class PacketsQuests
     {
         var r = packet.PacketReader;
         var actorid = r.ReadEntityRefId();
-        var actor = endpoint.World.Get<Actor>(actorid);
+        var actor = endpoint.World.Resolve<Actor>(actorid);
         var map = actor.Map;
         var qid = (QuestId)r.ReadInt32();
         map.Town.QuestManagerNew.UnassignQuest(actorid, qid);
@@ -63,7 +63,7 @@ internal static class PacketsQuests
         var r = packet.PacketReader;
         var board = r.ReadIntVec3();
         var actorid = r.ReadEntityRefId();
-        var actor = endpoint.World.Get<Actor>(actorid);
+        var actor = endpoint.World.Resolve<Actor>(actorid);
         var map = actor.Map;
         var questIds = r.ReadListInt32().Select(id => (QuestId)id);
         map.Town.QuestManagerNew.TryAcceptAllQuestsInt(board, actor, questIds);

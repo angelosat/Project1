@@ -15,7 +15,7 @@ internal class Planner_Healing_Vendor : Planner
         {
             //if (existing.IsDisposed)
             //    return null;
-            var target = map.World.Get<Actor>(existing.Customer);
+            var target = map.World.Resolve<Actor>(existing.Customer);
             if (!actor.CanReachAndReserve(target))
                 return null;
             if (!existing.IsPaidFor)
@@ -44,7 +44,7 @@ internal class Planner_Healing_Vendor : Planner
         {
             if (req.IsVendorAssigned)
                 continue;
-            var target = map.World.Get<Actor>(req.Customer);
+            var target = map.World.Resolve<Actor>(req.Customer);
             if (!actor.CanReach(target))
                 continue;
             manager.MarkAccepted(req, actor);

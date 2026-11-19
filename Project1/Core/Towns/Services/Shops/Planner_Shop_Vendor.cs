@@ -30,7 +30,7 @@ class Planner_Shop_Vendor : Planner
                 if (!actor.CanReachAndReserve(counter))
                     throw new Exception();
 
-                if (map.World.Get<Entity>(req.Money) is Entity money &&
+                if (map.World.Resolve<Entity>(req.Money) is Entity money &&
                     money.Cell == counter.Above &&
                     money.StackSize >= req.Price)
                 {

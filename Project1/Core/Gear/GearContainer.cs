@@ -29,7 +29,7 @@ namespace Project1.Core.Gear
             var table = new Table<(GearSlotDef def, GameObjectSlot slot)>()
                 .AddColumn("geardef",92, v => new LabelNew(v.def), 1)
                 //.AddColumn("slot", 128, v => new LabelNew(() => v.slot.Object?.Name ?? ""), 0);
-                .AddColumn("slot", 128, v => new LabelNew(() => v.slot.Object?.Name ?? "") { TooltipFunc = v.slot.GetTooltipInfo }.Bind(v.slot), 0);
+                .AddColumn("slot", 128, v => new LabelNew(() => v.slot.Object?.Name ?? "") { TagFunc = () => v.slot.Object, TooltipFunc = v.slot.GetTooltipInfo }.Bind(v.slot), 0);
             table.AddItems(this.Slots.Select(vk => (vk.Key, vk.Value)));
             box.Controls.Add(table);
             //this.Owner.World.Events.ListenTo<ActorGearUpdatedEvent>(onGearUpdated);

@@ -150,8 +150,10 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);
         //var damagedTool = ToolSystem.CreateRandomNew(this.World.Random);
         var damagedTool = ToolSystem.CreateRandom(GearSlotDefOf.Mainhand, this.World.Random);
+        var gear = ToolSystem.CreateRandom(GearSlotDefOf.Chest, this.World.Random);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
         inventory.InsertAndClaim(damagedTool);
+        //inventory.InsertAndClaim(gear);
 
         //foreach (var slot in actor.Gear.SlotDefs)
         //    if(ToolSystem.CreateRandom(slot, this.World.Random) is Entity item)
@@ -261,7 +263,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
 
     static void ForceVisitDepart(Actor actor)
     {
-        var serverActor = Server.Instance.World.Get<Actor>(actor.RefId);
+        var serverActor = Server.Instance.World.Resolve<Actor>(actor.RefId);
         var newPercentage = serverActor.Map == null ? 1f : 0;// 0 : 1f;
         serverActor.Needs.SetPercentage(AdventurerNeedsDefOf.Adventuring, newPercentage);
         serverActor.AI.Meta.LocationDecision.Reset();

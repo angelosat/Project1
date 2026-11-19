@@ -112,7 +112,7 @@ public sealed class TownComp_Shops : TownComp
             foreach (var actorid in this._shoppingListsByActor.Keys)
             {
                 //this.Map.World.Get<Actor>(actorid).AI.State.ItemPreferences.TryEnqueue(item);
-                this.Map.World.Get<Actor>(actorid).AI.State.ItemEvaluation.TryEnqueue(item);
+                this.Map.World.Resolve<Actor>(actorid).AI.State.ItemEvaluation.TryEnqueue(item);
             }
     }
 

@@ -40,7 +40,7 @@ internal static class PacketsInventory
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadEntityRefId());
+        var actor = client.World.Resolve<Actor>(r.ReadEntityRefId());
         var itemId = r.ReadEntityRefId();
         var item = client.World.Resolve(itemId);
         actor.Inventory.Contents.AddInternal(item);
@@ -50,7 +50,7 @@ internal static class PacketsInventory
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadEntityRefId());
+        var actor = client.World.Resolve<Actor>(r.ReadEntityRefId());
         var item = client.World.Resolve(r.ReadEntityRefId());
         actor.Inventory.Contents.RemoveInternal(item);
     }
@@ -110,7 +110,7 @@ internal static class PacketsInventory
         var server = endpoint as Server;
         var r = packet.PacketReader;
         var ownerid = r.ReadInt32();
-        var owner = server.World.Get<Actor>(ownerid);
+        var owner = server.World.Resolve<Actor>(ownerid);
         var map = owner.Map;
         var itemid = r.ReadEntityRefId();
         var item = map.World.Resolve(itemid);

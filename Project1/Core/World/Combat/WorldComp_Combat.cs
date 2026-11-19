@@ -106,6 +106,13 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         return this.ActiveCombatSessions[combatId];
     }
 
+    internal CombatRuntime? Get(EntityRefId actorId)
+    {
+        if (!this.ActorsToCombat.TryGetValue(actorId, out var combatId))
+            return null;
+        return this.ActiveCombatSessions[combatId];
+    }
+
     internal bool TryGet(Actor actor, out CombatRuntime? runtime)
     {
         if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combatId))

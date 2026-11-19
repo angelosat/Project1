@@ -109,7 +109,7 @@ internal static class PacketsBlocks
         var entity = map.GetBlockEntity(r.ReadIntVec3());
         var ownerid = r.ReadEntityRefId();
         //var previousOwnerid = r.ReadEntityRefId();
-        var owner = ownerid != EntityRefId.Null ? map.World.Get<Actor>(ownerid) : null;
+        var owner = ownerid != EntityRefId.Null ? map.World.Resolve<Actor>(ownerid) : null;
         var comp = entity.GetComp<BlockOwnershipComp>();
         comp.SetOwner(owner);
     }
@@ -120,7 +120,7 @@ internal static class PacketsBlocks
         var map = endpoint.World.Get(mapid);
         var entity = map.GetBlockEntity(r.ReadIntVec3());
         var ownerid = (EntityRefId)r.ReadEntityRefId();
-        var owner = ownerid != EntityRefId.Null ? map.World.Get<Actor>(ownerid) : null;
+        var owner = ownerid != EntityRefId.Null ? map.World.Resolve<Actor>(ownerid) : null;
         var comp = entity.GetComp<BlockOwnershipComp>();
         // internally fires BlockOwnerChangedEvent to be replicated
         comp.SetOwner(owner); 

@@ -325,7 +325,7 @@ public sealed class Town : Inspectable, IDutyProvider
             {
                 var id = (int)bytes.Value;
                 //this.AddMember(id);
-                this.Members.Add(this.Map.World.Get<Actor>(id));
+                this.Members.Add(this.Map.World.Resolve<Actor>(id));
             }
 
         foreach (var member in this.Members)//.Select(this.Map.World.GetEntity<Actor>))
@@ -350,7 +350,7 @@ public sealed class Town : Inspectable, IDutyProvider
 
         var acount = r.ReadInt32();
         for (int i = 0; i < acount; i++)
-            this.Members.Add(this.Map.World.Get<Actor>(r.ReadInt32()));
+            this.Members.Add(this.Map.World.Resolve<Actor>(r.ReadInt32()));
 
         this.DutiesManager.Read(r);
     }

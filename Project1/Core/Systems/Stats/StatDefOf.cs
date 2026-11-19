@@ -18,6 +18,9 @@ namespace Project1.Core.Stats;
 
 public static class StatDefOf
 {
+    public static readonly StatDef TotalHits = new("Total Hits", typeof(StatResolver), null);
+    public static readonly StatDef TotalPreventedDamage = new("Total Prevented Damage", typeof(StatResolver), null);
+
     public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
     {
         Description = "Exceeding the limit will drain stamina",

@@ -161,7 +161,7 @@ public sealed class ReservationManager : TownComp
     }
     private void CancelReservation(Reservation r)
     {
-        var actor = this.Map.World.Get<Actor>(r.Actor);
+        var actor = this.Map.World.Resolve<Actor>(r.Actor);
         var task = actor.CurrentPlan;
         actor.Net.ConsoleBox.Write("cancelling " + actor.Name + "'s task's reservations ");
         task.Cancel();
@@ -197,7 +197,7 @@ public sealed class ReservationManager : TownComp
             listbyactor.Remove(res);
             if (listbyactor.Count == 0)
                 this.ByActor.Remove(res.Actor);
-            actorsToInterrupt.Add(target.World.Get<Actor>(res.Actor));
+            actorsToInterrupt.Add(target.World.Resolve<Actor>(res.Actor));
         }
         reservationsByTarget.Clear();
         this.ByTarget.Remove(target);

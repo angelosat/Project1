@@ -38,7 +38,7 @@ internal static class PacketsInteractions
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
+        var actor = client.World.Resolve<Actor>(r.ReadInt32());
         var interaction = r.ReadDef<InteractionDef>();
         var target = r.ReadTarget(endpoint.World);
         actor.Work.Perform(interaction, target);
@@ -47,7 +47,7 @@ internal static class PacketsInteractions
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
+        var actor = client.World.Resolve<Actor>(r.ReadInt32());
         actor.Work.Task.Finish();
     }
     private static void SendInteractionNextSwingSpeed(InteractionNextSwingSpeedEvent e)
@@ -66,7 +66,7 @@ internal static class PacketsInteractions
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
+        var actor = client.World.Resolve<Actor>(r.ReadInt32());
         var progress = r.ReadInt32();
         actor.Work.Task.AddWork(progress);
     }
@@ -74,7 +74,7 @@ internal static class PacketsInteractions
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
+        var actor = client.World.Resolve<Actor>(r.ReadInt32());
         var speed = r.ReadSingle();
         actor.Work.Task.SetNextSwingSpeed(speed);
     }
@@ -88,7 +88,7 @@ internal static class PacketsInteractions
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
+        var actor = client.World.Resolve<Actor>(r.ReadInt32());
         actor.Work.Stop();
     }
 }

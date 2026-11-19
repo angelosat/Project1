@@ -34,7 +34,7 @@ internal static class Packet_Reputation
     {
         var r = packet.PacketReader;
         var map = endpoint.World.Get(r.ReadMapId());
-        var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+        var actor = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
         var delta = r.ReadInt32();
         map.Town.Reputation.ApplyDelta(actor, delta);
     }

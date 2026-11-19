@@ -37,7 +37,7 @@ internal class Packets_PointsOfInterest
     {
         var r = packet.PacketReader;
         var world = (StaticWorld)endpoint.World;
-        var actor = world.Get<Actor>(r.ReadEntityRefId());
+        var actor = world.Resolve<Actor>(r.ReadEntityRefId());
         var frontierDef = r.ReadDef<FrontierDef>();
         var poiid = r.ReadInt32();
         world.Space.Get(frontierDef).PoIs[poiid].Add(actor);

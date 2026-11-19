@@ -9,7 +9,7 @@ internal sealed class WorldActionWorker_CombatBegin : WorldActionWorker
     {
         var typed = data as WorldActionData_Combat;
         var world = (StaticWorld)data.Actor.World;
-        var other = world.Get<Actor>(typed.TargetId);
+        var other = world.Resolve<Actor>(typed.TargetId);
         world.Combat.Engage(data.Actor, other);
     }
 }

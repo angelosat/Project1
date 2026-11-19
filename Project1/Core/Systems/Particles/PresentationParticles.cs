@@ -36,7 +36,7 @@ internal sealed class PresentationParticles : IPresentationWorker
     private void OnActorFinishedCrafting(ActorFinishedCraftingEvent e)
     {
         var resolver = Client.Instance.World;
-        var actor = resolver.Get<Actor>(e.Actor);
+        var actor = resolver.Resolve<Actor>(e.Actor);
         if (!actor.IsSpawned)
             return;
         var item = resolver.Resolve(e.Product);

@@ -40,7 +40,7 @@ internal static class Packets_Encounters
         var r = packet.PacketReader;
         var actorid = r.ReadEntityRefId();
         var world = (StaticWorld)endpoint.World;
-        var actor = world.Get<Actor>(actorid);
+        var actor = world.Resolve<Actor>(actorid);
         var encounterDef = r.ReadDef<EncounterDef>();
         var frontiers = (FrontierManager)world.Space;
         frontiers.BeginEncounter(actor, encounterDef);

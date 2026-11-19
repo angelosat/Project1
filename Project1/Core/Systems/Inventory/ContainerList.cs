@@ -231,7 +231,7 @@ public sealed class ContainerList : Inspectable, IEnumerable<Entity>, ISerializa
         for (int i = 0; i < count; i++)
         {
             var id = r.ReadEntityRefId();
-            var obj = this.Parent.World.Get<Entity>(id);
+            var obj = this.Parent.World.Resolve<Entity>(id);
             this.Contents.Add(obj);
             obj.Container = this;
         }

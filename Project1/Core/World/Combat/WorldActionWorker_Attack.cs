@@ -15,7 +15,7 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
     internal sealed record Data(Actor Actor) : WorldActionData(Actor)
     {
         internal required EntityRefId TargetId;
-        internal Actor Target => field ??= this.Actor.World.Get<Actor>(this.TargetId);
+        internal Actor Target => field ??= this.Actor.World.Resolve<Actor>(this.TargetId);
         public override void Write(IDataWriter w)
         {
             w.Write(this.TargetId);

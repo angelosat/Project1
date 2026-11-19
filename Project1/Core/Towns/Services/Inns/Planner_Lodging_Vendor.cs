@@ -24,7 +24,7 @@ internal sealed class Planner_Lodging_Vendor : Planner
 
             if (req.IsMoneyAllocated)
             {
-                var money = map.World.Get<Entity>(req.Money);
+                var money = map.World.Resolve<Entity>(req.Money);
                 
                 if (actor.Hauled == money)
                 {

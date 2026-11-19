@@ -1,9 +1,5 @@
-﻿using Project1.Core.Entities;
-using Project1.Core.Gear;
-using Project1.Core.Stats;
+﻿using Project1.Core.Gear;
 using Project1.Core.Systems.Gear;
-using Project1.Framework.UI;
-using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Tools;
 

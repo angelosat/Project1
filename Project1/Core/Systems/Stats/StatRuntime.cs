@@ -12,7 +12,16 @@ public sealed class StatRuntime(StatDef def)
     }
     public ChangeNotifier Notifier = new();
     public StatDef Def = def;
-    public float Value;
+    //public float Value;
+    public float Value
+    {
+        get;
+        set
+        {
+            field = value;
+            this.Notifier.Notify();
+        }
+    }
     public float Bonus;
     public bool Dirty = true;
 

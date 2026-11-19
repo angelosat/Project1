@@ -385,7 +385,7 @@ public sealed class CraftingManager : TownComp
 
     void RegisterCommitmentInt(CraftingCommitment commitment)
     {
-        var actor = this.World.Get<Actor>(commitment.Actor);
+        var actor = this.World.Resolve<Actor>(commitment.Actor);
         this.commitersByOrder[commitment.Order] = actor;
         this.commitmentsByActor[actor] = commitment;
         foreach (var i in commitment.Ingredients.Values)

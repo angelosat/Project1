@@ -43,7 +43,7 @@ internal static class Packets_ItemPrefs
             throw new Exception();
         var r = packet.PacketReader;
         var actorId = r.ReadEntityRefId();
-        var actor = endpoint.World.Get<Actor>(actorId);
+        var actor = endpoint.World.Resolve<Actor>(actorId);
         ArgumentNullException.ThrowIfNull(actor);
         var manager = actor.ItemPreferences;
 

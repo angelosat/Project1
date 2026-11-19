@@ -37,7 +37,7 @@ namespace Project1.Core.Systems.Effects
         private static void ReceiveEffectApplied(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+            var actor = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
             //var effectdef = r.ReadDef<EffectDef>();
             //var targetdef = r.ReadDef();
             //var hasBudget = r.ReadBoolean();
@@ -64,7 +64,7 @@ namespace Project1.Core.Systems.Effects
         private static void ReceiveEffectAborted(NetEndpoint endpoint, Packet packet)
         {
             var r = packet.PacketReader;
-            var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+            var actor = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
             var effectdef = r.ReadDef<EffectDef>();
             var targetdef = r.ReadDef();
             actor.Effects.Abort(effectdef, targetdef);

@@ -117,10 +117,10 @@ public class TownComp_ServiceRequests : TownComp
         if (req.Counter.HasValue)
             this._openRequestsByCounter.Remove(req.Counter.Value);
 
-        if(this.World.Get<Actor>(req.Customer) is Actor customer)
+        if(this.World.Resolve<Actor>(req.Customer) is Actor customer)
             if (customer.CurrentPlan is Plan planCustomer && planCustomer.ServiceRequest == req.Id)
                 planCustomer.Cancel();
-        if (this.World.Get<Actor>(req.Vendor) is Actor vendor)
+        if (this.World.Resolve<Actor>(req.Vendor) is Actor vendor)
             if (vendor.CurrentPlan is Plan planVendor && planVendor.ServiceRequest == req.Id)
                 planVendor.Cancel();
 

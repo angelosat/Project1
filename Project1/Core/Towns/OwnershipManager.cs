@@ -75,7 +75,7 @@ public sealed class OwnershipManager : TownComp
         if (ownerId == EntityRefId.Null)
             return;
 
-        if (this.Map.World.Get<Actor>(ownerId) is not Actor owner)
+        if (this.Map.World.Resolve<Actor>(ownerId) is not Actor owner)
             return;
 
         if (this._actorBeds.TryGetValue(owner, out var bed) && e.Entity == bed.Parent)
@@ -101,7 +101,7 @@ public sealed class OwnershipManager : TownComp
 
 
         // Remove old mapping
-        if (prevOwnerId != EntityRefId.Null && this.Map.World.Get<Actor>(prevOwnerId) is Actor prevOwner &&
+        if (prevOwnerId != EntityRefId.Null && this.Map.World.Resolve<Actor>(prevOwnerId) is Actor prevOwner &&
             this._actorBeds.TryGetValue(prevOwner, out var prevBed) &&
             prevBed == bed)
         {
@@ -134,7 +134,7 @@ public sealed class OwnershipManager : TownComp
             return false;
 
         // Remove old mapping
-        if (prevOwnerId != EntityRefId.Null && this.Map.World.Get<Actor>(prevOwnerId) is Actor prevOwner &&
+        if (prevOwnerId != EntityRefId.Null && this.Map.World.Resolve<Actor>(prevOwnerId) is Actor prevOwner &&
             this._actorBeds.TryGetValue(prevOwner, out var prevBed) &&
             prevBed == bed)
         {

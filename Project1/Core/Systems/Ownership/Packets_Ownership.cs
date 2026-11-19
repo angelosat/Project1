@@ -34,7 +34,7 @@ internal static class Packets_Ownership
         var client = endpoint as Client;
         var world = client.World;
         var item = world.Resolve(r.ReadEntityRefId());
-        var newowner = world.Get<Actor>(r.ReadEntityRefId());
+        var newowner = world.Resolve<Actor>(r.ReadEntityRefId());
         item.SetOwnerNew(newowner);
     }
 }

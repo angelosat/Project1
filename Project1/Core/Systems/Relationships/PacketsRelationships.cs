@@ -30,8 +30,8 @@ namespace Project1.Core.Systems.Relationships
             var actorid = r.ReadEntityRefId();
             var targetid = r.ReadEntityRefId();
             var delta = r.ReadInt32();
-            var actor = client.World.Get<Actor>(actorid);
-            var target = client.World.Get<Actor>(targetid);
+            var actor = client.World.Resolve<Actor>(actorid);
+            var target = client.World.Resolve<Actor>(targetid);
             actor.Relationships.ApplyDelta(target, delta);
         }
     }

@@ -76,8 +76,8 @@ public sealed class ConversationSystem : TownComp
 
     private void Finish(ConversationRuntime convo)
     {
-        var initiator = this.Map.World.Get<Actor>(convo.Initiator);
-        var target = this.Map.World.Get<Actor>(convo.Target);
+        var initiator = this.Map.World.Resolve<Actor>(convo.Initiator);
+        var target = this.Map.World.Resolve<Actor>(convo.Target);
         var initiatorRelDiff = initiator.Relationships.Get(target) - convo.InitiatorRelationshipAtStart;
         var targetRelDiff = target.Relationships.Get(initiator) - convo.TargetRelationshipAtStart;
         initiator.AI.State.Log.Write($"I had a {(initiatorRelDiff >= 0 ? "positive" : "negative")} conversation with {target.Name}");
@@ -112,8 +112,8 @@ public sealed class ConversationSystem : TownComp
         var convo = this.ActiveConversationsByActor[actor.RefId];
         if (convo.CurrentTalker != actor.RefId)
             throw new Exception();
-        var talker = this.World.Get<Actor>(convo.CurrentTalker);
-        var listener = this.World.Get<Actor>(convo.CurrentListener);
+        var talker = this.World.Resolve<Actor>(convo.CurrentTalker);
+        var listener = this.World.Resolve<Actor>(convo.CurrentListener);
      
 
         var intent = convo.NextIntent;

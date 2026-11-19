@@ -44,7 +44,7 @@ static class Packets_WorldActions
     {
         var r = packet.PacketReader;
         var world = (StaticWorld)endpoint.World;
-        var actor = world.Get<Actor>(r.ReadEntityRefId());
+        var actor = world.Resolve<Actor>(r.ReadEntityRefId());
         var frontierDef = r.ReadDef<FrontierDef>();
         var actionDef = r.ReadDef<WorldActionDef>();
         var actionDuration = r.ReadInt32();
@@ -59,7 +59,7 @@ static class Packets_WorldActions
     {
         var r = packet.PacketReader;
         var world = (StaticWorld)endpoint.World;
-        var actor = world.Get<Actor>(r.ReadEntityRefId());
+        var actor = world.Resolve<Actor>(r.ReadEntityRefId());
         world.Actions.Finish(actor);
     }
 }

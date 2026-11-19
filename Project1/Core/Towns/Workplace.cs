@@ -543,7 +543,7 @@ public abstract class Workplace : ISerializable, ISaveable
                 .AddColumn(null, "delete", Icon.Cross.Width, st => IconButton.CreateSmall(Icon.Cross, () => PacketsWorkplaces.SendPlayerShopAssignCounter(st.Map.Net, st.Map.Net.GetPlayer(), st.Map, this.SelectedShop, st.Global), "remove"));
 
             var workersTab = new GroupBox() { Name = "Workers" };
-            this.TableJobRoles = new TableCompact<EntityRefId, Actor>(i => this.SelectedShop.Map.World.Get<Actor>(i), true) { Name = "Workers" }
+            this.TableJobRoles = new TableCompact<EntityRefId, Actor>(i => this.SelectedShop.Map.World.Resolve<Actor>(i), true) { Name = "Workers" }
             .AddColumn(null, "Worker".ToLabel(), 90, a => new Label(a.Name));
             //this.ListAvailableWorkers = new ListBoxObservable<int, Actor, ButtonNew>(
             this.ListAvailableWorkers = new ListBoxObservable<Actor, ButtonNew>(
@@ -632,7 +632,7 @@ public abstract class Workplace : ISerializable, ISaveable
             var map = net.World.Get(r.ReadMapId());
             var tavern = map.Town.GetShop(r.ReadInt32());
             var role = Def.Get<DutyDef>(r.ReadString());
-            var actor = net.World.Get<Actor>(r.ReadInt32());
+            var actor = net.World.Resolve<Actor>(r.ReadInt32());
             if (net is Client)
                 tavern.ToggleJob(actor, role);
             else

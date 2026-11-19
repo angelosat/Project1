@@ -18,7 +18,7 @@ public class DefComponent : EntityComp
     public EntityRefId AuthorId = EntityRefId.Null;
     public Actor Author
     {
-        get => this.Owner.World.Get<Actor>(this.AuthorId);
+        get => this.Owner.World.Resolve<Actor>(this.AuthorId);
         set => this.AuthorId = value.RefId;
     }
 

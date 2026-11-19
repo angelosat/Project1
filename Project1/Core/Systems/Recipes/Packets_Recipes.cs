@@ -27,7 +27,7 @@ internal static class Packets_Recipes
     {
         var client = endpoint as Client;
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadId<EntityRefId>());
+        var actor = client.World.Resolve<Actor>(r.ReadId<EntityRefId>());
         actor.Recipes.Add(r.ReadDef());
     }
 }

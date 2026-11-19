@@ -45,7 +45,7 @@ static class Packets_Frontiers
     {
         var r = packet.PacketReader;
         var manager = (FrontierManager)((StaticWorld)endpoint.World).Space;
-        var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+        var actor = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
         var frontierDef = r.ReadDef<FrontierDef>();
         var poiIndex = r.ReadInt32();
         manager.ActorEnterPoI(actor, frontierDef, poiIndex);
@@ -55,7 +55,7 @@ static class Packets_Frontiers
     {
         var r = packet.PacketReader;
         var manager = (FrontierManager)((StaticWorld)endpoint.World).Space;
-        var actor = endpoint.World.Get<Actor>(r.ReadEntityRefId());
+        var actor = endpoint.World.Resolve<Actor>(r.ReadEntityRefId());
         manager.ActorPoIExit(actor);
     }
 
@@ -70,7 +70,7 @@ static class Packets_Frontiers
     {
         var r = packet.PacketReader;
         var world = (StaticWorld)endpoint.World;
-        var actor = world.Get<Actor>(r.ReadEntityRefId());
+        var actor = world.Resolve<Actor>(r.ReadEntityRefId());
         var frontier = world.Space.Get(r.ReadDef<FrontierDef>());
         var manager = (FrontierManager)world.Space;
         manager.Explore(frontier, actor);
@@ -87,7 +87,7 @@ static class Packets_Frontiers
     {
         var client = endpoint as Client ?? throw new Exception();
         var r = packet.PacketReader;
-        var actor = client.World.Get<Actor>(r.ReadInt32());
+        var actor = client.World.Resolve<Actor>(r.ReadInt32());
         var pos = r.ReadSingle();
         ((actor.World as StaticWorld).Space as FrontierManager).PlaceAt(actor, pos);
     }

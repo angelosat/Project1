@@ -138,6 +138,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
 
     object _tag;
     public virtual object Tag { get => this._tag; set { this._tag = value; this.OnTagChanged(); } }
+    public Func<object> TagFunc;
     UIManager _windowManager;
     public UIManager WindowManager { get => this._windowManager ?? ScreenManager.CurrentScreen?.WindowManager; set => this._windowManager = value; }
     //IWindowManager _windowManager;

@@ -44,7 +44,7 @@ namespace Project1.Core.Networking.Entities
             var r = pck.PacketReader;
             if (net is Server)
                 throw new Exception();
-            var entity = net.World.Get<Actor>(r.ReadInt32());
+            var entity = net.World.Resolve<Actor>(r.ReadInt32());
             var map = entity.Map;
             if (!r.ReadBoolean())
             {

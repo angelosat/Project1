@@ -112,7 +112,7 @@ internal sealed class QuestsGuiNew : GroupBox
             .AddColumn("assigned", 64, q => new LabelNew(() => $"Assigned: {comp.GetAssignedActorsByQuest(q.Id).Count}")
             {
                 MouseThrough = false,
-                HoverFunc = () => string.Join(Environment.NewLine, comp.GetAssignedActorsByQuest(q.Id).Select(id => comp.Map.World.Get<Entity>(id).LabelReadable))
+                HoverFunc = () => string.Join(Environment.NewLine, comp.GetAssignedActorsByQuest(q.Id).Select(id => comp.Map.World.Resolve<Entity>(id).LabelReadable))
             }.InvalidateOn(comp.Notifier))
             .AddColumn("delete", 16 /*Icon.Cross.Width*/, q => IconButton.CreateSmall(Icon.Cross, () => Delete(q), "Delete").ShowOnParentFocus(true))
             ;

@@ -54,7 +54,7 @@ namespace Project1.Core.AI;
 public sealed class AIState : EventOwner// Inspectable
 {
     protected override StaticWorld World => field ??= (StaticWorld)this.Owner.World;
-    protected override MapBase Map => field ??= this.Owner.Map;
+    protected override MapBase Map => this.Owner.Map;
 
     public ProgressFloat Attention = new();
     public float AttentionDecay = 1;
@@ -184,11 +184,11 @@ public sealed class AIState : EventOwner// Inspectable
 
     }
 
-    internal void PostMapLoad()
-    {
-        //this.ItemPreferences.PostMapLoad();
-        this.ItemEvaluation.PostMapLoad();
-    }
+    //internal void PostMapLoad()
+    //{
+    //    //this.ItemPreferences.PostMapLoad();
+    //    this.ItemEvaluation.PostMapLoad();
+    //}
     //internal void OnAttachedToWorld()
     //{
     //    this.ItemPreferences.OnAttachedToWorld();
@@ -318,11 +318,11 @@ public sealed class AIState : EventOwner// Inspectable
         this.ItemPreferences.Tick();
     }
 
-    internal void OnSpawn(MapBase newMap)
-    {
-        //this.ItemPreferences.OnSpawn(newMap);
-        this.ItemEvaluation.OnSpawn(newMap);
-    }
+    //internal void OnSpawn(MapBase newMap)
+    //{
+    //    //this.ItemPreferences.OnSpawn(newMap);
+    //    this.ItemEvaluation.OnSpawn(newMap);
+    //}
 
     //internal void OnDespawn(MapBase oldmap)
     //{

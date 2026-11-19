@@ -14,7 +14,7 @@ internal sealed class ItemEvaluationManager : EventOwner
     public Actor Actor;
 
     protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
-    protected override MapBase Map => field ??= this.Actor.Map;
+    protected override MapBase Map => this.Actor.Map;
 
     Entity Resolve(EntityRefId id)
         => this.Actor.World.Resolve(id);
@@ -25,11 +25,15 @@ internal sealed class ItemEvaluationManager : EventOwner
 
     readonly HashSet<EntityRefId> QueuedItems = [];
 
+    internal override EventHandlerDeclarations MapEventHandlers => field ??= new(
+        new EventRegistration<EntitySpawnedEvent>(OnEntitySpawned)
+        );
+
     public ItemEvaluationManager(Actor actor)
     {
         this.Actor = actor;
         //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-        this.AddMapEventHandler<EntitySpawnedEvent>(OnEntitySpawned);
+        //this.AddMapEventHandler<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
     internal bool TryEnqueue(Entity item)
@@ -59,11 +63,20 @@ internal sealed class ItemEvaluationManager : EventOwner
         return entity;
     }
 
-    internal void OnSpawn(MapBase newMap)
+    //internal void OnSpawn(MapBase newMap)
+    //{
+    //    this.ScanMap(newMap);
+    //    //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
+    //}
+    protected override void OnAttachedToMapInt()
     {
-        foreach (var i in newMap.Entities)
+        this.ScanMap();
+    }
+
+    private void ScanMap()
+    {
+        foreach (var i in this.Map.Entities)
             this.TryEnqueue(i);
-        //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
     //internal void OnDispose()
@@ -89,10 +102,10 @@ internal sealed class ItemEvaluationManager : EventOwner
     //    this.InitialInventoryScan();
     //}
 
-    internal void PostMapLoad()
-    {
-        this.OnSpawn(this.Actor.Map);
-    }
+    //internal void PostMapLoad()
+    //{
+    //    this.OnSpawn(this.Actor.Map);
+    //}
 
     private void InitialInventoryScan()
     {

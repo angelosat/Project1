@@ -96,10 +96,10 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     //{
     //    this.State.ResolveReferences();
     //}
-    internal override void PostMapLoad()
-    {
-        this.State.PostMapLoad();
-    }
+    //internal override void PostMapLoad()
+    //{
+    //    this.State.PostMapLoad();
+    //}
     //internal override void OnAttachedToWorld()
     //{
     //    this.State.OnAttachedToWorld();
@@ -133,13 +133,13 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
             return;
         this.Meta.TickOffMap();
     }
-    public override void OnSpawn(MapBase newMap)
-    {
-        //this.State.Leash = this.Owner.Global;
-        this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-        //this.State.ItemPreferences.OnSpawn(newMap);
-        this.State.OnSpawn(newMap);
-    }
+    //public override void OnSpawn(MapBase newMap)
+    //{
+    //    //this.State.Leash = this.Owner.Global;
+    //    this.Owner.Map.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
+    //    //this.State.ItemPreferences.OnSpawn(newMap);
+    //    this.State.OnSpawn(newMap);
+    //}
     protected override void OnAttachedToMapInt()
     {
         base.OnAttachedToMapInt();
@@ -154,18 +154,19 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     //    this.State.OnDispose();
     //}
 
-    public override void OnObjectSynced(GameObject parent)
-    {
-        this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
-    }
-    void HandleBlocksChange(CellsInvalidatedEvent e)
-    {
-        return;
-        if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
-        {
-            this.State.Path = null;
-        }
-    }
+    //public override void OnObjectSynced(GameObject parent)
+    //{
+    //    this.Owner.Map?.Events.ListenTo<CellsInvalidatedEvent>(this.HandleBlocksChange);
+    //}
+
+    //void HandleBlocksChange(CellsInvalidatedEvent e)
+    //{
+    //    return;
+    //    if (!this.State.Path?.IsValid(this.Owner as Actor) ?? false)
+    //    {
+    //        this.State.Path = null;
+    //    }
+    //}
     internal override List<SaveTag> Save()
     {
         var save = new List<SaveTag>

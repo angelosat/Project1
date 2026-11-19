@@ -12,6 +12,7 @@ using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 #nullable enable
@@ -21,7 +22,7 @@ namespace Project1.Core.Systems.ItemRoles;
 public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializableNew<ItemPreferenceManager>
 {
     protected override StaticWorld World => field ??= (StaticWorld)this.Actor.World;
-    protected override MapBase Map => field ??= this.Actor.Map;
+    protected override MapBase Map => this.Actor.Map;
 
     event Action<ItemPreference> PrefUpdated;
 
@@ -53,10 +54,17 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
         this.Actor = actor;
     }
 
+    internal override EventHandlerDeclarations MapEventHandlers => field ??=
+        new(
+            new EventRegistration<InventoryItemAddedEvent>(this.OnInventoryItemAdded),
+            new EventRegistration<EntityDisposedEvent>(this.OnEntityDisposed)
+        );
+
     public ItemPreferenceManager()
     {
-        this.AddWorldEventHandler<InventoryItemAddedEvent>(this.OnInventoryItemAdded);
-        this.AddWorldEventHandler<EntityDisposedEvent>(this.OnEntityDisposed);
+        //this.AddWorldEventHandler<InventoryItemAddedEvent>(this.OnInventoryItemAdded);
+        //this.AddWorldEventHandler<EntityDisposedEvent>(this.OnEntityDisposed);
+       
     }
     
 

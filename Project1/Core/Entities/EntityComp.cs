@@ -35,7 +35,7 @@ public abstract class EntityComp : EventOwner
     internal Spec Defaults { get; private set; }
 
     protected override StaticWorld World => field ??= (StaticWorld)this.Owner.World;
-    protected override MapBase Map => field ??= this.Owner.Map;
+    protected override MapBase Map => this.Owner.Map;
     public virtual void OnNameplateCreated(GameObject parent, Nameplate plate) { }
     public virtual void OnHealthBarCreated(GameObject parent, Nameplate plate) { }
     public Entity Owner;

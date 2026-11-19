@@ -21,6 +21,10 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     readonly static int BaseCooldown = Ticks.FromMinutes(1);
 
+    bool Started;
+
+    public bool IsUnstarted => !this.Started;
+
     int CooldownFirst,
         CooldownSecond;
 
@@ -105,5 +109,6 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     internal void Record(AttackResult result)
     {
         this.Log.Add(result);
+        this.Started = true;
     }
 }

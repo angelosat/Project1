@@ -12,6 +12,7 @@ using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +24,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
 {
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
-        => (frontier.OccupantCount - 1);// * 100;
+        => ((StaticWorld)actor.World).Combat.IsAvailableForNewCombat(actor) ? (frontier.OccupantCount - 1) : 0;// * 100;
 
     protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
@@ -31,10 +32,16 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         var otherActorIds = frontier.ActorsActiveNew.Except([actor.RefId]).ToList();
         //if (otherActors.Count == 0)
         //    return;
-        var other = actor.World.Get<Actor>(otherActorIds.SelectRandom(actor.World.Random));
+        var world = (StaticWorld)actor.World;
+
+        var other = actor.World.Get<Actor>(otherActorIds.SelectRandom(world.Random));
+        if (!world.Combat.AreAvailableForNewCombat(actor, other))
+            throw new InvalidOperationException(
+                $"{actor} is unavailable for combat"
+                );
+        ArgumentNullException.ThrowIfNull(other);
         if (FactionsSystem.AreEnemies(actor, other))
         {
-            var world = actor.World as StaticWorld;
             if (!world.Combat.IsEngaged(other))
                 world.Combat.Engage(actor, other);
             return;

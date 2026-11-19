@@ -27,10 +27,20 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
     {
         if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combat))
             return false;
-        if (this.ActiveCombatSessions[combat].IsResolved)
+        var runtime = this.ActiveCombatSessions[combat];
+        if (runtime.IsResolved)
+            return false;
+        if (runtime.Second == actor && runtime.IsUnstarted)
             return false;
         return true;
     }
+
+    public bool AreAvailableForNewCombat(Actor attacker, Actor defender)
+        => !(this.ActorsToCombat.ContainsKey(attacker.RefId) || this.ActorsToCombat.ContainsKey(defender.RefId));
+
+    public bool IsAvailableForNewCombat(Actor actor)
+        => !this.ActorsToCombat.ContainsKey(actor.RefId);
+
 
     public override void Tick()
     {

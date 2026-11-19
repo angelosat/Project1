@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Entities;
 using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
@@ -12,7 +11,6 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.UI;
 
@@ -25,32 +23,20 @@ public class TooltipManager
     protected static TooltipManager _Instance;
     public static TooltipManager Instance => _Instance ??= new TooltipManager();
 
-    //Tooltip _tooltip;
-    //public Tooltip Tooltip
-    //{
-    //    get => this._tooltip;
-    //    set
-    //    {
-    //        this._tooltip?.Dispose();
-    //        this._tooltip = value;
-    //    }
-    //}
     Tooltip _tooltip;
-    public Tooltip Tooltip
-    {
-        get => this._tooltip;
-        set
-        {
-            if (this._tooltip is not null)
-            {
-                this._tooltip.Detach();
-                this._tooltip.Dispose();
-            }
+    public Tooltip Tooltip => this._tooltip;
 
-            this._tooltip = value;
-            this._tooltip?.OnAttached();
-        }
+    void SetTooltip(Tooltip tooltip)
+    {
+        if (ReferenceEquals(this._tooltip, tooltip))
+            return;
+
+        this._tooltip?.Dispose();
+
+        this._tooltip = tooltip;
+        this._tooltip?.OnAttached();
     }
+
     ITooltippable Object;
 
 
@@ -90,11 +76,13 @@ public class TooltipManager
         {
             tooltip.Update();
             tooltip.SetMousethrough(true, true);
-            this.Tooltip = tooltip;
+            //this.Tooltip = tooltip;
+            this.SetTooltip(tooltip);
         }
         else
         {
-            this.Tooltip = null;
+            //this.Tooltip = null;
+            this.SetTooltip(null);
             tooltip.Dispose();
         }
     }
@@ -146,7 +134,8 @@ public class TooltipManager
 
     private void Reset()
     {
-        this.Tooltip = null;
+        //this.Tooltip = null;
+        this.SetTooltip(null);
         this.DelayValue = DelayInterval;
     }
 

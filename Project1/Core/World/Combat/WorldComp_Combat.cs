@@ -19,7 +19,7 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
     {
         var id = this.NextId;
         //var runtime = new CombatRuntime(id, first, second);
-        this.World.Actions.Interrupt(target);
+        //this.World.Actions.Interrupt(target);
         return this.RegisterCombat(id, instigator, target);//, runtime);
     }
 
@@ -39,7 +39,10 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         => !(this.ActorsToCombat.ContainsKey(attacker.RefId) || this.ActorsToCombat.ContainsKey(defender.RefId));
 
     public bool IsAvailableForNewCombat(Actor actor)
-        => !this.ActorsToCombat.ContainsKey(actor.RefId);
+        => this.IsAvailableForNewCombat(actor.RefId);
+
+    public bool IsAvailableForNewCombat(EntityRefId actorId)
+       => !this.ActorsToCombat.ContainsKey(actorId);
 
 
     public override void Tick()

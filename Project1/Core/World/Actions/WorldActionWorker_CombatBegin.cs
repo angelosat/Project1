@@ -1,7 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions;
 
@@ -11,23 +9,7 @@ internal sealed class WorldActionWorker_CombatBegin : WorldActionWorker
     {
         var typed = data as WorldActionData_Combat;
         var world = (StaticWorld)data.Actor.World;
-        var other = world.Get<Actor>(typed.Other);
+        var other = world.Get<Actor>(typed.TargetId);
         world.Combat.Engage(data.Actor, other);
-    }
-}
-
-internal sealed record WorldActionData_Combat(Actor Actor) : WorldActionData(Actor)
-{
-    internal required EntityRefId Other;
-
-    public override void Write(IDataWriter w)
-    {
-        w.Write(this.Other);
-    }
-
-    public override ISerializable Read(IDataReader r)
-    {
-        this.Other = r.ReadEntityRefId();
-        return this;
     }
 }

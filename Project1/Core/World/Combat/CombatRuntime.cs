@@ -17,6 +17,8 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     internal readonly Actor First = first, Second = second;
 
+    StaticWorld World => field ??= (StaticWorld)this.First.World;
+
     readonly List<AttackResult> Log = [];
 
     readonly static int BaseCooldown = Ticks.FromMinutes(1);
@@ -75,6 +77,9 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         if (this.IsResolved)
             return;
 
+        if (this.IsUnstarted)
+            return;
+
         if (this.CooldownSecond > 0)
             this.CooldownSecond -= 1;
         else if (world.Actions.GetAction(this.Second) is null)
@@ -96,7 +101,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker) { TargetId = defender.RefId });
     }
 
-    internal Actor Other(Actor actor)
+    internal Actor GetOther(Actor actor)
     {
         return actor == this.First ? this.Second : this.First;
     }
@@ -109,6 +114,10 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     internal void Record(AttackResult result)
     {
         this.Log.Add(result);
-        this.Started = true;
+        if(!this.Started)
+        {
+            this.World.Actions.Interrupt(this.Second);
+            this.Started = true;
+        }
     }
 }

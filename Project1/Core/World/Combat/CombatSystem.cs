@@ -81,7 +81,7 @@ internal static class CombatSystem
         if(!world.Combat.TryGet(attacker, out var runtime))
             runtime = world.Combat.Engage(attacker, defender);
 
-        if (runtime.Other(attacker) != defender)
+        if (runtime.GetOther(attacker) != defender)
             throw new InvalidOperationException(
                 $"Actor mismatch for existing combat runtime."
                 );

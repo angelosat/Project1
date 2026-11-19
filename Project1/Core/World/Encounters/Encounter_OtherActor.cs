@@ -91,24 +91,28 @@ internal sealed class Encounter_OtherActor : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
+        var world = (StaticWorld)actor.World;
+        if (!world.Combat.IsAvailableForNewCombat(actor))
+            yield break;
         //foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
         foreach (var k in frontier.ActorsActiveNew
-            .Where(a => a != actor.RefId)
-            .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
+            .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a))
+            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
+            .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { TargetId = id }, 1000)))
             yield return k;
     }
 
     internal override WorldActionDef? DecideAction(WorldActionData context)
     {
-        var ctx = (WorldActionWorker_Attack.Data)context;
-        if (ctx.Target.Biology.IsIncapacitated)
-            return null;
-        return WorldActionDefOf.Attack;
-        //var ctx = (WorldActionData_Combat)context;
-        //var other = ctx.Actor.World.Get<Actor>(ctx.Other);
-        //if (other.Biology.IsIncapacitated)
+        //var ctx = (WorldActionWorker_Attack.Data)context;
+        //if (ctx.Target.Biology.IsIncapacitated)
         //    return null;
-        //return WorldActionDefOf.Combat;
+        //return WorldActionDefOf.Attack;
+        var ctx = (WorldActionData_Combat)context;
+        var other = ctx.Actor.World.Get<Actor>(ctx.TargetId);
+        if (other.Biology.IsIncapacitated)
+            throw new InvalidOperationException("Tried to initiate combat against incapacitated actor.");
+        return WorldActionDefOf.Combat;
     }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;

@@ -253,7 +253,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         if (actor.Biology.IsIncapacitated)
             return $"Incapacitated";
         if(this.World.Combat.Get(actor) is CombatRuntime combat)
-            return $"Fighting: {combat.Other(actor)}";
+            return $"Fighting: {combat.GetOther(actor)}";
         return ((FrontierManager)this.World.Space).GetStatusText(actor);
     }
 

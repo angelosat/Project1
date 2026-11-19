@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.World.Combat;
 
-internal class Encounter_Combat : EncounterWorker
+internal sealed class Encounter_Combat : EncounterWorker
 {
     sealed class Context : EncounterContext
     {

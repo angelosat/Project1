@@ -32,8 +32,6 @@ internal sealed class ItemEvaluationManager : EventOwner
     public ItemEvaluationManager(Actor actor)
     {
         this.Actor = actor;
-        //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-        //this.AddMapEventHandler<EntitySpawnedEvent>(OnEntitySpawned);
     }
 
     internal bool TryEnqueue(Entity item)
@@ -45,8 +43,6 @@ internal sealed class ItemEvaluationManager : EventOwner
         }
         if (this.QueuedItems.Contains(item.RefId))
             return false;
-        //if (this.IsIgnored(item))
-        //    return false;
         if (!this.QueuedItems.Add(item.RefId))
             return false;
         this.PendingItemQueue.Enqueue(item.RefId);
@@ -63,11 +59,6 @@ internal sealed class ItemEvaluationManager : EventOwner
         return entity;
     }
 
-    //internal void OnSpawn(MapBase newMap)
-    //{
-    //    this.ScanMap(newMap);
-    //    //newMap.Events.ListenTo<EntitySpawnedEvent>(OnEntitySpawned);
-    //}
     protected override void OnAttachedToMapInt()
     {
         this.ScanMap();
@@ -79,9 +70,6 @@ internal sealed class ItemEvaluationManager : EventOwner
             this.TryEnqueue(i);
     }
 
-    //internal void OnDispose()
-    //    => this.Actor.World.Events.Unsubscribe(this);
-
     private void OnEntitySpawned(EntitySpawnedEvent e)
     {
         this.TryEnqueue(e.Entity);
@@ -91,21 +79,11 @@ internal sealed class ItemEvaluationManager : EventOwner
     {
         this.PendingItemQueue.Clear();
         this.QueuedItems.Clear();
-        //oldMap.Events.Unsubscribe(this);
     }
     protected override void OnAttachedToWorldInt()
     {
         this.InitialInventoryScan();
     }
-    //internal void OnAttachedToWorld()
-    //{
-    //    this.InitialInventoryScan();
-    //}
-
-    //internal void PostMapLoad()
-    //{
-    //    this.OnSpawn(this.Actor.Map);
-    //}
 
     private void InitialInventoryScan()
     {
@@ -115,5 +93,4 @@ internal sealed class ItemEvaluationManager : EventOwner
         foreach (var item in items)
             this.TryEnqueue(item);
     }
-
 }

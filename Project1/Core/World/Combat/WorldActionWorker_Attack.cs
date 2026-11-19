@@ -32,8 +32,12 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
     {
         var typed = (Data)data;
         var actor = typed.Actor;
-        CombatSystem.PerformAttack(typed.Actor);
+
+        // if this is the first attack on an ambushed opponent, this means that there is not compat runtime yet
+        // so interuprt the target actor's worldaction if any, and create a combat runtime
         var target = typed.Target;
+
+        CombatSystem.PerformAttack(actor, target);
         var world = data.World;
         if (target.Biology.IsIncapacitated)
         {

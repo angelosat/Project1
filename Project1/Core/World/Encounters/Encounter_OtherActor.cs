@@ -7,6 +7,7 @@ using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Factions;
 using Project1.Core.Systems.Thoughts;
+using Project1.Core.World.Combat;
 using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -20,27 +21,9 @@ namespace Project1.Core.World.Actions;
 
 internal sealed class Encounter_OtherActor : EncounterWorker
 {
-
     internal override int GetWeight(FrontierRuntime frontier, Actor actor)
         //=> frontier.IncapacitatedActors.Count * 10;
         => (frontier.OccupantCount - 1);// * 100;
-
-    //protected override void OnBegin(FrontierRuntime frontier, Actor actor)
-    //{
-    //    var otherActors = frontier.ActorsActive.Except([actor]).ToList();
-    //    //if (otherActors.Count == 0)
-    //    //    return;
-    //    var other = otherActors.SelectRandom(actor.World.Random);
-
-    //    if (FactionsSystem.AreEnemies(actor, other))
-    //    {
-    //        // TODO initiate combat
-    //        var world = actor.World as StaticWorld;
-    //        world.Combat.Engage(actor, other);
-    //        return;
-    //    }
-    //}
-
 
     protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
     {
@@ -69,15 +52,6 @@ internal sealed class Encounter_OtherActor : EncounterWorker
             actor.World.Events.Post(new ActorsMetOffMapEvent(actor, other));
         }
     }
-
-    //internal override EncounterStates GetState(EncounterRuntime runtime)
-    //{
-    //    var world = (StaticWorld)runtime.Actor.World;
-    //    return world.Combat.IsEngaged(runtime.Actor) ? EncounterStates.InProgress : EncounterStates.Finished;
-    //}
-
-    //internal override float GetProgressStep(Actor actor, FrontierRuntime frontier)
-    //    => 0;
 
     private static bool TryUsePotion(Actor actor, Actor other)
     {
@@ -110,18 +84,24 @@ internal sealed class Encounter_OtherActor : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        //yield return (EncounterDefOf.ActorEncounter, new(frontier, actor), (frontier.OccupantCount - 1) * 100);
-        foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
+        //foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
+        foreach (var k in frontier.ActorsActiveNew
+            .Where(a => a != actor.RefId)
+            .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
             yield return k;
     }
 
     internal override WorldActionDef? DecideAction(WorldActionData context)
     {
-        var ctx = (WorldActionData_Combat)context;
-        var other = ctx.Actor.World.Get<Actor>(ctx.Other);
-        if (other.Biology.IsIncapacitated)
+        var ctx = (WorldActionWorker_Attack.Data)context;
+        if (ctx.Target.Biology.IsIncapacitated)
             return null;
-        return WorldActionDefOf.Combat;
+        return WorldActionDefOf.Attack;
+        //var ctx = (WorldActionData_Combat)context;
+        //var other = ctx.Actor.World.Get<Actor>(ctx.Other);
+        //if (other.Biology.IsIncapacitated)
+        //    return null;
+        //return WorldActionDefOf.Combat;
     }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;

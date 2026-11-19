@@ -3,7 +3,7 @@ using Project1.Framework.Events;
 
 namespace Project1.Core;
 
-public class Registry
+public sealed class Registry
 {
     public static readonly PacketRegistry PacketHandlers = new();
     public static readonly EventRegistry GameEvents = new();

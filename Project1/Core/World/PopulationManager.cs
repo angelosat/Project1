@@ -129,18 +129,6 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         }
         return null;
     }
-
-    //private Actor PopulateRuntime(INetEndpoint net)
-    //{
-    //    if (net is Server && this.WorldPopulationCount < WorldPopulationCap)
-    //    {
-    //        Actor actor = GenerateInhabitant(RoleMetaDefOf.Adventurer);
-    //        var chosenPlace = this.World.PlaceAtRandom(actor);//
-    //        net.Report($"{actor.Name} created and placed at {chosenPlace.LabelReadable}");
-    //        return actor;
-    //    }
-    //    return null;
-    //}
    
     private Actor GenerateInhabitant(RoleMetaDef role)
     {
@@ -182,13 +170,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
     {
         var props = new WorldInhabitantView(this.World, actor, InitialChance, InitialApproval) { OffsiteArea = FrontierDefOf.Forest };
         this.WorldInhabitants.Add(props);
-        //MakeVisitor(actor);
     }
-
-
-    //private static void MakeVisitor(Actor actor)
-    //{
-    //}
 
     public IEnumerable<WorldInhabitantView> Find(Func<WorldInhabitantView, bool> pred)
     {
@@ -225,19 +207,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         {
             var npc = props.Actor;
             var manager = (FrontierManager)((StaticWorld)npc.World).Space;
-            //var btn = CreateInhabitantControl(box.Viewport.Width, npc, manager);
             var btn = CreateInhabitantControlNew(box.Viewport.Width, npc, manager);
-
-            // debugging stuff
-            //btn.RightClickActionNew = b =>
-            //{
-            //    if (!InputState.IsKeyDown(System.Windows.Forms.Keys.LShiftKey))
-            //        return;
-            //    ContextMenuManager.PopUp(
-            //        ("Force visit", () => ForceVisitDepart(npc)),
-            //        ("Dispose", () => PacketEntityDispose.Send(Client.Instance, npc.RefId, Client.Instance.PlayerData))
-            //    );
-            //};
             btn.TooltipFunc = tt => npc.GetTooltipInfo(tt);
             return btn;
         });
@@ -254,20 +224,6 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         return box;
     }
 
-    private static ButtonNew CreateInhabitantControl(int width, Actor npc, FrontierManager manager)
-    {
-        var btn = ButtonNew.CreateBigNew(
-            //() => SelectionManager.Select(npc),
-            //() => Ingame.Instance.Events.Post(new PlayerSelectionRectangleEvent([npc])),
-            () => UIManager.ToggleUnique<SelectionDetailsGui>(npc),
-            width,
-            npc.RenderIcon(),
-            new Label(() => npc.Npc.FullName) { TextColorFunc = () => npc.GetNameplateColor() },
-            //new Label(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"}"));
-            //new LabelNew(() => $"{props.CurrentWorldLocation?.LabelReadable ?? "In town"} {manager.GetEncounter(npc)?.LabelReadable ?? "idle"}").InvalidateOn(manager.Notifier));
-            new LabelNew(() => $"{manager.GetStatusText(npc)}").InvalidateOn(manager.Notifier));
-        return btn;
-    }
     private Panel CreateInhabitantControlNew(int width, Actor npc, FrontierManager manager)
     {
         var btnnew = new Panel() { AutoSize = true };// 0,0, BackgroundStyle.LargeButton.Right.Width, BackgroundStyle.LargeButton.Right.Height);
@@ -291,6 +247,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         btnnew.AddControlsHorizontally(render, text);
         return btnnew;
     }
+
     string GetStatusText(Actor actor)
     {
         if (actor.Biology.IsIncapacitated)

@@ -1,12 +1,11 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions;
 
-internal class WorldActionWorker_CombatBegin : WorldActionWorker
+internal sealed class WorldActionWorker_CombatBegin : WorldActionWorker
 {
     internal override void Resolve(WorldActionData data)
     {

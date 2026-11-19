@@ -158,7 +158,6 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
         this.Root.Read(r);
         this.Meta = r.ReadDef<RoleMetaDef>().CreateWrapper();
         this.Meta.Actor = this.Owner as Actor;
-        //this.State.ResolveReferences();
     }
 
     internal override void GetInterface(GameObject gameObject, Control box)
@@ -228,7 +227,6 @@ public sealed class AIComp : EntityComp<AIComp.Spec>
     readonly Label CachedGuiLabelCurrentTask = new();
     internal override IEnumerable<Control> GetInspectorControls()
     {
-        //info.AddInfo(this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle"));
         yield return this.CachedGuiLabelCurrentTask.SetTextFunc(() => this.State.CurrentPlan?.Status ?? "Idle");
     }
     public new class Spec : Spec<AIComp>

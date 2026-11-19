@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace Project1.Core.World.Actions;
 
-internal class WorldComp_Actions : WorldComp
+internal sealed class WorldComp_Actions : WorldComp
 {
     readonly Dictionary<Actor, WorldActionRuntime> ActiveActions = [];
 
@@ -69,13 +69,6 @@ internal class WorldComp_Actions : WorldComp
         this.World.Events.Post(new WorldActionStartedEvent(data.Actor, runtime));
         return runtime;
     }
-
-    //internal WorldActionRuntime Start(WorldActionDef def, Actor actor, FrontierDef frontier)
-    //{
-    //    var runtime = new WorldActionRuntime(def, new(this.World.Space.Get(frontier), actor));
-    //    this.ActiveActions.Add(actor, runtime);
-    //    return runtime;
-    //}
 
     internal void Finish(Actor actor)
     {

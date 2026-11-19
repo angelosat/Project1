@@ -7,7 +7,6 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Helpers;
-using Project1.Core.Input;
 using Project1.Core.Loot;
 using Project1.Core.Map;
 using Project1.Core.Networking;

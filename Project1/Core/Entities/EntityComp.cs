@@ -45,30 +45,17 @@ public abstract class EntityComp : EventOwner
     public virtual void Initialize(GameObject parent) { }
     public virtual void Randomize(GameObject parent, RandomThreaded random) { this.Initialize(parent); }
     public virtual void OnSpawn(MapBase newMap) { }
-    //public void OnDespawn(MapBase oldmap) 
-    //{
-    //    oldmap.Events.Unsubscribe(this);
-    //    this.OnDespawnInt(oldmap);
-    //}
-    //public virtual void OnDespawnInt(MapBase oldmap) { }
+
     public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
     public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
     public virtual float? GetStatMod(StatDef target) => null;
-    //protected virtual void OnDisposeInt() { }
-    //internal void OnDispose()
-    //{
-    //    this.World.Events.Unsubscribe(this);
-    //    this.OnDisposeInt();
-    //}
-    //internal virtual void ResolveReferences() { }
+
     internal virtual void InitializeOnce() { }
     public virtual void OnObjectLoaded(GameObject parent) { }
     public virtual void OnObjectSynced(GameObject parent) { }
     public virtual void SetMaterial(MaterialDef mat) { }
-    //internal virtual void ApplyMaterials(Entity parent, Dictionary<string, MaterialDef> materials) { }
     internal virtual void ApplyQuality(Entity parent, QualityDef quality) { }
     public virtual void Draw(MySpriteBatch sb, DrawObjectArgs e) { }
-    //public virtual void Draw(MySpriteBatch sb, RenderContext ctx) { }
     public virtual void DrawMouseover(MySpriteBatch sb, RenderContext ctx) { }
     public virtual void DrawUI(SpriteBatch sb, MapView viewport) { }
     public virtual void DrawAfter(MySpriteBatch sb, RenderContext ctx) { }
@@ -119,19 +106,10 @@ public abstract class EntityComp : EventOwner
     internal virtual void PostMapLoad() { }
     internal virtual void Resolve() { }
 
-    //internal virtual void OnAttachedToWorld() { }
-
     internal virtual IEnumerable<Control> GetTooltipControls() { yield break; }
 
     internal virtual void Validate() { }
 
-   
-
-    //{
-    //    var box = new GroupBox();
-    //    this.OnTooltipCreated(box);
-    //    yield return box;
-    //}
     public abstract class Spec
     {
         public abstract Type CompClass { get; }

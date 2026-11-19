@@ -1,10 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
-using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
-using Project1.Framework.Events;
 using System.Collections.Generic;
-using System.Linq;
 
 #nullable enable
 
@@ -18,12 +15,12 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
 
     readonly Dictionary<EntityRefId, int> ActorsToCombat = [];
 
-    public void Engage(Actor instigator, Actor target)
+    public CombatRuntime Engage(Actor instigator, Actor target)
     {
         var id = this.NextId;
         //var runtime = new CombatRuntime(id, first, second);
         this.World.Actions.Interrupt(target);
-        this.RegisterCombat(id, instigator, target);//, runtime);
+        return this.RegisterCombat(id, instigator, target);//, runtime);
     }
 
     public bool IsEngaged(Actor actor)
@@ -51,7 +48,7 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
             this.UnregisterCombat(combat);
     }
 
-    internal void RegisterCombat(int id, Actor first, Actor second)
+    internal CombatRuntime RegisterCombat(int id, Actor first, Actor second)
     {
         var runtime = new CombatRuntime(id, first, second);
         this.ActiveCombatSessions.Add(id, runtime);
@@ -59,6 +56,7 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
         this.ActorsToCombat.Add(second.RefId, id);
         this.World.Events.Post(new CombatBeginEvent(id, first, second));
         ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
+        return runtime;
     }
     internal void UnregisterCombat(int combatId)
     {
@@ -86,7 +84,15 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
             return null;
         return this.ActiveCombatSessions[combatId];
     }
-}
 
-internal record struct CombatBeginEvent(int Id, Actor Attacker, Actor Defender) : IEventPayload { }
-internal record struct CombatEndEvent(int Id) : IEventPayload { }
+    internal bool TryGet(Actor actor, out CombatRuntime? runtime)
+    {
+        if (!this.ActorsToCombat.TryGetValue(actor.RefId, out var combatId))
+        {
+            runtime = null;
+            return false;
+        }
+        runtime = this.ActiveCombatSessions[combatId];
+        return true;
+    }
+}

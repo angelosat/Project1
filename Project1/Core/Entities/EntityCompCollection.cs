@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Entities;
 
-public class EntityCompCollection : Inspectable
+public sealed class EntityCompCollection : Inspectable
 {
     readonly Dictionary<Type, EntityComp> _inner = [];
     readonly List<EntityComp> _innerList = [];

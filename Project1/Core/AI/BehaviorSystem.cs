@@ -3,7 +3,7 @@ using Project1.Core.Simulation;
 
 namespace Project1.Core.AI;
 
-internal class BehaviorSystem : SimulationSystem
+internal sealed class BehaviorSystem : SimulationSystem
 {
     public BehaviorSystem(MapBase map) : base(map)
     {

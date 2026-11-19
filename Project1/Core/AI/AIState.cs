@@ -18,39 +18,6 @@ using System.Linq;
 
 namespace Project1.Core.AI;
 
-//public sealed class ItemEvaluationQueue
-//{
-//    readonly Queue<EntityRefId> Queue = [];
-//    readonly HashSet<EntityRefId> Queued = [];
-
-//    public bool TryEnqueue(EntityRefId itemId)
-//    {
-//        if (!this.Queued.Add(itemId))
-//            return false;
-
-//        this.Queue.Enqueue(itemId);
-//        return true;
-//    }
-
-//    public EntityRefId? Dequeue()
-//    {
-//        if (!this.Queue.TryDequeue(out var itemId))
-//            return null;
-
-//        this.Queued.Remove(itemId);
-//        return itemId;
-//    }
-
-//    public EntityRefId? Peek()
-//        => this.Queue.TryPeek(out var itemId) ? itemId : null;
-
-//    public void Clear()
-//    {
-//        this.Queue.Clear();
-//        this.Queued.Clear();
-//    }
-//}
-
 public sealed class AIState : EventOwner// Inspectable
 {
     protected override StaticWorld World => field ??= (StaticWorld)this.Owner.World;
@@ -70,14 +37,12 @@ public sealed class AIState : EventOwner// Inspectable
 
     internal ItemEvaluationManager ItemEvaluation => field ??= new(this.Owner);
     public ItemPreferenceManager ItemPreferences => field ??= new(this.Owner);
-    //public ItemEvaluationQueue ItemEvaluationQueue = new();
     public int JobFindTimer;
     internal Knowledge Knowledge;
-    //internal KnowledgeManager KnowledgeManager;
     public BehaviorExecutePlan LastBehavior;
     public Vector3? Leash;
     public Queue<InteractionTarget> MoveOrders = new();
-    public Actor Owner; //use this?
+    public Actor Owner;
     public Path Path;
     public PathingSync PathFinder = new();
     public Dictionary<string, object> Properties = [];
@@ -184,16 +149,6 @@ public sealed class AIState : EventOwner// Inspectable
 
     }
 
-    //internal void PostMapLoad()
-    //{
-    //    //this.ItemPreferences.PostMapLoad();
-    //    this.ItemEvaluation.PostMapLoad();
-    //}
-    //internal void OnAttachedToWorld()
-    //{
-    //    this.ItemPreferences.OnAttachedToWorld();
-    //    this.ItemEvaluation.OnAttachedToWorld();
-    //}
     public void Assign(PlanExecutor bhav, PlannerDef source)
     {
         bhav.Plan.Actor = this.Owner;
@@ -317,24 +272,6 @@ public sealed class AIState : EventOwner// Inspectable
     {
         this.ItemPreferences.Tick();
     }
-
-    //internal void OnSpawn(MapBase newMap)
-    //{
-    //    //this.ItemPreferences.OnSpawn(newMap);
-    //    this.ItemEvaluation.OnSpawn(newMap);
-    //}
-
-    //internal void OnDespawn(MapBase oldmap)
-    //{
-    //    //this.ItemPreferences.OnDespawn(oldmap);
-    //    this.ItemEvaluation.OnDespawn(oldmap);
-    //}
-
-    //internal void OnDispose()
-    //{
-    //    this.ItemPreferences.OnDispose();
-    //    this.ItemEvaluation.OnDispose();
-    //}
 
     public IEnumerable<Behavior> AllPlannedTasks => TaskStack.Concat(TaskQueue);
     public Behavior Behavior => this.TaskStack.Count > 0 ? this.TaskStack.Peek() : (this.TaskQueue.Count > 0 ? this.TaskQueue.Peek() : null);

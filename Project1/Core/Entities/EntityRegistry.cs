@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Project1.Core.Entities;
 
-internal class EntityRegistry : IEnumerable<Entity>, INotifyCollectionChanged, IReadOnlyDictionary<EntityRefId, Entity>, IReadOnlyCollection<Entity>
+internal sealed class EntityRegistry : IEnumerable<Entity>, INotifyCollectionChanged, IReadOnlyDictionary<EntityRefId, Entity>, IReadOnlyCollection<Entity>
 {
     readonly WorldBase World;
 

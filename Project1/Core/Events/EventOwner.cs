@@ -1,9 +1,7 @@
 ﻿using Project1.Core.Simulation;
 using Project1.Framework;
-using Project1.Framework.Events;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 #nullable enable
 
@@ -60,6 +58,7 @@ public abstract class EventOwner : Inspectable
     }
 
     protected virtual void OnAttachedToWorldInt() { }
+
     protected virtual void OnAttachedToMapInt() { }
 
     public void OnDispose()
@@ -83,31 +82,6 @@ public abstract class EventOwner : Inspectable
     }
 
     protected virtual void OnDisposeInt() { }
+
     protected virtual void OnDespawnInt(MapBase oldMap) { }
-}
-
-internal interface IEventHandlerDeclaration
-{
-    void Subscribe(EventBus bus);
-}
-
-internal sealed record EventRegistration<T>(Action<T> Handler)
-    : IEventHandlerDeclaration
-    where T : IEventPayload
-{
-    public void Subscribe(EventBus bus)
-    {
-        bus.ListenTo(this.Handler);
-    }
-}
-
-internal sealed class EventHandlerDeclarations(params IEventHandlerDeclaration[] items)
-{
-    private readonly ImmutableArray<IEventHandlerDeclaration> _items = [.. items];
-
-    public void Subscribe(EventBus bus)
-    {
-        foreach (var item in this._items)
-            item.Subscribe(bus);
-    }
 }

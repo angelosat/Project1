@@ -47,7 +47,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public ItemDef Def;
     public Def Profile;
 
-
     public static readonly Dictionary<int, GameObject> Templates = [];
     public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
     public bool IsRegistered => this.RefId > 0;
@@ -137,24 +136,15 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         if (actor is not null && actor.RefId == EntityRefId.Null)
             throw new InvalidOperationException("Tried to assign an uninitialized owner");
         this.SetOwnerNew(actor?.RefId ?? EntityRefId.Null);
-        //var @new = actor?.RefId ?? EntityRefId.Null;
-
-        //var old = this.OwnerId;
-        //if (old == @new)
-        //    return;
-        //this.OwnerId = @new;
-        //this.World.Events.Post(new ItemOwnerChangedEvent(this as Entity, old));
     }
     public virtual float Height => this.Def.Height;
 
     public int RefId;
 
     public NetEndpoint Net { get => this.World?.Net; }
-    //set { } }
 
     public WorldBase World { get; set; }
 
-    //MapBase _map;
     public MapBase LastMap { get; private set; }
     public MapBase Map
     {

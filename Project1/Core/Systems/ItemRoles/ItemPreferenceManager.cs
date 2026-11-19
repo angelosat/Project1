@@ -426,12 +426,6 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
             if (this.PreCommitScanCache[key].item == item)
                 this.PreCommitScanCache.Remove(key);
         }
-
-        // TODO sync precommit cache?
-
-        //foreach (var i in this.Actor.Map.Entities)
-        //    if (i != item)
-        //        this.TryEnqueue(i);
     }
 
     public IEnumerable<(Entity item, int score)> GetItemsBySituationalScore(Actor actor, Func<Entity, bool> filter)
@@ -496,21 +490,6 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
         return this;
     }
 
-    //internal void OnAttachedToWorld()
-    //{
-    //    // TODO dont do this because this will get called
-    //    // whether the actor and/or the item are in seperate maps/overworld locations
-    //    //this.Actor.World.Events.ListenTo<ItemOwnerChangedEvent>(HandleItemOwnerChanged);
-    //    this.Actor.World.Events.ListenTo<InventoryItemAddedEvent>(OnInventoryItemAdded);
-    //    this.Actor.World.Events.ListenTo<EntityDisposedEvent>(OnEntityDisposed);
-    //    // TODO initial inventory scan
-    //    //this.InitialInventoryScan();
-    //}
-   
-
-    //internal void OnDispose()
-    //    => this.Actor.World.Events.Unsubscribe(this);
-
     private void OnEntityDisposed(EntityDisposedEvent e)
     {
         if (e.Entity == this.Actor)
@@ -541,8 +520,6 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
 
     public static ItemPreferenceManager Create(IDataReader r) => new ItemPreferenceManager().Read(r);
 
-   
-
     public void Write(IDataWriter w)
     {
         w.WriteValues(this.PrefsInternal);
@@ -560,9 +537,6 @@ public sealed class ItemPreferenceManager : EventOwner, ISaveable, ISerializable
         this.ItemsToPrefs.Clear();
         foreach (var pref in this.PrefsInternal.Values)
         {
-            //if(!this.ItemsToPrefs.TryGetValue(pref.Item, out var roleList))
-            //    this.ItemsToPrefs[pref.Item] = roleList = [];
-            //var resolved = this.Resolve(pref.ItemRefId);
             if (!this.ItemsToPrefs.TryGetValue(pref.ItemRefId, out var roleList))
                 this.ItemsToPrefs[pref.ItemRefId] = roleList = [];
             roleList.Add(pref);

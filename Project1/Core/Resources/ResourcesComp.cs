@@ -9,8 +9,6 @@ using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.Resources;
-
-public readonly record struct ResourceSnapshot(ResourceDef Def, float Value, float Max) { }
 public sealed class ResourcesComp : EntityComp
 {
     public override EntityCompDef CompDef => EntityCompDefOf.Resources;

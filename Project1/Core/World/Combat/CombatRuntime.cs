@@ -1,10 +1,8 @@
 ﻿using Project1.Core.Attributes;
 using Project1.Core.Entities.Actors;
-using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Biology;
 using Project1.Core.World.Actions;
-using Project1.Core.World.Frontiers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +19,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     readonly List<AttackResult> Log = [];
 
-    readonly static int BaseCooldown = Ticks.FromMinutes(15);
+    readonly static int BaseCooldown = Ticks.FromMinutes(1);
 
     int CooldownFirst,
         CooldownSecond;
@@ -92,29 +90,6 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     {
         var world = (StaticWorld)attacker.World;
         world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker) { TargetId = defender.RefId });
-    }
-
-    private void PerformAttack(Actor attacker, Actor defender)
-    {
-        if (!attacker.Net.IsServer)
-            return;
-        var result = CombatSystem.ResolveHit(attacker, defender);
-        switch (result.Type)
-        {
-            case AttackResultTypes.Miss:
-            case AttackResultTypes.Dodge:
-            case AttackResultTypes.Parry:
-                break;
-            case AttackResultTypes.Hit:
-                var damage = result.Damage;
-                defender.Resources.ApplyDelta(ResourceDefOf.Health, -damage.Value);
-                if(defender.Biology.IsIncapacitated)
-                    this.IsResolved = true;
-                break;
-            default:
-                throw new UnreachableException();
-        }
-        Log.Add(result);
     }
 
     internal Actor Other(Actor actor)

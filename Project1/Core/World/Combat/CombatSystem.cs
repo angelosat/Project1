@@ -5,12 +5,10 @@ using Project1.Core.Simulation;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Stats;
-using Project1.Core.Systems.Thoughts;
 using Project1.Core.Systems.Tools;
-using Project1.Core.World.Actions;
 using Project1.Framework;
-using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -73,14 +71,23 @@ internal static class CombatSystem
         return (value, type);
     }
 
-    static public void PerformAttack(Actor attacker)
+    static public void PerformAttack(Actor attacker, Actor defender)
     {
         if (!attacker.Net.IsServer)
             return;
+
         var world = (StaticWorld)attacker.World;
-        var runtime = world.Combat.Get(attacker);
-        var defender = runtime.Other(attacker);
+
+        if(!world.Combat.TryGet(attacker, out var runtime))
+            runtime = world.Combat.Engage(attacker, defender);
+
+        if (runtime.Other(attacker) != defender)
+            throw new InvalidOperationException(
+                $"Actor mismatch for existing combat runtime."
+                );
+
         var result = ResolveHit(attacker, defender);
+
         switch (result.Type)
         {
             case AttackResultTypes.Miss:
@@ -100,27 +107,5 @@ internal static class CombatSystem
         $"{attacker} {result.Type} {defender} {result.Damage}".ToConsole();
         world.Events.Post(new WorldCombatEvent(runtime, attacker, result));
         runtime.Record(result);
-
-        // if combat over do subsequent post combat actions here like looting
-        // should the new action be chained from here or from worldactionworker_attack?
-        //if (runtime.Winner is Actor winner && winner == attacker)
-        //{
-        //    var loser = runtime.Loser;
-        //    var invItems = loser.Inventory.GetItems();
-        //    var gear = loser.Gear.GetItems();
-        //    var loot = invItems.Union(gear).Select(i => (EntityRefId)i.RefId).ToArray();
-        //    world.Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(world.Space.GetFrontier(winner), winner) { Loot = loot });
-        //}
-    }
-}
-
-record struct WorldCombatEvent(CombatRuntime Combat, Actor Actor, AttackResult Result) : IEventPayload { }
-
-sealed class Thought_Combat : ThoughtSource<WorldCombatEvent>
-{
-    internal override void Handle(WorldCombatEvent e)
-    {
-        var result = e.Result;
-        e.Actor.AI.State.Log.Write($"{result.Type} {e.Combat.Other(e.Actor)} {result.Damage}");
     }
 }

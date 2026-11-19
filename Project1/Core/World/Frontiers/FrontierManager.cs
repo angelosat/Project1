@@ -29,14 +29,12 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
     readonly Dictionary<Actor, EncounterRuntime> ActiveEncounters = [];
     readonly Dictionary<Actor, Scheduler> EventSchedulers = [];
     readonly Dictionary<Actor, PoIRuntime> ActorsInPoIs = [];
-    static readonly HashSet<FrontierDef> _cachedDefs;// = [];
-    //public StaticWorld World { get; }
+    static readonly HashSet<FrontierDef> _cachedDefs;
     static readonly List<EncounterWorker> _offmapActivities = [];
     static readonly EncounterDef[] EncounterDefs;
     static readonly List<PoIRuntime> PoIs = new();
     static internal List<FrontierDecider> Deciders = [];
-    //readonly Dictionary<Actor, SimulationTick> IncapacitatedActors = [];
-    //public IEnumerable<Actor> GetIncapacitatedActors(FrontierDef frontier) => this.IncapacitatedActors.Keys.Where(a => GetFrontier(a).Def == frontier);
+
     readonly static ulong IncapacitationDuration = (ulong)Ticks.FromHours(1); //FromMinutes(10);
     readonly List<Actor> toKill = [];
     static FrontierManager()
@@ -274,16 +272,11 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
         }
         throw new Exception("Actor distance out of bounds");
     }
-    public FrontierDef FrontierAt(WorldSpacePosition pos)
+    public FrontierDef? FrontierAt(WorldSpacePosition pos)
     {
         var distance = (int)Math.Ceiling(pos);
         if (distance == 0)
             return null;
-        //for (int i = 0; i < this.FrontiersByTier.Count; i++)
-        //{
-        //    if (i < distance && distance <= i + 1)
-        //        return this.FrontiersByTier[i+1];
-        //}
         for (byte i = 0; i < FrontiersByTier.Count; i++)
         {
             if (i < distance && distance <= i + 1)
@@ -305,15 +298,9 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
         if (actor.Biology.IsIncapacitated)
             return;
         var frontier = this.GetFrontier(actor);
-        //var encounterDef = EncounterDefs.SelectRandomWeighted(this.World.Random, f => f.Worker.GetWeight(frontier, actor));
-        //var action = encounterDef.Worker.DecideAction(frontier, actor);
-        //if (!action.HasValue)
-        //    return;
-        //this.World.Actions.Start(action.Value.actionDef, action.Value.data);
 
         var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
         var (encounter, context, weight) = candidates.SelectRandomWeighted(this.World.Random, f => f.weight);
-        //var action = encounter.Worker.DecideAction(frontier, actor);
         if (encounter.Worker.DecideAction(context) is not WorldActionDef action)
             return;
         this.World.Actions.Begin(action, context);
@@ -355,11 +342,8 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
                     actor,
                     new(() => this.TriggerEncounter(actor),
                     this.World.CurrentTick,
-                    //Ticks.FromMinutes(1), 
-                    //Ticks.FromMinutes(3),
                     Ticks.FromMinutes(4),
                     Ticks.FromMinutes(6),
-                    //new()));
                     actor.World.Random));
     }
 
@@ -394,17 +378,13 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
             return $"{frontier.Def.LabelReadable}";// {frontier.Exploration.ToStringPercentage()}";
         else
             return $"In town";
+
         //return $"" +
+        //    //$"{frontier?.Def.LabelReadable ?? "In town"} " +
         //    $"{frontier?.Def.LabelReadable ?? "In town"} " +
         //    $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +
         //    //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
-        //    $"{this.World.Actions.GetAction(actor)?.Def.LabelReadable ?? "idle"}";
-        return $"" +
-            //$"{frontier?.Def.LabelReadable ?? "In town"} " +
-            $"{frontier?.Def.LabelReadable ?? "In town"} " +
-            $"{(this.World.Combat.IsEngaged(actor) ? $"fighting: {this.World.Combat.Get(actor).Other(actor).Name}" : "")} " +
-            //$"{this.GetEncounter(actor)?.LabelReadable ?? "idle"}";
-            $"{this.GetEncounter(actor)?.GetTextStatus() ?? "idle"}";
+        //    $"{this.GetEncounter(actor)?.GetTextStatus() ?? "idle"}";
     }
 
     public FrontierRuntime Get(FrontierDef def)
@@ -463,11 +443,3 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
     internal PoIRuntime? GetPoi(Actor actor)
         => this.ActorsInPoIs.GetValueOrDefault(actor);
 }
-
-internal record struct EncounterBeginEvent(Entity Entity, EncounterRuntime Encounter) : IEventPayload { }
-
-internal record struct EncounterEndEvent(Entity Entity) : IEventPayload { }
-
-internal record struct ActorEnterPoIEvent(Actor Actor, FrontierRuntime Frontier, PoIRuntime PoI) : IEventPayload;
-
-internal record struct ActorExitPoIEvent(Actor Actor) : IEventPayload;

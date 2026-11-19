@@ -85,10 +85,10 @@ public class Window : Control
         return this.Hide();
     }
 
-    public override void Dispose()
-    {
-        base.Dispose();
-    }
+    //public override void Dispose()
+    //{
+    //    base.Dispose();
+    //}
 
     public Vector2 CenterMouseOnControl(Control control)
     {

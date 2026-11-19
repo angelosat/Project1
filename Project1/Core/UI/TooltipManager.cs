@@ -25,17 +25,32 @@ public class TooltipManager
     protected static TooltipManager _Instance;
     public static TooltipManager Instance => _Instance ??= new TooltipManager();
 
+    //Tooltip _tooltip;
+    //public Tooltip Tooltip
+    //{
+    //    get => this._tooltip;
+    //    set
+    //    {
+    //        this._tooltip?.Dispose();
+    //        this._tooltip = value;
+    //    }
+    //}
     Tooltip _tooltip;
     public Tooltip Tooltip
     {
         get => this._tooltip;
         set
         {
-            this._tooltip?.Dispose();
+            if (this._tooltip is not null)
+            {
+                this._tooltip.Detach();
+                this._tooltip.Dispose();
+            }
+
             this._tooltip = value;
+            this._tooltip?.OnAttached();
         }
     }
-
     ITooltippable Object;
 
 
@@ -59,16 +74,29 @@ public class TooltipManager
 
     void Build()
     {
-        this.Tooltip = Build(this.Object);
-        this.Tooltip.OnAttached();
+        //this.Tooltip = Build(this.Object);
+        ////this.Tooltip.OnAttached();
 
-        if (this.Tooltip.Controls.Count > 0)
+        //if (this.Tooltip.Controls.Count > 0)
+        //{
+        //    this.Tooltip.Update();
+        //    this.Tooltip.SetMousethrough(true, true);
+        //}
+        //else
+        //    this.Tooltip = null;
+        var tooltip = Build(this.Object);
+
+        if (tooltip.Controls.Count > 0)
         {
-            this.Tooltip.Update();
-            this.Tooltip.SetMousethrough(true, true);
+            tooltip.Update();
+            tooltip.SetMousethrough(true, true);
+            this.Tooltip = tooltip;
         }
         else
+        {
             this.Tooltip = null;
+            tooltip.Dispose();
+        }
     }
     static Tooltip Build(ITooltippable item)
     {

@@ -545,11 +545,21 @@ public sealed class UIManager : IDisposable, IInputEventHandler
         WindowManagers.Remove(this);
         Game1.Instance.graphics.DeviceReset -= this.graphics_DeviceReset;
     }
+    //public void Initialize()
+    //{
+    //    foreach (var layer in this.Layers)
+    //        foreach (Control ctrl in layer.Value)
+    //            ctrl.Dispose();
+    //}
     public void Initialize()
     {
         foreach (var layer in this.Layers)
+        {
             foreach (Control ctrl in layer.Value)
                 ctrl.Dispose();
+
+            layer.Value.Clear();
+        }
     }
 
     public void OnGotFocus() { }
@@ -790,7 +800,7 @@ public sealed class UIManager : IDisposable, IInputEventHandler
 
         control.OnAttached();
     }
-    public bool Remove(Control control)
+    public bool RemoveOld(Control control)
     {
         /// if the window was a dialog, move the dialogblock behind the next topmost window, or remove it if there are no other dialogs
         if (this.Layers[control.Layer].Remove(control))
@@ -808,6 +818,29 @@ public sealed class UIManager : IDisposable, IInputEventHandler
             }
             return true;
         }
+        return false;
+    }
+    public bool Remove(Control control)
+    {
+        /// if the window was a dialog, move the dialogblock behind the next topmost window, or remove it if there are no other dialogs
+        if (this.Layers[control.Layer].Remove(control))
+        {
+            control.Detach();
+
+            if (control.Layer == LayerDialog)
+            {
+                this.Layers[LayerDialog].Remove(this.DialogBlock);
+
+                int index = this.Layers[LayerDialog].Count - 1;
+                if (index < 0)
+                    return true;
+
+                this.Layers[LayerDialog].Insert(index, this.DialogBlock);
+            }
+
+            return true;
+        }
+
         return false;
     }
     //public bool Remove(Element element)

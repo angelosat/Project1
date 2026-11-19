@@ -93,7 +93,9 @@ public class ControlCollection(Control owner) : Collection<Control>
         base.InsertItem(index, item);
         item.Parent = Parent;
         Parent.OnControlAdded(item);
-        item.OnAttached();
+        //item.OnAttached();
+        if (this.Parent.IsAttached)
+            item.OnAttached();
     }
     public void AlignVertically(int spacing = 0)
     {

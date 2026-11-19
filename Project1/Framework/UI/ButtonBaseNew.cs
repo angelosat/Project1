@@ -128,10 +128,10 @@ namespace Project1.Framework.UI
                 if (this.Parent is not null)
                     this.Parent.OnControlResized(this);
         }
-        internal override void OnAttached()
+        protected override void OnAttachedInternal()
         {
             this.Invalidate(true);
-            base.OnAttached();
+            //base.OnAttached();
         }
         //public override void OnPaint(SpriteBatch sb)
         //{

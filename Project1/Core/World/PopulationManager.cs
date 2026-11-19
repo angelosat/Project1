@@ -153,7 +153,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         var gear = ToolSystem.CreateRandom(GearSlotDefOf.Chest, this.World.Random);
         damagedTool.Resources.SetPercentage(ResourceDefOf.Durability, .05f);
         inventory.InsertAndClaim(damagedTool);
-        //inventory.InsertAndClaim(gear);
+        inventory.InsertAndClaim(gear);
 
         //foreach (var slot in actor.Gear.SlotDefs)
         //    if(ToolSystem.CreateRandom(slot, this.World.Random) is Entity item)

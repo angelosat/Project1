@@ -218,20 +218,44 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         return this;
     }
     Action AttachedAction, DetachedAction;
-    internal virtual void OnAttached()
+    internal /*virtual*/ void OnAttached()
     {
-        if (!this.TopLevelControl.IsOpen)
+        //this.OnAttachedInt();
+        //if (!this.TopLevelControl.IsOpen)
+        //    return;
+        //this.AttachedAction?.Invoke();
+        //foreach (var c in this.Controls)
+        //    c.OnAttached();
+        if (this.IsAttached)
             return;
+
+        this._isAttached = true;
+
         this.AttachedAction?.Invoke();
+        this.OnAttachedInternal();
+
         foreach (var c in this.Controls)
             c.OnAttached();
     }
+    private bool _isAttached;
+    internal bool IsAttached => this._isAttached;
+    protected virtual void OnAttachedInternal() { }
     internal void Detach()
     {
-        if (!this.TopLevelControl.IsOpen)
+        //if (!this.TopLevelControl.IsOpen)
+        //    return;
+        //this.DetachedAction?.Invoke();
+        //this.OnDetached();
+        //foreach (var c in this.Controls)
+        //    c.Detach();
+        if (!this.IsAttached)
             return;
+
+        this._isAttached = false;
+
         this.DetachedAction?.Invoke();
         this.OnDetached();
+
         foreach (var c in this.Controls)
             c.Detach();
     }
@@ -703,7 +727,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
 
     public virtual void Dispose()
     {
-
+        this.Detach();
         if (this.HasChildren)
             foreach (Control control in this.Controls)
                 control.Dispose();

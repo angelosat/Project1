@@ -38,15 +38,15 @@ internal static class CombatSystem
         var toHit = (int)attacker.Stats.Get(StatDefOf.HitChance);
         var random = attacker.World.Random;
         if (!random.Roll100(toHit))
-            return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, null, 0);
+            return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, 0, null);
 
         var dodge = defender.Stats.Get(StatDefOf.DodgeChance);
         if (random.Roll100((int)dodge))
-            return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty, null, 0);
+            return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty, 0, null);
 
         var parry = defender.Stats.Get(StatDefOf.ParryChance);
         if (random.Roll100((int)parry))
-            return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty, null, 0);
+            return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty, 0, null);
 
         var toCrit = (int)attacker.Stats.Get(StatDefOf.CriticalChance);
         var isCrit = random.Roll100((int)toCrit);
@@ -74,7 +74,7 @@ internal static class CombatSystem
         if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
             weapon.ToolComponent.OnAttackLanded(finalValue);
 
-        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, bodyPartTargetDef, preventedDamage);
+        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, rawValue, bodyPartTargetDef);
     }
 
     static public (int value, DamageDef damage) GetAttackDamage(Actor actor)

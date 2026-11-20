@@ -520,7 +520,13 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
         var qualityColor = this.QualityColor;// this.GetNameplateColor();
         tooltip.Color = qualityColor;
-        var namelabel = new Label(Vector2.Zero, this.Name, qualityColor, Color.Black, UIManager.FontBold) { TextColorFunc = () => qualityColor, TextFunc = () => this.Name };
+        //var namelabel = new Label(Vector2.Zero, this.Name, qualityColor, Color.Black, UIManager.FontBold) { TextColorFunc = () => qualityColor, TextFunc = () => this.Name };
+        var namelabel = new LabelNew(Vector2.Zero, this.Name, qualityColor, Color.Black, UIManager.FontBold)
+        {
+            //TextColorFunc = () => this.QualityColor,
+            TintFunc = () => this.QualityColor,
+            TextFunc = () => this.Name
+        };
         tooltip.AddControlsBottomLeft(namelabel);
 
         foreach (var comp in Components.Values)

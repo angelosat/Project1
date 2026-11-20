@@ -6,9 +6,11 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Combat;
 
-record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResultTypes Type, DamageInfo Damage, GearSlotDef BodyPart, float DamagePrevented) : ISerializableNewNew<AttackResult>
+record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResultTypes Type, DamageInfo Damage, float RawDamage, GearSlotDef BodyPart) : ISerializableNewNew<AttackResult>
 {
-    public bool Connected => this.Damage.Value > 0;
+    public readonly bool Connected => this.Damage.Value > 0;
+
+    public readonly float DamagePrevented => this.RawDamage - this.Damage.Value;
 
     public static AttackResult Create(IDataReader r)
     {
@@ -18,9 +20,9 @@ record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResul
         var damageval = r.ReadInt32();
         var damagedef = r.ReadDef<DamageDef>();
         var damageinfo = new DamageInfo(damageval, damagedef);
+        var rawDamage = r.ReadSingle();
         var bodypart = r.ReadDef<GearSlotDef>();
-        var damagePrevented = r.ReadSingle();
-        return new(tick, actorid, type, damageinfo, bodypart, damagePrevented);
+        return new(tick, actorid, type, damageinfo, rawDamage, bodypart);
     }
 
     public IDataWriter Write(IDataWriter w)
@@ -30,8 +32,9 @@ record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResul
         w.Write((int)this.Type);
         w.Write(this.Damage.Value);
         w.Write(this.Damage.Type);
+        w.Write(this.RawDamage);
         w.Write(this.BodyPart);
-        w.Write(this.DamagePrevented);
+        //w.Write(this.DamagePrevented);
         return w;
     }
 }

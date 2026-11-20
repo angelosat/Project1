@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
@@ -91,8 +92,7 @@ public class TooltipManager
         if(source != item)
             foreach (var ctrl in source.GetTooltipControls())
                 tooltip.AddControlsBottomLeft(ctrl);
-        if (item.TooltipColor.HasValue)
-            tooltip.Color = item.TooltipColor.Value;
+        tooltip.TintFunc = () => item.TooltipColor ?? Color.White;
         return tooltip;
     }
 

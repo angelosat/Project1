@@ -48,9 +48,11 @@ internal static class ItemRenownSystem
         var current = item.Quality;
         var currentLevel = (int)current.RankEffective;
         var renownXp = GetRenownXp(item).Value;
-        var targetXp = XPForLevel(currentLevel + 1);
-        if (renownXp >= targetXp)
+        while (renownXp >= XPForLevel(currentLevel + 1))
+        {
             QualitySystem.Upgrade(item);
+            currentLevel++;
+        }
     }
 
     static int XPForLevel(int level)

@@ -69,10 +69,12 @@ internal static class CombatSystem
 
         var finalDamage = new DamageInfo((int)finalValue, damageType);
 
-        var preventedDamage = rawValue - finalValue;
+        var preventedDamage = rawValue - finalDamage.Value;
+
         bodyPartGear?.ToolComponent.OnAttackLanded(preventedDamage);
+
         if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
-            weapon.ToolComponent.OnAttackLanded(finalValue);
+            weapon.ToolComponent.OnAttackLanded(finalDamage.Value);
 
         return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, rawValue, bodyPartTargetDef);
     }

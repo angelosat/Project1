@@ -45,7 +45,12 @@ public sealed class EventBus
         if (!_eventBus.TryGetValue(id, out var list))
             _eventBus[id] = list = [];
         var wrapped = new Action<GameEvent>(e => handler((TPayload)e.Payload));
-        list.Add(new Subscription { OriginalHandler = handler, WrappedHandler = wrapped, Owner = handler.Target });
+        list.Add(new Subscription
+        {
+            OriginalHandler = handler,
+            WrappedHandler = wrapped,
+            Owner = handler.Target
+        });
 
         return () => _unsubscribe(handler);
     }

@@ -86,14 +86,14 @@ internal sealed class Encounter_OtherActor : EncounterWorker
             throw new System.Exception();
     }
 
-    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
+    internal override IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
         var world = (StaticWorld)actor.World;
         if (!world.Combat.IsAvailableForNewCombat(actor))
             yield break;
         //foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
         foreach (var k in frontier.ActorsActiveNew
-            .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a))
+            .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a) && !actor.Biology.IsIncapacitated)
             //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
             .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { TargetId = id }, 1000)))
             yield return k;

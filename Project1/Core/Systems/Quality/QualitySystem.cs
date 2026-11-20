@@ -1,15 +1,23 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Events;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Framework.Events;
+using Project1.Framework;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using System;
 
 namespace Project1.Core.Systems.Quality;
 
+[EnsureStaticCtorCall]
 internal static class QualitySystem
 {
+    static QualitySystem()
+    {
+        Registry.WorldEventHooksServer.Register<ItemRarityUpgradedEvent>(OnItemRarityUpgraded);
+        Registry.WorldEventHooksClient.Register<ItemRarityUpgradedEvent>(OnItemRarityUpgraded);
+    }
+
     static readonly Random Rand = new();
 
     static QualityDef[] All => field ??= [.. Def.Get<QualityDef>()];
@@ -52,23 +60,29 @@ internal static class QualitySystem
         return next;
     }
 
-    internal static void Upgrade(Entity item)
+    internal static void OnItemRarityUpgraded(ItemRarityUpgradedEvent e)
     {
+        var item = e.World.Resolve(e.ItemId);
         var current = item.Quality;
         var next = GetNext(current);
         if (current == next)
             return;
         item.QualityComp.Tier = next;
-        item.World.Events.Post(new ItemRarityUpgradedEvent((StaticWorld)item.World, item.RefId));
+        //item.World.Events.Post(new ItemRarityUpgradedEvent((StaticWorld)item.World, item.RefId));
     }
 }
 
-internal record struct ItemRarityUpgradedEvent(StaticWorld World, EntityRefId ItemId) : IEventPayload, ISerializableNewNew<ItemRarityUpgradedEvent>
+[NetworkReplicate]
+internal record struct ItemRarityUpgradedEvent(StaticWorld World,
+                                               EntityRefId ItemId) 
+    : IWorldEvent, ISerializableNewNew<ItemRarityUpgradedEvent>
 {
     public static ItemRarityUpgradedEvent Create(IDataReader r)
     {
         return new()
-        { ItemId = r.ReadEntityRefId() };
+        { 
+            ItemId = r.ReadEntityRefId() 
+        };
     }
 
     public readonly IDataWriter Write(IDataWriter w)

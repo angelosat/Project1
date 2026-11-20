@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
@@ -45,12 +46,13 @@ internal static class ItemRenownSystem
 
     static void UpdateRenown(Entity item)
     {
-        var current = item.Quality;
-        var currentLevel = (int)current.RankEffective;
+        //var currentLevel = (int)current.RankEffective;
+        var currentLevel = item.Quality.RankEffective - 1;
         var renownXp = GetRenownXp(item).Value;
         while (renownXp >= XPForLevel(currentLevel + 1))
         {
-            QualitySystem.Upgrade(item);
+            //QualitySystem.Upgrade(item);
+            item.World.Events.Post(new ItemRarityUpgradedEvent((StaticWorld)item.World, item.RefId));
             currentLevel++;
         }
     }

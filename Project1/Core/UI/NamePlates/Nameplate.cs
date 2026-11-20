@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.UI.NamePlates;
 
-public class Nameplate : GroupBox, IContextable
+public sealed class Nameplate : GroupBox, IContextable
 {
     const int VertOffset = 10;
     public bool AlwaysShow;
@@ -31,6 +31,8 @@ public class Nameplate : GroupBox, IContextable
         plate.AlignVertically(Alignment.Horizontal.Center);
         plate.Tag = obj;
         plate.MouseThrough = false; //hmmm
+        if(obj is ITooltippable tt)
+            plate.TooltipTargetFunc = () => tt;
         return plate;
     }
 
@@ -144,14 +146,6 @@ public class Nameplate : GroupBox, IContextable
                 toMove.Location.Y = b1.Location.Y + b1.BoundsScreen.Height + 1;
         }
         return true;
-    }
-
-    public override void GetTooltipInfo(Control tooltip)
-    {
-        if (this.Object is not ITooltippable tooltippable)
-            return;
-        tooltippable.GetTooltipInfo(tooltip);
-        tooltip.Tag = this.Object;
     }
 
     public void GetContextActions(GameObject playerEntity, ContextArgs a)

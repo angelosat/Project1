@@ -5,7 +5,7 @@ namespace Project1.Framework.UI;
 
 public interface ITooltippable
 {
-    void GetTooltipInfo(Control tooltip);
+    ITooltippable GetTooltipTarget() => this;
     IEnumerable<Control> GetTooltipControls();
     string LabelReadable { get; }
     Color? TooltipColor { get; }

@@ -2,54 +2,48 @@
 using Project1.Core.Input;
 using Project1.Core.UI.Slots;
 using Project1.Framework.Input;
-using Project1.Framework.UI;
 
-namespace Project1.Core.UI
+namespace Project1.Core.UI;
+
+class InventorySlot : Slot
 {
-    class InventorySlot : Slot
+    public InventorySlot()
     {
-        public InventorySlot()
-        {
 
-        }
-        readonly bool DragDropEnabled = false;
-        public InventorySlot(GameObjectSlot invSlot, GameObject parent, int id = 0)
+    }
+    readonly bool DragDropEnabled = false;
+    public InventorySlot(GameObjectSlot invSlot, GameObject parent, int id = 0)
+    {
+        Tag = invSlot;
+        ID = id;
+        LeftClickAction = () =>
         {
-            Tag = invSlot;
-            ID = id;
-            LeftClickAction = () =>
+            if (InputState.IsKeyDown(System.Windows.Forms.Keys.ShiftKey) && invSlot.StackSize > 1)
             {
-                if (InputState.IsKeyDown(System.Windows.Forms.Keys.ShiftKey) && invSlot.StackSize > 1)
-                {
-                    SplitStackWindow.Instance.Refresh(new InteractionTarget(invSlot)).Show();
-                    return;
-                }
-                if (Tag.HasValue)
-                {
-                    ToolManager.Instance.ActiveTool.SlotLeftClick(this.Tag);
-                    return;
-                }
-            };
-            DragDropCreateAction = () =>
+                SplitStackWindow.Instance.Refresh(new InteractionTarget(invSlot)).Show();
+                return;
+            }
+            if (Tag.HasValue)
             {
-                if (DragDropEnabled)
-                    DragDropManager.Create(new DragDropSlot(parent, new InteractionTarget(this.Tag), new InteractionTarget(this.Tag), DragDropEffects.Move | DragDropEffects.Link));
-            };
-            RightClickAction = () =>
-            {
-                ToolManager.Instance.ActiveTool.SlotRightClick(this.Tag);
-            };
-            DragDropAction = (args) =>
-            {
-                var a = args as DragDropSlot;
-                if (a.Effects == DragDropEffects.None)
-                    return DragDropEffects.None;
-                return DragDropEffects.Move;
-            };
-        }
-        public override void GetTooltipInfo(Control tooltip)
+                ToolManager.Instance.ActiveTool.SlotLeftClick(this.Tag);
+                return;
+            }
+        };
+        DragDropCreateAction = () =>
         {
-            this.Tag.Object?.GetInventoryTooltip(tooltip);
-        }
+            if (DragDropEnabled)
+                DragDropManager.Create(new DragDropSlot(parent, new InteractionTarget(this.Tag), new InteractionTarget(this.Tag), DragDropEffects.Move | DragDropEffects.Link));
+        };
+        RightClickAction = () =>
+        {
+            ToolManager.Instance.ActiveTool.SlotRightClick(this.Tag);
+        };
+        DragDropAction = (args) =>
+        {
+            var a = args as DragDropSlot;
+            if (a.Effects == DragDropEffects.None)
+                return DragDropEffects.None;
+            return DragDropEffects.Move;
+        };
     }
 }

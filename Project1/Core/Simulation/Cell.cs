@@ -38,10 +38,7 @@ public class Cell : Inspectable, ISlottable
     {
         return Color.White;
     }
-    public void GetTooltipInfo(Control tooltip)
-    {
-        tooltip.Controls.Add(new Label(this.Block.GetName(this.BlockData)) { Location = tooltip.Controls.BottomLeft });
-    }
+    
     public void DrawUI(SpriteBatch sb, Vector2 pos)
     {
         this.Block.DrawUI(sb, pos, this.BlockData);
@@ -323,8 +320,6 @@ public class Cell : Inspectable, ISlottable
 
     public IEnumerable<Control> GetTooltipControls()
     {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        yield return box;
+        yield return new Label(this.Block.GetName(this.BlockData));
     }
 }

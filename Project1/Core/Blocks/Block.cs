@@ -152,11 +152,40 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
     {
         return Color.White;
     }
-    public void GetTooltipInfo(Control tooltip)
+    
+    internal virtual IEnumerable<Control> GetTooltipControls(MapView viewport, IntVec3 global, IntVec3 face)
     {
-        tooltip.AddControls(this.Name.ToLabel());
-    }
+        var map = viewport.Map;
+        var cell = map.GetCell(global);
+        var chunk = map.GetChunk(global);
+        yield return new LabelNew($"Global: {global}");
+        yield return new Label($"Local: {global.ToLocal()}");
+        yield return new Label("Chunk: " + map.GetChunk(global).MapCoords.ToString());
+        if (viewport.Settings.MysteriousBlocks && map.IsUndiscovered(global))
+        {
+            yield return new Label("Undiscovered area") { Font = UIManager.FontBold, TextColor = Color.Goldenrod };
+            yield break;
+        }
+        yield return new Label(this.Name) { Font = UIManager.FontBold, TextColor = Color.Goldenrod };
+        if (cell.Material is MaterialDef mat)
+            yield return new Label(mat/*.ToString()*/) { TextColorFunc = () => mat.Color };
 
+        var data = cell.BlockData;
+        var binary = Convert.ToString(data, 2);
+        var datastring = int.Parse(binary).ToString("00000000");
+        yield return new Label("BlockData: " + datastring + " (" + data.ToString() + ")");
+        yield return new Label("Variation: " + cell.Variation.ToString());
+        yield return new Label("Orientation: " + cell.Orientation.ToString());
+        //tooltip.Controls.Add(new Label("Face light: " + map.GetSunLight(global + face)) { Location = tooltip.Controls.BottomLeft });
+        var light = map.GetLight(global + face, out var skylight, out var blocklight);
+        yield return new Label($"Face sunlight: {skylight}");
+        yield return new Label($"Face blocklight: {blocklight}") ;
+        yield return new Label($"Heightmap: {chunk.GetHeightMapValue(global)}");
+
+        //map.GetBlockEntity(global)?.GetTooltip(tooltip);
+        foreach (var ctrl in map.GetBlockEntity(global)?.GetTooltipControls() ?? [])
+            yield return ctrl;
+    }
     public virtual void GetTooltip(Control tooltip, MapView viewport, IntVec3 global, IntVec3 face)
     {
         var map = viewport.Map;
@@ -930,11 +959,8 @@ public abstract partial class Block : Inspectable, ISlottable, ITooltippable
 
     public IEnumerable<Control> GetTooltipControls()
     {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        yield return box;
+        yield return this.Name.ToLabel();
     }
-
     public class DefaultState : IBlockState
     {
         public void Apply(MapBase map, Vector3 global)

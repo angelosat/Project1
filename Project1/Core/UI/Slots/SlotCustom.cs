@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.Entities;
 using Project1.Framework.UI;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Project1.Core.UI.Slots
 {
@@ -126,14 +128,14 @@ namespace Project1.Core.UI.Slots
             return this.DragDropAction(args);
         }
 
-        public override void GetTooltipInfo(Control tooltip)
-        {
-            if (this.CustomTooltip)
-                base.GetTooltipInfo(tooltip);
-            else
-                this.Tag.GetTooltipInfo(tooltip);
-        }
-
+        //public override void GetTooltipInfo(Control tooltip)
+        //{
+        //    if (this.CustomTooltip)
+        //        base.GetTooltipInfo(tooltip);
+        //    else
+        //        this.Tag.GetTooltipInfo(tooltip);
+        //}
+        
         public void GetContextActions(GameObject playerEntity, ContextArgs a)
         {
         }

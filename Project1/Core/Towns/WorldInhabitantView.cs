@@ -50,9 +50,7 @@ public class WorldInhabitantView : Inspectable, ITooltippable
         this.TownApprovalRating.Value = townApprovalRating;
     }
    
-    public void GetTooltipInfo(Control tooltip)
-    {
-    }
+    
 
     internal WorldInhabitantView AddRecentlyVisitedShop(Workplace shop)
     {
@@ -149,8 +147,6 @@ public class WorldInhabitantView : Inspectable, ITooltippable
 
     public IEnumerable<Control> GetTooltipControls()
     {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        yield return box;
+        yield break;
     }
 }

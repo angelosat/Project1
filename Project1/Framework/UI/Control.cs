@@ -13,7 +13,9 @@ using Project1.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project1.Framework.UI;
 
@@ -30,12 +32,12 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         return this.Location + (this.Parent != null ? this.Parent.ClientLocation + this.Parent.GetLocation() : Vector2.Zero);
     }
     Vector2? _cachedScreenLocation;
-    public virtual Vector2 ScreenLocation =>  _cachedScreenLocation ??= 
+    public virtual Vector2 ScreenLocation => _cachedScreenLocation ??=
         this.LocationFunc() + this.Location
         - new Vector2((int)(this.Dimensions.X * this.Anchor.X), (int)(this.Dimensions.Y * this.Anchor.Y))
         + (this.Parent != null ? this.Parent.ScreenLocation + this.Parent.ClientLocation : Vector2.Zero);
     Rectangle? _cachedBoundsScreen;
-    public virtual Rectangle BoundsScreen => _cachedBoundsScreen ??= 
+    public virtual Rectangle BoundsScreen => _cachedBoundsScreen ??=
         new((int)this.ScreenLocation.X, (int)this.ScreenLocation.Y, this.Width, this.Height);
     public int X => (int)this.ScreenLocation.X;
     public int Y => (int)this.ScreenLocation.Y;
@@ -134,11 +136,12 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     public GuiLayer Layer = UIManager.LayerWindows;
 
     public DrawMode DrawMode = DrawMode.Normal;
-  
+
 
     object _tag;
     public virtual object Tag { get => this._tag; set { this._tag = value; this.OnTagChanged(); } }
-    public Func<object> TagFunc;
+    public Func<ITooltippable> TooltipTargetFunc;
+    public ITooltippable GetTooltipTarget() => this.TooltipTargetFunc?.Invoke() ?? this;
     UIManager _windowManager;
     public UIManager WindowManager { get => this._windowManager ?? ScreenManager.CurrentScreen?.WindowManager; set => this._windowManager = value; }
     //IWindowManager _windowManager;
@@ -706,7 +709,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     protected virtual void OnMouseWheel(HandledMouseEventArgs e)
     {
     }
-   
+
     protected virtual void OnLButtonDblClk(HandledMouseEventArgs e)
     {
         this.OnMouseLeftPress(e);
@@ -800,10 +803,10 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     public Vector2 ScreenClientLocation => new(this.X + this.ClientLocation.X, this.Y + this.ClientLocation.Y);
     public Rectangle ScreenClientRectangle => new(this.X + (int)this.ClientLocation.X, this.Y + (int)this.ClientLocation.Y, this.ClientSize.Width, this.ClientSize.Height);
 
-   
+
     public virtual Rectangle BoundsLocal => new((int)this.Location.X, (int)this.Location.Y, this.Width, this.Height);
 
-   
+
     protected virtual void OnClientSizeChanged()
     {
     }
@@ -978,7 +981,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     }
 
     public Vector2 Origin = new Vector2(0);
-    
+
     internal void ApplyAutoSize()
     {
         this.ClientSize = this.GetPreferredClientSize();
@@ -1052,22 +1055,15 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
 
     public Action<Control> TooltipFunc;
     public bool CustomTooltip;
-    public virtual void GetTooltipInfo(Control tooltip)
+
+    public IEnumerable<Control> GetTooltipControls()
     {
-        if (this.TooltipFunc is not null)
-        {
-            this.TooltipFunc(tooltip);
-            return;
-        }
         if (this._hoverText.Length > 0)
-            tooltip.AddControlsBottomLeft(new GroupBox().AddControlsLineWrap(Label.ParseNew(this._hoverText)));
+            yield return new GroupBox().AddControlsLineWrap(Label.ParseNew(this._hoverText));
         else if (this.HoverText.Length > 0)
-            tooltip.AddControlsBottomLeft(new Label(this.HoverText, this.HoverFormat) { TextFunc = this.HoverFunc });
-        //if (this._hoverText.Length > 0)
-        //    tooltip.Controls.Add(new GroupBox().AddControlsLineWrap(Label.ParseNew(this._hoverText)));
-        //else if (this.HoverText.Length > 0)
-        //    tooltip.Controls.Add(new Label(this.HoverText, this.HoverFormat) { TextFunc = this.HoverFunc });
+            yield return new Label(this.HoverText, this.HoverFormat) { TextFunc = this.HoverFunc };
     }
+
     public override void Update()
     {
         this.InvalidatePosition();
@@ -1085,7 +1081,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
             this.Validate(); // i put this here after calling base.update because if the size of the control was changed then for one frame it was drawn stretched
     }
 
-    
+
 
     public Control AddControlsVertically(IEnumerable<Control> controls)
     {
@@ -1132,7 +1128,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
                 Alignment.Horizontal.Center => () => new(maxWidth / 2 - ctrl.Width / 2, yy),//ctrl.Location = new Vector2(maxWidth / 2, y);
                                                                                             //ctrl.Anchor = new(.5f, 0);
                 Alignment.Horizontal.Right => () => new(maxWidth - ctrl.Width, yy),//ctrl.Location = new Vector2(maxWidth, y);
-                                                                                  //ctrl.Anchor = new(1, 0);
+                                                                                   //ctrl.Anchor = new(1, 0);
                 _ => throw new Exception(),
             };
             y += ctrl.Height + spacing;
@@ -1172,7 +1168,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         return this;
     }
     public Control AddControls(IEnumerable<Control> controls) => this.AddControls(controls.ToArray());
-    
+
     public virtual Control AddControls(params Control[] controls)
     {
         foreach (var ctrl in controls)
@@ -1190,7 +1186,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         {
             //c.Location = this.Controls.BottomLeft;
             c.Location.Y = currentY;
-            currentY += c.Height  + spacing;
+            currentY += c.Height + spacing;
         }
         return this.AddControls(controls);
     }
@@ -1508,7 +1504,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     }
     public void AddToParent()
     {
-        if(!this.Parent.Controls.Contains(this))
+        if (!this.Parent.Controls.Contains(this))
             this.Parent.AddControls(this);
     }
     public virtual void DrawOnCamera(SpriteBatch sb, MapView viewport)
@@ -1572,7 +1568,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     {
         return this.TopLevelControl as Window ?? this.ToWindow(title);
     }
-    
+
     [Obsolete]
     readonly Dictionary<int, Action<GameEvent>> ListenersOld = new();
     [Obsolete]
@@ -1734,7 +1730,7 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         this.FlashingBorder = enabled;
         return this;
     }
-    
+
 
     internal Control SetHoverText(string text)
     {
@@ -1776,9 +1772,9 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
     }
 
 
-    public virtual void OnLayout(int availableWidth, int availableHeight) 
-    { 
-        foreach(var child in this.Controls)
+    public virtual void OnLayout(int availableWidth, int availableHeight)
+    {
+        foreach (var child in this.Controls)
         {
             if (child.AnchorNew.HasFlag(Anchors.Left)) child.Location.X = this.Padding;
             if (child.AnchorNew.HasFlag(Anchors.Right)) child.Location.X = availableWidth - child.Width - this.Padding;
@@ -1806,23 +1802,18 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
             ch.OnRemoved();
     }
 
-    public IEnumerable<Control> GetTooltipControls()
+    
+    internal void CenterControlsAlignmentVertically()
     {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        return box.Controls.Count > 0 ? [box] : [];
-    }
-        internal void CenterControlsAlignmentVertically()
+        var maxh = this.Controls.Max(c => c.Height);
+        var x = 0;
+        foreach (var c in this.Controls)
         {
-            var maxh = this.Controls.Max(c => c.Height);
-            var x = 0;
-            foreach (var c in this.Controls)
-            {
-                c.Location = new(x, (maxh - c.Height) / 2);
-                x += c.Width;
-            }
-            //var maxh = this.Controls.Max(c => c.Height);
-            //foreach (var c in this.Controls)
-            //    c.Location.Y = (maxh - c.Height) / 2;
+            c.Location = new(x, (maxh - c.Height) / 2);
+            x += c.Width;
         }
+        //var maxh = this.Controls.Max(c => c.Height);
+        //foreach (var c in this.Controls)
+        //    c.Location.Y = (maxh - c.Height) / 2;
+    }
 }

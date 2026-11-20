@@ -439,10 +439,7 @@ public sealed class StaticMap : MapBase, ITooltippable
         //world.Maps[coords] = map;
         //return map;
     }
-    public override void GetTooltipInfo(Control tooltip)
-    {
-        tooltip.AddControls(this.ToString().ToLabel());
-    }
+ 
 
     public override IEnumerable<Entity> GetObjects(IntVec3 min, IntVec3 max)
     {
@@ -967,10 +964,8 @@ public sealed class StaticMap : MapBase, ITooltippable
     }
     int Index(IntVec3 v) => this.Index(v.X, v.Y, v.Z);
 
-    public IEnumerable<Control> GetTooltipControls()
+    public override IEnumerable<Control> GetTooltipControls()
     {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        yield return box;
+        yield return this.ToString().ToLabel();
     }
 }

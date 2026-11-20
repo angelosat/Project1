@@ -212,7 +212,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
             var npc = props.Actor;
             var manager = (FrontierManager)((StaticWorld)npc.World).Space;
             var btn = CreateInhabitantControlNew(box.Viewport.Width, npc, manager);
-            btn.TooltipFunc = tt => npc.GetTooltipInfo(tt);
+            btn.TooltipTargetFunc = () => npc;
             return btn;
         });
 

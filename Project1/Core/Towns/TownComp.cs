@@ -79,9 +79,8 @@ namespace Project1.Core.Towns
         }
         internal virtual IEnumerable<Button> GetTabs(ISelectable selected) { yield break; }
         
-        internal virtual void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
-        {
-        }
+        internal virtual void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs) { }
+        internal virtual IEnumerable<Control> GetTooltipControls(InteractionTarget targetArgs) { yield break; }
         internal virtual void OnCitizenAdded(int actorID) { }
         internal virtual void OnCitizenRemoved(int actorID) { }
         protected PlayerData Player { get { return this.Town.Map.Net.GetPlayer(); } }

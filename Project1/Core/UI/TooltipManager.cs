@@ -52,42 +52,29 @@ public class TooltipManager
             this.DelayValue = DelayInterval;
             if (this.Tooltip is null)
                 this.Build();
-            //else
-            //    this.Tooltip.Update();
         }
         this.Tooltip?.Update();
     }
 
     void Build()
     {
-        //this.Tooltip = Build(this.Object);
-        ////this.Tooltip.OnAttached();
-
-        //if (this.Tooltip.Controls.Count > 0)
-        //{
-        //    this.Tooltip.Update();
-        //    this.Tooltip.SetMousethrough(true, true);
-        //}
-        //else
-        //    this.Tooltip = null;
         var tooltip = Build(this.Object);
 
         if (tooltip.Controls.Count > 0)
         {
             tooltip.Update();
             tooltip.SetMousethrough(true, true);
-            //this.Tooltip = tooltip;
             this.SetTooltip(tooltip);
         }
         else
         {
-            //this.Tooltip = null;
             this.SetTooltip(null);
             tooltip.Dispose();
         }
     }
     static Tooltip Build(ITooltippable item)
     {
+        item = item.GetTooltipTarget();
         var tooltip = new Tooltip(item)
         {
             AutoSize = true
@@ -96,13 +83,6 @@ public class TooltipManager
             tooltip.Controls.Add(new Label(item.LabelReadable));
         foreach (var ctrl in item.GetTooltipControls())
             tooltip.AddControlsBottomLeft(ctrl);
-
-        if (item is Control control)
-        {
-            //item = control.TagFunc?.Invoke() as ITooltippable;
-            if (control.TagFunc?.Invoke() is ITooltippable replacement)
-                item = replacement;
-        }
         foreach (var provider in TooltipProviders)
             foreach (var ctrl in provider(item))
                 tooltip.AddControlsBottomLeft(ctrl);
@@ -134,7 +114,6 @@ public class TooltipManager
 
     private void Reset()
     {
-        //this.Tooltip = null;
         this.SetTooltip(null);
         this.DelayValue = DelayInterval;
     }

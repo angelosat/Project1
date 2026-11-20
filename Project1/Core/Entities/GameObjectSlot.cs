@@ -102,7 +102,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         Object = obj;
         StackSize = obj == null ? 0 : stackSize;
     }
-    
+
     void OnObjectChanged()
     {
         this.GetIcon = () => Object.GetIcon();
@@ -119,7 +119,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
     {
         return slot1.Swap(slot2);
     }
-    
+
     /// <summary>
     /// Copies the object and stack amount of one slot to another, and returns the old values of the target slot.
     /// </summary>
@@ -133,7 +133,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         target.StackSize = source.StackSize;
         return temp;
     }
-    
+
     public GameObjectSlot SetObject(GameObject obj)
     {
         this.Object = obj;
@@ -150,7 +150,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
             item.Transform.Anchor = this.Owner;
         }
         this.Object = item;
-        if(item != prevItem) 
+        if (item != prevItem)
             this.Owner.World.Events.Post(new SlotUpdatedEvent(this));
     }
     /// <summary>
@@ -236,8 +236,8 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         return data;
     }
 
-    static public GameObjectSlot Create(SaveTag tag) 
-    { 
+    static public GameObjectSlot Create(SaveTag tag)
+    {
         return Create(null, tag);
     }
     static public GameObjectSlot Create(ItemContainer parent, SaveTag tag)
@@ -248,7 +248,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
             _ => throw new ArgumentException("Invalid tag type"),
         };
         GameObjectSlot slot = new GameObjectSlot(parent, obj);
-       
+
         return slot;
     }
     public GameObject Load(SaveTag tag)
@@ -262,16 +262,7 @@ public class GameObjectSlot : ITooltippable, IUpdatable
         return obj;
     }
 
-    public void GetTooltipInfo(Control tooltip)
-    {
-        if (Object is not null)
-        {
-            this.Object.GetTooltipInfo(tooltip);
-        }
-        if (this.ContainerNew is not null)
-            tooltip.Controls.Add(new Label(tooltip.Controls.BottomLeft, this.ContainerNew.ToString()));
-        tooltip.Controls.Add(new Label(tooltip.Controls.BottomLeft, this.ToString()));
-    }
+
 
     public GameObjectSlot Clone()
     {
@@ -313,11 +304,19 @@ public class GameObjectSlot : ITooltippable, IUpdatable
             this.Clear();
         }
     }
-
+    public ITooltippable GetTooltipTarget() => this.Object;
+    
     public IEnumerable<Control> GetTooltipControls()
     {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        yield return box;
+        yield break;
+        if (Object is not null)
+        {
+            //this.Object.GetTooltipInfo(tooltip);
+            foreach (var ctrl in this.Object.GetTooltipControls())
+                yield return ctrl;
+        }
+        if (this.ContainerNew is not null)
+            yield return new LabelNew(this.ContainerNew.ToString());
+        yield return new Label(this.ToString());
     }
 }

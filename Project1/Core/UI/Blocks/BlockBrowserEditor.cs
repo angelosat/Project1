@@ -27,6 +27,7 @@ namespace Project1.Core.UI.Blocks
             this.GridBlocks = new SlotGrid<Slot<Block>, Block>(blocks, 8, (slot, bl) =>
             {
                 slot.LeftClickAction = () => this.RefreshVariations(bl);
+                slot.TooltipTargetFunc = () => bl;
             })
             { Location = this.Panel_Blocks.Controls.BottomLeft };
             this.Panel_Blocks.Controls.Add(this.GridBlocks);

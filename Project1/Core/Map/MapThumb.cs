@@ -132,16 +132,7 @@ namespace Project1.Core.Map
             ));
         }
 
-        public void GetTooltipInfo(Control tooltip)
-        {
-            this.Map.GetTooltipInfo(tooltip);
-        }
-
         public IEnumerable<Control> GetTooltipControls()
-        {
-            var box = new GroupBox();
-            this.GetTooltipInfo(box);
-            yield return box;
-        }
+            => this.Map.GetTooltipControls();
     }
 }

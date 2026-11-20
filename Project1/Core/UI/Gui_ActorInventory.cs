@@ -9,7 +9,7 @@ using Project1.Framework.UI;
 
 namespace Project1.Core.UI;
 
-internal class Gui_ActorInventory : Table<Entity>
+internal sealed class Gui_ActorInventory : Table<Entity>
 {
     Actor Actor;
     ContainerList Container;
@@ -17,7 +17,8 @@ internal class Gui_ActorInventory : Table<Entity>
     {
         this
                 //.AddColumn("name", 164, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
-                .AddColumn("name", 164, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetTooltipInfo })
+                //.AddColumn("name", 164, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetTooltipInfo })
+                .AddColumn("name", 164, o => new LabelNew(() => o.Name, () => Inspector.Refresh(o)) { TooltipTargetFunc = () => o })
                 .AddColumn("preference", 92, o => this.Actor.ItemPreferences.GetListControl(o), .5f)
                 .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")), 1f)
                 .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));

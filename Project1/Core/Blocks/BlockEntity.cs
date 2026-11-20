@@ -65,7 +65,7 @@ public class BlockEntity : Inspectable, ITransformAnchor, IDisposable, ISerializ
             c.Tick();
     }
     public virtual void GetTooltip(Control tooltip) { }
-
+    internal virtual IEnumerable<Control> GetTooltipControls() { yield break; }
     /// <summary>
     /// Dipose any children GameObjects here.
     /// </summary>

@@ -782,7 +782,7 @@ public abstract class MapBase : Inspectable
     public abstract void DrawInterface(SpriteBatch sb, MapView viewport);
     public abstract void DrawWorld(MySpriteBatch sb, MapView viewport);
     public abstract void DrawBeforeWorld(MySpriteBatch sb, RenderContext ctx);
-    public abstract void GetTooltipInfo(Control tooltip);
+    public virtual IEnumerable<Control> GetTooltipControls() { yield break; }
     internal void AddBlockEntityInternal(BlockEntity entity)
     {
         foreach(var global in entity.CellsOccupied)

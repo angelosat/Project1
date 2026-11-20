@@ -16,7 +16,7 @@ public class ListBoxNoScroll : GroupBox, IListSearchable
         this.SelectedControl = this.Controls.FirstOrDefault(i => i.Tag.Equals(obj));
     }
 
-    public List<Control> AllItems = new();// => this.Controls;
+    public List<Control> AllItems = [];// => this.Controls;
 
     public Action<IListable> ItemChangedFunc = item => { };
     public IEnumerable<IListable> List = new List<IListable>();
@@ -248,7 +248,9 @@ public class ListBoxNoScroll<TObject, TControl> : GroupBox, IListSearchable<TObj
             var c = this.ControlFactory(i);
             c.Tag = i;
             c.Location.Y = currentY;
-            c.TooltipFunc = tt => { if (i is ITooltippable tooltippable) tooltippable.GetTooltipInfo(tt); };
+            //c.TooltipFunc = tt => { if (i is ITooltippable tooltippable) tooltippable.GetTooltipInfo(tt); };
+            if (i is ITooltippable tooltippable)
+                c.TooltipTargetFunc = () => tooltippable;
             currentY += c.Height + Spacing;
             this.AllItems.Add(c);
             c.Layout(this.maxWidth, this.Height);

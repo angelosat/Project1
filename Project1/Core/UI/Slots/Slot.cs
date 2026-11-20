@@ -187,14 +187,6 @@ public class Slot : ButtonBase, IDropTarget, ITooltippable, IContextable
         return DragDropAction(args);
     }
 
-    public override void GetTooltipInfo(Control tooltip)
-    {
-        if (CustomTooltip)
-            base.GetTooltipInfo(tooltip);
-        else
-            Tag.GetTooltipInfo(tooltip);
-    }
-    
     public void GetContextActions(GameObject playerEntity, ContextArgs a)
     {
     }

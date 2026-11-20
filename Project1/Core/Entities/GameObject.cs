@@ -637,12 +637,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         body.DrawGhost(this, sb, pos, Vector4.One, Vector4.One, tint, Color.Transparent, 0, view.Zoom, 0, SpriteEffects.None, 0.5f, depth);
     }
 
-    public virtual void GetTooltipInfo(Control tooltip)
-    {
-        //GetTooltipHeader(tooltip);
-        foreach (var ctrl in this.GetTooltipControls())
-            tooltip.AddControlsBottomLeft(ctrl);
-    }
     Sprite CachedSprite;
     public ContainerList Container;
     public InventoryList ContainerNew;

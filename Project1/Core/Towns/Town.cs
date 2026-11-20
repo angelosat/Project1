@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Project1.Core.AI;
 using Project1.Core.AI.MetaRoles;
 using Project1.Core.AI.Reservations;
@@ -8,9 +9,12 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Graphics;
 using Project1.Core.Input;
 using Project1.Core.Networking;
+using Project1.Core.Rendering;
 using Project1.Core.Rooms;
+using Project1.Core.Screens;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Conversations;
+using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Plants;
 using Project1.Core.Systems.Quests;
 using Project1.Core.Systems.Trading;
@@ -20,10 +24,10 @@ using Project1.Core.Towns.Digging;
 using Project1.Core.Towns.Duties;
 using Project1.Core.Towns.Reputation;
 using Project1.Core.Towns.Services;
-using Project1.Core.Towns.Services.Spells;
 using Project1.Core.Towns.Services.Inns;
 using Project1.Core.Towns.Services.Repairing;
 using Project1.Core.Towns.Services.Shops;
+using Project1.Core.Towns.Services.Spells;
 using Project1.Core.Towns.Storage;
 using Project1.Core.Towns.UI;
 using Project1.Core.Towns.Zones;
@@ -37,10 +41,6 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Project1.Core.Systems.Crafting;
-using Project1.Core.Screens;
-using Microsoft.Xna.Framework.Graphics;
-using Project1.Core.Rendering;
 
 namespace Project1.Core.Towns;
 
@@ -49,10 +49,11 @@ public sealed class Town : Inspectable, IDutyProvider
     UIQuickMenu QuickMenu;
     public static HotkeyCategory HotkeyContext = new("Town");
 
-    internal void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
+    internal IEnumerable<Control> GetTooltipControls(InteractionTarget targetArgs)
     {
         foreach (var c in this.TownComponents)
-            c.OnTooltipCreated(tooltip, targetArgs);
+            foreach (var ctrl in c.GetTooltipControls(targetArgs))
+                yield return ctrl;
     }
 
     public IReadOnlyCollection<DutyDef> AvailableDuties => field ??=

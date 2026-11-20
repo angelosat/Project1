@@ -279,15 +279,25 @@ public sealed class RoomManager : TownComp
     {
         return this.Rooms.Values.FirstOrDefault(r => r.ContainsBorder(global));
     }
-    internal override void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
+    //internal override void OnTooltipCreated(Control tooltip, InteractionTarget targetArgs)
+    //{
+    //    if (targetArgs.Type != TargetType.Cell)
+    //        return;
+    //    var global = targetArgs.FaceGlobal;
+    //    if (!this.TryGetRoomAt(global, out var room))
+    //        return;
+    //    var control = room.GetControl().ToPanelLabeled("Room");
+    //    tooltip.AddControlsBottomLeft(control);
+    //}
+    internal override IEnumerable<Control> GetTooltipControls(InteractionTarget targetArgs)
     {
         if (targetArgs.Type != TargetType.Cell)
-            return;
+            yield break;
         var global = targetArgs.FaceGlobal;
         if (!this.TryGetRoomAt(global, out var room))
-            return;
+            yield break;
         var control = room.GetControl().ToPanelLabeled("Room");
-        tooltip.AddControlsBottomLeft(control);
+        yield return control;
     }
     internal override void ResolveReferences()
     {

@@ -21,32 +21,31 @@ using System.Linq;
 
 namespace Project1.Core;
 
-public enum TargetType { Null, Entity, Slot, BlockEntitySlot, Cell, Direction, BlockEntity }
-
-public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISelectable, ILabeled, ISerializableNewNew<InteractionTarget>
+public sealed class InteractionTarget : Inspectable, ITooltippable, IContextable, ISelectable, ILabeled, ISerializableNewNew<InteractionTarget>
 {
-    public void GetTooltipInfo(Control tooltip)
+    public IEnumerable<Control> GetTooltipControls()
     {
         switch (this.Type)
         {
             case TargetType.Entity:
                 if (this.Object is not null)
-                    //this.Object.GetTooltipInfo(tooltip);
                     foreach (var ctrl in this.Object.GetTooltipControls())
-                        tooltip.AddControlsBottomLeft(ctrl);
+                        yield return ctrl;
                 break;
 
             case TargetType.Cell:
                 var viewport = Ingame.MainView;
-                viewport.Map.GetBlock(this.Global).GetTooltip(tooltip, viewport, this.Global, this.Face);
-
+                //viewport.Map.GetBlock(this.Global).GetTooltip(tooltip, viewport, this.Global, this.Face);
+                foreach (var c in viewport.Map.GetBlock(this.Global).GetTooltipControls(viewport, this.Global, this.Face))
+                    yield return c;
                 break;
 
             default: break;
         }
-        this.Map.Town.OnTooltipCreated(tooltip, this);
-        return;
+        foreach (var c in this.Map.Town.GetTooltipControls(this))
+            yield return c;
     }
+   
     public bool IsResolved => this.World is not null;
     
     public Vector2 Direction;
@@ -938,10 +937,5 @@ public class InteractionTarget : Inspectable, ITooltippable, IContextable, ISele
         yield break;
     }
 
-    public IEnumerable<Control> GetTooltipControls()
-    {
-        var box = new GroupBox();
-        this.GetTooltipInfo(box);
-        yield return box;
-    }
+    
 }

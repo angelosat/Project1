@@ -72,9 +72,9 @@ public class TooltipManager
             tooltip.Dispose();
         }
     }
-    static Tooltip Build(ITooltippable item)
+    static Tooltip Build(ITooltippable source)
     {
-        item = item.GetTooltipTarget();
+        var item = source.GetTooltipTarget();
         var tooltip = new Tooltip(item)
         {
             AutoSize = true
@@ -88,6 +88,9 @@ public class TooltipManager
                 tooltip.AddControlsBottomLeft(ctrl);
         foreach (var comp in Game1.Instance.GameComponents)
             comp.OnTooltipCreated(item, tooltip);
+        if(source != item)
+            foreach (var ctrl in source.GetTooltipControls())
+                tooltip.AddControlsBottomLeft(ctrl);
         if (item.TooltipColor.HasValue)
             tooltip.Color = item.TooltipColor.Value;
         return tooltip;

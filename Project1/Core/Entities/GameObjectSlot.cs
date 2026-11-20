@@ -308,13 +308,13 @@ public class GameObjectSlot : ITooltippable, IUpdatable
     
     public IEnumerable<Control> GetTooltipControls()
     {
-        yield break;
-        if (Object is not null)
-        {
-            //this.Object.GetTooltipInfo(tooltip);
-            foreach (var ctrl in this.Object.GetTooltipControls())
-                yield return ctrl;
-        }
+        //yield break;
+        //if (Object is not null)
+        //{
+        //    //this.Object.GetTooltipInfo(tooltip);
+        //    foreach (var ctrl in this.Object.GetTooltipControls())
+        //        yield return ctrl;
+        //}
         if (this.ContainerNew is not null)
             yield return new LabelNew(this.ContainerNew.ToString());
         yield return new Label(this.ToString());

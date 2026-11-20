@@ -153,14 +153,20 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
 
     //public IEnumerable<StatRuntime> GetTrackingStats() => this.TrackingStats.Values;
 
-    internal void OnHit(float damagePrevented)
+    internal void OnAttackLanded(float damageContext)
     {
         //this.GetOrCreateStat(StatDefOf.TotalHits).Value++;
         //this.GetOrCreateStat(StatDefOf.TotalPreventedDamage).Value += damagePrevented;
 
         this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalHits).Value++;
-        this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalPreventedDamage).Value += damagePrevented;
+        this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalDamage).Value += damageContext;
     }
+
+    //internal void OnDamageInflicted(float damageInflicted)
+    //{
+    //    this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalHitsLanded).Value++;
+    //    this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalDamageInflicted).Value += damageInflicted;
+    //}
 
     //StatRuntime GetOrCreateStat(StatDef stat, float initialValue = 0)
     //{
@@ -249,4 +255,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
             foreach (var mod in modifiers)
                 this.Modifiers.Add(mod, 0f);
     }
+
+   
 }

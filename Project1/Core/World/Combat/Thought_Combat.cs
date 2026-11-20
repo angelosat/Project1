@@ -8,7 +8,7 @@ sealed class Thought_Combat : ThoughtSource<WorldCombatEvent>
     internal override void Handle(WorldCombatEvent e)
     {
         var world = e.World;
-        var actorId = e.Actor;
+        var actorId = e.AttackerId;
         var actor = world.Resolve<Actor>(actorId);
         var combat = world.Combat.Get(actorId);
         var result = e.Result;

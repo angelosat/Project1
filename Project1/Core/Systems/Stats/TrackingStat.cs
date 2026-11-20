@@ -15,7 +15,10 @@ public sealed class TrackingStatDef(string name) : Def(name)
 public static class TrackingStatDefOf
 {
     public static readonly TrackingStatDef TotalHits = new("Total Hits");
-    public static readonly TrackingStatDef TotalPreventedDamage = new("Total Prevented Damage");
+    public static readonly TrackingStatDef TotalDamage = new("Total Damage");
+
+    //public static readonly TrackingStatDef TotalHitsLanded = new("Total Hits Landed");
+    //public static readonly TrackingStatDef TotalDamageInflicted = new("Total Damage Inflicted");
 
     static TrackingStatDefOf()
     {

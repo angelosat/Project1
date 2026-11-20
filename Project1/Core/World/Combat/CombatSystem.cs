@@ -70,7 +70,9 @@ internal static class CombatSystem
         var finalDamage = new DamageInfo((int)finalValue, damageType);
 
         var preventedDamage = rawValue - finalValue;
-        bodyPartGear?.ToolComponent.OnHit(preventedDamage);
+        bodyPartGear?.ToolComponent.OnAttackLanded(preventedDamage);
+        if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
+            weapon.ToolComponent.OnAttackLanded(finalValue);
 
         return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, bodyPartTargetDef);
     }
@@ -127,14 +129,17 @@ internal static class CombatSystem
 
     internal static void ReplicateOnClient(WorldCombatEvent e)
     {
-        var world = Client.Instance.World;
-        var actor = world.Resolve<Actor>(e.Actor);
+        var world = (StaticWorld)Client.Instance.World;
+        var attacker = world.Resolve<Actor>(e.AttackerId);
+        if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
+            weapon.ToolComponent.OnAttackLanded(e.Result.Damage.Value);
+        var combat = world.Combat.Get(e.AttackerId);
+        var defender = combat.GetOther(attacker);
         var slotDef = e.Result.BodyPart;
         if (slotDef is null)
             return;
-        var gear = actor.Gear.GetGear(slotDef);
-        if (gear is null)
-            return;
-        gear.ToolComponent.OnHit(e.Result.Damage.Value);
+        if (defender.Gear.GetGear(slotDef) is Entity gear)
+            gear.ToolComponent.OnAttackLanded(e.Result.Damage.Value);
+
     }
 }

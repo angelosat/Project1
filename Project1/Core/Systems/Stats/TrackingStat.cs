@@ -32,7 +32,7 @@ internal sealed class TrackingStat(TrackingStatDef def, float initialValue = 0) 
         get;
         set
         {
-            var oldValue = value;
+            var oldValue = field;
             field = value;
             if (oldValue != value)
                 this.Notifier.Notify();

@@ -40,7 +40,7 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
     public readonly Dictionary<StatDef, float> Modifiers = [];
     public readonly Dictionary<StatDef, StatRuntime> IntrinsicStats = [];
-    public readonly Dictionary<StatDef, StatRuntime> TrackingStats = [];
+    //public readonly Dictionary<StatDef, StatRuntime> TrackingStats = [];
 
     public float Armor => this.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f;
 
@@ -151,20 +151,23 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         return this.BaseWork;
     }
 
-    public IEnumerable<StatRuntime> GetTrackingStats() => this.TrackingStats.Values;
+    //public IEnumerable<StatRuntime> GetTrackingStats() => this.TrackingStats.Values;
 
     internal void OnHit(float damagePrevented)
     {
-        this.GetOrCreateStat(StatDefOf.TotalHits).Value++;
-        this.GetOrCreateStat(StatDefOf.TotalPreventedDamage).Value += damagePrevented;
+        //this.GetOrCreateStat(StatDefOf.TotalHits).Value++;
+        //this.GetOrCreateStat(StatDefOf.TotalPreventedDamage).Value += damagePrevented;
+
+        this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalHits).Value++;
+        this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalPreventedDamage).Value += damagePrevented;
     }
 
-    StatRuntime GetOrCreateStat(StatDef stat, float initialValue = 0)
-    {
-        if (!this.TrackingStats.TryGetValue(stat, out var runtime))
-            this.TrackingStats.Add(stat, runtime = new(stat, initialValue));
-        return runtime;
-    }
+    //StatRuntime GetOrCreateStat(StatDef stat, float initialValue = 0)
+    //{
+    //    if (!this.TrackingStats.TryGetValue(stat, out var runtime))
+    //        this.TrackingStats.Add(stat, runtime = new(stat, initialValue));
+    //    return runtime;
+    //}
 
     public void AddActorEnhancement(StatBonusDef targetDef, float value)
         => this.ActorEnhancements.Add(targetDef, value);

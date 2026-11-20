@@ -9,6 +9,7 @@ using Project1.Core.Input;
 using Project1.Core.Networking;
 using Project1.Core.Screens;
 using Project1.Core.Systems.Materials;
+using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -55,6 +56,8 @@ public class Entity : GameObject
         this.Components.Add(EntityCompDefOf.Physics);
         this.Components.Add(EntityCompDefOf.Sprite);
     }
+
+    internal TrackingStatsManager TrackingStats = new();
 
     internal void TickOffMap()
     {

@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Skills;
 
-public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, IDefWrapper<SkillDef>, ISerializableNew<SkillRuntime>, INamed, IListable
+public partial class SkillRuntime : Inspectable, ITooltippable, ISaveableNewNew<SkillRuntime>, IDefWrapper<SkillDef>, ISerializableNew<SkillRuntime>, INamed, IListable
 {
     public SkillsComponent Comp;
     public SkillDef SkillDef;
@@ -44,6 +44,8 @@ public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, 
     public float CurrentXP => this.LvlProgress.Value;
     public string Name => this.SkillDef.LabelReadable;
     public override string LabelReadable => this.Name;
+
+    public Color? TooltipColor => null;// throw new NotImplementedException();
 
     static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
     static int GetLevel(int xp) => (int)(Math.Log2(xp / XpToLevelBase) + 1);
@@ -117,17 +119,27 @@ public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, 
         {
             Width = 200,
             TextFunc = () => $"{this.SkillDef.LabelReadable}: {this.Level}",
-            TooltipFunc = (t) =>
-            {
-                t.AddControlsBottomLeft(
-                    new Label(this.SkillDef.Description),
-                    new Label() { TextFunc = () => $"Current Level: {this.Level}" },
-                    new Label() { TextFunc = () => $"Experience: {this.CurrentXP} / {this.XpToLevel}" });
-                foreach(var interaction in StatSystem.GetAffectedInteractionsFor(this.Def))
-                    t.AddControlsBottomLeft(new Label($"Improves {interaction.LabelReadable} efficiency by {this.Level}%") { TextColorFunc = () => Color.Lime });
-            }
+            TooltipTargetFunc = () => this
+            //TooltipFunc = (t) =>
+            //{
+            //    t.AddControlsBottomLeft(
+            //        new Label(this.SkillDef.Description),
+            //        new Label() { TextFunc = () => $"Current Level: {this.Level}" },
+            //        new Label() { TextFunc = () => $"Experience: {this.CurrentXP} / {this.XpToLevel}" });
+            //    foreach(var interaction in StatSystem.GetAffectedInteractionsFor(this.Def))
+            //        t.AddControlsBottomLeft(new Label($"Improves {interaction.LabelReadable} efficiency by {this.Level}%") { TextColorFunc = () => Color.Lime });
+            //}
         };
         return label;
+    }
+
+    public IEnumerable<Control> GetTooltipControls()
+    {
+        yield return new Label(this.SkillDef.Description);
+        yield return new Label() { TextFunc = () => $"Current Level: {this.Level}" };
+        yield return new Label() { TextFunc = () => $"Experience: {this.CurrentXP} / {this.XpToLevel}" };
+        foreach (var interaction in StatSystem.GetAffectedInteractionsFor(this.Def))
+            yield return new Label($"Improves {interaction.LabelReadable} efficiency by {this.Level}%") { TextColorFunc = () => Color.Lime };
     }
 
     public void Write(IDataWriter w)
@@ -170,5 +182,6 @@ public partial class SkillRuntime : Inspectable, ISaveableNewNew<SkillRuntime>, 
         tag.Add(this.LvlProgress.Value.Save("Progress"));
         return tag;
     }
-   
+
+    
 }

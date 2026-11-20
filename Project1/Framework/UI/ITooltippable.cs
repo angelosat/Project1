@@ -8,5 +8,5 @@ public interface ITooltippable
     ITooltippable GetTooltipTarget() => this;
     IEnumerable<Control> GetTooltipControls();
     string LabelReadable { get; }
-    Color? TooltipColor { get; }
+    Color? TooltipColor => null;
 }

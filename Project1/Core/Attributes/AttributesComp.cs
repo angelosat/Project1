@@ -60,12 +60,13 @@ class AttributesComp : EntityComp<AttributesComp.Spec>, IGuiNew
     TableScrollableCompact<AttributeRuntime> GUITableAttributes = new TableScrollableCompact<AttributeRuntime>()
             .AddColumn("name", "", 64, a => new Label(a.AttributeDef.LabelReadable)
             {
-                TooltipFunc = (t) =>
-                {
-                    t.AddControlsBottomLeft(
-                        new Label(a.AttributeDef.Description),
-                        a.GetProgressControl());
-                }
+                TooltipTargetFunc = () => a
+                //TooltipFunc = (t) =>
+                //{
+                //    t.AddControlsBottomLeft(
+                //        new Label(a.AttributeDef.Description),
+                //        a.GetProgressControl());
+                //}
             })
             .AddColumn("value", "", (int) UIManager.Font.MeasureString("###").X, a => new Label(() => a.Level.ToString()));
 

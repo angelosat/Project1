@@ -208,7 +208,12 @@ public sealed class SelectionManager
         this.LabelName = new Label() { TextFunc = () => "<none>" };
         Lazy<SelectionDetailsGui> detailsGui = new(() => new SelectionDetailsGui());
 
-        this.IconIssues = new IconButton("!") { BackgroundTexture = UIManager.Icon16Background, TooltipFunc = showIssuesTooltip }
+        this.IconIssues = new IconButton("!")
+        {
+            BackgroundTexture = UIManager.Icon16Background,
+            //TooltipFunc = showIssuesTooltip 
+            HoverFunc = () => SelectedBlockEntity is BlockEntity blentity ? blentity.GetErrorString() : string.Empty
+        }
             .Flash(true)
             .VisibleWhen(() => SelectedBlockEntity?.Errors.Any() ?? false) as IconButton;
 

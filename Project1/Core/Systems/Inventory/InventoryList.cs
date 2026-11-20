@@ -19,7 +19,8 @@ internal sealed class InventoryListGui : SelectionBoundControl
     public InventoryListGui()
     {
         this.TableContents = new Table<Entity>()
-                .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
+                //.AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
+                .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipTargetFunc = () => o })
                 .AddColumn("weight", 48, o => new Label(() => o.TotalWeight.ToString("0.# kg")));
 
         this.Controls.Add(this.TableContents

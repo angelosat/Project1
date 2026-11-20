@@ -141,6 +141,10 @@ public class BlockEntity : Inspectable, ITransformAnchor, IDisposable, ISerializ
         return new ListBoxObservable<string, Label>(this.Errors, e => new Label(e) { TextColor = Color.OrangeRed, Font = UIManager.FontBold });
     }
 
+    internal string GetErrorString()
+        => string.Join('\n', this.Errors);
+    
+
     internal virtual void Deconstruct(GameObject actor, IntVec3 global)
     {
         foreach (var c in this.Comps.Values)

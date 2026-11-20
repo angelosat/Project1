@@ -23,7 +23,8 @@ public sealed class ContainerList : Inspectable, IEnumerable<Entity>, ISerializa
         {
             var actor = this.Parent as Actor;
             _gui ??= new TableObservable<Entity>()
-                    .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
+                    //.AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipFunc = o.GetInventoryTooltip })
+                    .AddColumn("name", 96, o => new Label(() => o.Name, () => Inspector.Refresh(o)) { TooltipTargetFunc = () => o })
                     .AddColumn("preference", 96, o => actor.ItemPreferences.GetListControl(o))
                     .AddColumn("weight", 32, o => new Label(() => o.TotalWeight.ToString("0.# kg")))
                     .AddColumn("drop", Icon.Cross.Width, o => IconButton.CreateSmall(Icon.Cross, () => drop(o), "Drop").ShowOnParentFocus(true));

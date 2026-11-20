@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Microsoft.Xna.Framework;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Helpers;
@@ -13,7 +14,7 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Attributes
 {
-    public sealed class AttributeRuntime : Inspectable, ISaveableNewNew<AttributeRuntime>, ISerializableNew<AttributeRuntime>, IListable, IDefWrapper<AttributeDef>
+    public sealed class AttributeRuntime : Inspectable, ITooltippable, ISaveableNewNew<AttributeRuntime>, ISerializableNew<AttributeRuntime>, IListable, IDefWrapper<AttributeDef>
     {
         public class ValueModifier
         {
@@ -46,6 +47,8 @@ namespace Project1.Core.Attributes
         public AttributeDef Def => this.AttributeDef;
 
         public int Level { get => this.Progress.Level; set => this.Progress.Level = value; }//.SetLevel(value); }
+
+
         public int Min = 10;
         const int BaseXpToLevel = 100;//5; //placeholder
         public AttributeRuntime(AttributeDef def, int value = 10)
@@ -78,11 +81,7 @@ namespace Project1.Core.Attributes
                 this.Rec.Value = this.Rec.Max;
         }
 
-        internal Control GetProgressControl()
-        {
-            return this.Progress.GetControl();
-        }
-
+     
         public AttributeRuntime Clone()
         {
             return new AttributeRuntime(this.AttributeDef, this.Level);
@@ -122,7 +121,8 @@ namespace Project1.Core.Attributes
         {
             return new BarImmediate(this.Progress, 200, () => $"{this.AttributeDef.LabelReadable}: {this.Level}")
             {
-                TooltipFunc = t => t.AddControls(this.Progress.GetControl())
+                //TooltipFunc = t => t.AddControls(this.Progress.GetControl())
+                TooltipTargetFunc = () => this
             };
         }
 
@@ -132,6 +132,17 @@ namespace Project1.Core.Attributes
         {
             this.Progress.Value = value;
         }
+
+        public IEnumerable<Control> GetTooltipControls()
+        {
+            yield return new LabelNew(this.AttributeDef.Description);
+            yield return this.Progress.GetControl();
+        }
+        //internal Control GetProgressControl()
+        //{
+        //    return this.Progress.GetControl();
+        //}
+
 
         [EnsureStaticCtorCall]
         internal class Packets

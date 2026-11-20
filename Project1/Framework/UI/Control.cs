@@ -13,9 +13,7 @@ using Project1.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Project1.Framework.UI;
 
@@ -1053,7 +1051,6 @@ public abstract class Control : Element, IDisposable, ITooltippable, IInputEvent
         set => this._hoverText = value;
     }
 
-    public Action<Control> TooltipFunc;
     public bool CustomTooltip;
 
     public IEnumerable<Control> GetTooltipControls()

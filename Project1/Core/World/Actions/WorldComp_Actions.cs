@@ -37,7 +37,6 @@ internal sealed class WorldComp_Actions : WorldComp
         foreach (var action in this.ActiveActions.Values.ToArray())
         {
             action.Tick();
-            //action.Current++;
             if (action.IsFinished && this.World.Net.IsServer)
             {
                 this.Finish(action.Actor); // moved this before resolve() because a new action might be chained
@@ -55,7 +54,6 @@ internal sealed class WorldComp_Actions : WorldComp
         if (action is null)
             return "idle";
         return action.GetStatusText();
-        //actionsManager.GetAction(npc)?.Def.LabelReadable ?? "idle");
     }
 
     internal bool HasActiveAction(Actor actor)

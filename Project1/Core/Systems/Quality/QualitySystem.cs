@@ -1,10 +1,6 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Events;
-using Project1.Core.Helpers;
-using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Helpers;
-using Project1.Framework.Serialization;
 using System;
 
 namespace Project1.Core.Systems.Quality;
@@ -68,26 +64,5 @@ internal static class QualitySystem
         if (current == next)
             return;
         item.QualityComp.Tier = next;
-        //item.World.Events.Post(new ItemRarityUpgradedEvent((StaticWorld)item.World, item.RefId));
-    }
-}
-
-[NetworkReplicate]
-internal record struct ItemRarityUpgradedEvent(StaticWorld World,
-                                               EntityRefId ItemId) 
-    : IWorldEvent, ISerializableNewNew<ItemRarityUpgradedEvent>
-{
-    public static ItemRarityUpgradedEvent Create(IDataReader r)
-    {
-        return new()
-        { 
-            ItemId = r.ReadEntityRefId() 
-        };
-    }
-
-    public readonly IDataWriter Write(IDataWriter w)
-    {
-        w.Write(this.ItemId);
-        return w;
     }
 }

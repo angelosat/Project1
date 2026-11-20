@@ -42,7 +42,6 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             else if (this.Second.Biology.IsIncapacitated)
                 return this.First;
             return null;
-            //throw new UnreachableException();
         }
     }
 
@@ -57,7 +56,6 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             else if (this.Second.Biology.IsIncapacitated)
                 return this.Second;
             return null;
-            //throw new UnreachableException();
         }
     }
 
@@ -71,7 +69,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             this.CooldownFirst -= 1;
         else if (world.Actions.GetAction(this.First) is null)
         {
-            this.PerformAttackNew(this.First, this.Second);
+            PerformAttackNew(this.First, this.Second);
             this.CooldownFirst = ResetCooldown(this.First);
         }
 
@@ -85,18 +83,18 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             this.CooldownSecond -= 1;
         else if (world.Actions.GetAction(this.Second) is null)
         {
-            this.PerformAttackNew(this.Second, this.First);
+            PerformAttackNew(this.Second, this.First);
             this.CooldownSecond = ResetCooldown(this.Second);
         }
     }
 
-    int ResetCooldown(Actor actor)
+    static int ResetCooldown(Actor actor)
     {
         var dexterity = actor.Attributes.Get(AttributeDefOf.Dexterity);
         return (int)(BaseCooldown * (1 - dexterity / 100f));
     }
 
-    void PerformAttackNew(Actor attacker, Actor defender)
+    static void PerformAttackNew(Actor attacker, Actor defender)
     {
         var world = (StaticWorld)attacker.World;
         world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker) { TargetId = defender.RefId });

@@ -1,7 +1,4 @@
 ﻿using Project1.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Project1.Core.Systems.ItemRenown;
 

@@ -46,12 +46,10 @@ internal static class ItemRenownSystem
 
     static void UpdateRenown(Entity item)
     {
-        //var currentLevel = (int)current.RankEffective;
         var currentLevel = item.Quality.RankEffective - 1;
         var renownXp = GetRenownXp(item).Value;
         while (renownXp >= XPForLevel(currentLevel + 1))
         {
-            //QualitySystem.Upgrade(item);
             item.World.Events.Post(new ItemRarityUpgradedEvent((StaticWorld)item.World, item.RefId));
             currentLevel++;
         }
@@ -69,10 +67,9 @@ internal static class ItemRenownSystem
             yield break;
         if (!IsRenownEligible(typed))
             yield break;
-        //var stat = typed.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalDamage);
         var xp = GetRenownXp(typed);
         yield return new LabelNew(() =>
-            $"Renown xp: {xp.Value}"// {stat.Value}"
+            $"Renown xp: {xp.Value}"
             )
                 .InvalidateOn(xp);
     }

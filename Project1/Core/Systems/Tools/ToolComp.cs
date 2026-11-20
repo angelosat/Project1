@@ -31,7 +31,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     }
     public override string Name { get; } = "Tool";
     GearProfileDef Profile => this.Owner.Profile as GearProfileDef;
-    //public ToolUseDef ToolUse;
     public GearProfileDef ToolDef;
     public CraftsmanshipDef Craftsmanship = CraftsmanshipDefOf.Standard;
 
@@ -40,7 +39,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     readonly Dictionary<StatBonusDef, float> ItemEnhancements = [];
     public readonly Dictionary<StatDef, float> Modifiers = [];
     public readonly Dictionary<StatDef, StatRuntime> IntrinsicStats = [];
-    //public readonly Dictionary<StatDef, StatRuntime> TrackingStats = [];
 
     public float Armor => this.IntrinsicStats.GetValueOrDefault(StatDefOf.Armor)?.Value ?? 0f;
 
@@ -52,10 +50,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     {
         ToolSystem.BakeStats(this.Owner);
         this.RefreshStats();
-
-        //this.Owner.SetName($"{this.Owner.Body.FindBone(BoneDefOf.ToolHead).Material.LabelReadable} {this.Owner.Profile.LabelReadable} (Handle: {this.Owner.Body.FindBone(BoneDefOf.ToolHandle).Material.LabelReadable})");
-        //this.Owner.SetName($"{this.Owner.Body.Material.LabelReadable} {this.Owner.Profile.LabelReadable}");
-        //ToolSystem.Validate(this.Owner);
     }
 
     private void RefreshStats()
@@ -112,11 +106,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     GroupBox GetUI()
     {
         var box = new GroupBox();
-        //box.AddControlsBottomLeft(new Label(this.ToolUse));
-        //box.AddControlsBottomLeft(new Label($"Speed: {this.BaseSpeed:0.00}"));
-        //box.AddControlsBottomLeft(new Label($"{this.Profile.ToolUse.LabelReadable} Effectiveness: {this.BaseWork:0}"));
-        //box.AddControlsBottomLeft(new Label(StatSystem.ToolToInteraction[this.Profile.ToolUse]));
-        
         return box;
     }
 
@@ -127,21 +116,14 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         yield return new LabelNew($"{slot.LabelReadable}");
         yield return new LabelNew($"{this.Craftsmanship.LabelReadable}");
 
-        //foreach(var (def, value) in this.ActorEnhancements)
-        //{
-        //    yield return new LabelNew($"+{value:#} {def.TargetDef.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
-        //}
-
         foreach(var (stat, value) in this.Modifiers)
-            //yield return new LabelNew($"+{value:#} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
             yield return new LabelNew($"+{StatSystem.Format(stat, value)} {stat.LabelReadable}") { TextColorFunc = () => value > 0 ? Color.Lime : Color.Red };
 
         foreach (var roleControl in profile.Role.Worker.GetControls(this.Owner))
             yield return roleControl;
 
         foreach (var (stat, runtime) in this.IntrinsicStats)
-            //yield return new LabelNew($"{runtime.Value.ToString(stat.Format)} {stat.Worker.GetName(stat, this.Owner)}");// {stat.LabelReadable}");
-            yield return new LabelNew($"{runtime.Format()} {stat.Worker.GetName(stat, this.Owner)}");// {stat.LabelReadable}");
+            yield return new LabelNew($"{runtime.Format()} {stat.Worker.GetName(stat, this.Owner)}");
     }
 
     internal float? GetWorkValue(ToolUseDef toolUse)
@@ -151,29 +133,11 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         return this.BaseWork;
     }
 
-    //public IEnumerable<StatRuntime> GetTrackingStats() => this.TrackingStats.Values;
-
     internal void OnAttackLanded(float damageContext)
     {
-        //this.GetOrCreateStat(StatDefOf.TotalHits).Value++;
-        //this.GetOrCreateStat(StatDefOf.TotalPreventedDamage).Value += damagePrevented;
-
         this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalHits).Value++;
         this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalDamage).Value += damageContext;
     }
-
-    //internal void OnDamageInflicted(float damageInflicted)
-    //{
-    //    this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalHitsLanded).Value++;
-    //    this.Owner.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalDamageInflicted).Value += damageInflicted;
-    //}
-
-    //StatRuntime GetOrCreateStat(StatDef stat, float initialValue = 0)
-    //{
-    //    if (!this.TrackingStats.TryGetValue(stat, out var runtime))
-    //        this.TrackingStats.Add(stat, runtime = new(stat, initialValue));
-    //    return runtime;
-    //}
 
     public void AddActorEnhancement(StatBonusDef targetDef, float value)
         => this.ActorEnhancements.Add(targetDef, value);
@@ -186,32 +150,16 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
 
     public override void Write(IDataWriter w)
     {
-        //w.Write(this.ActorEnhancements.Count);
-        //foreach(var b in this.ActorEnhancements)
-        //{
-        //    w.Write(b.Key);
-        //    w.Write(b.Value);
-        //}
         w.Write(this.Craftsmanship);
         w.Write(this.ActorEnhancements.Keys.ToArray());
         w.Write(this.Modifiers.Keys.ToArray());
         w.Write(this.Modifiers.Values);
-
-        //this.IntrinsicStats.WriteNew(w, v => v, v => v);
-        //w.Write(this.IntrinsicStats.Values);
         w.Write(this.IntrinsicStats.Keys.ToArray());
         w.Write(this.IntrinsicStats.Values.Select(v => v.Value).ToArray());
     }
 
     public override void Read(IDataReader r)
     {
-        //var count = r.ReadInt32();
-        //for (int i = 0; i < count; i++)
-        //{
-        //    var def = r.ReadDef<StatBonusDef>();
-        //    var value = r.ReadSingle();
-        //    this.ActorEnhancements.Add(def, value);
-        //}
         this.Craftsmanship = r.ReadDef<CraftsmanshipDef>();
         var actorBonuses = r.ReadListDef<StatBonusDef>();
         foreach(var b in actorBonuses)
@@ -219,8 +167,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
         var statMods = r.ReadListDef<StatDef>();
         var statModsValues = r.ReadListSingle();
         var dic = statMods.Zip(statModsValues);
-        //foreach (var mod in statMods)
-        //    this.Modifiers[mod] = -1;
         foreach (var (stat, value) in dic)
             this.Modifiers[stat] = value;
 
@@ -233,8 +179,6 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     internal override void PostLoad()
     {
         ToolSystem.PostLoad(this.Owner);
-        //foreach (var mod in this.Modifiers.Keys)
-        //    this.Modifiers[mod] = this.Owner.Quality.RankEffective;
     }
 
     internal override void SaveExtra(SaveTag tag)

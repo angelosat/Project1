@@ -212,19 +212,9 @@ internal static class ToolSystem
     internal static Entity CreateRandomNew(Random rand)
     {
         var slot = _defsBySlot.Keys
-            //.Where(_defsBySlot.ContainsKey)
-            //.ToArray() // TODO cache this
             .SelectRandom(rand);
         var item = CreateRandom(slot, rand);
         return item;
-        //var item = ItemDefOf.Gear.Create();
-        //var profile = _allDefs.SelectRandom(rand);
-        //item.Profile = profile;
-        //item.ToolComponent.ToolDef = profile;
-        //item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
-        //item.SpriteComp.BodyDef = profile.Role.Bones;
-        //item.Randomize(Server.Random);
-        //return item;
     }
     internal static Entity CreateRandom(GearSlotDef slot, Random random)
     {
@@ -239,14 +229,11 @@ internal static class ToolSystem
     }
     internal static Entity Create(GearProfileDef profile, Random random)
     {
-        //var profiles = _defsBySlot[slot];
-        //var profile = profiles.SelectRandom(random);
         var item = ItemDefOf.Gear.Create();
         item.Profile = profile;
         item.ToolComponent.ToolDef = profile;
         item.SpriteComp.Body = profile.Role.Bones.Body.Clone();
         item.SpriteComp.BodyDef = profile.Role.Bones;
-        //item.Randomize(Server.Random);
         Randomize(item, random);
         return item;
     }
@@ -316,7 +303,6 @@ internal static class ToolSystem
     internal static void AddEnhancement(Entity item, StatDef statDef, float value)
     {
         item.ToolComponent.Modifiers.Add(statDef, value);
-        //item.World.Events.Post(new ItemEnhancementAddedEvent((StaticWorld)item.World, item.RefId, statDef, value));
     }
 
     private static void OnItemRarityUpgraded(ItemRarityUpgradedEvent e)
@@ -325,7 +311,6 @@ internal static class ToolSystem
         var item = world.Resolve(e.ItemId);
         var (stat, value) = RollEnhancement(item, world.Random);
         world.Events.Post(new ItemEnhancementAddedEvent(world, e.ItemId, stat, value));
-        //AddEnhancement(item, stat, value);
     }
 
     public static void Randomize(Entity item)
@@ -338,7 +323,7 @@ internal static class ToolSystem
         var random = new Random(GetBonusSeed(comp.Owner.RefId, 1));
         var hack = comp.Modifiers.Count;
         foreach (var mod in comp.Modifiers.Keys)
-            comp.Modifiers[mod] = 1 + random.Next(hack);// RollEnhancement(random, mod, hack);
+            comp.Modifiers[mod] = 1 + random.Next(hack);
     }
 
     public static void PostLoad(Entity item)
@@ -348,11 +333,6 @@ internal static class ToolSystem
         role.Worker.InitIntrinsicStats(item);
         CalculateEnhancements(item.ToolComponent);
     }
-
-    //static float RollEnhancement(Random rand, StatDef stat, int magnitude)
-    //{
-    //    return 1 + rand.Next(magnitude);
-    //}
 
     static int GetBonusSeed(int itemId, int version)
     {
@@ -371,10 +351,6 @@ internal static class ToolSystem
 
     public static float? CalculateStat(Entity item, StatDef stat)
     {
-        //var profile = (GearProfileDef)item.Profile;
-        //if (!profile.Role.Stats.Contains(stat))
-        //    return null;
-        //return stat.CalculateFor(item);
         var comp = item.ToolComponent;
         var stats = comp.IntrinsicStats;
         if (!stats.TryGetValue(stat, out var runtime))
@@ -429,6 +405,4 @@ internal static class ToolSystem
         var profileMod = profile.ToolUsesModifiers[capability];
         return magnitude * profileMod;
     }
-
-    
 }

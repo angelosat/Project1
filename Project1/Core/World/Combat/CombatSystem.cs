@@ -53,7 +53,6 @@ internal static class CombatSystem
       
         var (damageValue, damageType) = GetAttackDamage(attacker);
 
-        //var bodyPartTargetDef = GearSlotDefOf.Chest;
         var bodyPartTargetDef = AttackTargets.SelectRandomWeighted(random, s => s.AttackTargetWeight); // TODO make bodypart selection weighted
         var bodyPartGear = defender.Gear.GetGear(bodyPartTargetDef);
         float armor = bodyPartGear?.ToolComponent.Armor ?? 0f;

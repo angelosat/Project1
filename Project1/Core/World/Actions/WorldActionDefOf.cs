@@ -23,7 +23,7 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef Rest = new("Resting", typeof(WorldActionWorker_Resting), duration: Ticks.FromMinutes(30));
     static public readonly WorldActionDef AvoidInjury = new("AvoidInjury", typeof(WorldActionWorker_AvoidInjury), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Explore = new("Exploring", typeof(WorldActionWorker_Exploration), duration: Ticks.FromMinutes(10));
-    static public readonly WorldActionDef LootTreasure = new("LootTreasure", typeof(WorldActionWorker_LootTreasure), duration: Ticks.FromMinutes(2));
+    static public readonly WorldActionDef LootTreasure = new("LootTreasure", typeof(WorldActionWorker_LootTreasure), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Combat = new("Combat",
                                                        workerType: typeof(WorldActionWorker_CombatBegin),
                                                        dataType: typeof(WorldActionData_Combat),

@@ -22,10 +22,12 @@ namespace Project1.Core.World.Combat;
 internal static class CombatSystem
 {
     static readonly Dictionary<DamageDef, DamageResistanceDef> DamageToResistanceDefs;
+    static readonly GearSlotDef[] AttackTargets;
 
     static CombatSystem()
     {
         DamageToResistanceDefs = Def.Get<DamageResistanceDef>().ToDictionary(r => r.Source, r => r);
+        AttackTargets = [.. Def.Get<GearSlotDef>().Where(s => s.AttackTargetWeight > 0)];
     }
 
     internal static AttackResult ResolveHit(Actor attacker, Actor defender)
@@ -51,7 +53,8 @@ internal static class CombatSystem
       
         var (damageValue, damageType) = GetAttackDamage(attacker);
 
-        var bodyPartTargetDef = GearSlotDefOf.Chest;// defender.Gear.SlotDefs.SelectRandom(random); // TODO make bodypart selection weighted
+        //var bodyPartTargetDef = GearSlotDefOf.Chest;
+        var bodyPartTargetDef = AttackTargets.SelectRandomWeighted(random, s => s.AttackTargetWeight); // TODO make bodypart selection weighted
         var bodyPartGear = defender.Gear.GetGear(bodyPartTargetDef);
         float armor = bodyPartGear?.ToolComponent.Armor ?? 0f;
 

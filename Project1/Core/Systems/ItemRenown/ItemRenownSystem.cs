@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Systems.Stats;
+using Project1.Core.Systems.Tools;
 using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.UI;
@@ -19,7 +20,10 @@ internal static class ItemRenownSystem
     {
         if (item is not Entity typed)
             yield break;
-
+        if (typed.Profile is not GearProfileDef profile)
+            yield break;
+        if (profile.Role.Slot.AttackTargetWeight == 0)
+            yield break;
         var stat = typed.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalPreventedDamage);
         yield return new LabelNew(() =>
             $"Renown xp: {stat.Value}"

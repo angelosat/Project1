@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Systems.Stats;
 using Project1.Core.UI;
 using Project1.Framework;
 using Project1.Framework.UI;
@@ -18,13 +19,11 @@ internal static class ItemRenownSystem
     {
         if (item is not Entity typed)
             yield break;
-        //if (typed.ToolComponent is not ToolComp comp)
-        //    yield break;
-        //foreach (var stat in item.GetTrackingStats())
-        foreach (var stat in typed.TrackingStats.Values)
-                yield return new LabelNew(() =>
-            $"{stat.Def.LabelReadable}: {stat.Value}"
+
+        var stat = typed.TrackingStats.GetOrCreateStat(TrackingStatDefOf.TotalPreventedDamage);
+        yield return new LabelNew(() =>
+            $"Renown xp: {stat.Value}"
             )
-                .InvalidateOn(stat.Notifier);
+                .InvalidateOn(stat);
     }
 }

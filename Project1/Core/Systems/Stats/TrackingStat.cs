@@ -26,7 +26,7 @@ public static class TrackingStatDefOf
 internal sealed class TrackingStat(TrackingStatDef def, float initialValue = 0) : IUpdatable
 {
     internal readonly TrackingStatDef Def = def;
-    internal readonly ChangeNotifier Notifier = new();
+    readonly ChangeNotifier Notifier = new();
     internal float Value
     {
         get;

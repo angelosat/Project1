@@ -171,6 +171,7 @@ public class Game1 : Game
         /// def init
         DefOfHelper.Init();
         EnsureInitHelper.Init();
+        Def.ValidateAll();
         PresentationSystem.Init();
 
         GameObject.LoadTemplates();

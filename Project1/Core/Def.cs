@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core;
 
@@ -22,6 +23,7 @@ public abstract class Def : Inspectable
         this._label = name;
         this.Name = $"{this.GetType().Name}:{name.Replace(" ", "")}";
     }
+    public virtual IEnumerable<string> ConfigErrors() { yield break; }
     /// <summary>
     /// TODO use attribute
     /// </summary>
@@ -40,10 +42,10 @@ public abstract class Def : Inspectable
     }
     static public void Register(Def def)
     {
-        if (def.Name.IsNullEmptyOrWhiteSpace())
-            throw new Exception();
+        ArgumentException.ThrowIfNullOrWhiteSpace(def.Name);
         if (Database.ContainsKey(def.Name))
             throw new Exception($"Def {def} already exists");
+    
         Database.Add(def.Name, def);
     }
 
@@ -124,5 +126,20 @@ public abstract class Def : Inspectable
     internal static IEnumerable<Def> Get(Type deftype)
     {
         return Database.Values.Where(d => d.GetType().IsAssignableFrom(deftype));
+    }
+
+    internal static void ValidateAll()
+    {
+        List<string> errors = [];
+
+        foreach (Def def in Database.Values)
+        {
+            foreach (string error in def.ConfigErrors())
+                errors.Add($"{def.Name}: {error}");
+        }
+
+        if (errors.Count > 0)
+            throw new InvalidOperationException(
+                $"Definition validation failed:\n{string.Join("\n", errors)}");
     }
 }

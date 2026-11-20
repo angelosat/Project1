@@ -3,23 +3,26 @@ using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
+using Project1.Core.Helpers;
 using Project1.Core.Legacy.Crafting;
 using Project1.Core.Loot;
 using Project1.Core.Networking;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Crafting;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core.Systems.Tools;
 
@@ -57,7 +60,11 @@ internal static class ToolSystem
         AllPrefixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Item)];
         AllSuffixDefs = [.. AllBonusDefs.Where(b => b.Worker is StatBonusWorker_Actor)];
         AllStatDefs = [.. Def.Get<StatDef>()];
+
+        Registry.WorldEventHooksServer.Register<ItemRarityUpgradedEvent>(OnItemRarityUpgraded);
     }
+
+   
 
     public static CraftingRules CreateRuleFor(BoneDef bone)
     {
@@ -279,12 +286,41 @@ internal static class ToolSystem
         var craftsmanship = QualitySystem.GetRandomCraftsmahship(r);
         comp.Craftsmanship = craftsmanship;
         ApplyName(item);
-        var bonusCount = item.Quality.Rank - QualityDefOf.Common.Rank + 5;
-        var selectedBonuses = StatSystem.RollBonuses(ActorDnaDefOf.Npc, role, bonusCount);
+        var bonusCount = item.Quality.RankEffective;// item.Quality.Rank - QualityDefOf.Common.Rank + 5;
+        //var selectedBonuses = StatSystem.RollBonuses(ActorDnaDefOf.Npc, role, bonusCount);
+        var selectedBonuses = StatSystem.RollBonuses(role, bonusCount, r);
         foreach (var bonus in selectedBonuses)
             item.ToolComponent.Modifiers[bonus] = 0;
         CalculateEnhancements(comp);
         role.Worker.InitIntrinsicStats(item);
+    }
+
+    internal static (StatDef def, float value) RollEnhancement(Entity item, Random random)
+    {
+        var profile = (GearProfileDef)item.Profile;
+        var comp = item.ToolComponent;
+        var existing = comp.Modifiers.Keys;
+        var eligible = StatSystem
+            .GetEligibleBonuses(profile.Role)
+            .Except(existing)
+            .ToArray();
+        var stat = eligible.SelectRandom(random);
+        var magnitude = item.Quality.RankEffective;
+        var value = 1 + random.Next(magnitude);
+        return (stat, value);
+    }
+    internal static void AddEnhancement(Entity item, StatDef statDef, float value)
+    {
+        item.ToolComponent.Modifiers.Add(statDef, value);
+        item.World.Events.Post(new ItemEnhancementAddedEvent((StaticWorld)item.World, item.RefId, statDef, value));
+    }
+
+    private static void OnItemRarityUpgraded(ItemRarityUpgradedEvent e)
+    {
+        var world = e.World;
+        var item = world.Resolve(e.ItemId);
+        var (stat, value) = RollEnhancement(item, world.Random);
+        AddEnhancement(item, stat, value);
     }
 
     public static void Randomize(Entity item)
@@ -295,9 +331,9 @@ internal static class ToolSystem
     public static void CalculateEnhancements(ToolComp comp)
     {
         var random = new Random(GetBonusSeed(comp.Owner.RefId, 1));
-        var temp = comp.Modifiers.Count;
+        var hack = comp.Modifiers.Count;
         foreach (var mod in comp.Modifiers.Keys)
-            comp.Modifiers[mod] = RollEnhancement(random, mod, temp);
+            comp.Modifiers[mod] = RollEnhancement(random, mod, hack);
     }
 
     public static void PostLoad(Entity item)
@@ -387,5 +423,52 @@ internal static class ToolSystem
         var magnitude = stats[StatDefOf.ItemPower].Value;
         var profileMod = profile.ToolUsesModifiers[capability];
         return magnitude * profileMod;
+    }
+
+    
+}
+
+internal record struct ItemEnhancementAddedEvent(StaticWorld World, EntityRefId ItemId, StatDef StatDef, float Value) : IEventPayload, ISerializableNewNew<ItemEnhancementAddedEvent>
+{
+    public static ItemEnhancementAddedEvent Create(Framework.Serialization.IDataReader r)
+    {
+        return new()
+        {
+            ItemId = r.ReadEntityRefId(),
+            StatDef = r.ReadDef<StatDef>(),
+            Value = r.ReadSingle()
+        };
+    }
+
+    public IDataWriter Write(IDataWriter w)
+    {
+        w.Write(this.ItemId);
+        w.Write(this.StatDef);
+        w.Write(this.Value);
+        return w;
+    }
+}
+
+[EnsureStaticCtorCall]
+internal static class Packets_Enhancements
+{
+    static readonly PacketId _pEnhancementAdded = Registry.PacketHandlers.Register(ReceiveEnhancementAdded);
+
+    static Packets_Enhancements()
+    {
+        Registry.WorldEventHooksServer.Register<ItemEnhancementAddedEvent>(SendItemEnhancementAdded);
+    }
+
+    private static void SendItemEnhancementAdded(ItemEnhancementAddedEvent e)
+    {
+        e.Write(Server.Instance.BeginPacket(_pEnhancementAdded));
+    }
+
+    private static void ReceiveEnhancementAdded(NetEndpoint endpoint, Packet packet)
+    {
+        var r = packet.PacketReader;
+        var e = ItemEnhancementAddedEvent.Create(r);
+        e.World = (StaticWorld)endpoint.World;
+        ToolSystem.AddEnhancement(e.World.Resolve(e.ItemId), e.StatDef, e.Value);
     }
 }

@@ -47,7 +47,10 @@ namespace Project1.Framework.Helpers
         {
             return collection.ElementAt(random.Next(0, collection.Count));
         }
-
+        //public static T SelectRandom<T>(this IEnumerable<T> collection, Random random)
+        //{
+        //    return collection.ElementAt(random.Next(0, collection.Count()));
+        //}
         public static List<T> Randomize<T>(this IEnumerable<T> list, RandomThreaded random)
         {
             var unhandled = list.ToList();

@@ -18,7 +18,7 @@ public sealed class QualityDef(string name,
     readonly public int ProbabilityTableWeight = probabilityWeight;
     readonly float MasterySensitivity = masterySensitivity;
 
-    public float RankEffective => 1 + this.Rank - QualityDefOf.Common.Rank;
+    public int RankEffective => 1 + this.Rank - QualityDefOf.Common.Rank;
 
     public int GetWeightFromMastery(float masteryRatio)
     {

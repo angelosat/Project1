@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Networking;
+using Project1.Core.Simulation;
 using Project1.Framework;
 
 namespace Project1.Core.Systems.Quality;
@@ -23,6 +24,7 @@ internal static class Packets_Quality
     {
         var r = packet.PacketReader;
         var e = ItemRarityUpgradedEvent.Create(r);
+        e.World = (StaticWorld)endpoint.World;
         QualitySystem.Upgrade(endpoint.World.Resolve(e.ItemId));
     }
 }

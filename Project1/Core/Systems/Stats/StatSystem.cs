@@ -84,10 +84,10 @@ public static class StatSystem
     static public StatDef GetDerivedStat(Def def)
         => DerivedStats[def];
 
-    static public IEnumerable<StatDef> GetStatsFor(EntityComp comp)
-    {
-        return _statsByCompType.TryGetValue(comp.GetType(), out var list) ? list : [];
-    }
+    //static public IEnumerable<StatDef> GetStatsFor(EntityComp comp)
+    //{
+    //    return _statsByCompType.TryGetValue(comp.GetType(), out var list) ? list : [];
+    //}
 
     static public IEnumerable<ToolUseDef> GetToolUsesFor(SkillDef skill)
     {
@@ -117,7 +117,7 @@ public static class StatSystem
         throw new UnreachableException();
     }
 
-    internal static IEnumerable<StatDef> RollBonuses(ActorDnaDef npc, GearRoleDef role, int count)
+    internal static IEnumerable<StatDef> RollBonuses(ActorDnaDef species, GearRoleDef role, int count)
     {
         //var collection = ActorStats;
         var collection = BonusRolesEligibility[role];
@@ -128,6 +128,19 @@ public static class StatSystem
         for (int i = 0; i < count; i++)
             yield return collection[indices[i]];
     }
+
+    internal static IEnumerable<StatDef> RollBonuses(GearRoleDef role, int count, Random random)
+    {
+        var eligible = BonusRolesEligibility[role];
+        var shuffled = eligible.Shuffle(random).ToArray();
+        for (int i = 0; i < count && i < eligible.Count; i++)
+            yield return shuffled[i]; 
+        // TODO cache a shuffled array, store the current index, and reshuffle it when the index reaches max ?
+    }
+
+    internal static IReadOnlyCollection<StatDef> GetEligibleBonuses(GearRoleDef role)
+        => BonusRolesEligibility[role];
+
     internal static StatDef GetRandomStat(ActorDnaDef npc)
     {
         int n = 0;

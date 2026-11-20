@@ -1,27 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
-using Project1.Framework;
 
 namespace Project1.Core.Entities;
 
-public sealed class QualityDef : Def
+public sealed class QualityDef(string name,
+                               int rank,
+                               Color color,
+                               float multiplier,
+                               int probabilityWeight,
+                               int? threshold,
+                               int masterySensitivity = 0) : Def(name)
 {
 
-    public readonly Color Color;
-    public readonly float Multiplier;
-    public readonly int? Threshold;
-    public readonly int Rank;
-    public QualityDef(string name, int rank, Color color, float multiplier, int probabilityWeight, int? threshold, int masterySensitivity = 0) : base(name)
-    {
-        this.Rank = rank;
-        this.Color = color;
-        this.Multiplier = multiplier;
-        this.ProbabilityTableWeight = probabilityWeight;
-        this.MasterySensitivity = masterySensitivity;
-        this.Threshold = threshold;
-    }
-
-    readonly public int ProbabilityTableWeight;
-    readonly float MasterySensitivity;
+    public readonly Color Color = color;
+    public readonly float Multiplier = multiplier;
+    public readonly int? Threshold = threshold;
+    public readonly int Rank = rank;
+    readonly public int ProbabilityTableWeight = probabilityWeight;
+    readonly float MasterySensitivity = masterySensitivity;
 
     public float RankEffective => 1 + this.Rank - QualityDefOf.Common.Rank;
 

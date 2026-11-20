@@ -6,8 +6,10 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Combat;
 
-record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResultTypes Type, DamageInfo Damage, GearSlotDef BodyPart) : ISerializableNewNew<AttackResult>
+record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResultTypes Type, DamageInfo Damage, GearSlotDef BodyPart, float DamagePrevented) : ISerializableNewNew<AttackResult>
 {
+    public bool Connected => this.Damage.Value > 0;
+
     public static AttackResult Create(IDataReader r)
     {
         var tick = (SimulationTick)r.ReadUInt64();
@@ -17,7 +19,8 @@ record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResul
         var damagedef = r.ReadDef<DamageDef>();
         var damageinfo = new DamageInfo(damageval, damagedef);
         var bodypart = r.ReadDef<GearSlotDef>();
-        return new(tick, actorid, type, damageinfo, bodypart);
+        var damagePrevented = r.ReadSingle();
+        return new(tick, actorid, type, damageinfo, bodypart, damagePrevented);
     }
 
     public IDataWriter Write(IDataWriter w)
@@ -28,6 +31,7 @@ record struct AttackResult(SimulationTick Tick, EntityRefId ActorId, AttackResul
         w.Write(this.Damage.Value);
         w.Write(this.Damage.Type);
         w.Write(this.BodyPart);
+        w.Write(this.DamagePrevented);
         return w;
     }
 }

@@ -1,5 +1,9 @@
 ﻿using Project1.Core.Entities;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 using System;
 
 namespace Project1.Core.Systems.Quality;
@@ -37,5 +41,39 @@ internal static class QualitySystem
         //var craftQuality = AllCraftQualities.SelectRandomWeighted(Rand, c => c.Threshold);
         //item.Craftsmanship = craftQuality;
         //item.SetName($"{craftQuality.LabelReadable} {item.Name}");
+    }
+
+    static QualityDef GetNext(QualityDef current)
+    {
+        var currentIndex = All.IndexOf(current);
+        if (currentIndex == All.Length - 1)
+            return current;
+        var next = All[currentIndex + 1];
+        return next;
+    }
+
+    internal static void Upgrade(Entity item)
+    {
+        var current = item.Quality;
+        var next = GetNext(current);
+        if (current == next)
+            return;
+        item.QualityComp.Tier = next;
+        item.World.Events.Post(new ItemRarityUpgradedEvent((StaticWorld)item.World, item.RefId));
+    }
+}
+
+internal record struct ItemRarityUpgradedEvent(StaticWorld World, EntityRefId ItemId) : IEventPayload, ISerializableNewNew<ItemRarityUpgradedEvent>
+{
+    public static ItemRarityUpgradedEvent Create(IDataReader r)
+    {
+        return new()
+        { ItemId = r.ReadEntityRefId() };
+    }
+
+    public readonly IDataWriter Write(IDataWriter w)
+    {
+        w.Write(this.ItemId);
+        return w;
     }
 }

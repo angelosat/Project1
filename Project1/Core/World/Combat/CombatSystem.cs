@@ -38,15 +38,15 @@ internal static class CombatSystem
         var toHit = (int)attacker.Stats.Get(StatDefOf.HitChance);
         var random = attacker.World.Random;
         if (!random.Roll100(toHit))
-            return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, null);
+            return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, null, 0);
 
         var dodge = defender.Stats.Get(StatDefOf.DodgeChance);
         if (random.Roll100((int)dodge))
-            return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty, null);
+            return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty, null, 0);
 
         var parry = defender.Stats.Get(StatDefOf.ParryChance);
         if (random.Roll100((int)parry))
-            return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty, null);
+            return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty, null, 0);
 
         var toCrit = (int)attacker.Stats.Get(StatDefOf.CriticalChance);
         var isCrit = random.Roll100((int)toCrit);
@@ -74,7 +74,7 @@ internal static class CombatSystem
         if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
             weapon.ToolComponent.OnAttackLanded(finalValue);
 
-        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, bodyPartTargetDef);
+        return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, bodyPartTargetDef, preventedDamage);
     }
 
     static public (int value, DamageDef damage) GetAttackDamage(Actor actor)
@@ -139,7 +139,6 @@ internal static class CombatSystem
         if (slotDef is null)
             return;
         if (defender.Gear.GetGear(slotDef) is Entity gear)
-            gear.ToolComponent.OnAttackLanded(e.Result.Damage.Value);
-
+            gear.ToolComponent.OnAttackLanded(e.Result.DamagePrevented);
     }
 }

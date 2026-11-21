@@ -1,13 +1,14 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.World.Frontiers;
+using System;
 using System.Collections.Generic;
 
 #nullable enable
 
 namespace Project1.Core.World.Combat;
 
-internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
+internal sealed class WorldComp_Combat : WorldComp
 {
     int NextId => ++field;
 
@@ -15,12 +16,36 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
 
     readonly Dictionary<EntityRefId, int> ActorsToCombat = [];
 
-    public CombatRuntime Engage(Actor instigator, Actor target)
+    public WorldComp_Combat(WorldBase world) : base(world)
     {
-        var id = this.NextId;
+        world.Events.ListenTo<CombatBeginEvent>(OnCombatBegin);
+        world.Events.ListenTo<CombatEndEvent>(OnCombatEnd);
+    }
+
+ 
+
+    private void OnCombatBegin(CombatBeginEvent e)
+    {
+        this.RegisterCombat(/*e.CombatSessionId,*/
+                            this.World.Resolve<Actor>(e.Attacker),
+                            this.World.Resolve<Actor>(e.Defender));
+    }
+
+    private void OnCombatEnd(CombatEndEvent e)
+    {
+        this.UnregisterCombat(e.CombatSessionId);
+    }
+
+    public void Engage(Actor instigator, Actor target)
+    {
+        //var id = this.NextId;
         //var runtime = new CombatRuntime(id, first, second);
         //this.World.Actions.Interrupt(target);
-        return this.RegisterCombat(id, instigator, target);//, runtime);
+        //var session = this.RegisterCombat(id, instigator, target);//, runtime);
+        this.World.Events.Post(new CombatBeginEvent(this.World, /*id, */instigator.RefId, target.RefId));
+        //var session = ActiveCombatSessions[id];
+        //return session;
+        //return session;
     }
 
     public void Cancel(Actor participant)
@@ -66,38 +91,46 @@ internal sealed class WorldComp_Combat(WorldBase world) : WorldComp(world)
                 combat.Tick();
         }
         foreach (var combat in toRemove)
-            this.UnregisterCombat(combat);
+            //this.UnregisterCombat(combat);
+            this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
+
     }
 
-    internal CombatRuntime RegisterCombat(int id, Actor first, Actor second)
+    CombatRuntime RegisterCombat(Actor first, Actor second)
     {
+        var id = this.NextId;
         var runtime = new CombatRuntime(id, first, second);
         this.ActiveCombatSessions.Add(id, runtime);
         this.ActorsToCombat.Add(first.RefId, id);
         this.ActorsToCombat.Add(second.RefId, id);
-        this.World.Events.Post(new CombatBeginEvent(id, first, second));
+        //this.World.Events.Post(new CombatBeginEvent(id, first, second));
         ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
         return runtime;
     }
-    internal void UnregisterCombat(int combatId)
+    void UnregisterCombat(int combatId)
     {
         var combat = this.ActiveCombatSessions[combatId];
-        this.UnregisterCombat(combat);
-    }
-
-    internal void UnregisterCombat(CombatRuntime combat)
-    {
         this.ActiveCombatSessions.Remove(combat.Id);
-        this.ClearCombat(combat);
-    }
-
-    void ClearCombat(CombatRuntime combat)
-    {
         this.ActorsToCombat.Remove(combat.First.RefId);
         this.ActorsToCombat.Remove(combat.Second.RefId);
-        this.World.Events.Post(new CombatEndEvent(combat.Id));
+        //this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
         ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
+        //this.UnregisterCombat(combat);
     }
+
+    //void UnregisterCombat(CombatRuntime combat)
+    //{
+    //    this.ActiveCombatSessions.Remove(combat.Id);
+    //    this.ClearCombat(combat);
+    //}
+
+    //void ClearCombat(CombatRuntime combat)
+    //{
+    //    this.ActorsToCombat.Remove(combat.First.RefId);
+    //    this.ActorsToCombat.Remove(combat.Second.RefId);
+    //    //this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
+    //    ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
+    //}
 
     internal CombatRuntime? Get(Actor actor)
     {

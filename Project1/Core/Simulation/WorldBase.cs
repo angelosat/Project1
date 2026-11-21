@@ -100,10 +100,10 @@ public abstract class WorldBase : Inspectable, IEntityProvider
         return obj;
     }
     
-    public T? Resolve<T>(EntityRefId refId) where T : Entity
+    public T Resolve<T>(EntityRefId refId) where T : Entity
     {
         this.EntityRegistry.TryGetValue(refId, out var obj);
-        return obj as T;
+        return (T)obj;// as T;
     }
     public IEnumerable<Entity> GetEntities()
     {

@@ -27,7 +27,7 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef Combat = new("Combat",
                                                        workerType: typeof(WorldActionWorker_CombatBegin),
                                                        dataType: typeof(WorldActionData_Combat),
-                                                       duration: 0);
+                                                       duration: Ticks.FromMinutes(1));
     static public readonly WorldActionDef Equip = new("Equip",
                                                       workerType: typeof(WorldActionWorker_Equip),
                                                       dataType: typeof(WorldActionData_Equip),

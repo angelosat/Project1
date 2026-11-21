@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.World.Combat;
 
@@ -97,8 +98,8 @@ internal static class CombatSystem
 
         var world = (StaticWorld)attacker.World;
 
-        if(!world.Combat.TryGet(attacker, out var runtime))
-            runtime = world.Combat.Engage(attacker, defender);
+        if (!world.Combat.TryGet(attacker, out var runtime))
+            world.Combat.Engage(attacker, defender);
 
         if (runtime.GetOther(attacker) != defender)
             throw new InvalidOperationException(

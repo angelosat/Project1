@@ -133,7 +133,9 @@ internal static class CombatSystem
 
     internal static void IncrementTrackingStats(WorldCombatEvent e)
     {
-        var world = (StaticWorld)Client.Instance.World;
+        if (e.Result.Damage.Value == 0)
+            return;
+        var world = e.World;
         var attacker = world.Resolve<Actor>(e.AttackerId);
         if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
             weapon.ToolComponent.OnAttackLanded(e.Result.Damage.Value);

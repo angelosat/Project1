@@ -38,14 +38,7 @@ internal sealed class WorldComp_Combat : WorldComp
 
     public void Engage(Actor instigator, Actor target)
     {
-        //var id = this.NextId;
-        //var runtime = new CombatRuntime(id, first, second);
-        //this.World.Actions.Interrupt(target);
-        //var session = this.RegisterCombat(id, instigator, target);//, runtime);
-        this.World.Events.Post(new CombatBeginEvent(this.World, /*id, */instigator.RefId, target.RefId));
-        //var session = ActiveCombatSessions[id];
-        //return session;
-        //return session;
+        this.World.Events.Post(new CombatBeginEvent(this.World, instigator.RefId, target.RefId));
     }
 
     public void Cancel(Actor participant)
@@ -93,7 +86,6 @@ internal sealed class WorldComp_Combat : WorldComp
         foreach (var combat in toRemove)
             //this.UnregisterCombat(combat);
             this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
-
     }
 
     CombatRuntime RegisterCombat(Actor first, Actor second)

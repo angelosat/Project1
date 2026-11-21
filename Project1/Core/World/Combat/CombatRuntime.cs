@@ -5,6 +5,7 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.World.Actions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 #nullable enable
 
@@ -58,7 +59,26 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             return null;
         }
     }
+    internal void TickNew()
+    {
+        if (this.IsResolved)
+            throw new InvalidOperationException("Ticked a resolved combat encounter");
 
+        //var world = (StaticWorld)this.First.World;
+        if (this.CooldownFirst > 0)
+            this.CooldownFirst -= 1;
+      
+
+        //if (this.IsResolved)
+        //    return;
+
+        //if (this.IsUnstarted)
+        //    return;
+
+        if (this.CooldownSecond > 0)
+            this.CooldownSecond -= 1;
+       
+    }
     internal void Tick()
     {
         if (this.IsResolved)
@@ -70,7 +90,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         else if (world.Actions.GetAction(this.First) is null)
         {
             PerformAttackNew(this.First, this.Second);
-            this.CooldownFirst = ResetCooldown(this.First);
+            //this.CooldownFirst = ResetCooldown(this.First);
         }
 
         if (this.IsResolved)
@@ -84,7 +104,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
         else if (world.Actions.GetAction(this.Second) is null)
         {
             PerformAttackNew(this.Second, this.First);
-            this.CooldownSecond = ResetCooldown(this.Second);
+            //this.CooldownSecond = ResetCooldown(this.Second);
         }
     }
 
@@ -118,5 +138,31 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
             this.World.Actions.Interrupt(this.Second);
             this.Started = true;
         }
+        this.TriggerCooldown(result.ActorId);
+    }
+
+    Actor GetParticipant(EntityRefId actorId)
+        => actorId == this.First.RefId ? this.First : this.Second;
+
+    void TriggerCooldown(EntityRefId actorId)
+    //=> actorId == this.First.RefId ? this.CooldownFirst = ResetCooldown(this.First) : 
+    {
+        var actor = this.GetParticipant(actorId);
+        if (actor == this.First)
+            this.CooldownFirst = ResetCooldown(actor);
+        else if (actor == this.Second)
+            this.CooldownSecond = ResetCooldown(actor);
+        else
+            throw new ArgumentException(
+                $"Invalid {nameof(actorId)} for combat session {this.Id}");
+    }
+
+    internal bool CanAct(Actor actor)
+    {
+        if (actor == this.First)
+            return this.CooldownFirst <= 0;
+        else if(actor == this.Second)
+            return this.CooldownSecond <= 0;
+        throw new UnreachableException();
     }
 }

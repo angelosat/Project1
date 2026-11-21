@@ -4,7 +4,7 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Actions;
 
-internal sealed record WorldActionData_Combat(Actor Actor) : WorldActionData(Actor)
+internal sealed record WorldActionData_CombatEngage(Actor Actor) : WorldActionData(Actor)
 {
     internal required EntityRefId TargetId;
 

@@ -7,7 +7,7 @@ internal sealed class WorldActionWorker_CombatBegin : WorldActionWorker
 {
     internal override void Resolve(WorldActionData data)
     {
-        var typed = data as WorldActionData_Combat;
+        var typed = data as WorldActionData_CombatEngage;
         var world = (StaticWorld)data.Actor.World;
         var other = world.Resolve<Actor>(typed.TargetId);
         world.Combat.Engage(data.Actor, other);

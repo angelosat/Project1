@@ -22,6 +22,8 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
 
         if (world.Actions.HasActiveAction(actor))
             return;
+        if (world.Combat.IsEngaged(actor))
+            return;
         var result = SmartEquipSystem.EvaluateEquipmentChange(actor);
         if (result.ItemId != EntityRefId.Null)
         {

@@ -23,7 +23,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using static Project1.Core.Blocks.Block;
 
 namespace Project1.Core.Simulation;
 
@@ -57,7 +56,7 @@ public class StaticWorld : WorldBase
         this.PopulationManager.Tick();
         foreach (var comp in this.Comps)
             comp.Tick();
-        this.Space.Tick();
+        //this.Space.Tick();
         this.CurrentTick++;
     }
     public string GetName()
@@ -99,8 +98,8 @@ public class StaticWorld : WorldBase
             this.Space as FrontierManager,
             this.Ownership,
             this.Factions,
-            this.Combat,
             this.Actions,
+            this.Combat,
             this.LifeCycle
             //new RecipeMasterySystem(this)
             );
@@ -237,26 +236,6 @@ public class StaticWorld : WorldBase
                 comp.Scan(entity);
     }
 
-    //public static void CreateExpansionMaps(StaticWorld world)
-    //{
-    //    throw new NotImplementedException();
-    //    //(new List<Vector2>() { new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1) }).ForEach(n =>
-    //    //{
-    //    //    foreach (var mapdir in world.GetDirectory().GetDirectories("*.*", SearchOption.TopDirectoryOnly))
-    //    //    {
-    //    //        var c = mapdir.Name.Split('.');
-    //    //        var coords = new Vector2(Convert.ToInt32(c[0]), Convert.ToInt32(c[1]));
-    //    //        var newPos = coords + n;
-    //    //        if (!world.Maps.ContainsKey(newPos))
-    //    //            StaticMap.Create(world, newPos);
-    //    //    }
-    //    //});
-    //}
-
-    //public void Initialize()
-    //{
-    //    this.PopulationManager.Initialize();
-    //}
     public IEnumerable<(string, Action)> GetGenerationTasks()
     {
         yield return ("Generating population", this.PopulationManager.Initialize);

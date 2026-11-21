@@ -2,23 +2,29 @@
 using Project1.Core.AI.Thought;
 using Project1.Core.Needs;
 using Project1.Core.Towns.AI.Needs;
+using Project1.Core.World.Combat;
 using Project1.Framework;
 
 namespace Project1.Core.AI.MetaRoles;
 
 [EnsureStaticCtorCall]
-internal class RoleMetaDefOf
+public static class RoleMetaDefOf
 {
     public readonly static RoleMetaDef TownMember = new("TownMember", typeof(RoleTownMemberData), typeof(RoleTownMemberWorker), [NeedDefOf.Work], 
-        [typeof(ThoughtProcess_ItemEvaluatorTownMember)]); 
+        [
+        //typeof(ThoughtProcess_InCombat),
+        typeof(ThoughtProcess_ItemEvaluatorTownMember)]); 
     public readonly static RoleMetaDef Adventurer = new("Adventurer", typeof(RoleAdventurerData), typeof(RoleAdventurerWorker), [
         AdventurerNeedsDefOf.Adventuring],[
+        //typeof(ThoughtProcess_InCombat),
         typeof(ThoughtProcess_ItemEvaluatorVisitor),
         //typeof(ThoughtProcess_TownSpellScorer),
         typeof(ThoughtAdventuring),
         typeof(ThoughtProcess_Quests),
         typeof(ThoughtProcess_UseTownScroll)]);
-    public readonly static RoleMetaDef Npc = new("Npc", typeof(RoleNpcData), typeof(RoleNpcWorker), [], [typeof(ThoughtProcess_ItemEvaluatorVisitor)]);
+    public readonly static RoleMetaDef Npc = new("Npc", typeof(RoleNpcData), typeof(RoleNpcWorker), [], [
+        //typeof(ThoughtProcess_InCombat),
+        typeof(ThoughtProcess_ItemEvaluatorVisitor)]);
 
     static RoleMetaDefOf()
     {

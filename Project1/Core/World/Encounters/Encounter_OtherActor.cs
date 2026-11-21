@@ -57,7 +57,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         foreach (var k in frontier.ActorsActiveNew
             .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a) && !actor.Biology.IsIncapacitated)
             //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
-            .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { TargetId = id }, 1000)))
+            .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_CombatEngage(actor) { TargetId = id }, 1000)))
             yield return k;
     }
 
@@ -67,7 +67,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         //if (ctx.Target.Biology.IsIncapacitated)
         //    return null;
         //return WorldActionDefOf.Attack;
-        var ctx = (WorldActionData_Combat)context;
+        var ctx = (WorldActionData_CombatEngage)context;
         var other = ctx.Actor.World.Resolve<Actor>(ctx.TargetId);
         if (other.Biology.IsIncapacitated)
             throw new InvalidOperationException("Tried to initiate combat against incapacitated actor.");

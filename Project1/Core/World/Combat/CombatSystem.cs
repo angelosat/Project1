@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace Project1.Core.World.Combat;
 
@@ -29,6 +28,9 @@ internal static class CombatSystem
     {
         DamageToResistanceDefs = Def.Get<DamageResistanceDef>().ToDictionary(r => r.Source, r => r);
         AttackTargets = [.. Def.Get<GearSlotDef>().Where(s => s.AttackTargetWeight > 0)];
+
+        Registry.WorldEventHooksClient.Register<WorldCombatEvent>(IncrementTrackingStats);
+        Registry.WorldEventHooksServer.Register<WorldCombatEvent>(IncrementTrackingStats);
     }
 
     internal static AttackResult ResolveHit(Actor attacker, Actor defender)
@@ -71,10 +73,10 @@ internal static class CombatSystem
 
         var preventedDamage = rawValue - finalDamage.Value;
 
-        bodyPartGear?.ToolComponent.OnAttackLanded(preventedDamage);
+        //bodyPartGear?.ToolComponent.OnAttackLanded(preventedDamage);
 
-        if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
-            weapon.ToolComponent.OnAttackLanded(finalDamage.Value);
+        //if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
+        //    weapon.ToolComponent.OnAttackLanded(finalDamage.Value);
 
         return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, rawValue, bodyPartTargetDef);
     }
@@ -129,7 +131,7 @@ internal static class CombatSystem
         runtime.Record(result);
     }
 
-    internal static void ReplicateOnClient(WorldCombatEvent e)
+    internal static void IncrementTrackingStats(WorldCombatEvent e)
     {
         var world = (StaticWorld)Client.Instance.World;
         var attacker = world.Resolve<Actor>(e.AttackerId);

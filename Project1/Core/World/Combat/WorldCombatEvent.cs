@@ -1,16 +1,16 @@
 ﻿using Project1.Core.Events;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
-using Project1.Framework.Events;
 using Project1.Framework.Serialization;
 
 namespace Project1.Core.World.Combat;
 
+[NetworkReplicate]
 record struct WorldCombatEvent(StaticWorld World,
                                int CombatId,
                                EntityRefId AttackerId,
                                AttackResult Result) 
-    : IEventPayload, ISerializableNewNew<WorldCombatEvent>
+    : IWorldEvent, ISerializableNewNew<WorldCombatEvent>
 {
     public static WorldCombatEvent Create(IDataReader r)
     {

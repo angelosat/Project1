@@ -3,7 +3,7 @@ using Project1.Core.Simulation;
 
 namespace Project1.Core.World.Actions;
 
-internal sealed class WorldActionWorker_CombatBegin : WorldActionWorker
+internal sealed class WorldActionWorker_CombatEngage : WorldActionWorker
 {
     internal override void Resolve(WorldActionData data)
     {

@@ -59,22 +59,22 @@ public static class StatDefOf
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
         //BaseValue = .5f,
-        BaseValue = 50f,
+        //BaseValue = 50f,
     };
 
-    public static readonly StatDef DodgeChance = new("Dodge Chance", typeof(StatResolver))
+    public static readonly StatDef DodgeChance = new("Dodge Chance", typeof(StatResolver_DodgeChance))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
         //BaseValue = .05f,
-        BaseValue = 5f,
+        //BaseValue = 5f,
     };
 
-    public static readonly StatDef ParryChance = new("Parry Chance", typeof(StatResolver))
+    public static readonly StatDef ParryChance = new("Parry Chance", typeof(StatResolver_ParryChance))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
-        BaseValue = .05f//5f,
+        //BaseValue = .05f//5f,
     };
 
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))

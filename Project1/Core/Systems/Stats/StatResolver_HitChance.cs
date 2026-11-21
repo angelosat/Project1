@@ -9,16 +9,17 @@ namespace Project1.Core.Stats;
 
 sealed class StatResolver_HitChance : StatResolver
 {
+    const int _min = 5, _fromSkill = 85, _fromDex = 5;
+    const float _k = 20f;
     public override float CalculateActorStat(StatDef def, Actor actor)
     {
         var meleeSkill = actor.Skills.GetLevel(SkillDefOf.Melee);
         var dexterity = actor.Attributes.GetLevel(AttributeDefOf.Dexterity);
 
-        var s = Math.Clamp(meleeSkill, 0, 1);
+        var s = (float)Math.Clamp(meleeSkill, 0, 100);
+        s /= 100f;
         var d = Math.Max(0, dexterity);
-        var k = 20;
-        var h = 5 + 85 * s + 5 * s * (d / (d + k));
+        var h = _min + _fromSkill * s + _fromDex * s * d / (d + _k);
         return h;
-        //return meleeSkill / 5f + dexterity;
     }
 }

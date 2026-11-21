@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Systems.Tools;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Project1.Core.Entities.Stats.Resolvers
 {

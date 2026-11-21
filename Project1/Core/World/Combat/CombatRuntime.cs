@@ -1,11 +1,6 @@
-﻿using Project1.Core.Attributes;
-using Project1.Core.Components;
-using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
-using Project1.Core.Stats;
-using Project1.Core.Systems;
 using Project1.Core.Systems.Biology;
-using Project1.Core.World.Actions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -98,10 +93,15 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     static int ResetCooldown(Actor actor)
     {
-        var speed = actor.Stats.Get(StatDefOf.SwingSpeed) / 100f;
-        return (int)(BaseCooldown * speed);
-        var dexterity = actor.Attributes.Get(AttributeDefOf.Dexterity);
-        return (int)(BaseCooldown * (1 - dexterity / 100f));
+        return BaseCooldown;
+
+        //var speed = actor.Stats.Get(StatDefOf.SwingSpeed);
+        //speed += 100;
+        //speed /= 100;
+        //return (int)(BaseCooldown * speed);
+
+        //var dexterity = actor.Attributes.Get(AttributeDefOf.Dexterity);
+        //return (int)(BaseCooldown * (1 - dexterity / 100f));
     }
 
     static void DecideAction(Actor attacker, Actor defender)
@@ -172,9 +172,10 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     internal bool CanAct(Actor actor)
     {
         if (actor == this.First)
-            return this.CooldownFirst <= 0;
-        else if(actor == this.Second)
-            return this.CooldownSecond <= 0;
+            return this.CooldownFirst == 0;
+        else if (actor == this.Second)
+            return this.CooldownSecond == 0;
+
         throw new UnreachableException();
     }
 }

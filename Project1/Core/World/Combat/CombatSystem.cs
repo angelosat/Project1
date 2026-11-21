@@ -2,9 +2,9 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
-using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
+using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Stats;
@@ -113,6 +113,8 @@ internal static class CombatSystem
         switch (result.Type)
         {
             case AttackResultTypes.Miss:
+                defender.Skills.ApplyXp(SkillDefOf.Melee, 1);
+                break;
             case AttackResultTypes.Dodge:
             case AttackResultTypes.Parry:
                 break;

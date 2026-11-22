@@ -21,7 +21,7 @@ internal static class ItemRenownSystem
 
     static ItemRenownSystem()
     {
-        Registry.WorldEventHooksServer.Register<WorldCombatEvent>(OnWorldCombatEvent);
+        Registry.WorldEventHooksServer.Register<WorldCombatAttackEvent>(OnWorldCombatEvent);
 
         TooltipManager.RegisterProvider(GetTooltipControls);
 
@@ -30,7 +30,7 @@ internal static class ItemRenownSystem
             GearSlotDefOf.Mainhand];
     }
 
-    private static void OnWorldCombatEvent(WorldCombatEvent e)
+    private static void OnWorldCombatEvent(WorldCombatAttackEvent e)
     {
         if (!e.Result.Connected)
             return;

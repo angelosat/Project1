@@ -70,8 +70,8 @@ internal sealed class WorldComp_Actions : WorldComp
 
     internal void Finish(Actor actor)
     {
-        this.ActiveActions.Remove(actor);
-        this.World.Events.Post(new WorldActionFinishedEvent(actor));
+        if (this.ActiveActions.Remove(actor))
+            this.World.Events.Post(new WorldActionFinishedEvent(actor));
     }
 
     internal void Interrupt(Actor actor)

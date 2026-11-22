@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.World.Frontiers;
-using System;
 using System.Collections.Generic;
 
 #nullable enable
@@ -21,8 +20,6 @@ internal sealed class WorldComp_Combat : WorldComp
         world.Events.ListenTo<CombatBeginEvent>(OnCombatBegin);
         world.Events.ListenTo<CombatEndEvent>(OnCombatEnd);
     }
-
- 
 
     private void OnCombatBegin(CombatBeginEvent e)
     {
@@ -70,7 +67,6 @@ internal sealed class WorldComp_Combat : WorldComp
     public bool IsAvailableForNewCombat(EntityRefId actorId)
        => !this.ActorsToCombat.ContainsKey(actorId);
 
-
     public override void Tick()
     {
         if (!this.World.Net.IsServer)
@@ -84,7 +80,6 @@ internal sealed class WorldComp_Combat : WorldComp
                 combat.Tick();
         }
         foreach (var combat in toRemove)
-            //this.UnregisterCombat(combat);
             this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
     }
 
@@ -95,34 +90,18 @@ internal sealed class WorldComp_Combat : WorldComp
         this.ActiveCombatSessions.Add(id, runtime);
         this.ActorsToCombat.Add(first.RefId, id);
         this.ActorsToCombat.Add(second.RefId, id);
-        //this.World.Events.Post(new CombatBeginEvent(id, first, second));
         ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
         return runtime;
     }
+
     void UnregisterCombat(int combatId)
     {
         var combat = this.ActiveCombatSessions[combatId];
         this.ActiveCombatSessions.Remove(combat.Id);
         this.ActorsToCombat.Remove(combat.First.RefId);
         this.ActorsToCombat.Remove(combat.Second.RefId);
-        //this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
         ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
-        //this.UnregisterCombat(combat);
     }
-
-    //void UnregisterCombat(CombatRuntime combat)
-    //{
-    //    this.ActiveCombatSessions.Remove(combat.Id);
-    //    this.ClearCombat(combat);
-    //}
-
-    //void ClearCombat(CombatRuntime combat)
-    //{
-    //    this.ActorsToCombat.Remove(combat.First.RefId);
-    //    this.ActorsToCombat.Remove(combat.Second.RefId);
-    //    //this.World.Events.Post(new CombatEndEvent(this.World, combat.Id));
-    //    ((FrontierManager)this.World.Space).Notifier.Notify(); // HACK
-    //}
 
     internal CombatRuntime? Get(Actor actor)
     {

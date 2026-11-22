@@ -13,11 +13,14 @@ sealed class StatResolver_Unarmed : StatResolver
     public override float CalculateActorStat(StatDef def, Actor actor)
     {
         var strength = actor.Attributes.Get(AttributeDefOf.Strength);
-        var melee = actor.Skills.GetLevel(SkillDefOf.Melee);
+        //var melee = actor.Skills.GetLevel(SkillDefOf.Melee);
         var min = BaseValue;
-        var final = strength * (1 + melee / 100f);
+        var final = strength / 5f;
+        final = Math.Max(1, final);
+        return final;
+        //var final = strength * (1 + melee / 100f);
 
-        final = 1;
-        return Math.Max(min, final);
+        //final = 1;
+        //return Math.Max(min, final);
     }
 }

@@ -21,6 +21,8 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
     readonly List<AttackResult> Log = [];
 
+    readonly HashSet<EntityRefId> FleeAttempts = [];
+
     readonly static int BaseCooldown = Ticks.FromMinutes(1);
 
     bool Started;
@@ -107,7 +109,7 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     static void DecideAction(Actor attacker, Actor defender)
     {
         //world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker) { TargetId = defender.RefId });
-        var (actionDef, actionData) = ActorAICombatSystem.Decide(attacker, defender);
+        var (actionDef, actionData) = ActorCombatAISystem.Decide(attacker, defender);
         if (actionDef is null)
             return;
         var world = (StaticWorld)attacker.World;
@@ -178,4 +180,13 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
 
         throw new UnreachableException();
     }
+
+    internal bool HasAttemptedFlee(EntityRefId refId)
+        => this.FleeAttempts.Contains(refId);
+
+    internal void MarkFlee(Actor actor)
+        => this.FleeAttempts.Add(actor.RefId);
+
+    internal bool CanFlee(Actor actor)
+        => !this.HasAttemptedFlee(actor.RefId);
 }

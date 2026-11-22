@@ -47,6 +47,9 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     public ItemDef Def;
     public Def Profile;
 
+    public T GetProfile<T>() where T : Def
+        => this.Profile as T;
+
     public static readonly Dictionary<int, GameObject> Templates = [];
     public string DebugName { get { return $"[{this.RefId}]{this.Name}"; } }
     public bool IsRegistered => this.RefId > 0;

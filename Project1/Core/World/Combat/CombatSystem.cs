@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+#nullable enable
+
 namespace Project1.Core.World.Combat;
 
 [EnsureStaticCtorCall]
@@ -29,8 +31,11 @@ internal static class CombatSystem
         DamageToResistanceDefs = Def.Get<DamageResistanceDef>().ToDictionary(r => r.Source, r => r);
         AttackTargets = [.. Def.Get<GearSlotDef>().Where(s => s.AttackTargetWeight > 0)];
 
-        Registry.WorldEventHooksClient.Register<WorldCombatEvent>(IncrementTrackingStats);
-        Registry.WorldEventHooksServer.Register<WorldCombatEvent>(IncrementTrackingStats);
+        Registry.WorldEventHooksClient.Register<WorldCombatAttackEvent>(IncrementTrackingStats);
+        Registry.WorldEventHooksServer.Register<WorldCombatAttackEvent>(IncrementTrackingStats);
+
+        Registry.WorldEventHooksClient.Register<WorldCombatFleeEvent>(OnWorldCombatFlee);
+        Registry.WorldEventHooksServer.Register<WorldCombatFleeEvent>(OnWorldCombatFlee);
     }
 
     internal static AttackResult ResolveHit(Actor attacker, Actor defender)
@@ -39,6 +44,7 @@ internal static class CombatSystem
         var attackerId = attacker.RefId;
 
         var toHit = (int)attacker.Stats.Get(StatDefOf.HitChance);
+        toHit = 100;
         var random = attacker.World.Random;
         if (!random.Roll100(toHit))
             return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, 0, null);
@@ -55,6 +61,7 @@ internal static class CombatSystem
         var isCrit = random.Roll100((int)toCrit);
       
         var (damageValue, damageType) = GetAttackDamage(attacker);
+        damageValue = 30;
 
         var bodyPartTargetDef = AttackTargets.SelectRandomWeighted(random, s => s.AttackTargetWeight); // TODO make bodypart selection weighted
         var bodyPartGear = defender.Gear.GetGear(bodyPartTargetDef);
@@ -113,7 +120,8 @@ internal static class CombatSystem
         switch (result.Type)
         {
             case AttackResultTypes.Miss:
-                defender.Skills.ApplyXp(SkillDefOf.Melee, 1);
+                if (GetWeaponSkill(attacker) is SkillDef skill)
+                    defender.Skills.ApplyXp(skill, 1);
                 break;
             case AttackResultTypes.Dodge:
             case AttackResultTypes.Parry:
@@ -129,11 +137,14 @@ internal static class CombatSystem
                 throw new UnreachableException();
         }
         $"{attacker} {result.Type} {defender} {result.Damage}".ToConsole();
-        world.Events.Post(new WorldCombatEvent(world, runtime.Id, attacker.RefId, result));
+        world.Events.Post(new WorldCombatAttackEvent(world, runtime.Id, attacker.RefId, result));
         runtime.Record(result);
     }
 
-    internal static void IncrementTrackingStats(WorldCombatEvent e)
+    static public SkillDef GetWeaponSkill(Actor actor)
+        => actor.Gear.Weapon?.GetProfile<GearProfileDef>()?.WeaponSkill ?? SkillDefOf.Unarmed;
+
+    internal static void IncrementTrackingStats(WorldCombatAttackEvent e)
     {
         if (e.Result.Damage.Value == 0)
             return;
@@ -148,5 +159,33 @@ internal static class CombatSystem
             return;
         if (defender.Gear.GetGear(slotDef) is Entity gear)
             gear.ToolComponent.OnAttackLanded(e.Result.DamagePrevented);
+    }
+
+    internal static void AttemptFlee(Actor actor)
+    {
+        var world = (StaticWorld)actor.World;
+        var session = world.Combat.Get(actor);
+        //if (session.HasAttemptedFlee(actor.RefId))
+        //    return;
+        var fleeChance = actor.Stats.Get(StatDefOf.FleeChance);
+        fleeChance = 50f;
+        if (!world.Random.Roll100((int)fleeChance))
+        {
+            // TODO report flee failure
+            return;
+        }
+        world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
+        // TODO report flee success
+    }
+
+    private static void OnWorldCombatFlee(WorldCombatFleeEvent e)
+    {
+        var world = e.World;
+        var actor = world.Resolve<Actor>(e.ActorId);
+        var session = world.Combat.Get(e.ActorId);
+        session.MarkFlee(actor);
+        var other = session.GetOther(actor);
+        world.Actions.Interrupt(other);
+        session.MarkResolved();
     }
 }

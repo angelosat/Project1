@@ -2,7 +2,7 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Entities.Stats.Resolvers;
-using Project1.Core.Skills;
+using Project1.Core.World.Combat;
 using System;
 
 namespace Project1.Core.Stats;
@@ -13,7 +13,9 @@ sealed class StatResolver_HitChance : StatResolver
     const float _k = 20f;
     public override float CalculateActorStat(StatDef def, Actor actor)
     {
-        var meleeSkill = actor.Skills.GetLevel(SkillDefOf.Melee);
+        //var meleeSkill = actor.Skills.GetLevel(SkillDefOf.Melee);
+        var skill = CombatSystem.GetWeaponSkill(actor);
+        var meleeSkill = actor.Skills.GetLevel(skill);
         var dexterity = actor.Attributes.GetLevel(AttributeDefOf.Dexterity);
 
         var s = (float)Math.Clamp(meleeSkill, 0, 100);

@@ -82,7 +82,7 @@ public static class SkillDefOf
         Description = "Melee description",
         Icon = new Icon(UIManager.Icons32, 12, 32)
     };
-
+    static public readonly SkillDef Unarmed = new("Unarmed");
     static public readonly SkillDef Swords = new("Swords");
     static public readonly SkillDef Axes = new("Axes");
     static public readonly SkillDef Maces = new("Maces");

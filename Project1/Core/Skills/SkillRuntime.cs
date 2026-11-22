@@ -48,7 +48,9 @@ public partial class SkillRuntime : Inspectable, ITooltippable, ISaveableNewNew<
     public Color? TooltipColor => null;// throw new NotImplementedException();
 
     static public int GetRequiredXp(int level) => XpToLevelBase * level * level;
-    static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
+    //static int GetNextLvlXp(int currentLvl) => (int)Math.Pow(2, currentLvl - 1) * XpToLevelBase;
+    static int GetNextLvlXp(int level) 
+        => GetRequiredXp(level) - GetRequiredXp(level - 1);
     static int GetLevel(int xp) => (int)(Math.Log2(xp / XpToLevelBase) + 1);
   
     internal void Award(int v)
@@ -114,6 +116,17 @@ public partial class SkillRuntime : Inspectable, ITooltippable, ISaveableNewNew<
         if (this.Level != oldLevel)
             actor.World.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
     }
+
+    public void SetLevel(int level)
+    {
+        var oldLevel = this.Level;
+        var actor = this.Comp.Owner;
+        this.Level = level;
+        actor.World?.Events.Post(new SkillAdjustedEvent(actor as Actor, this));
+        if (this.Level != oldLevel)
+            actor.World?.Events.Post(new SkillLevelUpEvent(actor as Actor, this));
+    }
+
     public Control GetListControlGui()
     {
         var label = new BarImmediate(this.LvlProgress)

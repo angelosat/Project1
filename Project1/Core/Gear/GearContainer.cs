@@ -5,6 +5,8 @@ using Project1.Framework.UI;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities;
 
+#nullable enable
+
 namespace Project1.Core.Gear;
 
 sealed class GearContainer(Actor owner) : Inspectable
@@ -18,7 +20,7 @@ sealed class GearContainer(Actor owner) : Inspectable
     }
     public GameObjectSlot GetSlot(GameObject item) => this.Slots.Values.FirstOrDefault(s => s.Object == item);
     public GameObjectSlot GetSlot(GearSlotDef def) => this.Slots[def];
-    public Entity GetSlotContent(GearSlotDef def) => this.Slots[def].Object as Entity;
+    public Entity? GetSlotContent(GearSlotDef def) => this.Slots[def].Object as Entity;
 
     public ICollection<GearSlotDef> SlotDefs
         => this.Slots.Keys;

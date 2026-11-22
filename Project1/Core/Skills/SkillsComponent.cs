@@ -121,7 +121,11 @@ public class SkillsComponent : EntityComp, IGui
 
     internal void SetValue(SkillDef skill, int level, int xp)
         => this[skill].SetValue(level, xp);
-        
+
+    internal void SetLevel(SkillDef skill, int level)
+    => this[skill].SetLevel(level);
+
+
     internal void ApplyXp(SkillDef skill, int xp)
     {
         var actor = this.Owner as Actor;

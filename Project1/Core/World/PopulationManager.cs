@@ -5,6 +5,7 @@ using Project1.Core.Gear;
 using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
+using Project1.Core.Skills;
 using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
@@ -145,6 +146,12 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //actor.Needs.SetPercentage(NeedDefOf.Energy, .1f);
         actor.Attributes.Randomize();
         actor.Skills.Randomize();
+        actor.Skills.SetLevel(SkillDefOf.Unarmed, 50);
+        actor.Skills.SetLevel(SkillDefOf.Swords, 50); 
+        actor.Skills.SetLevel(SkillDefOf.Axes, 50); 
+        actor.Skills.SetLevel(SkillDefOf.Daggers, 50); 
+        actor.Skills.SetLevel(SkillDefOf.Maces, 50); 
+
         //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
         //var damagedTool = ToolSystem.CreateRandom(this.World.Random, 1);

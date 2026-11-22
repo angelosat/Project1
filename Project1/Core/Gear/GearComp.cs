@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable enable
+
 namespace Project1.Core.Gear;
 
 [EnsureStaticCtorCall]
@@ -98,6 +100,10 @@ public sealed class GearComp : EntityComp
     }
     public Entity? GetGear(GearSlotDef slot) 
         => this.Gear.GetSlotContent(slot);
+
+    public Entity? Weapon
+        => this.Gear.GetSlotContent(GearSlotDefOf.Mainhand);
+
     public GameObjectSlot GetSlot(GearSlotDef type) => this.Gear.GetSlot(type);
     public GameObjectSlot GetSlot(GameObject item)
     {
@@ -203,7 +209,7 @@ public sealed class GearComp : EntityComp
                 yield return (bonusDef, bonusVal);
     }
 
-    public Entity? Weapon => (Entity)this.GetSlot(GearSlotDefOf.Mainhand).Object;
+    //public Entity? Weapon => (Entity)this.GetSlot(GearSlotDefOf.Mainhand).Object;
 
     //public (int value, DamageDef damage) GetWeaponDamage()
     //{

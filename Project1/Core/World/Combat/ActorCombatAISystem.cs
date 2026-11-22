@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems;
 using Project1.Core.World.Actions;
@@ -8,7 +9,7 @@ using System;
 
 namespace Project1.Core.World.Combat;
 
-static class ActorAICombatSystem
+static class ActorCombatAISystem
 {
     static internal (WorldActionDef actionDef, WorldActionData actionData) Decide(Actor actor, Actor target)
     {
@@ -20,6 +21,14 @@ static class ActorAICombatSystem
             var result = SmartEquipSystem.EvaluateEquipmentChange(actor);
             if (result.ItemId != EntityRefId.Null)
                 return (WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
+        }
+        if (session.CanFlee(actor))
+        {
+            var healthThreshold = .5f;
+            var health = actor.Resources.Get(ResourceDefOf.Health);
+            var healthPerc = health.Percentage;
+            if (healthPerc < healthThreshold)
+                return (WorldActionDefOf.Flee, new WorldActionData(actor));
         }
         return (WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(actor) { TargetId = target.RefId });
     }

@@ -3,9 +3,9 @@ using Project1.Core.Systems.Thoughts;
 
 namespace Project1.Core.World.Combat;
 
-sealed class Thought_Combat : ThoughtSource<WorldCombatEvent>
+sealed class Thought_Combat : ThoughtSource<WorldCombatAttackEvent>
 {
-    internal override void Handle(WorldCombatEvent e)
+    internal override void Handle(WorldCombatAttackEvent e)
     {
         var world = e.World;
         var actorId = e.AttackerId;

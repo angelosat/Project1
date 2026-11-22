@@ -48,7 +48,7 @@ public abstract class EntityComp : EventOwner
 
     public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
     public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
-    public virtual float? GetStatMod(StatDef target) => null;
+    public virtual float GetStatMod(StatDef target) => 0;
 
     internal virtual void InitializeOnce() { }
     public virtual void OnObjectLoaded(GameObject parent) { }

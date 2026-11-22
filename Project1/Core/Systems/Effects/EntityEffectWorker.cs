@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
+using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Effects;
 
@@ -43,4 +46,8 @@ public abstract class EntityEffectWorker
 
     internal virtual string Label(Def target) => $"{this.Def.Verb} {target.LabelReadable}";
     internal virtual Color GetTint(Def target) => Color.White;
+
+    internal virtual IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor,
+                                                                                  EntityEffectWrapper runtime)
+        => [];
 }

@@ -20,7 +20,7 @@ class GearStatsPanel : SelectionBoundControl
         this.Controls.Clear();
         this.Gear = actor.GetComponent<GearComp>();
 
-        var statsCache = actor.Stats.GetAllStatRuntime();
+        var statsCache = actor.Stats.GetAllStatRuntimes();
         foreach (var stat in statsCache)
         {
             //var value = stat.Resolve(actor);

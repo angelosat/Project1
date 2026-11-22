@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Needs;
+using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Effects;
 
@@ -18,5 +20,4 @@ internal class EffectModifyNeedWorker : EntityEffectWorker
     protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
     {
     }
-
 }

@@ -1,10 +1,12 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Helpers;
 using Project1.Core.Simulation;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
 using System;
+using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Effects;
 
@@ -26,6 +28,8 @@ public class EntityEffectWrapper
     public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
 
     public bool IsInstant => this.Def.BaseDuration == 0;
+
+
     public float QualityMultiplier;
     public SimulationTick RemainingDuration(SimulationTick now) => this.StartTick + (ulong)this.Duration - now;
     public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
@@ -133,6 +137,9 @@ public class EntityEffectWrapper
         //var mag = tag.LoadInt("Magnitude");
         return new EntityEffectWrapper(def, target, budget, rate, duration) { StartTick = starttick };
     }
+
+    internal IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor)
+        => this.Def.Worker.GetStatModifiers(actor, this);
 
     public override string ToString()
         => EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);

@@ -4,6 +4,7 @@ using Project1.Core.Helpers;
 using Project1.Core.Interactions;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
@@ -25,7 +26,6 @@ public static class StatSystem
     static readonly Dictionary<ToolUseDef, InteractionDef> _toolToInteraction = [];
     static readonly Dictionary<Def, StatDef> DerivedStats = [];
     static readonly Dictionary<GearRoleDef, List<StatDef>> BonusRolesEligibility = [];
-
     static readonly Dictionary<Type, List<StatDef>> _statsByCompType = [];
     static public IReadOnlyDictionary<SkillDef, ToolUseDef> SkillsToTools => _skillsToTools;
     static public IReadOnlyDictionary<ToolUseDef, GearProfileDef> UseToProfile => _useToProfile;
@@ -86,6 +86,9 @@ public static class StatSystem
 
         Registry.WorldEventHooksClient.Register<ActorStatBonusModifiedEvent>(OnActorStatBonusModified);
         Registry.WorldEventHooksServer.Register<ActorStatBonusModifiedEvent>(OnActorStatBonusModified);
+
+        Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
+        Registry.WorldEventHooksServer.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
     }
 
 
@@ -183,6 +186,14 @@ public static class StatSystem
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
         actor.Stats.ModifyBonus(e.StatDef, e.Delta);
+    }
+
+    private static void OnActorEffectApplied(ActorEffectAppliedEvent e)
+    {
+        var actor = e.Actor;
+        var bonuses = e.Effect.GetStatModifiers(actor);
+        foreach (var (statDef, _) in bonuses)
+            actor.Stats.MarkDirty(statDef);
     }
 }
 

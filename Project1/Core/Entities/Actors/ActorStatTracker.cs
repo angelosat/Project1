@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Gear;
 using Project1.Core.Systems.Stats;
+using Project1.Framework.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,6 +12,7 @@ public sealed class ActorStatTracker(Actor actor)
 {
     readonly Actor Actor = actor;
     readonly Dictionary<StatBonusDef, float> Bonuses = [];
+    readonly Dictionary<StatDef, float> BonusesNew = [];
     Dictionary<StatDef, StatRuntime> Stats => field ??= StatSystem.ActorStats.ToDictionary(a => a, a => new StatRuntime(a));
     bool BonusesDirty = true, StatsDirty = true;
     public bool IsStatsDirty => this.StatsDirty;
@@ -27,12 +30,10 @@ public sealed class ActorStatTracker(Actor actor)
         foreach (var (stat, runtime) in this.Stats)
             yield return (stat, runtime.Value);
     }
-    public IEnumerable<StatRuntime> GetAllStatRuntime()
-    {
-        //if (this.StatsDirty)
-        //    this.RebuildStats();
-        return this.Stats.Values;
-    }
+    public IEnumerable<StatRuntime> GetAllStatRuntimes()
+        => this.Stats.Values;
+    public IEnumerable<StatDef> GetAllStatDefs()
+    => this.Stats.Keys;
 
     public void AddBonus(StatBonusDef def, float val)
     {
@@ -42,6 +43,9 @@ public sealed class ActorStatTracker(Actor actor)
         //this.Values[def] += val;
         this.MarkBonusesDirty();
     }
+
+    internal void MarkDirty(StatDef stat)
+        => this.Stats[stat].MarkDirty();
 
     public void ModifyBonus(StatDef def, float delta)
     {
@@ -89,7 +93,15 @@ public sealed class ActorStatTracker(Actor actor)
     public float Get(StatDef def)
     {
         var runtime = this.Stats[def];
-        return runtime.Resolve(this.Actor);
+        //var bonus = this.BonusesNew.GetValueOrDefault(def);
+        //return runtime.Resolve(this.Actor);
+        if (runtime.Dirty)
+        {
+            var bonus = this.Actor.Components.Values.Sum(c => c.GetStatMod(def));
+            runtime.Bonus = bonus;
+            runtime.Resolve(this.Actor);
+        }
+        return runtime.Value;// * (def.Type == StatDef.Types.Percentile ? .01f : 1f);
 
         //if (runtime.Dirty)
         //{
@@ -101,6 +113,17 @@ public sealed class ActorStatTracker(Actor actor)
         //return runtime.Value * (def.Type == StatDef.Types.Percentile ? .01f : 1f);
 
     }
+
+    internal string ResolveAndFormat(StatDef def)
+    {
+        var runtime = this.Stats[def];
+        var value = this.Get(def);
+        var formatted = StatSystem.Format(def, value);
+        return formatted + $"{runtime.Bonus}";
+    }
+
+    internal ChangeNotifier GetNotifier(StatDef def)
+        => this.Stats[def].Notifier;
 
     void RebuildStats()
     {
@@ -118,4 +141,6 @@ public sealed class ActorStatTracker(Actor actor)
     {
         this.Stats[def].Value += value;
     }
+
+   
 }

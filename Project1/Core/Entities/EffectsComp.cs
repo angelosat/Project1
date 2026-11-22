@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Effects;
 using Project1.Core.UI;
 using Project1.Framework;
@@ -150,6 +151,14 @@ public sealed class EffectsComp : EntityComp
     {
         return base.GetDetailedGui();
     }
+
+    public override IEnumerable<(StatDef target, float value)> GetModifiers()
+        => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner));
+
+    public override float GetStatMod(StatDef target)
+        => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner))
+                             .Where(b => b.statDef == target)
+                             .Sum(b => b.value);
 
     internal bool Any(EffectDef effect, Def target)
         => this.ActiveEffects.Any(f => f.Def == effect && f.Target == target);    

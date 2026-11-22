@@ -3,6 +3,7 @@
 - whenever an actor starts an attack world action on a target, based on the two actors's possibly stealth and perception skill respecitevly, either 
 1. the target gets notified and can start attacking back immediately, or 
 2. the target doesnt get notify and is essentially ambushed and only starts attacking back when the attacker's attack lands
+- different base parry chances for different weapon families
 ## item preferences
 - gui: decide how to display multiple roles per item instead of the first one found
 - batch process items and item prefs delta event and packet dispatching

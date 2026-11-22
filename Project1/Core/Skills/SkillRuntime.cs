@@ -42,6 +42,7 @@ public partial class SkillRuntime : Inspectable, ITooltippable, ISaveableNewNew<
 
     public int XpToLevelCurrent => (int)this.LvlProgress.Max;
     public float CurrentXP => this.LvlProgress.Value;
+    public int TotalXp { get; private set; }
     public string Name => this.SkillDef.LabelReadable;
     public override string LabelReadable => this.Name;
 
@@ -180,22 +181,24 @@ public partial class SkillRuntime : Inspectable, ITooltippable, ISaveableNewNew<
 
     public static SkillRuntime Create(SaveTag tag)
     {
-        var skill = new SkillRuntime();
-        skill.SkillDef = tag.LoadDef<SkillDef>("Def");
-        //tag.TryGetTagValueOrDefault("Level", out skill._level);
-        skill.Level = tag.LoadInt("Level");
+        var skill = new SkillRuntime
+        {
+            SkillDef = tag.LoadDef<SkillDef>("Def"),
+            //tag.TryGetTagValueOrDefault("Level", out skill._level);
+            Level = tag.LoadInt("Level")
+        };
         skill.LvlProgress.SetMax(GetNextLvlXp(skill.Level));
         skill.LvlProgress.SetValue((int)tag["Progress"].Value);
+        skill.TotalXp = GetRequiredXp(skill.Level) + skill.LvlProgress.Value;
         return skill;
     }
     public SaveTag Save(string name = "")
     {
         var tag = new SaveTag(SaveTag.Types.Compound, this.Name);
         tag.SaveDef("Def", this.Def);
+        tag.Save("TotalXp", this.TotalXp);
         tag.Add(this.Level.Save("Level"));
         tag.Add(this.LvlProgress.Value.Save("Progress"));
         return tag;
     }
-
-    
 }

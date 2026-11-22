@@ -46,11 +46,16 @@ class StatsGuiNew : SelectionBoundControl
         //gui.AddItems(actor.Components.Values.SelectMany(StatSystem.GetStatsFor));
 
 
-        var gui = new Table<StatRuntime>()
-            .AddColumn("name", 120, a => new LabelNew(a.Def.LabelReadable), 1)
-            .AddColumn("divider", 8, s => new Label(""))
-            .AddColumn("value", 64, a => new LabelNew(() => $"{a.ResolveAndFormat(actor)} + { a.Bonus }").InvalidateOn(a.Notifier));
-        var statsCache = actor.Stats.GetAllStatRuntime();
+        //var gui = new Table<StatRuntime>()
+        //    .AddColumn("name", 120, a => new LabelNew(a.Def.LabelReadable), 1)
+        //    .AddColumn("divider", 8, s => new LabelNew(string.Empty))
+        //    .AddColumn("value", 64, a => new LabelNew(() => $"{a.ResolveAndFormat(actor)} + {a.Bonus}").InvalidateOn(a.Notifier));
+        //var statsCache = actor.Stats.GetAllStatRuntimes();
+        var gui = new Table<StatDef>()
+            .AddColumn("name", 120, a => new LabelNew(a.LabelReadable), 1)
+            .AddColumn("divider", 8, s => new LabelNew(string.Empty))
+            .AddColumn("value", 64, a => new LabelNew(() => $"{actor.Stats.ResolveAndFormat(a)}").InvalidateOn(actor.Stats.GetNotifier(a)));
+        var statsCache = actor.Stats.GetAllStatDefs();
         gui.AddItems(statsCache);
 
 

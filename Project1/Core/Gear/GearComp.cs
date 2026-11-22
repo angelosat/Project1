@@ -20,11 +20,14 @@ namespace Project1.Core.Gear;
 [EnsureStaticCtorCall]
 public sealed class GearComp : EntityComp
 {
-    Actor Actor => field ??= this.Owner as Actor;
+    Actor Actor => field ??= (Actor)this.Owner;
+
     public override EntityCompDef CompDef => EntityCompDefOf.Gear;
+
     GearContainer Gear;
+
     public Container Equipment = new() { Name = "Equipment" };
-    //public float ArmorTotal;
+
     readonly Dictionary<StatDef, StatRuntime> StatsCache = [];
 
     public override string Name { get; } = "Gear";

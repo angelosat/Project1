@@ -3,6 +3,7 @@ using Project1.Core.Entities.Stats;
 using Project1.Core.Stats;
 using Project1.Framework;
 using Project1.Framework.Events;
+using System;
 
 namespace Project1.Core.Systems.Stats;
 
@@ -12,8 +13,13 @@ public sealed class StatRuntime(StatDef def)
     {
         this.Value = value;
     }
+
     public readonly ChangeNotifier Notifier = new();
+
     public StatDef Def = def;
+
+    public bool Dirty = true;
+
     public float Value
     {
         get;
@@ -23,6 +29,7 @@ public sealed class StatRuntime(StatDef def)
             this.Notifier.Notify();
         }
     }
+
     public float Bonus
     {
         get;
@@ -32,12 +39,9 @@ public sealed class StatRuntime(StatDef def)
             //this.Notifier.Notify();
         }
     }
-    public bool Dirty = true;
 
     public float Resolve(Actor actor)
     {
-        if (this.Def == StatDefOf.AvoidCombatEncounter)
-            "asd".ToConsole();
         if (this.Dirty)
         {
             this.Dirty = false;
@@ -49,6 +53,7 @@ public sealed class StatRuntime(StatDef def)
     public string Format()
         => StatSystem.Format(this.Def, this.Value);
 
+    [Obsolete]
     public string ResolveAndFormat(Actor actor)
       => StatSystem.Format(this.Def, this.Resolve(actor));
 

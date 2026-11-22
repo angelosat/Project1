@@ -174,7 +174,7 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
                 if (distance != target)
                 {
                     // actors should settle in the middle of the zone (or maybe jitter around the middle to influence the chances of encounters)
-                    var moveSpeed = actor.Stats.Get(StatDefOf.MoveSpeed);
+                    var moveSpeed = actor.Stats.GetFinal(StatDefOf.MoveSpeed);
                     nextDistance = distance + moveSpeed * ((target - .5f < distance) ? -step : step);
                     nextDistance = Math.Clamp(nextDistance, 0, this.Frontiers.Count);
                     this.Notifier.Notify();

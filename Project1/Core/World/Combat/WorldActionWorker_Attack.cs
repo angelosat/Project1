@@ -73,7 +73,7 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
         var actor = data.Actor;
         var dexterity = actor.Attributes.Get(AttributeDefOf.Dexterity);
         var dexMultiplier = 1 - dexterity / 100f;
-        var speed = actor.Stats.Get(StatDefOf.SwingSpeed);
+        var speed = actor.Stats.GetFinal(StatDefOf.SwingSpeed);
         return speed * dexMultiplier;
     }
 }

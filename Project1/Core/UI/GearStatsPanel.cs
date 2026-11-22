@@ -1,9 +1,11 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Gear;
 using Project1.Framework.UI;
+using System;
 
 namespace Project1.Core.UI;
 
+[Obsolete]
 class GearStatsPanel : SelectionBoundControl
 {
     GearComp Gear;

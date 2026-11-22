@@ -35,7 +35,7 @@ public static class WorkSystem
             foreach (var work in workTypes)
             {
                 var unarmedDef = StatSystem.GetDerivedStat(work);
-                var unarmedStat = actor.Stats.Get(unarmedDef);
+                var unarmedStat = actor.Stats.GetFinal(unarmedDef);
                 dic.Add(work, unarmedStat);
             }
         }
@@ -60,13 +60,13 @@ public static class WorkSystem
         {
             var unarmedDef = ToolToUnarmed[capability];
             var unarmedStat = StatSystem.GetDerivedStat(unarmedDef);
-            var unarmedStatValue = actor.Stats.Get(unarmedStat);
+            var unarmedStatValue = actor.Stats.GetFinal(unarmedStat);
             return unarmedStatValue;
         }
         var profile = mainHand.Profile as GearProfileDef;
         var power = mainHand.ToolComponent.IntrinsicStats[StatDefOf.ItemPower].Value;
         var itemMod = profile.ToolUsesModifiers.GetValueOrDefault(capability);
-        var actorMod = actor.Stats.Get(StatSystem.GetDerivedStat(capability));
+        var actorMod = actor.Stats.GetFinal(StatSystem.GetDerivedStat(capability));
         var final = power * itemMod * actorMod;
         final = Math.Max(final, 1);
         return final;

@@ -207,7 +207,7 @@ public class MobileComp : EntityComp
         var resources = parent.GetComponent<ResourcesComp>();
         //var newwalk = parent.Gear.GetStat(StatDefOf.WalkSpeed);
         var actor = parent as Actor;
-        var newwalk = actor.Stats.Get(StatDefOf.MoveSpeed) * .01f;
+        var newwalk = actor.Stats.GetFinal(StatDefOf.MoveSpeed) * .01f;
         var walkSpeed = newwalk * Acceleration * NormalWalkSpeed * (this.CurrentState.Speed + this.CurrentState.SprintSpeed * resources.GetPercentage(ResourceDefOf.Stamina));
         if (this._currentState == State.Types.Sprinting)
             resources.ApplyAccumulatorDelta(ResourceDefOf.Stamina, -0.01f);

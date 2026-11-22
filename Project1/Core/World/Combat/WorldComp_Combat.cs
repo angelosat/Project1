@@ -71,7 +71,7 @@ internal sealed class WorldComp_Combat : WorldComp
     {
         if (this.ActorsToCombat.ContainsKey(actorId))
             return false;
-        var avoidance = (int)this.World.Resolve<Actor>(actorId).Stats.Get(StatDefOf.AvoidCombatEncounter);
+        var avoidance = (int)this.World.Resolve<Actor>(actorId).Stats.GetFinal(StatDefOf.AvoidCombatEncounter);
         if (this.World.Random.Roll100(avoidance))
             return false;
         return true;

@@ -44,21 +44,21 @@ internal static class CombatSystem
         var tick = attacker.World.CurrentTick;
         var attackerId = attacker.RefId;
 
-        var toHit = (int)attacker.Stats.Get(StatDefOf.HitChance);
+        var toHit = (int)attacker.Stats.GetFinal(StatDefOf.HitChance);
         toHit = 100;
         var random = attacker.World.Random;
         if (!random.Roll100(toHit))
             return new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, 0, null);
 
-        var dodge = defender.Stats.Get(StatDefOf.DodgeChance);
+        var dodge = defender.Stats.GetFinal(StatDefOf.DodgeChance);
         if (random.Roll100((int)dodge))
             return new(tick, attackerId, AttackResultTypes.Dodge, DamageInfo.Empty, 0, null);
 
-        var parry = defender.Stats.Get(StatDefOf.ParryChance);
+        var parry = defender.Stats.GetFinal(StatDefOf.ParryChance);
         if (random.Roll100((int)parry))
             return new(tick, attackerId, AttackResultTypes.Parry, DamageInfo.Empty, 0, null);
 
-        var toCrit = (int)attacker.Stats.Get(StatDefOf.CriticalChance);
+        var toCrit = (int)attacker.Stats.GetFinal(StatDefOf.CriticalChance);
         var isCrit = random.Roll100((int)toCrit);
       
         var (damageValue, damageType) = GetAttackDamage(attacker);
@@ -70,7 +70,7 @@ internal static class CombatSystem
 
         var resistandeDef = DamageToResistanceDefs[damageType];
         var resistanceStat = StatSystem.GetDerivedStat(resistandeDef);
-        var resistance = defender.Stats.Get(resistanceStat);
+        var resistance = defender.Stats.GetFinal(resistanceStat);
 
         var multiplier = isCrit ? 1.5f : 1f;
 
@@ -94,7 +94,7 @@ internal static class CombatSystem
         var gear = actor.Gear;
         var weapon = gear.Weapon;
         if (weapon is null)
-            return ((int)actor.Stats.Get(StatDefOf.Unarmed), DamageDefOf.Blunt);
+            return ((int)actor.Stats.GetFinal(StatDefOf.Unarmed), DamageDefOf.Blunt);
         var value = (int)weapon.ToolComponent.IntrinsicStats.GetValueOrDefault(StatDefOf.ItemPower).Value;
         var profile = weapon.Profile as GearProfileDef;
         var type = profile.Damage;
@@ -170,7 +170,7 @@ internal static class CombatSystem
 
         //if (session.HasAttemptedFlee(actor.RefId))
         //    return;
-        var fleeChance = actor.Stats.Get(StatDefOf.FleeChance);
+        var fleeChance = actor.Stats.GetFinal(StatDefOf.FleeChance);
         fleeChance = 100f;// 50f;
         if (!world.Random.Roll100((int)fleeChance))
         {

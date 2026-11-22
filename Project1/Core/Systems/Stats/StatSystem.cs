@@ -1,14 +1,10 @@
 ﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Events;
-using Project1.Core.Helpers;
 using Project1.Core.Interactions;
-using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
-using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,19 +16,31 @@ namespace Project1.Core.Entities.Stats;
 public static class StatSystem
 {
     static readonly Random r = new();
+
     static readonly Dictionary<SkillDef, ToolUseDef> _skillsToTools = [];
+
     static readonly Dictionary<ToolUseDef, GearProfileDef> _useToProfile = [];
+
     static readonly Dictionary<SkillDef, InteractionDef> _skillToInteraction = [];
+
     static readonly Dictionary<ToolUseDef, InteractionDef> _toolToInteraction = [];
+
     static readonly Dictionary<Def, StatDef> DerivedStats = [];
+
     static readonly Dictionary<GearRoleDef, List<StatDef>> BonusRolesEligibility = [];
+
     static readonly Dictionary<Type, List<StatDef>> _statsByCompType = [];
+
     static public IReadOnlyDictionary<SkillDef, ToolUseDef> SkillsToTools => _skillsToTools;
+
     static public IReadOnlyDictionary<ToolUseDef, GearProfileDef> UseToProfile => _useToProfile;
+
     static public IReadOnlyDictionary<SkillDef, InteractionDef> SkillToInteraction => _skillToInteraction;
+
     static public IReadOnlyDictionary<ToolUseDef, InteractionDef> ToolToInteraction => _toolToInteraction;
 
     static public readonly StatDef[] AllStats, ActorStats;
+
     static StatSystem()
     {
         var tooldefs = Def.Get<ToolUseDef>();
@@ -91,25 +99,21 @@ public static class StatSystem
         Registry.WorldEventHooksServer.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
     }
 
-
     static public StatDef GetDerivedStat(Def def)
         => DerivedStats[def];
-
-    //static public IEnumerable<StatDef> GetStatsFor(EntityComp comp)
-    //{
-    //    return _statsByCompType.TryGetValue(comp.GetType(), out var list) ? list : [];
-    //}
 
     static public IEnumerable<ToolUseDef> GetToolUsesFor(SkillDef skill)
     {
         if (SkillsToTools.TryGetValue(skill, out var result))
             yield return result;
     }
+
     static public IEnumerable<InteractionDef> GetInteractionsFor(ToolUseDef toolUse)
     {
         if (ToolToInteraction.TryGetValue(toolUse, out var result))
             yield return result;
     }
+
     static public IEnumerable<InteractionDef> GetAffectedInteractionsFor(SkillDef skill)
     {
         foreach (var result in GetToolUsesFor(skill))
@@ -122,15 +126,12 @@ public static class StatSystem
         if (def.Type == StatDef.Types.Scalar)
             return $"{value}";
         else if (def.Type == StatDef.Types.Percentile)
-            //return $"{value * .01f:P0}";
-            //return $"{value:P0}";
             return $"{value:0.##}%";
         throw new UnreachableException();
     }
 
     internal static IEnumerable<StatDef> RollBonuses(ActorDnaDef species, GearRoleDef role, int count)
     {
-        //var collection = ActorStats;
         var collection = BonusRolesEligibility[role];
         var indices = new int[collection.Count];
         for (int i = 0; i < collection.Count; i++)
@@ -152,36 +153,6 @@ public static class StatSystem
     internal static IReadOnlyCollection<StatDef> GetEligibleBonuses(GearRoleDef role)
         => BonusRolesEligibility[role];
 
-    internal static StatDef GetRandomStat(ActorDnaDef npc)
-    {
-        int n = 0;
-        var indices = new int[ActorStats.Length];
-        for (int i = 0; i < ActorStats.Length; i++)
-            indices[i] = n;
-        indices = [.. indices.Shuffle()];
-        return ActorStats.SelectRandom(r);
-    }
-
-    internal static void Unequip(Actor actor, Entity item)
-    {
-        var tracker = actor.Stats;
-        var comp = item.ToolComponent;
-        foreach (var (def, value) in comp.Modifiers)
-            tracker.Remove(def, value);
-        var profile = item.Profile as GearProfileDef;
-        foreach (var (def, runtime) in comp.IntrinsicStats)
-            tracker.Remove(def, runtime.Value);
-    }
-    internal static void Equip(Actor actor, Entity item)
-    {
-        var tracker = actor.Stats;
-        var comp = item.ToolComponent;
-        foreach (var (def, value) in comp.Modifiers)
-            tracker.Add(def, value);
-        foreach (var (def, runtime) in comp.IntrinsicStats)
-            tracker.Add(def, runtime.Value);
-    }
-
     private static void OnActorStatBonusModified(ActorStatBonusModifiedEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
@@ -195,24 +166,4 @@ public static class StatSystem
         foreach (var (statDef, _) in bonuses)
             actor.Stats.MarkDirty(statDef);
     }
-}
-
-[NetworkReplicate]
-record struct ActorStatBonusModifiedEvent(StaticWorld World, EntityRefId ActorId, StatDef StatDef, float Delta)
-    : IWorldEvent, ISerializableNewNew<ActorStatBonusModifiedEvent>
-{
-    public static ActorStatBonusModifiedEvent Create(IDataReader r)
-    {
-        return new()
-        {
-            ActorId = r.ReadEntityRefId(),
-            StatDef = r.ReadDef<StatDef>(),
-            Delta = r.ReadSingle()
-        };
-    }
-
-    public readonly IDataWriter Write(IDataWriter w)
-    => w.Write(this.ActorId)
-        .Write(this.StatDef)
-        .Write(this.Delta);
 }

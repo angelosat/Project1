@@ -113,6 +113,8 @@ public sealed class ToolComp : EntityComp<ToolComp.Spec>
     {
         var profile = this.Owner.Profile as GearProfileDef;
         var slot = profile.Role.Slot;
+        if (profile.WeaponSkill is not null)
+            yield return new LabelNew($"{profile.WeaponSkill.LabelReadable}");
         yield return new LabelNew($"{slot.LabelReadable}");
         yield return new LabelNew($"{this.Craftsmanship.LabelReadable}");
 

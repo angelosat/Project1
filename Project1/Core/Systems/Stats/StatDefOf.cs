@@ -18,8 +18,8 @@ namespace Project1.Core.Stats;
 
 public static class StatDefOf
 {
-    public static readonly StatDef TotalHits = new("Total Hits", typeof(StatResolver), null);
-    public static readonly StatDef TotalPreventedDamage = new("Total Prevented Damage", typeof(StatResolver), null);
+    //public static readonly StatDef TotalHits = new("Total Hits", typeof(StatResolver), null);
+    //public static readonly StatDef TotalPreventedDamage = new("Total Prevented Damage", typeof(StatResolver), null);
 
     public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
     {
@@ -75,6 +75,7 @@ public static class StatDefOf
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
         //BaseValue = .05f//5f,
+        Format = "#.##"
     };
 
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))
@@ -145,6 +146,11 @@ public static class StatDefOf
         StringFormat = "+##0"
     };
 
+    public static readonly StatDef WeaponLearning = new("Weapon Learning", typeof(StatResolver_WeaponLearning))
+    {
+        Type = StatDef.Types.Percentile
+    };
+
     static StatDefOf()
     {
         Def.Register(typeof(StatDefOf));
@@ -173,6 +179,9 @@ public static class StatDefOf
                 EligibleBonusTargets = [GearRoleDefOf.Feet, GearRoleDefOf.Torso, GearRoleDefOf.Head],
                 Type = StatDef.Types.Percentile 
             });
+
+        //foreach()
+
         foreach (var to in toRegister)
             Def.Register(to);
     }

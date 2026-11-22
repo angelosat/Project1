@@ -8,6 +8,23 @@ using Project1.Framework;
 
 namespace Project1.Core.Systems.Tools;
 
+//[EnsureStaticCtorCall]
+//public static class WeaponCategoryDefOf
+//{
+//    public static readonly WeaponCategoryDef Shovel = new("Shovel", trainable: false);
+//    public static readonly WeaponCategoryDef Sword = new("Sword", trainable: true);
+//    public static readonly WeaponCategoryDef Hammer = new("Hammer", trainable: true);
+//    public static readonly WeaponCategoryDef Mace = new("Mace", trainable: true);
+//    public static readonly WeaponCategoryDef Axe = new("Axe", trainable: true);
+
+//    static WeaponCategoryDefOf()
+//    {
+//        Def.Register(typeof(WeaponCategoryDefOf));
+//    }
+//}
+
+
+
 [EnsureStaticCtorCall]
 static class GearProfileDefOf
 {
@@ -20,7 +37,7 @@ static class GearProfileDefOf
         ToolUses = [ToolUseDefOf.Digging],
         Damage = DamageDefOf.Blunt,
         BaseSpeed = 1.3f,
-        Skill = SkillDefOf.Digging,
+        //WeaponSkill = SkillDefOf.Digging,
         ExampleBone = BoneDefOf.ToolHandle,
         BoneSprites =
         {
@@ -39,7 +56,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Building,
         ToolUses = [ToolUseDefOf.Building],
         Damage = DamageDefOf.Blunt,
-        Skill = SkillDefOf.Construction,
+        WeaponSkill = SkillDefOf.Maces,
         BaseSpeed = 1.1f,
         BoneSprites =
         {
@@ -57,7 +74,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Mining,
         ToolUses = [ToolUseDefOf.Mining],
         Damage = DamageDefOf.Piercing,
-        Skill = SkillDefOf.Mining,
+        //WeaponSkill = SkillDefOf.Mining,
         BaseSpeed = 1.6f,
         BoneSprites =
         {
@@ -75,7 +92,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Carpentry,
         ToolUses = [ToolUseDefOf.Carpentry],
         Damage = DamageDefOf.Slashing,
-        Skill = SkillDefOf.Carpentry,
+        WeaponSkill = SkillDefOf.Swords,
         BaseSpeed = 1.1f,
         BoneSprites =
         {
@@ -94,7 +111,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Argiculture,
         ToolUses = [ToolUseDefOf.Argiculture],
         Damage = DamageDefOf.Blunt,
-        Skill = SkillDefOf.Argiculture,
+        //WeaponSkill = SkillDefOf.Argiculture,
         BaseSpeed = 1.5f,
         BoneSprites =
         {
@@ -113,7 +130,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Chopping,
         ToolUses = [ToolUseDefOf.Chopping],
         Damage = DamageDefOf.Slashing,
-        Skill = SkillDefOf.Plantcutting,
+        WeaponSkill = SkillDefOf.Axes,
         BaseSpeed = 1.2f,
         BoneSprites =
         {
@@ -134,7 +151,7 @@ static class GearProfileDefOf
         ToolUse = ToolUseDefOf.Chopping,
         ToolUses = [ToolUseDefOf.Chopping, ToolUseDefOf.Argiculture],
         Damage = DamageDefOf.Slashing,
-        Skill = SkillDefOf.Melee,
+        WeaponSkill = SkillDefOf.Swords,
         BaseSpeed = 1f,
         BoneSprites =
         {
@@ -153,7 +170,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.AxeHandle,
         SpriteHead = ItemContent.AxeHead,
         Damage = DamageDefOf.Piercing,
-        Skill = SkillDefOf.Melee,
+        WeaponSkill = SkillDefOf.Daggers,
         BaseSpeed = .6f,
         BoneSprites =
         {
@@ -168,7 +185,7 @@ static class GearProfileDefOf
         SpriteHandle = ItemContent.AxeHandle,
         SpriteHead = ItemContent.AxeHead,
         Damage = DamageDefOf.Blunt,
-        Skill = SkillDefOf.Melee,
+        WeaponSkill = SkillDefOf.Maces,
         BaseSpeed = 1.3f,
         BoneSprites =
         {

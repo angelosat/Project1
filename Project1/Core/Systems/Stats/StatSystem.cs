@@ -113,7 +113,7 @@ public static class StatSystem
         else if (def.Type == StatDef.Types.Percentile)
             //return $"{value * .01f:P0}";
             //return $"{value:P0}";
-            return $"{value}%";
+            return $"{value:#.##}%";
         throw new UnreachableException();
     }
 

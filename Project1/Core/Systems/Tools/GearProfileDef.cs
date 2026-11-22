@@ -10,6 +10,13 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Tools;
 
+//public class WeaponCategoryDef(string name, bool trainable) : Def(name)
+//{
+//    public readonly bool Trainable = trainable;
+//}
+
+
+
 #nullable enable
 public class GearProfileDef(string name, GearRoleDef role) : Def(name), IItemDefVariator
 {
@@ -22,7 +29,7 @@ public class GearProfileDef(string name, GearRoleDef role) : Def(name), IItemDef
     public Sprite? SpriteHandle, SpriteHead;
     public readonly Dictionary<BoneDef, Sprite> BoneSprites = [];
     public BoneMaterialSet? BoneMaterials;
-    public SkillDef? Skill;
+    public SkillDef? WeaponSkill;
     public string? Description;
     public BoneDef? ExampleBone;
 

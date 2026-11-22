@@ -44,7 +44,11 @@ public class ActorDnaDefOf
             SkillDefOf.Social,
             SkillDefOf.Exploration,
             AlchemyDefOf.Skill,
-            SkillDefOf.Melee
+            SkillDefOf.Melee,
+            SkillDefOf.Swords,
+            SkillDefOf.Daggers,
+            SkillDefOf.Axes,
+            SkillDefOf.Maces,
             ],
         Gear = [
             GearSlotDefOf.Mainhand,

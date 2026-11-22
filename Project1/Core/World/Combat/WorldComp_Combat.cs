@@ -1,6 +1,9 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
+using Project1.Core.Stats;
 using Project1.Core.World.Frontiers;
+using Project1.Framework.Helpers;
+using SharpDX;
 using System.Collections.Generic;
 
 #nullable enable
@@ -65,7 +68,14 @@ internal sealed class WorldComp_Combat : WorldComp
         => this.IsAvailableForNewCombat(actor.RefId);
 
     public bool IsAvailableForNewCombat(EntityRefId actorId)
-       => !this.ActorsToCombat.ContainsKey(actorId);
+    {
+        if (this.ActorsToCombat.ContainsKey(actorId))
+            return false;
+        var avoidance = (int)this.World.Resolve<Actor>(actorId).Stats.Get(StatDefOf.AvoidCombatEncounter);
+        if (this.World.Random.Roll100(avoidance))
+            return false;
+        return true;
+    }
 
     public override void Tick()
     {

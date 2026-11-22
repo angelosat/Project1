@@ -33,6 +33,7 @@ public sealed class ActorStatTracker(Actor actor)
         //    this.RebuildStats();
         return this.Stats.Values;
     }
+
     public void AddBonus(StatBonusDef def, float val)
     {
         this.Bonuses.TryGetValue(def, out var current);
@@ -41,6 +42,13 @@ public sealed class ActorStatTracker(Actor actor)
         //this.Values[def] += val;
         this.MarkBonusesDirty();
     }
+
+    public void ModifyBonus(StatDef def, float delta)
+    {
+        this.Stats[def].Bonus += delta;
+        this.MarkStatsDirty();
+    }
+
     public void Clear()
     {
         this.Bonuses.Clear();

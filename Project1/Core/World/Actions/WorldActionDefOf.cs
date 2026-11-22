@@ -34,12 +34,12 @@ static public class WorldActionDefOf
     static public readonly WorldActionDef Attack = new("Attacking",
                                                        workerType: typeof(WorldActionWorker_Attack),
                                                        dataType: typeof(WorldActionWorker_Attack.Data),
-                                                       duration: Ticks.FromMinutes(1));
+                                                       duration: Ticks.FromMinutes(2));
 
     static public readonly WorldActionDef Flee = new("Flee",
                                                      workerType: typeof(WorldActionWorker_Flee),
                                                      dataType: typeof(WorldActionData),
-                                                     duration: Ticks.FromMinutes(5));
+                                                     duration: Ticks.FromMinutes(1));
 
     static public readonly WorldActionDef Loot = new("Looting",
                                                      workerType: typeof(WorldActionWorker_Loot),

@@ -7,6 +7,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
@@ -165,15 +166,18 @@ internal static class CombatSystem
     {
         var world = (StaticWorld)actor.World;
         var session = world.Combat.Get(actor);
+        session.MarkFlee(actor);
+
         //if (session.HasAttemptedFlee(actor.RefId))
         //    return;
         var fleeChance = actor.Stats.Get(StatDefOf.FleeChance);
-        fleeChance = 50f;
+        fleeChance = 100f;// 50f;
         if (!world.Random.Roll100((int)fleeChance))
         {
             // TODO report flee failure
             return;
         }
+        actor.Effects.Apply(new EntityEffectWrapper(EffectDefOf.Fled, null, null, 0, duration: EffectDefOf.Fled.BaseDuration));
         world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
         // TODO report flee success
     }
@@ -183,7 +187,6 @@ internal static class CombatSystem
         var world = e.World;
         var actor = world.Resolve<Actor>(e.ActorId);
         var session = world.Combat.Get(e.ActorId);
-        session.MarkFlee(actor);
         var other = session.GetOther(actor);
         world.Actions.Interrupt(other);
         session.MarkResolved();

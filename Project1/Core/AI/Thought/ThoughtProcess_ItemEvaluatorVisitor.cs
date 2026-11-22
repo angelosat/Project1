@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Simulation;
 using Project1.Core.Systems;
+using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.ItemRoles;
 using Project1.Core.Towns.Services.Shops;
 using Project1.Core.World.Actions;
@@ -12,6 +13,8 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
     internal override void TickOffMap(AIState state)
     {
         var actor = state.Owner;
+        if (actor.Biology.IsIncapacitated)
+            return;
         var world = (StaticWorld)actor.World;
 
         var managerPreferences = actor.AI.State.ItemPreferences;

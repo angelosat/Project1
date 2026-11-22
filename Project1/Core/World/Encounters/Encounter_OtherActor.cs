@@ -6,6 +6,7 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Thoughts;
+using Project1.Core.World.Combat;
 using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -68,9 +69,13 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         //    return null;
         //return WorldActionDefOf.Attack;
         var ctx = (WorldActionData_CombatEngage)context;
-        var other = ctx.Actor.World.Resolve<Actor>(ctx.TargetId);
+        var world = ctx.World;
+        var other = world.Resolve<Actor>(ctx.TargetId);
         if (other.Biology.IsIncapacitated)
             throw new InvalidOperationException("Tried to initiate combat against incapacitated actor.");
+        var actor = context.Actor;
+        if (!ActorCombatAISystem.IsConfident(actor))
+            return null;
         return WorldActionDefOf.Combat;
     }
 

@@ -1,9 +1,13 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Events;
+using Project1.Core.Helpers;
 using Project1.Core.Interactions;
+using Project1.Core.Simulation;
 using Project1.Core.Skills;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using Project1.Framework.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,7 +83,11 @@ public static class StatSystem
                 foreach (var role in stat.EligibleBonusTargets)
                     BonusRolesEligibility[role].Add(stat);
         }
+
+        Registry.WorldEventHooksClient.Register<ActorStatBonusModifiedEvent>(OnActorStatBonusModified);
+        Registry.WorldEventHooksServer.Register<ActorStatBonusModifiedEvent>(OnActorStatBonusModified);
     }
+
 
     static public StatDef GetDerivedStat(Def def)
         => DerivedStats[def];
@@ -113,7 +121,7 @@ public static class StatSystem
         else if (def.Type == StatDef.Types.Percentile)
             //return $"{value * .01f:P0}";
             //return $"{value:P0}";
-            return $"{value:#.##}%";
+            return $"{value:0.##}%";
         throw new UnreachableException();
     }
 
@@ -170,4 +178,30 @@ public static class StatSystem
         foreach (var (def, runtime) in comp.IntrinsicStats)
             tracker.Add(def, runtime.Value);
     }
+
+    private static void OnActorStatBonusModified(ActorStatBonusModifiedEvent e)
+    {
+        var actor = e.World.Resolve<Actor>(e.ActorId);
+        actor.Stats.ModifyBonus(e.StatDef, e.Delta);
+    }
+}
+
+[NetworkReplicate]
+record struct ActorStatBonusModifiedEvent(StaticWorld World, EntityRefId ActorId, StatDef StatDef, float Delta)
+    : IWorldEvent, ISerializableNewNew<ActorStatBonusModifiedEvent>
+{
+    public static ActorStatBonusModifiedEvent Create(IDataReader r)
+    {
+        return new()
+        {
+            ActorId = r.ReadEntityRefId(),
+            StatDef = r.ReadDef<StatDef>(),
+            Delta = r.ReadSingle()
+        };
+    }
+
+    public readonly IDataWriter Write(IDataWriter w)
+    => w.Write(this.ActorId)
+        .Write(this.StatDef)
+        .Write(this.Delta);
 }

@@ -23,7 +23,10 @@ public abstract class SpellWorker_FortifyResource(ResourceDef resource) : SpellW
     public override void Cast(Actor caster, InteractionTarget target)
     {
         var targetActor = target.Object as Actor;
-        var effect = new EntityEffectWrapper(EffectDefOf.FortifyResource, ResourceDefOf.Health, Ticks.FromHours(1), 1);
+        var effect = new EntityEffectWrapper(def: EffectDefOf.FortifyResource,
+                                             target: ResourceDefOf.Health,
+                                             budget: Ticks.FromHours(1),
+                                             ticksPerUnit: 1);
         targetActor.Effects.Apply(effect);
     }
 }

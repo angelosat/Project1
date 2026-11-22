@@ -22,7 +22,16 @@ public sealed class StatRuntime(StatDef def)
             this.Notifier.Notify();
         }
     }
-    public float Bonus;
+    //public float Bonus;
+    public float Bonus
+    {
+        get;
+        set
+        {
+            field = value;
+            this.Notifier.Notify();
+        }
+    }
     public bool Dirty = true;
 
     public float Resolve(Actor actor)
@@ -30,7 +39,7 @@ public sealed class StatRuntime(StatDef def)
         if (this.Dirty)
         {
             this.Dirty = false;
-            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);
+            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor) + this.Bonus;
         }
         return this.Value;
     }

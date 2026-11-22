@@ -68,7 +68,6 @@ public sealed class EffectsComp : EntityComp
         else
             effect.Finish(this.Owner as Actor);
         this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
-
     }
 
     private void AddInt(EntityEffectWrapper f)
@@ -76,18 +75,13 @@ public sealed class EffectsComp : EntityComp
         this.ActiveEffects.Add(f);
         this.Changed?.Invoke(([f], []));
     }
+
     private void RemoveInt(EntityEffectWrapper f)
     {
         this.ActiveEffects.Remove(f);
         this.Changed?.Invoke(([], [f]));
     }
-    //[Obsolete("add EntityEffectWrapper instead")]
-    //public void Apply(EffectDef effectt)
-    //{
-    //    var wrapper = new EntityEffectWrapper(effectt, null, 1, 0);
-    //    this.Apply(wrapper);
-    //}
-
+    
     internal void Remove(EffectDef effect)
     {
         var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);

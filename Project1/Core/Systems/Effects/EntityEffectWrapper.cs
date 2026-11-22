@@ -35,14 +35,19 @@ public class EntityEffectWrapper
         this.Target = target;
     }
 
-    public EntityEffectWrapper(EffectDef def, Def target, float? budget, int ticksPerUnit, int duration = 0, float multiplier = 1) 
+    public EntityEffectWrapper(EffectDef def,
+                               Def target,
+                               float? budget,
+                               int ticksPerUnit,
+                               int duration = 0,
+                               float multiplier = 1) 
         : this(def, target)
     {
         this.Budget = budget;
         this.RemainingBudget = budget;
         this.TicksPerUnit = ticksPerUnit;
         this.Duration = duration;
-        this.Magnitude = budget.Value;
+        this.Magnitude = budget ?? 0;
         this.QualityMultiplier = multiplier;
     }
 

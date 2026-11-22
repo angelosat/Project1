@@ -26,7 +26,12 @@ public static class StatDefOf
         Type = StatDef.Types.Percentile
     };
 
-    public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
+    public static readonly StatDef AvoidCombatEncounter = new("Avoid Combat", typeof(StatResolver), null)
+    {
+        Type = StatDef.Types.Percentile
+    };
+
+public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(StatWorkEffectiveness), typeof(InventoryComp))
     {
         Description = "Exceeding the limit will drain stamina",
     };
@@ -80,7 +85,7 @@ public static class StatDefOf
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,
         //BaseValue = .05f//5f,
-        Format = "#.##"
+        Format = "0.##"
     };
 
     public static readonly StatDef StaminaThresholdForWork = new("Stamina Threshold For Work", typeof(StatStaminaWorkThreshold), typeof(ResourcesComp))

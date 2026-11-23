@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -48,21 +49,22 @@ public sealed class EffectsComp : EntityComp
         this.Changed?.Invoke(([f], []));
     }
 
-    private void RemoveInt(EntityEffectWrapper f)
+    internal void RemoveInternal(EffectDef f)
     {
-        this.ActiveEffects.Remove(f);
-        this.Changed?.Invoke(([], [f]));
+        var wrapper = this.ActiveEffects.First(w => w.Def == f); // HACK
+        this.ActiveEffects.Remove(wrapper);
+        this.Changed?.Invoke(([], [wrapper]));
     }
     
-    internal void Remove(EffectDef effect)
-    {
-        var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);
-        foreach (var f in relevantEffects)
-        {
-            f.Finish(this.Owner as Actor);
-            RemoveInt(f);
-        }
-    }
+    //internal void Remove(EffectDef effect)
+    //{
+    //    var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);
+    //    foreach (var f in relevantEffects)
+    //    {
+    //        f.Finish(this.Owner as Actor);
+    //        RemoveInternal(f.Def);
+    //    }
+    //}
 
     public bool TryGet(EffectDef def, Def target, out ulong ticksRemaining)
     {
@@ -100,7 +102,8 @@ public sealed class EffectsComp : EntityComp
             }
         }
         foreach (var f in toRemove)
-            this.RemoveInt(f);
+            this.Owner.World.Events.Post(new ActorEffectRemovedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, f.Def));
+            //this.RemoveInternal(f);
         toRemove.Clear();
     }
 
@@ -127,10 +130,10 @@ public sealed class EffectsComp : EntityComp
     internal override GroupBox GetDetailedGui()
         => base.GetDetailedGui();
 
-    public override IEnumerable<(StatDef target, float value)> GetModifiers()
-        => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner));
+    //public override IEnumerable<(StatDef target, float value)> GetModifiers()
+    //    => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner));
 
-    public override float GetStatMod(StatDef target)
+    public float GetStatMod(StatDef target)
         => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner))
                              .Where(b => b.statDef == target)
                              .Sum(b => b.value);

@@ -57,7 +57,7 @@ public sealed class GearComp : EntityComp
 
     private void OnSlotItemChanged()
     {
-        this.Actor.Stats.MarkBonusesDirty();
+        //this.Actor.Stats.MarkBonusesDirty();
     }
 
     public GearComp()
@@ -144,7 +144,7 @@ public sealed class GearComp : EntityComp
         //this.RefreshStats();
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, item, previousItem as Entity));
 
-        this.Actor.Stats.MarkBonusesDirty();
+        //this.Actor.Stats.MarkBonusesDirty();
         //StatSystem.Equip(actor, item);
     }
 
@@ -159,7 +159,7 @@ public sealed class GearComp : EntityComp
         //this.RefreshStats();
         actor.World.Events.Post(new ActorGearUpdatedEvent(actor, null, item as Entity));
 
-        this.Actor.Stats.MarkBonusesDirty();
+        //this.Actor.Stats.MarkBonusesDirty();
 
         //StatSystem.Unequip(actor, item);
     }
@@ -198,19 +198,19 @@ public sealed class GearComp : EntityComp
     //    }
     //}
 
-    public override IEnumerable<(StatBonusDef target, float value)> GetBonuses()
-    {
-        foreach (var gear in this.GetItems())
-            foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
-                yield return (bonusDef, bonusVal);
-    }
+    //public override IEnumerable<(StatBonusDef target, float value)> GetBonuses()
+    //{
+    //    foreach (var gear in this.GetItems())
+    //        foreach (var (bonusDef, bonusVal) in gear.ToolComponent.ActorEnhancements)
+    //            yield return (bonusDef, bonusVal);
+    //}
 
-    public override IEnumerable<(StatDef target, float value)> GetModifiers()
-    {
-        foreach (var gear in this.GetItems())
-            foreach (var (bonusDef, bonusVal) in gear.ToolComponent.Modifiers)
-                yield return (bonusDef, bonusVal);
-    }
+    //public override IEnumerable<(StatDef target, float value)> GetModifiers()
+    //{
+    //    foreach (var gear in this.GetItems())
+    //        foreach (var (bonusDef, bonusVal) in gear.ToolComponent.Modifiers)
+    //            yield return (bonusDef, bonusVal);
+    //}
 
     //public Entity? Weapon => (Entity)this.GetSlot(GearSlotDefOf.Mainhand).Object;
 

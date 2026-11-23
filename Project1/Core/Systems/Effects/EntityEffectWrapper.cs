@@ -29,10 +29,13 @@ public class EntityEffectWrapper
 
     public bool IsInstant => this.Def.BaseDuration == 0;
 
-
     public float QualityMultiplier;
+
     public SimulationTick RemainingDuration(SimulationTick now) => this.StartTick + (ulong)this.Duration - now;
-    public TimeSpan RemainingTimespan(SimulationTick now) => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
+
+    public TimeSpan RemainingTimespan(SimulationTick now) 
+        => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
+
     EntityEffectWrapper(EffectDef def, Def target)
     {
         this.Def = def;

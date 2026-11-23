@@ -28,7 +28,7 @@ class GearStatsPanel : SelectionBoundControl
             //var value = stat.Resolve(actor);
             //var formatted = stat.Format();
             //AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {stat.Format()} + {stat.Bonus}").InvalidateOn(stat.Notifier));
-            AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {stat.ResolveAndFormat(actor)} + {stat.Bonus}").InvalidateOn(stat.Notifier));
+            AddControls(new LabelNew(() => $"{stat.Def.LabelReadable}: {stat.Format()} + {stat.Mod}").InvalidateOn(stat.Notifier));
         }
         AlignTopToBottom();
     }

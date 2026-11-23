@@ -46,9 +46,9 @@ public abstract class EntityComp : EventOwner
     public virtual void Randomize(GameObject parent, RandomThreaded random) { this.Initialize(parent); }
     public virtual void OnSpawn(MapBase newMap) { }
 
-    public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
-    public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
-    public virtual float GetStatMod(StatDef target) => 0;
+    //public virtual IEnumerable<(StatBonusDef target, float value)> GetBonuses() => [];
+    //public virtual IEnumerable<(StatDef target, float value)> GetModifiers() => [];
+    //public virtual float GetStatMod(StatDef target) => 0;
 
     internal virtual void InitializeOnce() { }
     public virtual void OnObjectLoaded(GameObject parent) { }

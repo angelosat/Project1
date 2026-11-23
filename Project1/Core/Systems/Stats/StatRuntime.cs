@@ -30,7 +30,7 @@ public sealed class StatRuntime(StatDef def)
         }
     }
 
-    public float Bonus
+    public float Mod
     {
         get;
         set
@@ -52,10 +52,6 @@ public sealed class StatRuntime(StatDef def)
 
     public string Format()
         => StatSystem.Format(this.Def, this.Value);
-
-    [Obsolete]
-    public string ResolveAndFormat(Actor actor)
-      => StatSystem.Format(this.Def, this.Resolve(actor));
 
     public override string ToString()
         => this.Format();

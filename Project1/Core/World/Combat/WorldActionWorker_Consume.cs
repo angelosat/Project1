@@ -11,6 +11,8 @@ internal sealed class WorldActionWorker_Consume : WorldActionWorker
         var typed = (WorldActionData_Consume)data;
         var actor = data.Actor;
         var consumable = data.World.Resolve(typed.ItemId);
+        if (!actor.Inventory.Contains(consumable))
+            return;
         ConsumableSystem.Activate(consumable, actor);
     }
 }

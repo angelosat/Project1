@@ -70,15 +70,3 @@ internal static class ConsumableSystem
         public ConsumableComp Consumable => item.TryGetComponent<ConsumableComp>(out var comp) ? comp : null;
     }
 }
-
-internal sealed class Effect_PotionCooldown : EntityEffectWorker
-{
-    public override EffectDef Def => EffectDefOf.PotionCooldown;
-
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
-    {
-    }
-
-    internal override string Label(Def target)
-        => EffectDefOf.PotionCooldown.LabelReadable;
-}

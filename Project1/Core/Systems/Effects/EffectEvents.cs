@@ -28,4 +28,43 @@ namespace Project1.Core.Systems.Effects
             => w.Write(this.ActorId)
                 .Write(this.EffectDef);
     }
+
+    [NetworkReplicate]
+    public record struct ActorEffectRemovedIndexedEvent(StaticWorld World,
+                                                        EntityRefId ActorId,
+                                                        int EffectId)
+        : IWorldEvent, ISerializableNewNew<ActorEffectRemovedIndexedEvent>
+    {
+        public static ActorEffectRemovedIndexedEvent Create(IDataReader r)
+            => new()
+            {
+                ActorId = r.ReadEntityRefId(),
+                EffectId = r.ReadInt32()
+            };
+
+        public readonly IDataWriter Write(IDataWriter w)
+            => w.Write(this.ActorId)
+                .Write(this.EffectId);
+    }
+
+    [NetworkReplicate]
+    public record struct ActorEffectAppliedNewEvent(StaticWorld World,
+                                                    EntityRefId ActorId,
+                                                    EffectDef EffectDef,
+                                                    Def OptionalTarget = null)
+       : IWorldEvent, ISerializableNewNew<ActorEffectAppliedNewEvent>
+    {
+        public static ActorEffectAppliedNewEvent Create(IDataReader r)
+            => new()
+            {
+                ActorId = r.ReadEntityRefId(),
+                EffectDef = r.ReadDef<EffectDef>(),
+                OptionalTarget = r.ReadDef<Def>(),
+            };
+
+        public readonly IDataWriter Write(IDataWriter w)
+            => w.Write(this.ActorId)
+                .Write(this.EffectDef)
+                .Write(this.OptionalTarget);
+    }
 }

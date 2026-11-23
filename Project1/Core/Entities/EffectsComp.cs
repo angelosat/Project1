@@ -15,6 +15,7 @@ namespace Project1.Core.Entities;
 
 public sealed class EffectsComp : EntityComp
 {
+    int NextInstanceId => ++field;
     public ChangeNotifier Notifier = new();
 
     public event Action<(IEnumerable<EntityEffectWrapper> added, IEnumerable<EntityEffectWrapper> removed)> Changed;
@@ -102,8 +103,8 @@ public sealed class EffectsComp : EntityComp
             }
         }
         foreach (var f in toRemove)
-            this.Owner.World.Events.Post(new ActorEffectRemovedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, f.Def));
-            //this.RemoveInternal(f);
+            //this.Owner.World.Events.Post(new ActorEffectRemovedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, f.Def));
+            this.Owner.World.Events.Post(new ActorEffectRemovedIndexedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, this.ActiveEffects.IndexOf(f)));
         toRemove.Clear();
     }
 
@@ -143,4 +144,7 @@ public sealed class EffectsComp : EntityComp
 
     internal bool Any(EffectDef effect)
         => this.ActiveEffects.Any(f => f.Def == effect);
+
+    internal void RemoveAt(int effectId)
+        => this.ActiveEffects.RemoveAt(effectId);
 }

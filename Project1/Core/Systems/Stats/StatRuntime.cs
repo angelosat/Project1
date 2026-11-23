@@ -40,16 +40,6 @@ public sealed class StatRuntime(StatDef def)
         }
     }
 
-    public float Resolve(Actor actor)
-    {
-        if (this.Dirty)
-        {
-            this.Dirty = false;
-            this.Value = this.Def.BaseValue + this.Def.Worker.CalculateActorStat(this.Def, actor);// + this.Bonus;
-        }
-        return this.Value;
-    }
-
     public string Format()
         => StatSystem.Format(this.Def, this.Value);
 

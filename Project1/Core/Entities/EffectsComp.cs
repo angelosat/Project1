@@ -139,5 +139,8 @@ public sealed class EffectsComp : EntityComp
                              .Sum(b => b.value);
 
     internal bool Any(EffectDef effect, Def target)
-        => this.ActiveEffects.Any(f => f.Def == effect && f.Target == target);    
+        => this.ActiveEffects.Any(f => f.Def == effect && f.Target == target);
+
+    internal bool Any(EffectDef effect)
+        => this.ActiveEffects.Any(f => f.Def == effect);
 }

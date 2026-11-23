@@ -41,6 +41,10 @@ static public class WorldActionDefOf
                                                      dataType: typeof(WorldActionData),
                                                      duration: Ticks.FromMinutes(1));
 
+    static public readonly WorldActionDef Consume = new("Consume",
+                                                 workerType: typeof(WorldActionWorker_Consume),
+                                                 dataType: typeof(WorldActionData_Consume),
+                                                 duration: Ticks.FromMinutes(2));
     static public readonly WorldActionDef Loot = new("Looting",
                                                      workerType: typeof(WorldActionWorker_Loot),
                                                      dataType: typeof(WorldActionData_Loot),

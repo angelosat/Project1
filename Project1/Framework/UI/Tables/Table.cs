@@ -67,6 +67,7 @@ namespace Project1.Framework.UI
         public bool Contains(TObject item)
             => this.Controls.Any(c => c.Tag.Equals(item));
         public void AddItem(TObject item) => this.AddItems([item]);
+        public Action<TObject, GroupBox> RowFunc;
         public void AddItems(IEnumerable<TObject> items)
         {
             if (items is null)
@@ -98,6 +99,7 @@ namespace Project1.Framework.UI
                 row.AutoSize = false;
                 row.Location.Y = currentY;
                 currentY += row.Height + Spacing;
+                this.RowFunc?.Invoke(item, row);
                 return row;
             });
             this.AddControls([.. newControls]);

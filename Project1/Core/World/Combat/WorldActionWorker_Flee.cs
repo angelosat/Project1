@@ -9,4 +9,3 @@ internal sealed class WorldActionWorker_Flee : WorldActionWorker
         CombatSystem.AttemptFlee(data.Actor);
     }
 }
-

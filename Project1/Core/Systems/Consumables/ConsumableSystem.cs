@@ -1,6 +1,8 @@
 ﻿using Project1.Core.Animations;
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Resources;
+using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
@@ -46,17 +48,37 @@ internal static class ConsumableSystem
     {
         return Create((ConsumableDef)req.Context, req.MaterialBindings[BoneDefOf.Item], req.Quality, req.StackSize);
     }
+
     internal static void Activate(Entity potion, Actor actor)
         => Activate(potion, actor, actor);
+
     internal static void Activate(Entity consumable, Actor actor, Actor target)
     {
         consumable.Consume(1);
         consumable.Consumable.ApplyEffects(target);
     }
 
+    internal static bool CanUsePotion(Actor actor)
+        => !actor.Effects.Any(EffectDefOf.PotionCooldown);
+
+    internal static Entity FindInInventory(Actor actor, ResourceDef restore)
+        => actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));
+
     extension(Entity item)
     {
         public bool IsConsumable => item.Consumable is not null;
         public ConsumableComp Consumable => item.TryGetComponent<ConsumableComp>(out var comp) ? comp : null;
     }
+}
+
+internal sealed class Effect_PotionCooldown : EntityEffectWorker
+{
+    public override EffectDef Def => EffectDefOf.PotionCooldown;
+
+    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    {
+    }
+
+    internal override string Label(Def target)
+        => EffectDefOf.PotionCooldown.LabelReadable;
 }

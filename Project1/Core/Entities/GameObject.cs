@@ -32,6 +32,7 @@ using Project1.Core.Towns;
 using Project1.Core.UI;
 using Project1.Core.UI.NamePlates;
 using Project1.Framework;
+using Project1.Framework.Events;
 using Project1.Framework.Helpers;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -291,6 +292,7 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         this.StackSize += amount;
         this.World?.Events.Post(new EntityStackChangedEvent(this as Entity, amount));
     }
+    internal ChangeNotifier StackNotifier = new();
     protected int _stackSize = 1;
     public int StackSize
     {
@@ -308,6 +310,8 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
 
             value = newSize;
             this._stackSize = value;
+            this.StackNotifier.Notify();
+
             if (value == 0)
             {
                 

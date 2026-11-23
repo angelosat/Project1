@@ -1,8 +1,10 @@
-﻿using Project1.Core.Entities.Actors;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems;
 using Project1.Core.Systems.Biology;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.World.Actions;
 using System;
 
@@ -17,14 +19,24 @@ static class ActorCombatAISystem
         var world = (StaticWorld)actor.World;
         var session = world.Combat.Get(actor);
         ArgumentNullException.ThrowIfNull(session);
+
         if (actor.Biology.IsIncapacitated)
             throw new Exception();
+
         if (session.IsUnstarted)
         {
             var result = SmartEquipSystem.EvaluateEquipmentChange(actor);
             if (result.ItemId != EntityRefId.Null)
                 return (WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
         }
+
+        if(IsInDanger(actor))
+        {
+            if(ConsumableSystem.CanUsePotion(actor) && 
+               ConsumableSystem.FindInInventory(actor, ResourceDefOf.Health) is Entity item)
+                return (WorldActionDefOf.Consume, new WorldActionData_Consume(actor) { ItemId = item.RefId });
+        }
+        
         if (session.CanFlee(actor))
         {
             var healthThreshold = .5f;
@@ -33,6 +45,7 @@ static class ActorCombatAISystem
             if (healthPerc < healthThreshold)
                 return (WorldActionDefOf.Flee, new WorldActionData(actor));
         }
+
         return (WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(actor) { TargetId = target.RefId });
     }
 
@@ -41,4 +54,7 @@ static class ActorCombatAISystem
         var health = actor.Resources.Get(ResourceDefOf.Health);
         return health.Percentage >= .9f;
     }
+
+    static bool IsInDanger(Actor actor)
+        => actor.Resources.Get(ResourceDefOf.Health).Percentage < .5f;
 }

@@ -66,8 +66,12 @@ internal static class PotionSystem
         //var finalMagnitude = effect.BaseMagnitude * (1 + quality.Multiplier / 100f);
         var finalMagnitude = effect.BaseMagnitude * quality.Multiplier;
         var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
+        var cooldownEffect = new EntityEffectWrapper(EffectDefOf.PotionCooldown, null, 0, 1, EffectDefOf.PotionCooldown.BaseDuration);
         var comp = entity.GetComponent<ConsumableComp>();
+
         comp.Add(wrapper);
+        comp.Add(cooldownEffect);
+
         entity.Name = GetName(comp);
         entity.Body.TintΟverride = effect.Worker.GetTint(target);
     }

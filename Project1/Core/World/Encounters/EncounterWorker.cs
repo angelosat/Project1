@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.World.Encounters;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
 
@@ -9,6 +10,9 @@ namespace Project1.Core.World.Actions;
 internal abstract class EncounterWorker
 {
     internal virtual WorldActionDef? DecideAction(WorldActionData context) => null;
+    internal virtual (WorldActionDef? action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+        => default;
 
     internal abstract IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor);
+    internal abstract IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor);
 }

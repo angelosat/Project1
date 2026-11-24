@@ -6,5 +6,6 @@ namespace Project1.Core.World.Actions;
 internal static class WorldActionSystem
 {
     internal static WorldActionData CreateData(WorldActionDef def, Actor actor)
-        => ActivatorSafe<WorldActionData>.CreateInstance(def.DataType, actor);
+        //=> ActivatorSafe<WorldActionData>.CreateInstance(def.DataType, actor);
+        => ActivatorSafe<WorldActionData>.CreateInstance(def.Worker.DataType, actor);
 }

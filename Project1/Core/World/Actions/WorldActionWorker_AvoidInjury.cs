@@ -2,11 +2,14 @@
 using Project1.Core.World.Encounters;
 using Project1.Framework;
 using Project1.Framework.Helpers;
+using System;
 
 namespace Project1.Core.World.Actions;
 
 internal class WorldActionWorker_AvoidInjury : WorldActionWorker
 {
+    internal override Type DataType => typeof(WorldActionData);
+
     internal override void Resolve(WorldActionData data)
     {
         var actor = data.Actor;

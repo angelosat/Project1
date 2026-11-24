@@ -8,6 +8,8 @@ namespace Project1.Core.World.Encounters;
 
 internal class Encounter_ResourceNode : EncounterWorker
 {
+    sealed record Context(MaterialRefinementDef Refinement, MaterialDef Material) : EncounterContext;
+
     static readonly List<MaterialRefinementDef> ValidItems = [MaterialRefinementDefOf.Logs, MaterialRefinementDefOf.Ore];
 
     //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
@@ -23,10 +25,15 @@ internal class Encounter_ResourceNode : EncounterWorker
 
     internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        foreach (var ((matRef, mat), weight) in frontier.Def.ResourceTypes)
-            yield return (EncounterDefOf.Resource, new WorldActionData_HarvestResource(actor) { Refinement = matRef, Material = mat }, weight);
+        throw new System.Exception();
+        //foreach (var ((matRef, mat), weight) in frontier.Def.ResourceTypes)
+        //    yield return (EncounterDefOf.Resource, new WorldActionData_HarvestResource(actor) { Refinement = matRef, Material = mat }, weight);
     }
-
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    {
+        foreach (var ((matRef, mat), weight) in frontier.Def.ResourceTypes)
+            yield return (EncounterDefOf.Resource, new Context(matRef, mat), weight);
+    }
     //internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)
     //{
     //    //return base.DecideAction(frontier, actor);
@@ -36,5 +43,10 @@ internal class Encounter_ResourceNode : EncounterWorker
     internal override WorldActionDef DecideAction(WorldActionData context)
     {
         return WorldActionDefOf.HarvestResource;
+    }
+    internal override (WorldActionDef action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+    {
+        var typed = (Context)context;
+        return WorldActionWorker_HarvestResource.Create(actor, typed.Refinement, typed.Material);
     }
 }

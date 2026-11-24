@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.Actions;
+using Project1.Core.World.Encounters;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
 
@@ -9,6 +10,7 @@ namespace Project1.Core.World.PointsOfInterest;
 
 internal sealed class Encounter_PoIEntrance : EncounterWorker
 {
+    sealed record Context(int PoiId) : EncounterContext;
     //internal sealed class Context : EncounterContext
     //{
     //    internal PoIRuntime PoI => field ??= PoISystem.GetPoI(this.Actor)!;
@@ -67,10 +69,19 @@ internal sealed class Encounter_PoIEntrance : EncounterWorker
         return WorldActionDefOf.EnterPoI;
     }
 
+    internal override (WorldActionDef? action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+        => WorldActionWorker_PoIEnter.Create(actor, ((Context)context).PoiId);
+
     internal override IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
-        var poi = PoISystem.SelectPoI(frontier, actor);
+        throw new System.Exception();
+        //var poi = PoISystem.SelectPoI(frontier, actor);
+        //yield return (EncounterDefOf.PoIEntrance, new WorldActionData_PoI(actor) { PoIId = poi.id }, frontier.PoIs.Count);// * 100);
+    }
 
-        yield return (EncounterDefOf.PoIEntrance, new WorldActionData_PoI(actor) { PoIId = poi.id }, frontier.PoIs.Count);// * 100);
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    {
+        var poi = PoISystem.SelectPoI(frontier, actor);
+        yield return (EncounterDefOf.PoIEntrance, new Context(poi.id), frontier.PoIs.Count);// * 100);
     }
 }

@@ -23,8 +23,9 @@ internal sealed class ThoughtProcess_InCombat : ThoughtProcess
             return;
 
         // Decide which combat action to perform.
-        world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(actor) { TargetId = combat.GetOther(actor).RefId });
-
+        //world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(actor) { TargetId = combat.GetOther(actor).RefId });
+        var action = WorldActionWorker_Attack.Create(actor, combat.GetOther(actor).RefId);
+        world.Actions.Begin(action.Item1, action.Item2);
     }
 
     internal override void TickOnMap(AIState state)

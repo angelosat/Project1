@@ -8,7 +8,6 @@ static public class WorldActionDefOf
 {
     static public readonly WorldActionDef EnterPoI = new("EnterPoI",
                                                          workerType: typeof(WorldActionWorker_PoIEnter),
-                                                         dataType: typeof(WorldActionData_PoI),
                                                          duration: Ticks.FromMinutes(5));
 
     static public readonly WorldActionDef ExitPoI = new("ExitPoI",
@@ -18,42 +17,34 @@ static public class WorldActionDefOf
 
     static public readonly WorldActionDef HarvestResource = new("HarvestResource",
                                                                 workerType: typeof(WorldActionWorker_HarvestResource),
-                                                                dataType: typeof(WorldActionData_HarvestResource),
                                                                 duration: Ticks.FromMinutes(1));
     static public readonly WorldActionDef Rest = new("Resting", typeof(WorldActionWorker_Resting), duration: Ticks.FromMinutes(30));
     static public readonly WorldActionDef AvoidInjury = new("AvoidInjury", typeof(WorldActionWorker_AvoidInjury), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Explore = new("Exploring", typeof(WorldActionWorker_Exploration), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef LootTreasure = new("LootTreasure", typeof(WorldActionWorker_LootTreasure), duration: Ticks.FromMinutes(10));
     static public readonly WorldActionDef Combat = new("Combat",
-                                                       workerType: typeof(WorldActionWorker_CombatEngage),
-                                                       dataType: typeof(WorldActionData_CombatEngage));
+                                                       workerType: typeof(WorldActionWorker_CombatEngage));
     static public readonly WorldActionDef Equip = new("Equip",
                                                       workerType: typeof(WorldActionWorker_Equip),
-                                                      dataType: typeof(WorldActionData_Equip),
                                                       duration: Ticks.FromMinutes(5));
     static public readonly WorldActionDef Attack = new("Attacking",
                                                        workerType: typeof(WorldActionWorker_Attack),
-                                                       dataType: typeof(WorldActionWorker_Attack.Data),
                                                        duration: Ticks.FromMinutes(2));
 
     static public readonly WorldActionDef Flee = new("Flee",
                                                      workerType: typeof(WorldActionWorker_Flee),
-                                                     dataType: typeof(WorldActionData),
                                                      duration: Ticks.FromMinutes(1));
 
     static public readonly WorldActionDef Consume = new("Consume",
                                                  workerType: typeof(WorldActionWorker_Consume),
-                                                 dataType: typeof(WorldActionData_Consume),
                                                  duration: Ticks.FromMinutes(2));
 
     static public readonly WorldActionDef CastSpell = new("CastSpell",
                                              workerType: typeof(WorldActionWorker_CastSpell),
-                                             dataType: typeof(WorldActionData_CastSpell),
                                              duration: Ticks.FromMinutes(1));
 
     static public readonly WorldActionDef Loot = new("Looting",
                                                      workerType: typeof(WorldActionWorker_Loot),
-                                                     dataType: typeof(WorldActionData_Loot),
                                                      duration: Ticks.FromMinutes(15));
     static WorldActionDefOf()
     {

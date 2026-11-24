@@ -1,14 +1,37 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Systems.Materials;
-using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
+using System;
 
 namespace Project1.Core.World.Actions;
 
 internal sealed class WorldActionWorker_HarvestResource : WorldActionWorker
 {
-    static WorldActionData_HarvestResource Typed(WorldActionData data) => (WorldActionData_HarvestResource)data;
+    sealed record Data(Actor Actor) : WorldActionData(Actor)
+    {
+        internal required MaterialRefinementDef Refinement;
+        internal required MaterialDef Material;
+
+        public override void Write(IDataWriter w)
+        {
+            w.Write(this.Refinement);
+            w.Write(this.Material);
+        }
+        public override ISerializable Read(IDataReader r)
+        {
+            this.Refinement = r.ReadDef<MaterialRefinementDef>();
+            this.Material = r.ReadDef<MaterialDef>();
+            return this;
+        }
+    }
+    internal override Type DataType => typeof(Data);
+
+    static Data Typed(WorldActionData data) => (Data)data;
+
+    static internal (WorldActionDef, WorldActionData) Create(Actor actor, MaterialRefinementDef matRef, MaterialDef mat)
+        => (WorldActionDefOf.HarvestResource, new Data(actor) { Refinement = matRef , Material=mat });
+
     internal override void Resolve(WorldActionData data)
     {
         var typed = Typed(data);
@@ -23,6 +46,7 @@ internal sealed class WorldActionWorker_HarvestResource : WorldActionWorker
         actor.Inventory.Insert(item);
         actor.Skills.ApplyXp(skill, 10);
     }
+
     internal override string GetStatusText(WorldActionRuntime runtime)
     {
         var typed = Typed(runtime.Data);

@@ -20,4 +20,7 @@ internal sealed class Encounter_RecoverHealth : EncounterWorker
     {
         yield return (EncounterDefOf.RecoverHealth, new(actor), 0);
     }
+
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+        => [(EncounterDefOf.RecoverHealth, null, 0)];
 }

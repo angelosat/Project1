@@ -106,7 +106,6 @@ public sealed class EffectsComp : EntityComp
             }
         }
         foreach (var f in toRemove)
-            //this.Owner.World.Events.Post(new ActorEffectRemovedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, f.Def));
             this.Owner.World.Events.Post(new ActorEffectRemovedIndexedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, this.ActiveEffects.IndexOf(f)));
         toRemove.Clear();
     }
@@ -152,6 +151,6 @@ public sealed class EffectsComp : EntityComp
     {
         var f = this.ActiveEffects[effectIndex];
         this.ActiveEffects.RemoveAt(effectIndex);
-        this.Changed?.Invoke(([f], []));
+        this.Changed?.Invoke(([], [f]));
     }
 }

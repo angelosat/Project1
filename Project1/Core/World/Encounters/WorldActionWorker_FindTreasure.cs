@@ -1,4 +1,5 @@
 ﻿using Project1.Core.World.Actions;
+using System;
 
 #nullable enable
 
@@ -6,6 +7,8 @@ namespace Project1.Core.World.Encounters;
 
 internal sealed class WorldActionWorker_FindTreasure : WorldActionWorker
 {
+    internal override Type DataType => typeof(WorldActionData);
+
     internal override void Resolve(WorldActionData data)
     {
         var actor = data.Actor;

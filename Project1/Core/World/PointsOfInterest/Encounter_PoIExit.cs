@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Simulation;
 using Project1.Core.World.Actions;
+using Project1.Core.World.Encounters;
 using Project1.Core.World.Frontiers;
 using System.Collections.Generic;
 
@@ -27,4 +28,7 @@ internal class Encounter_PoIExit : EncounterWorker
     {
         return WorldActionDefOf.ExitPoI;
     }
+
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+        => [(EncounterDefOf.PoIExit, null, ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0)];
 }

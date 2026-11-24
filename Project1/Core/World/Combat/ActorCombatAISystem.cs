@@ -30,22 +30,25 @@ static class ActorCombatAISystem
         {
             var result = SmartEquipSystem.EvaluateEquipmentChange(actor);
             if (result.ItemId != EntityRefId.Null)
-                return (WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
+                //return (WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
+                return WorldActionWorker_Equip.Create(actor, result);
         }
 
         if (IsInDanger(actor))
         {
             if (ConsumableSystem.CanUsePotion(actor) &&
                ConsumableSystem.FindInInventory(actor, ResourceDefOf.Health) is Entity item)
-                return (WorldActionDefOf.Consume, new WorldActionData_Consume(actor) { ItemId = item.RefId });
+                //return (WorldActionDefOf.Consume, new WorldActionData_Consume(actor) { ItemId = item.RefId });
+                return WorldActionWorker_Consume.Create(actor, item.RefId);
 
-            if(MagicSystem.CanCastSpell(actor) &&
+            if (MagicSystem.CanCastSpell(actor) &&
                MagicSystem.ConsiderSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
-                return (WorldActionDefOf.CastSpell, new WorldActionData_CastSpell(actor)
-                {
-                    TargetId = actor.RefId,
-                    SpellDef = spell
-                });
+                return WorldActionWorker_CastSpell.Create(actor, actor, spell);
+                //return (WorldActionDefOf.CastSpell, new WorldActionData_CastSpell(actor)
+                //{
+                //    TargetId = actor.RefId,
+                //    SpellDef = spell
+                //});
         }
 
         if (session.CanFlee(actor))
@@ -57,7 +60,8 @@ static class ActorCombatAISystem
                 return (WorldActionDefOf.Flee, new WorldActionData(actor));
         }
 
-        return (WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(actor) { TargetId = target.RefId });
+        //return (WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(actor) { TargetId = target.RefId });
+        return WorldActionWorker_Attack.Create(actor, target.RefId);
     }
 
     static internal bool IsConfident(Actor actor)

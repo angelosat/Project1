@@ -7,6 +7,7 @@ using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Thoughts;
 using Project1.Core.World.Combat;
+using Project1.Core.World.Encounters;
 using Project1.Core.World.Frontiers;
 using Project1.Framework;
 using Project1.Framework.Events;
@@ -20,6 +21,8 @@ namespace Project1.Core.World.Actions;
 
 internal sealed class Encounter_OtherActor : EncounterWorker
 {
+    sealed record Context(EntityRefId Other) : EncounterContext;
+
     private static bool TryUsePotion(Actor actor, Actor other)
     {
         if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, ResourceDefOf.Health)) is not Entity potion)
@@ -58,25 +61,50 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         foreach (var k in frontier.ActorsActiveNew
             .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a) && !actor.Biology.IsIncapacitated)
             //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
-            .Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_CombatEngage(actor) { TargetId = id }, 1000)))
+            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_CombatEngage(actor) { TargetId = id }, 1000)))
+            .Select(id => (EncounterDefOf.ActorEncounter, WorldActionWorker_CombatEngage.Create(actor, id).Item2, 1000)))
+            yield return k;
+    }
+
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    {
+        var world = (StaticWorld)actor.World;
+        if (!world.Combat.IsAvailableForNewCombat(actor))
+            yield break;
+        //foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
+        foreach (var k in frontier.ActorsActiveNew
+            .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a) && !actor.Biology.IsIncapacitated)
+            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
+            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_CombatEngage(actor) { TargetId = id }, 1000)))
+            .Select(id => (EncounterDefOf.ActorEncounter, new Context(id), 1000)))
             yield return k;
     }
 
     internal override WorldActionDef? DecideAction(WorldActionData context)
     {
-        //var ctx = (WorldActionWorker_Attack.Data)context;
-        //if (ctx.Target.Biology.IsIncapacitated)
+        throw new NotImplementedException();
+   
+        //var ctx = (WorldActionData_CombatEngage)context;
+        //var world = ctx.World;
+        //var other = world.Resolve<Actor>(ctx.TargetId);
+        //var actor = context.Actor;
+        //if (other.Biology.IsIncapacitated)
+        //    throw new InvalidOperationException($"{actor} tried to initiate combat against incapacitated actor {other}.");
+        //if (!ActorCombatAISystem.IsConfident(actor))
         //    return null;
-        //return WorldActionDefOf.Attack;
-        var ctx = (WorldActionData_CombatEngage)context;
-        var world = ctx.World;
-        var other = world.Resolve<Actor>(ctx.TargetId);
+        //return WorldActionDefOf.Combat;
+    }
+
+    internal override (WorldActionDef? action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+    {
+        var ctx = (Context)context;
+        var world = actor.World;
+        var other = world.Resolve<Actor>(ctx.Other);
         if (other.Biology.IsIncapacitated)
-            throw new InvalidOperationException("Tried to initiate combat against incapacitated actor.");
-        var actor = context.Actor;
+            throw new InvalidOperationException($"{actor} tried to initiate combat against incapacitated actor {other}.");
         if (!ActorCombatAISystem.IsConfident(actor))
-            return null;
-        return WorldActionDefOf.Combat;
+            return default;
+        return WorldActionWorker_CombatEngage.Create(actor, ctx.Other);
     }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;

@@ -7,6 +7,7 @@ using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Tools;
 using Project1.Core.World.Actions;
+using Project1.Core.World.Combat;
 using Project1.Core.World.PointsOfInterest;
 using Project1.Core.World.Rooms;
 using Project1.Framework;
@@ -300,11 +301,13 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
             return;
         var frontier = this.GetFrontier(actor);
 
-        var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
+        //var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
+        var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidatesNew(frontier, actor).Where(c => c.encounter is not null)).ToArray();
         var (encounter, context, weight) = candidates.SelectRandomWeighted(this.World.Random, f => f.weight);
-        if (encounter.Worker.DecideAction(context) is not WorldActionDef action)
+        var (action, data) = encounter.Worker.DecideActionNew(actor, context);
+        if (action is null)
             return;
-        this.World.Actions.Begin(action, context);
+        this.World.Actions.Begin(action, data);
     }
 
     private IEnumerable<EncounterDef> GetAvailableEncounters(Actor actor)

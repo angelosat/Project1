@@ -33,6 +33,16 @@ internal sealed class Encounter_FarmLoot : EncounterWorker
         yield return (EncounterDefOf.FarmLoot, new(actor), weight);
     }
 
+
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    {
+        if (actor.AI.GetMeta<RoleAdventurerData>() is not RoleAdventurerData adventurer)
+            yield break;
+        var desiredLoot = adventurer.NextDesiredLoot;
+        var weight = desiredLoot.HasValue ? 1 : 0;
+        yield return (EncounterDefOf.FarmLoot, null, weight);
+    }
+
     //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
     //{
     //    if (actor.AI.GetMeta<RoleAdventurerData>() is not RoleAdventurerData adventurer)

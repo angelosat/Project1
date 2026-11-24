@@ -6,13 +6,14 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
 using Project1.Framework.Serialization;
+using System;
 using System.Linq;
 
 namespace Project1.Core.World.Combat;
 
 internal sealed class WorldActionWorker_Attack : WorldActionWorker
 {
-    internal sealed record Data(Actor Actor) : WorldActionData(Actor)
+    sealed record Data(Actor Actor) : WorldActionData(Actor)
     {
         internal required EntityRefId TargetId;
         internal Actor Target => field ??= this.Actor.World.Resolve<Actor>(this.TargetId);
@@ -26,6 +27,11 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
             return this;
         }
     }
+
+    internal override Type DataType => typeof(Data);
+
+    public static (WorldActionDef, WorldActionData) Create(Actor actor, EntityRefId targetId)
+        => (WorldActionDefOf.Attack, new Data(actor) { TargetId =  targetId });
 
     static Data Typed(WorldActionData data) => (Data)data;
 

@@ -31,4 +31,7 @@ internal sealed class Encounter_Injury : EncounterWorker
     {
         yield return (EncounterDefOf.Injury, new(actor), frontier.Def.Tier);
     }
+
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+        => [(EncounterDefOf.Injury, null, frontier.Def.Tier)];
 }

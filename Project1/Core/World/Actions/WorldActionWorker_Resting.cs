@@ -1,12 +1,12 @@
 ﻿using Project1.Core.Needs;
-using Project1.Core.Resources;
-using Project1.Core.World.Encounters;
-using Project1.Framework;
+using System;
 
 namespace Project1.Core.World.Actions;
 
 internal class WorldActionWorker_Resting : WorldActionWorker
 {
+    internal override Type DataType => typeof(WorldActionData);
+
     internal override void Resolve(WorldActionData data)
     {
         var actor = data.Actor;

@@ -1,7 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.World.Actions;
 using Project1.Core.World.Frontiers;
-using System;
 using System.Collections.Generic;
 
 namespace Project1.Core.World.Encounters;
@@ -23,4 +22,10 @@ internal sealed class Encounter_Exploration : EncounterWorker
     {
         yield return (EncounterDefOf.Exploration, new(actor), (int)((1 - frontier.Exploration.Percentage) * 100));
     }
+
+    internal override (WorldActionDef action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+        => (WorldActionDefOf.Explore, null);
+
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+        => [(EncounterDefOf.Exploration, null, (int)((1 - frontier.Exploration.Percentage) * 100))];
 }

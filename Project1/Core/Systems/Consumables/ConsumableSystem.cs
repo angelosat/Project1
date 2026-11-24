@@ -12,6 +12,7 @@ using Project1.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Project1.Core.Systems.Consumables;
 
@@ -83,16 +84,19 @@ internal static class ConsumableSystem
         var world = (StaticWorld)item.World;
         //item.Consumable.ApplyEffects(target);
         foreach (var (key, mag) in item.Consumable.Spell.Effects)
-            world.Events.Post(new ActorEffectAppliedNewEvent(world, actor.RefId, key.Def, key.Target, mag));
+            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
 
-        //if (family.TriggersCooldown)
+        if (family.TriggersCooldown)
         //    target.Effects.Apply(
         //        EffectDefOf.ConsumableCooldown.Worker.CreateWrapper(family, 30));
-        world.Events.Post(new ActorEffectAppliedNewEvent(world, actor.RefId, EffectDefOf.ConsumableCooldown, family, 30));
+        world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, EffectDefOf.ConsumableCooldown, family, 30));
     }
 
     internal static bool CanUsePotion(Actor actor)
-        => !actor.Effects.Any(EffectDefOf.ConsumableCooldown);
+        => CanUseConsumable(actor, ConsumableDefOf.Potion);
+
+    internal static bool CanUseConsumable(Actor actor, ConsumableDef family)
+        => !actor.Effects.Any(EffectDefOf.ConsumableCooldown, family);
 
     internal static Entity FindInInventory(Actor actor, ResourceDef restore)
         //=> actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));

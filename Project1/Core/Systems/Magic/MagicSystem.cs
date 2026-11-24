@@ -1,6 +1,7 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Events;
 using Project1.Core.Helpers;
+using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Framework;
@@ -35,8 +36,13 @@ internal static class MagicSystem
     public static bool CanCastSpell(Actor actor)
         => true;
 
+    public static bool CanCastSpell(Actor actor, SpellDef spell)
+        => actor.Resources.GetValue(ResourceDefOf.Mana) >= spell.ManaCost;
+
     public static SpellDef? ConsiderSpell(Actor actor, EffectDef effect, Def target)
-        => actor.Spellbook.Spells.FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == effect && e.Target == target));
+        => actor.Spellbook.Spells
+        .Where(s => CanCastSpell(actor, s))
+        .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == effect && e.Target == target));
 }
 
 [NetworkReplicate]

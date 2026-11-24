@@ -6,10 +6,8 @@ using Project1.Core.Networking;
 using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Skills;
-using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
-using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
@@ -150,7 +148,9 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         actor.Skills.SetLevel(SkillDefOf.Swords, 50); 
         actor.Skills.SetLevel(SkillDefOf.Axes, 50); 
         actor.Skills.SetLevel(SkillDefOf.Daggers, 50); 
-        actor.Skills.SetLevel(SkillDefOf.Maces, 50); 
+        actor.Skills.SetLevel(SkillDefOf.Maces, 50);
+
+        actor.Spellbook.Add(SpellDefOf.Healing);
 
         //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 
@@ -169,7 +169,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         //var healPot = ConsumableSystem.Create(ConsumableDefOf.Potion, PotionSystem.GetMaterialRequired(EffectDefOf.RestoreResource, ResourceDefOf.Health), QualityDefOf.Common);
         //inventory.InsertAndClaim(healPot);
         var healPotNew = ConsumableSystem.Create(ConsumableDefOf.Potion, SpellDefOf.Healing, QualityDefOf.Common);
-        inventory.InsertAndClaim(healPotNew);
+        //inventory.InsertAndClaim(healPotNew);
 
         //this.World.Register(actor);
 

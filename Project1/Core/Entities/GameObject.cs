@@ -23,6 +23,7 @@ using Project1.Core.Skills;
 using Project1.Core.Systems.Alchemy;
 using Project1.Core.Systems.Consumables.Scrolls;
 using Project1.Core.Systems.Inventory;
+using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Ownership;
 using Project1.Core.Systems.Plants;
@@ -362,33 +363,29 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
     {
         return this._info ??= GetComponent<DefComponent>("Info");
     }
-    DefComponent _defComponent;
     [InspectorHidden]
-    public DefComponent DefComponent => this._defComponent ??= this.GetComponent<DefComponent>();
+    public DefComponent DefComponent => field ??= this.GetComponent<DefComponent>();
 
-    TransformComp _transform;
     [InspectorHidden]
-    public TransformComp Transform => this._transform ??= this.GetComponent<TransformComp>();
+    public TransformComp Transform => field ??= this.GetComponent<TransformComp>();
 
-    PhysicsComp _physicsCached;
     [InspectorHidden]
-    public PhysicsComp Physics => this._physicsCached ??= this.GetComponent<PhysicsComp>();
+    public PhysicsComp Physics => field ??= this.GetComponent<PhysicsComp>();
 
-    SpriteComp _spriteCompCached;
     [InspectorHidden]
-    public SpriteComp SpriteComp => this._spriteCompCached ??= this.GetComponent<SpriteComp>();
+    public SpriteComp SpriteComp => field ??= this.GetComponent<SpriteComp>();
 
     public InventoryComp Inventory => this.GetComponent<InventoryComp>();
     public NeedsComp Needs => this.GetComponent<NeedsComp>();
 
-    ResourcesComp _resourcesCached;
     [InspectorHidden]
-    public ResourcesComp Resources => this._resourcesCached ??= this.GetComponent<ResourcesComp>();
+    public ResourcesComp Resources => field ??= this.GetComponent<ResourcesComp>();
 
-
-    private StatsComp _stats;
     [InspectorHidden]
-    internal StatsComp Stats => _stats ??= this.GetComponent<StatsComp>();
+    public SpellsComp Spellbook => field ??= this.GetComponent<SpellsComp>();
+
+    [InspectorHidden]
+    internal StatsComp Stats => field ??= this.GetComponent<StatsComp>();
 
     [InspectorHidden]
     public AttributeRuntime this[AttributeDef att] => this.GetAttribute(att);

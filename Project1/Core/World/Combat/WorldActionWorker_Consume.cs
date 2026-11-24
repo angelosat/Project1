@@ -1,11 +1,14 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Systems.Consumables;
+﻿using Project1.Core.Systems.Consumables;
 using Project1.Core.World.Actions;
 
 namespace Project1.Core.World.Combat;
 
 internal sealed class WorldActionWorker_Consume : WorldActionWorker
 {
+    public WorldActionWorker_Consume()
+    {
+    }
+
     internal override void Resolve(WorldActionData data)
     {
         var typed = (WorldActionData_Consume)data;
@@ -15,9 +18,4 @@ internal sealed class WorldActionWorker_Consume : WorldActionWorker
             return;
         ConsumableSystem.Activate(consumable, actor);
     }
-}
-
-internal sealed record WorldActionData_Consume(Actor Actor) : WorldActionData(Actor)
-{
-    internal required EntityRefId ItemId;
 }

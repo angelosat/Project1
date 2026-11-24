@@ -67,6 +67,7 @@ namespace Project1.Core.Entities.Actors
                 EntityCompDefOf.Needs,
                 EntityCompDefOf.Attributes,
                 EntityCompDefOf.Skills,
+                EntityCompDefOf.Spells,
                 EntityCompDefOf.Gear,
                 EntityCompDefOf.Personality,
                 EntityCompDefOf.AI,

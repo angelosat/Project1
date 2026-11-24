@@ -5,8 +5,11 @@ using Project1.Core.Simulation;
 using Project1.Core.Systems;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
+using Project1.Core.Systems.Effects;
+using Project1.Core.Systems.Magic;
 using Project1.Core.World.Actions;
 using System;
+using System.Linq;
 
 #nullable enable
 
@@ -30,13 +33,21 @@ static class ActorCombatAISystem
                 return (WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
         }
 
-        if(IsInDanger(actor))
+        if (IsInDanger(actor))
         {
-            if(ConsumableSystem.CanUsePotion(actor) && 
+            if (ConsumableSystem.CanUsePotion(actor) &&
                ConsumableSystem.FindInInventory(actor, ResourceDefOf.Health) is Entity item)
                 return (WorldActionDefOf.Consume, new WorldActionData_Consume(actor) { ItemId = item.RefId });
+
+            if(MagicSystem.CanCastSpell(actor) &&
+               MagicSystem.ConsiderSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
+                return (WorldActionDefOf.CastSpell, new WorldActionData_CastSpell(actor)
+                {
+                    TargetId = actor.RefId,
+                    SpellDef = spell
+                });
         }
-        
+
         if (session.CanFlee(actor))
         {
             var healthThreshold = .5f;
@@ -57,4 +68,6 @@ static class ActorCombatAISystem
 
     static bool IsInDanger(Actor actor)
         => actor.Resources.Get(ResourceDefOf.Health).Percentage < .5f;
+
+    
 }

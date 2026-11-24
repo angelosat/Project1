@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Framework.Helpers;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Project1.Core.Towns.Services.Spells;
 
@@ -73,5 +75,14 @@ internal static class SpellSystem
             //}
             //caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
         }
+    }
+
+    public static void SpellSuccess(Actor caster, Actor target, SpellDef spell)
+    {
+        var world = (StaticWorld)caster.World;
+        var cost = spell.ManaCost;
+        caster.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
+        foreach (var (key, mag) in spell.Effects)
+            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
     }
 }

@@ -45,6 +45,12 @@ static public class WorldActionDefOf
                                                  workerType: typeof(WorldActionWorker_Consume),
                                                  dataType: typeof(WorldActionData_Consume),
                                                  duration: Ticks.FromMinutes(2));
+
+    static public readonly WorldActionDef CastSpell = new("CastSpell",
+                                             workerType: typeof(WorldActionWorker_CastSpell),
+                                             dataType: typeof(WorldActionData_CastSpell),
+                                             duration: Ticks.FromMinutes(1));
+
     static public readonly WorldActionDef Loot = new("Looting",
                                                      workerType: typeof(WorldActionWorker_Loot),
                                                      dataType: typeof(WorldActionData_Loot),

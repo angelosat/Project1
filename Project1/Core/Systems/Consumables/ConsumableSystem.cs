@@ -64,12 +64,16 @@ internal static class ConsumableSystem
     }
 
     internal static void Activate(Entity potion, Actor actor)
-        => Activate(potion, actor, actor);
+    {
+        Activate(potion, actor, actor);
+    }
 
     internal static void Activate(Entity consumable, Actor actor, Actor target)
     {
         consumable.Consume(1);
         consumable.Consumable.ApplyEffects(target);
+
+
     }
 
     internal static bool CanUsePotion(Actor actor)

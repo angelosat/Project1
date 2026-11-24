@@ -23,7 +23,11 @@ public sealed class SpellDef(string name,
 
     public readonly int ManaCost = manaCost;
 
-    public readonly Dictionary<EntityEffectKey, int> Effects = effects.ToDictionary(e => new EntityEffectKey(e.Def, e.Target), e => e.Magnitude);
+    public readonly OrderedDictionary<EntityEffectKey, int> Effects =
+        new(effects.Select(e =>
+            KeyValuePair.Create(
+                new EntityEffectKey(e.Def, e.Target),
+                e.Magnitude)));
 
     public readonly TargetType TargetType = targetType;
 

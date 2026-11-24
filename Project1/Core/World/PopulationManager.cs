@@ -168,7 +168,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
 
         //var healPot = ConsumableSystem.Create(ConsumableDefOf.Potion, PotionSystem.GetMaterialRequired(EffectDefOf.RestoreResource, ResourceDefOf.Health), QualityDefOf.Common);
         //inventory.InsertAndClaim(healPot);
-        var healPotNew = ConsumableSystem.Create(ConsumableDefOf.Potion, SpellDefOf.HealingPotion, QualityDefOf.Common);
+        var healPotNew = ConsumableSystem.Create(ConsumableDefOf.Potion, SpellDefOf.Healing, QualityDefOf.Common);
         inventory.InsertAndClaim(healPotNew);
 
         //this.World.Register(actor);

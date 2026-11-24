@@ -2,6 +2,7 @@
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Serialization;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Quality;
@@ -11,6 +12,7 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Project1.Core.Systems.Consumables;
 
@@ -21,11 +23,14 @@ public sealed class ConsumableComp : EntityComp
 
     public SpellDef Spell;
     public List<EntityEffectWrapper> EffectsNew = [];
+
+    internal List<SpellDef> EffectSources = [];
     public Tier Tier;
 
     public EntityEffectWrapper Effect => this.EffectsNew.FirstOrDefault();
     public bool HasEffectTarget(Def target) => this.EffectsNew.Any(f => f.Target == target);
     public bool HasEffect(EffectDef effect, Def target) => this.EffectsNew.Any(f => f.Def == effect && f.Target == target);
+
     public override void OnTooltipCreated(Control tooltip)
     {
         foreach (var effect in this.EffectsNew)
@@ -38,6 +43,20 @@ public sealed class ConsumableComp : EntityComp
             tooltip.AddControlsBottomLeft(new LabelNew(spell) { TextColorFunc = () => Color.Aquamarine });
         }
     }
+
+    internal override IEnumerable<Control> GetTooltipControls()
+    {
+        foreach (var (effect, target, magnitude) in this.EffectSources.SelectMany(s => s.Effects))
+        //yield return new LabelNew(() => $"{effect.LabelReadable} {magnitude * this.Owner.Quality.Multiplier} {target?.ToString() ?? string.Empty}");
+        //yield return new LabelNew(() => EffectsUtils.GetStringNew(effect, target, magnitude)) { TextColorFunc = () => Color.ForestGreen };
+        //yield return new LabelNew(() => effect.Worker.GetString(target, magnitude)) { TextColorFunc = () => Color.ForestGreen };
+        {
+            var text = effect.Worker.GetString(target, magnitude);
+            var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
+                yield return box;
+        }
+    }
+
     internal override void CopyFrom(EntityComp source)
     {
         var comp = source as ConsumableComp;
@@ -63,11 +82,6 @@ public sealed class ConsumableComp : EntityComp
         this.Owner.Body.Sprite = profile.Sprite;
     }
 
-    public override void GetInventoryTooltip(Control tooltip)
-    {
-        this.OnTooltipCreated(tooltip);
-    }
-
     public override void Write(IDataWriter w)
     {
         w.Write(this.EffectsNew);
@@ -75,12 +89,15 @@ public sealed class ConsumableComp : EntityComp
         w.Write(hasspell);
         if (hasspell)
             w.Write(this.Spell);
+        w.Write(this.EffectSources);
     }
+
     public override void Read(IDataReader r)
     {
         this.EffectsNew = r.ReadList<EntityEffectWrapper>();
             if (r.ReadBoolean())
             this.Spell = r.ReadDef<SpellDef>();
+        this.EffectSources = r.ReadListDef<SpellDef>();
     }
     internal override void SaveExtra(SaveTag tag)
     {
@@ -99,6 +116,10 @@ public sealed class ConsumableComp : EntityComp
     {
         foreach(var fx in this.EffectsNew)
             actor.Effects.Apply(fx.Clone());
+    }
+    public void Add(SpellDef spell)
+    {
+        this.EffectSources.Add(spell);
     }
 
     public new class Spec : Spec<ConsumableComp>

@@ -178,7 +178,7 @@ internal static class CombatSystem
             return;
         }
         actor.Effects.Apply(new EntityEffectWrapper(EffectDefOf.Fled, null, null, 0, duration: EffectDefOf.Fled.BaseDuration));
-        world.Events.Post(new ActorEffectAppliedNewEvent())
+        //world.Events.Post(new ActorEffectAppliedNewEvent())
         world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
         // TODO report flee success
     }

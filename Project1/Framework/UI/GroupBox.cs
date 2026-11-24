@@ -93,6 +93,7 @@ namespace Project1.Framework.UI
             var currentX = lastControl?.Right ?? 0;
             var currentY = lastControl?.Top ?? 0;
             var space = (int)UIManager.Font.MeasureString(" ").X;
+            space = 0;
             foreach (var l in labels)
             {
                 if (currentX + l.Width > width)

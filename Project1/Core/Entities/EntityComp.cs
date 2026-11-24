@@ -63,7 +63,6 @@ public abstract class EntityComp : EventOwner
     public virtual void GetChildren(List<GameObjectSlot> list) { }
     public virtual void GetContainers(List<Container> list) { }
     public virtual void OnTooltipCreated(Control tooltip) { }
-    public virtual void GetInventoryTooltip(Control tooltip) { this.OnTooltipCreated(tooltip); }
     internal virtual ContextAction GetContextRB(GameObject parent, GameObject player) => null;
     internal virtual ContextAction GetContextActivate(GameObject parent, GameObject player) => null;
     public virtual void GetClientActions(GameObject parent, List<ContextAction> actions) { }

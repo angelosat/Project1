@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities.Stats;
+﻿using Project1.Core.Entities;
+using Project1.Core.Entities.Stats;
 using Project1.Core.Systems.Magic;
 using System;
 using System.Collections.Generic;

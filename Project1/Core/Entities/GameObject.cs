@@ -555,23 +555,6 @@ public abstract class GameObject : Inspectable, ITransformAnchor, ITooltippable,
         yield return new LabelNew($"{nameof(this.RefId)}: {this.RefId}");
     }
 
-    public void GetInventoryTooltip(Control tooltip)
-    {
-        GetInfo().OnTooltipCreated(tooltip);
-        foreach(var comp in this.Components.Values)
-        {
-            if (!comp.GetType().IsAssignableFrom(typeof(DefComponent)))
-                comp.GetInventoryTooltip(tooltip);
-        }
-
-        var value = this.GetValueScore();
-        if (value > 0)
-        {
-            tooltip.AddControlsBottomLeft(new Label(string.Format("Value: {0} ({1})", value * this.StackSize, value)));
-        }
-
-        tooltip.AddControlsBottomLeft(new Label(string.Format("InstanceID: {0}", this.RefId)));
-    }
     [Obsolete("use ondespawn(mapbase oldmap) instead")]
     public void OnDespawn()
     {

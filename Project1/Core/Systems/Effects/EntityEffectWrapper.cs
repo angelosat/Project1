@@ -8,6 +8,8 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Project1.Core.Systems.Effects;
 
 public class EntityEffectWrapper
@@ -146,4 +148,10 @@ public class EntityEffectWrapper
 
     public override string ToString()
         => EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);
+}
+
+
+record struct EntityEffectSpec(EffectDef Def, Def? Target, int Magnitude)
+{
+
 }

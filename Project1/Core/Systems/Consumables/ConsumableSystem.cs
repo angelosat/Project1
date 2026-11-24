@@ -43,6 +43,18 @@ internal static class ConsumableSystem
         profile.Worker.PostProcess(item);
         return item;
     }
+    public static Entity Create(ConsumableDef profile, SpellDef spell, QualityDef quality, int stackSize = -1)
+    {
+        var item = ItemDefOf.Consumable.Create(profile: profile, amount: stackSize);
+        item.Body.Sprite = profile.Sprite;
+        item.Body.Material = null;
+        item.QualityComp.Tier = quality;
+        item.Initialize();
+        item.Consumable.Add(spell);
+        var (effect, target, magnitude) = spell.Effects[0];
+        item.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
+        return item;
+    }
 
     internal static Entity Create(EntityCreationRequest req)
     {

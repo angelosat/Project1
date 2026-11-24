@@ -3,6 +3,8 @@ using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using System.Collections.Generic;
 
+#nullable enable
+
 namespace Project1.Core.Systems.Effects;
 
 public abstract class EntityEffectWorker
@@ -36,7 +38,9 @@ public abstract class EntityEffectWorker
         this.OnTick(actor, entityEffectWrapper);
     }
 
-    internal virtual string Label(Def target) => $"{this.Def.Verb} {target.LabelReadable}";
+    internal virtual string Label(Def? target) => $"{this.Def.Verb} {target?.LabelReadable}";
+    internal virtual string GetString(Def? target, int magnitude) 
+        => $"{this.Def.Verb} [{magnitude}] {target?.LabelReadable}";
 
     internal virtual Color GetTint(Def target) => Color.White;
 

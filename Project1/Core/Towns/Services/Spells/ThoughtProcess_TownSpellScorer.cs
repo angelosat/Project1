@@ -27,12 +27,11 @@ internal class ThoughtProcess_TownSpellScorer : ThoughtProcess
     }
 
     static int Score(Actor customer, SpellDef spell)
-    {
-        var total = 0;
-        foreach (var (effect, target) in spell.Effects)
-        {
-            total += SpellSystem.Score(customer, effect, target);
-        }
-        return total;
-    }
+        => spell.Effects.Sum(a => SpellSystem.Score(customer, a.effect, a.target));
+        //{
+    //    var total = 0;
+    //    foreach (var (effect, target, magnitude) in spell.Effects)
+    //        total += SpellSystem.Score(customer, effect, target);
+    //    return total;
+    //}
 }

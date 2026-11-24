@@ -17,4 +17,7 @@ public sealed class Effect_RestoreResource : EntityEffectWorker
 
     internal override Color GetTint(Def target)
     => ((ResourceDef)target).Color;
+
+    internal override string GetString(Def target, int magnitude)
+        => $"{base.GetString(target, magnitude)} instantly";
 }

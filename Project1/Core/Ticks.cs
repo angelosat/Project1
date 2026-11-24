@@ -36,19 +36,23 @@ namespace Project1.Core
         }
         public static TimeSpan ToTimespan(int ingameTicks)
             => TimeSpan.FromSeconds(PerGameSecond * ingameTicks);
+
         public static string ToString(int ingameTicks)
         {
             var span = ToTimespan(ingameTicks);
             List<string> final = [];
-            if (span.Days > 0) final.Add($"{span.Days:d} day(s)");
-            if (span.Hours > 0) final.Add($"{span.Hours:hh} hour(s)");
-            if (span.Minutes > 0) final.Add($"{span.Minutes:mm} minute(s)");
-            if (span.Seconds > 0) final.Add($"{span.Seconds:ss} second(s)");
+
+            if (span.Days > 0) final.Add($"{span.Days} d");
+            if (span.Hours > 0) final.Add($"{span.Hours} h");
+            if (span.Minutes > 0) final.Add($"{span.Minutes} m");
+            if (span.Seconds > 0) final.Add($"{span.Seconds} s");
+
             return string.Join(" ", final);
         }
         //extension(ulong ingameTicks)
         //{
         //    public TimeSpan ToRealTime
         //}
+
     }
 }

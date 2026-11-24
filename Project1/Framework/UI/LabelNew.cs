@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Project1.Core;
-using Project1.Core.Input;
-using Project1.Core.Screens;
 using Project1.Core.UI;
-using Project1.Core.UI.Hud;
 using Project1.Framework.Helpers;
 using System;
 using System.Collections.Generic;
@@ -278,6 +274,7 @@ public class LabelNew : ButtonBaseNew
     //    this.subscription = updatable.Subscribe(() => this.Invalidate(true));
     //    return this;
     //}
+
     public override void Draw(SpriteBatch sb)
     {
         base.Draw(sb);
@@ -392,35 +389,70 @@ public class LabelNew : ButtonBaseNew
     public static IEnumerable<LabelNew> ParseNew(string text)
     {
         var posCurrent = 0;
-        int posFrom = 0;
-        do
-        {
-            posFrom = text.IndexOf('[', posCurrent);
-            if (posFrom != -1)
-            {
-                var plainText = text.Substring(posCurrent, posFrom - posCurrent);
 
-                var f = plainText.Split(' ');
-                foreach (var i in f)
-                    if (!i.IsNullEmptyOrWhiteSpace())
-                        yield return new LabelNew(i);
-                var posTo = text.IndexOf(']', posFrom + 1);
-                if (posTo != -1)
-                {
-                    var token = text.Substring(posFrom + 1, posTo - posFrom - 1);
-                    posCurrent = posTo + 1;
-                    yield return ParseToken(token);
-                }
-            }
-            else
+        while (posCurrent < text.Length)
+        {
+            var posFrom = text.IndexOf('[', posCurrent);
+
+            if (posFrom == -1)
             {
-                var plainText = text.Substring(posCurrent, text.Length - posCurrent);
-                foreach (var i in plainText.Split(' '))
-                    if (!i.IsNullEmptyOrWhiteSpace())
-                        yield return new LabelNew(i);
+                foreach (var word in text[posCurrent..].Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                    yield return new LabelNew(word);
+
+                yield break;
             }
-        } while (posFrom != -1);
+
+            foreach (var word in text[posCurrent..posFrom].Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                yield return new LabelNew(word);
+
+            var posTo = text.IndexOf(']', posFrom + 1);
+
+            if (posTo == -1)
+            {
+                foreach (var word in text[posFrom..].Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                    yield return new LabelNew(word);
+
+                yield break;
+            }
+
+            var token = text[(posFrom + 1)..posTo];
+            yield return ParseToken(token);
+
+            posCurrent = posTo + 1;
+        }
     }
+    //public static IEnumerable<LabelNew> ParseNew(string text)
+    //{
+    //    var posCurrent = 0;
+    //    int posFrom = 0;
+    //    do
+    //    {
+    //        posFrom = text.IndexOf('[', posCurrent);
+    //        if (posFrom != -1)
+    //        {
+    //            var plainText = text.Substring(posCurrent, posFrom - posCurrent);
+
+    //            var f = plainText.Split(' ');
+    //            foreach (var i in f)
+    //                if (!i.IsNullEmptyOrWhiteSpace())
+    //                    yield return new LabelNew(i);
+    //            var posTo = text.IndexOf(']', posFrom + 1);
+    //            if (posTo != -1)
+    //            {
+    //                var token = text.Substring(posFrom + 1, posTo - posFrom - 1);
+    //                posCurrent = posTo + 1;
+    //                yield return ParseToken(token);
+    //            }
+    //        }
+    //        else
+    //        {
+    //            var plainText = text.Substring(posCurrent, text.Length - posCurrent);
+    //            foreach (var i in plainText.Split(' '))
+    //                if (!i.IsNullEmptyOrWhiteSpace())
+    //                    yield return new LabelNew(i);
+    //        }
+    //    } while (posFrom != -1);
+    //}
     internal static IEnumerable<LabelNew> ParseNewNew(params object[] values)
     {
         return values.SelectMany(ParseNewNew);

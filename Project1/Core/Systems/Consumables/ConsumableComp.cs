@@ -25,16 +25,16 @@ public sealed class ConsumableComp : EntityComp
 
     public Tier Tier;
 
-    public EffectDef PrimaryEffect => this.Spell!.EffectsNew.First().Key.Def;
+    public EffectDef PrimaryEffect => this.Spell!.Effects.First().Key.Def;
 
-    public bool HasEffect(EffectDef effect, Def? target) => this.Spell.EffectsNew.Keys.Any(f => f.Def == effect && f.Target == target);
+    public bool HasEffect(EffectDef effect, Def? target) => this.Spell.Effects.Keys.Any(f => f.Def == effect && f.Target == target);
 
     internal int GetMagnitude(EffectDef effect, Def? target)
-        => this.Spell.EffectsNew.GetValueOrDefault(new(effect, target));
+        => this.Spell.Effects.GetValueOrDefault(new(effect, target));
 
     internal override IEnumerable<Control> GetTooltipControls()
     {
-        foreach (var (key, magnitude) in this.Spell.EffectsNew)
+        foreach (var (key, magnitude) in this.Spell.Effects)
         {
             var text = key.Def.Worker.GetString(key.Target, magnitude);
             var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
@@ -81,7 +81,7 @@ public sealed class ConsumableComp : EntityComp
 
     internal void ApplyEffects(Actor actor)
     {
-        foreach (var (key, mag) in this.Spell.EffectsNew)
+        foreach (var (key, mag) in this.Spell.Effects)
             actor.Effects.Apply(CreateInstance(key, mag));
     }
 

@@ -51,16 +51,27 @@ internal static class SpellSystem
                     break;
             }
         }
+
         public void Cast(SpellDef spell, Actor target)
         {
             var effects = spell.Effects;
             var placeholderMagnitude = 50;
-            foreach (var fx in effects)
+            foreach (var (effect, mag) in effects)
             {
-                var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
+                //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
+                var fxruntime = effect.Def.Worker.CreateWrapper(effect.Target, mag);
                 target.Effects.Apply(fxruntime);
             }
             caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
+
+            //var effects = spell.Effects;
+            //var placeholderMagnitude = 50;
+            //foreach (var fx in effects)
+            //{
+            //    var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
+            //    target.Effects.Apply(fxruntime);
+            //}
+            //caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
         }
     }
 }

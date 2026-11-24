@@ -14,20 +14,16 @@ public static class SpellDefOf
         TargetType.Entity, 
         subject: SpellSubject.Any,
         school: SpellSchoolDefOf.Holy, 
-        //typeof(SpellWorker_RestoreHealth), 
         manaCost: 20, 
         castTimeInSecs: 5, 
-        //effectDuration: 0,
         [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 50)]);
 
     public static readonly SpellDef HealingPotion = new("HealingPotion",
     TargetType.Entity,
     subject: SpellSubject.Any,
     school: SpellSchoolDefOf.Holy,
-    //typeof(SpellWorker_RestoreHealth), 
     manaCost: 20,
     castTimeInSecs: 5,
-    //effectDuration: 0,
     [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
      new(EffectDefOf.PotionCooldown, null, 30)]);
 
@@ -35,19 +31,15 @@ public static class SpellDefOf
         TargetType.Entity,
         subject: SpellSubject.Any,
         SpellSchoolDefOf.Holy, 
-        //typeof(SpellWorker_FortifyHealth), 
         manaCost: 10, 
         castTimeInSecs: 1, 
-        //effectDuration: Ticks.FromDays(1),
         [new(EffectDefOf.FortifyResource, ResourceDefOf.Health, 10)]);
     public static readonly SpellDef Teleporting = new("Teleporting", 
         TargetType.Entity,
         subject: SpellSubject.Self,
         SpellSchoolDefOf.Common, 
-        //typeof(SpellWorker_Null),
         manaCost: 0, 
         castTimeInSecs: 5, 
-        //effectDuration: 0,
         [new(EffectDefOf.TownTeleport, null, 0)]);
 
     static public readonly PlanDef PlanCastSpell = new("CastSpell", typeof(BehaviorExecutePlanNew), InteractionDefOf.CastSpell);

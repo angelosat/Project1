@@ -11,6 +11,7 @@ namespace Project1.Core.Towns.Services.Spells;
 sealed class Gui_TownSpellList : GroupBox
 {
     readonly Table<(SpellDef spell, PriceTag_Spell tag)> Table;
+
     public Gui_TownSpellList()
     {
         var shops = Ingame.Net.MainView.Map.Town.Spells;
@@ -26,11 +27,12 @@ sealed class Gui_TownSpellList : GroupBox
 
         string getHoverText(SpellDef spell)
         {
-            var effects = spell.Effects;
+            var effects = spell.Effects.Keys;
             //var lines = effects.Select(fx => $"{fx.effect.Verb} {fx.target.LabelReadable} for {fx.effect.BaseDuration}");
             return string.Join(Environment.NewLine, effects.Select(fx => EffectsUtils.GetString(fx.Def, fx.Target)));
         }
     }
+
     static void ToggleSpell(SpellDef spell)
         => Ingame.Instance.Events.Post(new PlayerTownSpellToggledEvent(Ingame.Net.MainView.Map, spell));
 }

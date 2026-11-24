@@ -77,7 +77,8 @@ internal class Planner_Healing_Customer : Planner
     }
 
     static int Score(Actor customer, SpellDef spell)
-        => spell.Effects.Sum(a => SpellSystem.Score(customer, a.Def, a.Target));
+        => spell.Effects.Keys.Sum(a => SpellSystem.Score(customer, a.Def, a.Target));
+
     //{
         //var total = 0;
         //foreach (var (effect, target) in spell.Effects)

@@ -9,6 +9,7 @@ using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Systems.Consumables;
 
@@ -51,7 +52,8 @@ internal static class ConsumableSystem
         item.QualityComp.Tier = quality;
         item.Initialize();
         item.Consumable.Spell = spell;
-        var (effect, target, magnitude) = spell.Effects[0];
+        //var (effect, target, magnitude) = spell.Effects[0];
+        var (effect, target) = spell.Effects.First().Key;
         item.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
         return item;
     }

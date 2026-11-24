@@ -41,11 +41,14 @@ public sealed class EffectsComp : EntityComp
             AddInt(effect);
         else
             effect.Finish(this.Owner as Actor);
-        this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
+        //this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
     }
 
     private void AddInt(EntityEffectWrapper f)
     {
+        if (this.Any(f.Def, f.Target))
+            throw new InvalidOperationException(
+                $"Tried to apply duplicate effect {f.Def}:{f.Target}");
         this.ActiveEffects.Add(f);
         this.Changed?.Invoke(([f], []));
     }

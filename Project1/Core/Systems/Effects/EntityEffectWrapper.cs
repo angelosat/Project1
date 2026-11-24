@@ -144,7 +144,7 @@ public class EntityEffectWrapper
     }
 
     internal IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor)
-        => this.Def.Worker.GetStatModifiers(actor, this);
+        => this.Def.Worker.GetStatModifiers(actor);
 
     public override string ToString()
         => EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);

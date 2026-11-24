@@ -95,9 +95,11 @@ public static class StatSystem
         //Registry.WorldEventHooksClient.Register<ActorStatBonusModifiedEvent>(OnActorStatBonusModified);
         //Registry.WorldEventHooksServer.Register<ActorStatBonusModifiedEvent>(OnActorStatBonusModified);
 
-        Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
-        Registry.WorldEventHooksServer.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
+        //Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
+        //Registry.WorldEventHooksServer.Register<ActorEffectAppliedEvent>(OnActorEffectApplied);
 
+        Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
+        Registry.WorldEventHooksServer.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
         Registry.WorldEventHooksClient.Register<ActorEffectRemovedEvent>(OnActorEffectRemoved);
         Registry.WorldEventHooksServer.Register<ActorEffectRemovedEvent>(OnActorEffectRemoved);
     }
@@ -162,13 +164,18 @@ public static class StatSystem
     //    actor.Stats.ModifyBonus(e.StatDef, e.Delta);
     //}
 
-    private static void OnActorEffectApplied(ActorEffectAppliedEvent e)
+    //private static void OnActorEffectApplied(ActorEffectAppliedEvent e)
+    //{
+    //    var actor = e.Actor;
+    //    var effect = e.Effect;
+    //    InvalidateStats(actor, effect);
+    //}
+    private static void OnActorEffectApplied(ActorEffectAppliedNewEvent e)
     {
-        var actor = e.Actor;
-        var effect = e.Effect;
+        var actor = e.World.Resolve<Actor>(e.ActorId);
+        var effect = e.EffectDef;
         InvalidateStats(actor, effect);
     }
-
     private static void OnActorEffectRemoved(ActorEffectRemovedEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId); ;
@@ -180,6 +187,13 @@ public static class StatSystem
     private static void InvalidateStats(Actor actor, EntityEffectWrapper effect)
     {
         var bonuses = effect.GetStatModifiers(actor);
+        foreach (var (statDef, _) in bonuses)
+            actor.Stats.MarkDirty(statDef);
+    }
+
+    private static void InvalidateStats(Actor actor, EffectDef effect)
+    {
+        var bonuses = effect.Worker.GetStatModifiers(actor);
         foreach (var (statDef, _) in bonuses)
             actor.Stats.MarkDirty(statDef);
     }

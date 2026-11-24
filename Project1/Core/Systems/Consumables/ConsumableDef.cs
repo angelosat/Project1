@@ -8,7 +8,12 @@ namespace Project1.Core.Systems.Consumables;
 public sealed class ConsumableDef(string name, string verb, Sprite sprite, Type effectType, Type workerType) : Def(name)
 {
     public string Verb = verb;
+
     public Sprite Sprite = sprite;
+
+    public bool TriggersCooldown;
+
     public ConsumableEffect Effect => field ??= ActivatorSafe<ConsumableEffect>.CreateInstance(effectType);
+
     public ConsumableWorker Worker => field ??= ActivatorSafe<ConsumableWorker>.CreateInstance(workerType);
 }

@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
-using Project1.Core.Simulation;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Effects;
 using System;
@@ -10,7 +9,7 @@ namespace Project1.Core.Systems.Magic;
 
 public sealed class Effect_Flee : EntityEffectWorker
 {
-    public override EffectDef Def => throw new NotImplementedException();
+    public override EffectDef Def => EffectDefOf.Fled;
 
     protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
     {
@@ -27,8 +26,7 @@ public sealed class Effect_Flee : EntityEffectWorker
     //                                                            -100f));
     //}
 
-    internal override IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor,
-                                                                                   EntityEffectWrapper runtime)
+    internal override IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor/*, EntityEffectWrapper runtime*/)
     {
         yield return (StatDefOf.AvoidCombatEncounter, 100f);
     }

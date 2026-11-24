@@ -13,14 +13,14 @@ namespace Project1.Core.Systems.Effects
 
         static Packets_Effects()
         {
-            Registry.WorldEventHooksServer.Register<ActorEffectAppliedEvent>(HandleActorEffectApplied);
+            //Registry.WorldEventHooksServer.Register<ActorEffectAppliedEvent>(HandleActorEffectApplied);
             Registry.WorldEventHooksServer.Register<ActorEffectAbortedEvent>(HandleActorEffectAborted);
         }
 
-        private static void HandleActorEffectApplied(ActorEffectAppliedEvent e)
-        {
-            SendEffectApplied(e.Actor.Net as Server, e.Actor, e.Effect);
-        }
+        //private static void HandleActorEffectApplied(ActorEffectAppliedEvent e)
+        //{
+        //    SendEffectApplied(e.Actor.Net as Server, e.Actor, e.Effect);
+        //}
 
         private static void SendEffectApplied(NetEndpoint endpoint, Actor actor, EntityEffectWrapper effect)
         {

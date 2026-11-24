@@ -2,12 +2,14 @@
 using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,16 +70,29 @@ internal static class ConsumableSystem
         Activate(potion, actor, actor);
     }
 
-    internal static void Activate(Entity consumable, Actor actor, Actor target)
+    internal static void Activate(Entity item, Actor actor, Actor target)
     {
-        consumable.Consume(1);
-        consumable.Consumable.ApplyEffects(target);
+        var family = item.GetProfile<ConsumableDef>();
 
+        if (family.TriggersCooldown &&
+            target.Effects.Any(EffectDefOf.ConsumableCooldown, family))
+            throw new InvalidOperationException(
+                $"Tried to activate {item} while {family} cooldown is active.");
 
+        item.Consume(1);
+        var world = (StaticWorld)item.World;
+        //item.Consumable.ApplyEffects(target);
+        foreach (var (key, mag) in item.Consumable.Spell.Effects)
+            world.Events.Post(new ActorEffectAppliedNewEvent(world, actor.RefId, key.Def, key.Target, mag));
+
+        //if (family.TriggersCooldown)
+        //    target.Effects.Apply(
+        //        EffectDefOf.ConsumableCooldown.Worker.CreateWrapper(family, 30));
+        world.Events.Post(new ActorEffectAppliedNewEvent(world, actor.RefId, EffectDefOf.ConsumableCooldown, family, 30));
     }
 
     internal static bool CanUsePotion(Actor actor)
-        => !actor.Effects.Any(EffectDefOf.PotionCooldown);
+        => !actor.Effects.Any(EffectDefOf.ConsumableCooldown);
 
     internal static Entity FindInInventory(Actor actor, ResourceDef restore)
         //=> actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));

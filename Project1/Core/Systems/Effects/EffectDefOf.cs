@@ -11,14 +11,31 @@ namespace Project1.Core.Systems.Effects;
 static class EffectDefOf
 {
     static public EffectDef ModifyNeed = new("ModifyNeed", "Modify", new Effect_ModifyNeed(), typeof(NeedDef), baseMagnitude: 10);
-    static public EffectDef FortifyResource = new("FortifyResource", "Fortify", new Effect_FortifyResource(), typeof(ResourceDef), baseDuration: Ticks.FromDays(1), baseMagnitude: 50) { School = SpellSchoolDefOf.Holy };
-    static public EffectDef RestoreResource = new("RestoreResource", "Restore", new Effect_RestoreResource(), typeof(ResourceDef), baseMagnitude: 50) { School = SpellSchoolDefOf.Holy };
+
+    static public EffectDef FortifyResource = new("FortifyResource",
+                                                  "Fortify",
+                                                  new Effect_FortifyResource(),
+                                                  typeof(ResourceDef),
+                                                  baseDuration: Ticks.FromDays(1),
+                                                  baseMagnitude: 50) 
+    { 
+        School = SpellSchoolDefOf.Holy 
+    };
+    
+    static public EffectDef RestoreResource = new("RestoreResource", "Restore", new Effect_RestoreResource(), typeof(ResourceDef), baseMagnitude: 50) 
+    { 
+        School = SpellSchoolDefOf.Holy,
+    };
+
     static public EffectDef TownTeleport = new("TownPortal", "Restore", new Effect_TownTeleport(), null);
-    static public EffectDef PotionCooldown = new("PotionCooldown", "Cooldown", new Effect_PotionCooldown(), null, baseDuration: Ticks.FromMinutes(30));
+
+    static public EffectDef ConsumableCooldown = new("PotionCooldown", "Cooldown", new Effect_ConsumableCooldown(), null, baseDuration: Ticks.FromMinutes(30));
+
     static public EffectDef Fled = new("Fled", "Flee", new Effect_Flee(), null, baseDuration: Ticks.FromHours(1))
     {
         StatMods = new() { { StatDefOf.AvoidCombatEncounter, 100f } }
     };
+
     static EffectDefOf()
     {
         Def.Register(typeof(EffectDefOf));

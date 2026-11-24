@@ -82,11 +82,13 @@ public sealed class ConsumableComp : EntityComp
     internal void ApplyEffects(Actor actor)
     {
         foreach (var (key, mag) in this.Spell.Effects)
-            actor.Effects.Apply(CreateInstance(key, mag));
+        {
+            //actor.Effects.Apply(EffectsSystem.CreateInstance(key, mag));
+            this.World.Events.Post(new ActorEffectAppliedNewEvent(this.World, actor.RefId, key.Def, key.Target, mag));
+        }
     }
 
-    static EntityEffectWrapper CreateInstance(EntityEffectKey key, int magnitude)
-        => key.Def.Worker.CreateWrapper(key.Target, magnitude);
+
 
     public new class Spec : Spec<ConsumableComp>
     {

@@ -25,7 +25,7 @@ public static class SpellDefOf
     manaCost: 20,
     castTimeInSecs: 5,
     [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
-     new(EffectDefOf.PotionCooldown, null, 30)]);
+     new(EffectDefOf.ConsumableCooldown, null, 30)]);
 
     public static readonly SpellDef MaxHealthBuff = new("MaxHealthBuff", 
         TargetType.Entity,

@@ -29,7 +29,8 @@ internal sealed class PresentationParticles : IPresentationWorker
         Registry.MapEventHooksClient.Register<ActorFootStepEvent>(OnEntityFootStep);
         Registry.MapEventHooksClient.Register<BlockParticlesEvent>(OnBlockParticles);
         Registry.MapEventHooksClient.Register<SpellCastEvent>(OnSpellCast);
-        Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnEffectApplied);
+        //Registry.WorldEventHooksClient.Register<ActorEffectAppliedEvent>(OnEffectApplied);
+        Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewEvent>(OnEffectApplied);
         Registry.WorldEventHooksClient.Register<ActorFinishedCraftingEvent>(OnActorFinishedCrafting);
     }
 
@@ -45,12 +46,23 @@ internal sealed class PresentationParticles : IPresentationWorker
         EmitSpellParticles(item, quality.Tier.Color);
     }
 
-    private void OnEffectApplied(ActorEffectAppliedEvent e)
+    //private void OnEffectApplied(ActorEffectAppliedEvent e)
+    //{
+    //    var actor = e.Actor;
+    //    if (!actor.IsSpawned)
+    //        return;
+    //    if (e.Effect.Def.School is not SpellSchoolDef school)
+    //        return;
+    //    EmitSpellParticles(actor, school.Color);
+    //}
+
+    private void OnEffectApplied(ActorEffectAppliedNewEvent e)
     {
-        var actor = e.Actor;
+        var actor = e.World.Resolve(e.ActorId);
+        var effect = e.EffectDef;
         if (!actor.IsSpawned)
             return;
-        if (e.Effect.Def.School is not SpellSchoolDef school)
+        if (effect.School is not SpellSchoolDef school)
             return;
         EmitSpellParticles(actor, school.Color);
     }

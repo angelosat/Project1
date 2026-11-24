@@ -47,7 +47,8 @@ public abstract class EntityEffectWorker
 
     internal virtual Color GetTint(Def target) => Color.White;
 
-    internal virtual IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor,
-                                                                                  EntityEffectWrapper runtime)
+    internal virtual IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor
+                                                                                  //,EntityEffectWrapper runtime
+                                                                                  )
         => [];
 }

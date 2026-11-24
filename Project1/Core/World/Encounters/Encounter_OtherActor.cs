@@ -52,21 +52,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
             throw new System.Exception();
     }
 
-    internal override IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
-    {
-        var world = (StaticWorld)actor.World;
-        if (!world.Combat.IsAvailableForNewCombat(actor))
-            yield break;
-        //foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
-        foreach (var k in frontier.ActorsActiveNew
-            .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a) && !actor.Biology.IsIncapacitated)
-            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
-            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_CombatEngage(actor) { TargetId = id }, 1000)))
-            .Select(id => (EncounterDefOf.ActorEncounter, WorldActionWorker_CombatEngage.Create(actor, id).Item2, 1000)))
-            yield return k;
-    }
-
-    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
         var world = (StaticWorld)actor.World;
         if (!world.Combat.IsAvailableForNewCombat(actor))
@@ -80,22 +66,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
             yield return k;
     }
 
-    internal override WorldActionDef? DecideAction(WorldActionData context)
-    {
-        throw new NotImplementedException();
-   
-        //var ctx = (WorldActionData_CombatEngage)context;
-        //var world = ctx.World;
-        //var other = world.Resolve<Actor>(ctx.TargetId);
-        //var actor = context.Actor;
-        //if (other.Biology.IsIncapacitated)
-        //    throw new InvalidOperationException($"{actor} tried to initiate combat against incapacitated actor {other}.");
-        //if (!ActorCombatAISystem.IsConfident(actor))
-        //    return null;
-        //return WorldActionDefOf.Combat;
-    }
-
-    internal override (WorldActionDef? action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+    internal override (WorldActionDef? action, WorldActionData data) DecideAction(Actor actor, EncounterContext context)
     {
         var ctx = (Context)context;
         var world = actor.World;

@@ -12,39 +12,13 @@ internal class Encounter_ResourceNode : EncounterWorker
 
     static readonly List<MaterialRefinementDef> ValidItems = [MaterialRefinementDefOf.Logs, MaterialRefinementDefOf.Ore];
 
-    //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-    //{
-    //    int targetCount = 10;
-    //    return 0;// 1;
-    //}
-
-    internal override IEnumerable<(EncounterDef encounter, WorldActionData context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
-    {
-        throw new System.Exception();
-        //foreach (var ((matRef, mat), weight) in frontier.Def.ResourceTypes)
-        //    yield return (EncounterDefOf.Resource, new WorldActionData_HarvestResource(actor) { Refinement = matRef, Material = mat }, weight);
-    }
-    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {
         foreach (var ((matRef, mat), weight) in frontier.Def.ResourceTypes)
             yield return (EncounterDefOf.Resource, new Context(matRef, mat), weight);
     }
-    //internal override (WorldActionDef actionDef, WorldActionData data)? DecideAction(FrontierRuntime frontier, Actor actor)
-    //{
-    //    //return base.DecideAction(frontier, actor);
-    //    return (WorldActionDefOf.HarvestResource, new WorldActionData_HarvestResource(frontier, actor) { MaterialType = MaterialTypeDefOf.Wood });
-    //}
 
-    internal override WorldActionDef DecideAction(WorldActionData context)
-    {
-        return WorldActionDefOf.HarvestResource;
-    }
-    internal override (WorldActionDef action, WorldActionData data) DecideActionNew(Actor actor, EncounterContext context)
+    internal override (WorldActionDef action, WorldActionData data) DecideAction(Actor actor, EncounterContext context)
     {
         var typed = (Context)context;
         return WorldActionWorker_HarvestResource.Create(actor, typed.Refinement, typed.Material);

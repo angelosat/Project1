@@ -11,24 +11,6 @@ namespace Project1.Core.World.PointsOfInterest;
 
 internal class Encounter_PoIExit : EncounterWorker
 {
-    //protected override void OnSuccess(FrontierRuntime frontier, EncounterRuntime encounter)
-    //{
-    //    throw new System.NotImplementedException();
-    //}
-
-    //internal override int GetWeight(FrontierRuntime frontier, Actor actor)
-    //=> ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0;
-
-    internal override IEnumerable<(EncounterDef encounter, WorldActionData? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
-    {
-        yield return (EncounterDefOf.PoIExit, new(actor), ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0);
-    }
-
-    internal override WorldActionDef? DecideAction(WorldActionData context)
-    {
-        return WorldActionDefOf.ExitPoI;
-    }
-
-    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidatesNew(FrontierRuntime frontier, Actor actor)
+    internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
         => [(EncounterDefOf.PoIExit, null, ((StaticWorld)actor.World).Frontiers.GetPoi(actor) is not null ? 1 : 0)];
 }

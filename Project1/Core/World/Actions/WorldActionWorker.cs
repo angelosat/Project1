@@ -17,4 +17,7 @@ public abstract class WorldActionWorker
         => runtime.Def.LabelReadable;
 
     internal abstract void Resolve(WorldActionData data);
+
+    internal static (WorldActionDef def, WorldActionData data) Create(Actor actor, WorldActionDef action)
+        => (action, new(actor));
 }

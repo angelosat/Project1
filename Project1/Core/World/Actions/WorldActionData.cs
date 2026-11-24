@@ -14,4 +14,6 @@ internal record WorldActionData(Actor Actor) : ISerializable
     public virtual ISerializable Read(IDataReader r) => this;
 
     public virtual void Write(IDataWriter w) { }
+
+
 }

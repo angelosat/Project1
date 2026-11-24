@@ -4,6 +4,7 @@ using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Materials;
 using Project1.Core.Systems.Quality;
 using Project1.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,19 +45,9 @@ internal static class PotionSystem
         }
     }
 
-    //public static Entity Create(EffectDef effect, Def target, byte level)
-    //{
-    //    var potion = ItemDefOf.Consumable.Create(ConsumableDefOf.Potion);
-    //    var comp = potion.GetComponent<ConsumableComp>();
-    //    var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
-    //    comp.Tier = level;
-    //    comp.Add(wrapper);
-    //    potion.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
-    //    return potion;
-    //}
-
     public static void PostProcess(Entity entity)
     {
+        throw new Exception();
         var mat = entity.Body.Material;
         var effect = mat.Type.AlchemyEffect;
         var target = mat.AlchemyTarget;
@@ -65,33 +56,12 @@ internal static class PotionSystem
         var qualityMod = quality.Multiplier;
         //var finalMagnitude = effect.BaseMagnitude * (1 + quality.Multiplier / 100f);
         var finalMagnitude = effect.BaseMagnitude * quality.Multiplier;
-        var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
-        var cooldownEffect = new EntityEffectWrapper(EffectDefOf.PotionCooldown, null, 0, 1, EffectDefOf.PotionCooldown.BaseDuration);
+        //var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
+        //var cooldownEffect = new EntityEffectWrapper(EffectDefOf.PotionCooldown, null, 0, 1, EffectDefOf.PotionCooldown.BaseDuration);
         var comp = entity.GetComponent<ConsumableComp>();
 
-        comp.Add(wrapper);
-        comp.Add(cooldownEffect);
-
-        entity.Name = GetName(comp);
-        entity.Body.TintΟverride = effect.Worker.GetTint(target);
-    }
-
-    public static void PostProcessNew(Entity entity)
-    {
-        var mat = entity.Body.Material;
-        var effect = mat.Type.AlchemyEffect;
-        var target = mat.AlchemyTarget;
-        // todo calculate potion magnitude/level from item quality
-        var quality = entity.QualityComp.Tier;
-        var qualityMod = quality.Multiplier;
-        //var finalMagnitude = effect.BaseMagnitude * (1 + quality.Multiplier / 100f);
-        var finalMagnitude = effect.BaseMagnitude * quality.Multiplier;
-        var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
-        var cooldownEffect = new EntityEffectWrapper(EffectDefOf.PotionCooldown, null, 0, 1, EffectDefOf.PotionCooldown.BaseDuration);
-        var comp = entity.GetComponent<ConsumableComp>();
-
-        comp.Add(wrapper);
-        comp.Add(cooldownEffect);
+        //comp.Add(wrapper);
+        //comp.Add(cooldownEffect);
 
         entity.Name = GetName(comp);
         entity.Body.TintΟverride = effect.Worker.GetTint(target);
@@ -99,14 +69,17 @@ internal static class PotionSystem
 
     internal static string GetName(ConsumableComp comp)
     {
-        var effect = comp.EffectsNew.First();
-        return $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Def.Verb} {effect.Target.LabelReadable}";
+        throw new NotImplementedException();
+        //var effect = comp.EffectsNew.First();
+        //return $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Def.Verb} {effect.Target.LabelReadable}";
     }
 
     internal static IEnumerable<GameObject> GenerateTemplates()
     {
         //foreach (var (effect, target) in Recipes)
         //    yield return Create(effect, target, 1);
+
+        yield break;
         foreach (var recipe in _matsByEffect)
             foreach (var mat in recipe.Value)
                 yield return ConsumableSystem.Create(ConsumableDefOf.Potion, mat, QualitySystem.Random);

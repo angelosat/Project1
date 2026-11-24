@@ -36,8 +36,9 @@ public sealed class HaulingManager : MapComponent
             item => item.PrimaryMaterial])
     , (
         "Consumables", typeof(ConsumableDef), [
-            item => (ConsumableDef) item.Profile,
-            item => item.Consumable.Effect.Def,
+            item => (ConsumableDef)item.Profile,
+            //item => item.Consumable.Effect.Def,
+            item => item.Consumable.PrimaryEffect,
             item => item.Quality]),(
         "Tools", typeof(GearProfileDef), [
             item => (GearProfileDef) item.Profile,

@@ -10,25 +10,21 @@ namespace Project1.Framework.UI;
 
 public class LabelNew : ButtonBaseNew
 {
-
-    //public static int DefaultHeight = UIManager.Font.LineSpacing + 2;
-    //public static int DefaultHeight = UIManager.Font.LineSpacing + 4; // 2 margin and 2 outline
-
     Alignment.Horizontal _Halign;
+
     public Alignment.Horizontal Halign
     {
         get => this._Halign;
         set => this._Halign = value;
     }
-    public Alignment.Vertical Valign;// = Alignment.Vertical.Center;
+    public Alignment.Vertical Valign;
+
     public Color TextBackground = Color.Transparent;
+
     public Func<Color> TextBackgroundFunc = () => Color.Transparent;
-    //public Func<Inspectable> ObjGetter;
+
     public override string ToString()
         => $"{nameof(LabelNew)}: {this.TextFunc()}";
-    //{
-    //    return "LabelNew: " + this.Text ?? this.Name;
-    //}
 
     public override int Width
     {

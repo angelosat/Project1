@@ -1,5 +1,4 @@
 ﻿using Project1.Core.Entities.Actors;
-using System;
 
 namespace Project1.Core.Systems.Effects;
 

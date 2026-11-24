@@ -74,6 +74,7 @@ internal static class ConsumableSystem
         => !actor.Effects.Any(EffectDefOf.PotionCooldown);
 
     internal static Entity FindInInventory(Actor actor, ResourceDef restore)
+        //=> actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));
         => actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));
 
     extension(Entity item)

@@ -18,7 +18,7 @@ public class EntityEffectWrapper
     internal SimulationTick StartTick;
     bool _aborted;
     public readonly EffectDef Def;
-    public readonly Def Target;
+    public readonly Def? Target;
     public readonly float? Budget;
     public readonly int TicksPerUnit;
     public readonly int Duration;
@@ -38,14 +38,14 @@ public class EntityEffectWrapper
     public TimeSpan RemainingTimespan(SimulationTick now) 
         => TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
 
-    EntityEffectWrapper(EffectDef def, Def target)
+    EntityEffectWrapper(EffectDef def, Def? target)
     {
         this.Def = def;
         this.Target = target;
     }
 
     public EntityEffectWrapper(EffectDef def,
-                               Def target,
+                               Def? target,
                                float? budget,
                                int ticksPerUnit,
                                int duration = 0,

@@ -145,6 +145,10 @@ public sealed class EffectsComp : EntityComp
     internal bool Any(EffectDef effect)
         => this.ActiveEffects.Any(f => f.Def == effect);
 
-    internal void RemoveAt(int effectId)
-        => this.ActiveEffects.RemoveAt(effectId);
+    internal void RemoveAt(int effectIndex)
+    {
+        var f = this.ActiveEffects[effectIndex];
+        this.ActiveEffects.RemoveAt(effectIndex);
+        this.Changed?.Invoke(([f], []));
+    }
 }

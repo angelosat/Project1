@@ -58,13 +58,7 @@ internal static class IOHelpers
         w.Write(def?.Name ?? string.Empty); 
         return w; 
     }
-    //public static IDataWriter Write(this IDataWriter w, ICollection<Def> defs)
-    //{
-    //    w.Write(defs.Count);
-    //    foreach (var def in defs)
-    //        w.Write(def);
-    //    return w;
-    //}
+    
     public static IDataWriter Write<T>(this IDataWriter w, ICollection<T> defs) where T : Def
     {
         w.Write(defs.Count);
@@ -72,14 +66,7 @@ internal static class IOHelpers
             w.Write(def);
         return w;
     }
-    //public static List<Def> ReadListDef(this IDataReader r)
-    //{
-    //    List<Def> list = [];
-    //    var count = r.ReadInt32();
-    //    for (int i = 0; i < count; i++)
-    //        list.Add(r.ReadDef());
-    //    return list;
-    //}
+    
     public static List<T> ReadListDef<T>(this IDataReader r) where T : Def
     {
         List<T> list = [];

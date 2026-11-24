@@ -11,6 +11,9 @@ public abstract class EntityEffectWorker
 {
     public abstract EffectDef Def { get; }
 
+    internal virtual EntityEffectWrapper CreateWrapper(Def? target, int magnitude)
+        => new(this.Def, target, magnitude, 0);
+
     protected abstract void OnStart(Actor actor, EntityEffectWrapper wrapper);
 
     protected virtual void OnTick(Actor actor, EntityEffectWrapper wrapper) { }

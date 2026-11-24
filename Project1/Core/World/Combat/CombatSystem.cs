@@ -81,11 +81,6 @@ internal static class CombatSystem
 
         var preventedDamage = rawValue - finalDamage.Value;
 
-        //bodyPartGear?.ToolComponent.OnAttackLanded(preventedDamage);
-
-        //if (attacker.Gear.GetGear(GearSlotDefOf.Mainhand) is Entity weapon)
-        //    weapon.ToolComponent.OnAttackLanded(finalDamage.Value);
-
         return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, rawValue, bodyPartTargetDef);
     }
 
@@ -166,10 +161,8 @@ internal static class CombatSystem
     {
         var world = (StaticWorld)actor.World;
         var session = world.Combat.Get(actor);
+        ArgumentNullException.ThrowIfNull(session);
         session.MarkFlee(actor);
-
-        //if (session.HasAttemptedFlee(actor.RefId))
-        //    return;
         var fleeChance = actor.Stats.GetFinal(StatDefOf.FleeChance);
         fleeChance = 100f;// 50f;
         if (!world.Random.Roll100((int)fleeChance))
@@ -178,7 +171,6 @@ internal static class CombatSystem
             return;
         }
         actor.Effects.Apply(new EntityEffectWrapper(EffectDefOf.Fled, null, null, 0, duration: EffectDefOf.Fled.BaseDuration));
-        //world.Events.Post(new ActorEffectAppliedNewEvent())
         world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
         // TODO report flee success
     }

@@ -1,5 +1,7 @@
 ﻿using Project1.Core.Systems.Effects;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Project1.Core.Systems.Magic;
 
@@ -11,7 +13,10 @@ public sealed class SpellDef(string name,
                              SpellSchoolDef school,
                              int manaCost,
                              int castTimeInSecs,
-                             (EffectDef effect, Def target, int magnitude)[] effects) : Def(name)
+                             EntityEffectSpec[] effects
+    //,
+    //                         ICollection<(EntityEffectKey, int)> effectsNew
+    ) : Def(name)
 {
     public readonly SpellSchoolDef School = school;
     public readonly int CastTimeSeconds = castTimeInSecs;
@@ -19,7 +24,8 @@ public sealed class SpellDef(string name,
     public readonly int ManaCost = manaCost;
     //[Obsolete]
     //public readonly SpellWorker Worker = ActivatorSafe<SpellWorker>.CreateInstance(workerType);
-    public readonly (EffectDef effect, Def target, int magnitude)[] Effects = effects;
+    public readonly EntityEffectSpec[] Effects = effects;
+    public readonly Dictionary<EntityEffectKey, int> EffectsNew = effects.ToDictionary(e => new EntityEffectKey(e.Def, e.Target), e => e.Magnitude);
     public readonly TargetType TargetType = targetType;
     public readonly SpellSubject Subject = subject;
 }

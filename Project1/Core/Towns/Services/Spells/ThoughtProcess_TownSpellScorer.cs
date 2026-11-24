@@ -27,7 +27,7 @@ internal class ThoughtProcess_TownSpellScorer : ThoughtProcess
     }
 
     static int Score(Actor customer, SpellDef spell)
-        => spell.Effects.Sum(a => SpellSystem.Score(customer, a.effect, a.target));
+        => spell.Effects.Sum(a => SpellSystem.Score(customer, a.Def, a.Target));
         //{
     //    var total = 0;
     //    foreach (var (effect, target, magnitude) in spell.Effects)

@@ -50,7 +50,7 @@ internal static class ConsumableSystem
         item.Body.Material = null;
         item.QualityComp.Tier = quality;
         item.Initialize();
-        item.Consumable.Add(spell);
+        item.Consumable.Spell = spell;
         var (effect, target, magnitude) = spell.Effects[0];
         item.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
         return item;

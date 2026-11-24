@@ -12,7 +12,8 @@ using Project1.Framework.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+
+#nullable enable
 
 namespace Project1.Core.Systems.Consumables;
 
@@ -24,7 +25,7 @@ public sealed class ConsumableComp : EntityComp
     public SpellDef Spell;
     public List<EntityEffectWrapper> EffectsNew = [];
 
-    internal List<SpellDef> EffectSources = [];
+    //internal List<SpellDef> EffectSources = [];
     public Tier Tier;
 
     public EntityEffectWrapper Effect => this.EffectsNew.FirstOrDefault();
@@ -44,18 +45,36 @@ public sealed class ConsumableComp : EntityComp
         }
     }
 
+    //internal IEnumerable<EntityEffectSpec> Specs => this.EffectSources.SelectMany(s => s.Effects);
+
+    internal int GetMagnitude(EffectDef effect, Def? target)
+        => this.Spell.EffectsNew.GetValueOrDefault(new(effect, target));
+
     internal override IEnumerable<Control> GetTooltipControls()
     {
-        foreach (var (effect, target, magnitude) in this.EffectSources.SelectMany(s => s.Effects))
+        foreach (var (key, magnitude) in this.Spell.EffectsNew)
         //yield return new LabelNew(() => $"{effect.LabelReadable} {magnitude * this.Owner.Quality.Multiplier} {target?.ToString() ?? string.Empty}");
         //yield return new LabelNew(() => EffectsUtils.GetStringNew(effect, target, magnitude)) { TextColorFunc = () => Color.ForestGreen };
         //yield return new LabelNew(() => effect.Worker.GetString(target, magnitude)) { TextColorFunc = () => Color.ForestGreen };
         {
-            var text = effect.Worker.GetString(target, magnitude);
+            var text = key.Def.Worker.GetString(key.Target, magnitude);
             var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
-                yield return box;
+            yield return box;
         }
     }
+
+    //internal override IEnumerable<Control> GetTooltipControls()
+    //{
+    //    foreach (var (effect, target, magnitude) in this.Specs)
+    //    //yield return new LabelNew(() => $"{effect.LabelReadable} {magnitude * this.Owner.Quality.Multiplier} {target?.ToString() ?? string.Empty}");
+    //    //yield return new LabelNew(() => EffectsUtils.GetStringNew(effect, target, magnitude)) { TextColorFunc = () => Color.ForestGreen };
+    //    //yield return new LabelNew(() => effect.Worker.GetString(target, magnitude)) { TextColorFunc = () => Color.ForestGreen };
+    //    {
+    //        var text = effect.Worker.GetString(target, magnitude);
+    //        var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
+    //            yield return box;
+    //    }
+    //}
 
     internal override void CopyFrom(EntityComp source)
     {
@@ -89,7 +108,7 @@ public sealed class ConsumableComp : EntityComp
         w.Write(hasspell);
         if (hasspell)
             w.Write(this.Spell);
-        w.Write(this.EffectSources);
+        //w.Write(this.EffectSources);
     }
 
     public override void Read(IDataReader r)
@@ -97,7 +116,7 @@ public sealed class ConsumableComp : EntityComp
         this.EffectsNew = r.ReadList<EntityEffectWrapper>();
             if (r.ReadBoolean())
             this.Spell = r.ReadDef<SpellDef>();
-        this.EffectSources = r.ReadListDef<SpellDef>();
+        //this.EffectSources = r.ReadListDef<SpellDef>();
     }
     internal override void SaveExtra(SaveTag tag)
     {
@@ -112,15 +131,16 @@ public sealed class ConsumableComp : EntityComp
             this.Spell = spell;
     }
 
+
     internal void ApplyEffects(Actor actor)
     {
         foreach(var fx in this.EffectsNew)
             actor.Effects.Apply(fx.Clone());
     }
-    public void Add(SpellDef spell)
-    {
-        this.EffectSources.Add(spell);
-    }
+    //public void Add(SpellDef spell)
+    //{
+    //    this.EffectSources.Add(spell);
+    //}
 
     public new class Spec : Spec<ConsumableComp>
     {

@@ -12,6 +12,8 @@ sealed class ItemRoleWorker_Restore(ResourceDef resource) : ItemRoleWorker
     {
         if (!item.TryGetComponent<ConsumableComp>(out var comp))
             return -1;
+        var magnitude = comp.GetMagnitude(EffectDefOf.RestoreResource, resource);
+        return magnitude;
         if (comp.Effect is not EntityEffectWrapper effect)
             return -1;
         if (effect.Def != EffectDefOf.RestoreResource)
@@ -24,11 +26,13 @@ sealed class ItemRoleWorker_Restore(ResourceDef resource) : ItemRoleWorker
     public override int GetSituationalScore(Actor actor, Entity item)
     {
         var comp = item.GetComponent<ConsumableComp>();
-        var effect = comp.Effect;
-        if (!(effect.Def == EffectDefOf.RestoreResource && effect.Target == resource))
-            throw new System.Exception();
+        //var effect = comp.Effect;
+        //if (!(effect.Def == EffectDefOf.RestoreResource && effect.Target == resource))
+        //    throw new System.Exception();
+        //return deficit > effect.MagnitudeFinal ? deficit : -1;
 
+        var magnitude = comp.GetMagnitude(EffectDefOf.RestoreResource, resource);
         var deficit = actor.Resources.GetDeficit(resource);
-        return deficit > effect.MagnitudeFinal ? deficit : -1;
+        return deficit > magnitude ? deficit : -1;
     }
 }

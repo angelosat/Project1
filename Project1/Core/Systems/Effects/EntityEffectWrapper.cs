@@ -150,8 +150,6 @@ public class EntityEffectWrapper
         => EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);
 }
 
+public record struct EntityEffectKey(EffectDef Def, Def? Target);
 
-record struct EntityEffectSpec(EffectDef Def, Def? Target, int Magnitude)
-{
-
-}
+public record struct EntityEffectSpec(EffectDef Def, Def? Target, int Magnitude);

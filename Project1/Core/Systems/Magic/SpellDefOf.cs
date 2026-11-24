@@ -18,7 +18,7 @@ public static class SpellDefOf
         manaCost: 20, 
         castTimeInSecs: 5, 
         //effectDuration: 0,
-        [(EffectDefOf.RestoreResource, ResourceDefOf.Health, 50)]);
+        [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 50)]);
 
     public static readonly SpellDef HealingPotion = new("HealingPotion",
     TargetType.Entity,
@@ -28,8 +28,8 @@ public static class SpellDefOf
     manaCost: 20,
     castTimeInSecs: 5,
     //effectDuration: 0,
-    [(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
-     (EffectDefOf.PotionCooldown, null, 30)]);
+    [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
+     new(EffectDefOf.PotionCooldown, null, 30)]);
 
     public static readonly SpellDef MaxHealthBuff = new("MaxHealthBuff", 
         TargetType.Entity,
@@ -39,7 +39,7 @@ public static class SpellDefOf
         manaCost: 10, 
         castTimeInSecs: 1, 
         //effectDuration: Ticks.FromDays(1),
-        [(EffectDefOf.FortifyResource, ResourceDefOf.Health, 10)]);
+        [new(EffectDefOf.FortifyResource, ResourceDefOf.Health, 10)]);
     public static readonly SpellDef Teleporting = new("Teleporting", 
         TargetType.Entity,
         subject: SpellSubject.Self,
@@ -48,7 +48,7 @@ public static class SpellDefOf
         manaCost: 0, 
         castTimeInSecs: 5, 
         //effectDuration: 0,
-        [(EffectDefOf.TownTeleport, null, 0)]);
+        [new(EffectDefOf.TownTeleport, null, 0)]);
 
     static public readonly PlanDef PlanCastSpell = new("CastSpell", typeof(BehaviorExecutePlanNew), InteractionDefOf.CastSpell);
 

@@ -28,7 +28,7 @@ sealed class Gui_TownSpellList : GroupBox
         {
             var effects = spell.Effects;
             //var lines = effects.Select(fx => $"{fx.effect.Verb} {fx.target.LabelReadable} for {fx.effect.BaseDuration}");
-            return string.Join(Environment.NewLine, effects.Select(fx => EffectsUtils.GetString(fx.effect, fx.target)));
+            return string.Join(Environment.NewLine, effects.Select(fx => EffectsUtils.GetString(fx.Def, fx.Target)));
         }
     }
     static void ToggleSpell(SpellDef spell)

@@ -57,16 +57,13 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         var world = (StaticWorld)actor.World;
         if (!world.Combat.IsAvailableForNewCombat(actor))
             yield break;
-        //foreach (var k in frontier.ActorsActiveNew.Where(a => a != actor.RefId).Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_Combat(actor) { Other = id }, 1000)))
         foreach (var k in frontier.ActorsActiveNew
             .Where(a => a != actor.RefId && world.Combat.IsAvailableForNewCombat(a) && !actor.Biology.IsIncapacitated)
-            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionWorker_Attack.Data(actor) { TargetId = id }, 1000)))
-            //.Select(id => (EncounterDefOf.ActorEncounter, new WorldActionData_CombatEngage(actor) { TargetId = id }, 1000)))
             .Select(id => (EncounterDefOf.ActorEncounter, new Context(id), 1000)))
             yield return k;
     }
 
-    internal override (WorldActionDef? action, WorldActionData data) DecideAction(Actor actor, EncounterContext context)
+    internal override WorldActionData? DecideAction(Actor actor, EncounterContext context)
     {
         var ctx = (Context)context;
         var world = actor.World;
@@ -74,8 +71,8 @@ internal sealed class Encounter_OtherActor : EncounterWorker
         if (other.Biology.IsIncapacitated)
             throw new InvalidOperationException($"{actor} tried to initiate combat against incapacitated actor {other}.");
         if (!ActorCombatAISystem.IsConfident(actor))
-            return default;
-        return WorldActionWorker_CombatEngage.Create(actor, ctx.Other);
+            return null;
+        return new WorldActionData_CombatEngage(actor) { TargetId = ctx.Other };
     }
 
     record struct ActorsMetOffMapEvent(Actor Actor, Actor Other) : IEventPayload;

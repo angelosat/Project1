@@ -6,17 +6,32 @@ using System;
 
 namespace Project1.Core.World.Actions;
 
-internal sealed class WorldActionRuntime(WorldActionDef def, WorldActionData data) : IProgressBar
+internal sealed class WorldActionRuntime : IProgressBar
 {
-    internal WorldActionDef Def = def;
+    internal WorldActionDef Def;
 
-    internal readonly int Max = (int)(def.BaseDuration * def.Worker.GetDurationMultiplier(data));
-    
+    internal readonly int Max;
+
     public float Percentage => this.Current / this.Max;
 
     internal float Current;
 
-    internal readonly WorldActionData Data = data;
+    internal readonly WorldActionData Data;
+
+    //public WorldActionRuntime(WorldActionDef def, WorldActionData data)
+    //{
+    //    this.Def = def;
+    //    this.Max = (int)(def.BaseDuration * def.Worker.GetDurationMultiplier(data));
+    //    this.Data = data;
+    //}
+
+    public WorldActionRuntime(WorldActionData data)
+    {
+        this.Data = data;
+        var def = this.Data.Def;
+        this.Def = def;
+        this.Max = (int)(def.BaseDuration * def.Worker.GetDurationMultiplier(data));
+    }
 
     internal void Tick()
     {
@@ -26,7 +41,8 @@ internal sealed class WorldActionRuntime(WorldActionDef def, WorldActionData dat
     }
 
     internal void Resolve()
-        => this.Def.Worker.Resolve(this.Data);
+        //=> this.Def.Worker.Resolve(this.Data);
+        => this.Data.Resolve();
 
     public string GetStatusText()
         => this.Def.Worker.GetStatusText(this);

@@ -8,26 +8,28 @@ using System;
 
 namespace Project1.Core.World.Combat;
 
-internal sealed class WorldActionWorker_CastSpell : WorldActionWorker
+internal sealed record WorldActionData_CastSpell(Actor Actor) : WorldActionData(Actor)
 {
-    sealed record WorldActionData_CastSpell(Actor Actor) : WorldActionData(Actor)
+    internal override WorldActionDef Def => WorldActionDefOf.CastSpell;
+
+    internal required EntityRefId TargetId;
+
+    internal required SpellDef SpellDef;
+
+    public override ISerializable Read(IDataReader r)
     {
-        internal required EntityRefId TargetId;
-
-        internal required SpellDef SpellDef;
-
-        public override ISerializable Read(IDataReader r)
-        {
-            this.TargetId = r.ReadEntityRefId();
-            this.SpellDef = r.ReadDef<SpellDef>();
-            return this;
-        }
-
-        public override void Write(IDataWriter w)
-        => w.Write(this.TargetId)
-            .Write(this.SpellDef);
+        this.TargetId = r.ReadEntityRefId();
+        this.SpellDef = r.ReadDef<SpellDef>();
+        return this;
     }
 
+    public override void Write(IDataWriter w)
+    => w.Write(this.TargetId)
+        .Write(this.SpellDef);
+}
+
+internal sealed class WorldActionWorker_CastSpell : WorldActionWorker
+{
     internal override Type DataType => typeof(WorldActionData_CastSpell);
 
     static WorldActionData_CastSpell Typed(WorldActionData actionData) => (WorldActionData_CastSpell)actionData;

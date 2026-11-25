@@ -6,32 +6,34 @@ using System;
 
 namespace Project1.Core.World.Actions;
 
-internal sealed class WorldActionWorker_CombatEngage : WorldActionWorker
+internal sealed record WorldActionData_CombatEngage(Actor Actor) : WorldActionData(Actor)
 {
-    sealed record Data(Actor Actor) : WorldActionData(Actor)
+    internal override WorldActionDef Def => WorldActionDefOf.Combat;
+
+    internal required EntityRefId TargetId;
+
+    public override void Write(IDataWriter w)
     {
-        internal required EntityRefId TargetId;
-
-        public override void Write(IDataWriter w)
-        {
-            w.Write(TargetId);
-        }
-
-        public override ISerializable Read(IDataReader r)
-        {
-            TargetId = r.ReadEntityRefId();
-            return this;
-        }
+        w.Write(TargetId);
     }
 
-    internal override Type DataType => typeof(Data);
+    public override ISerializable Read(IDataReader r)
+    {
+        TargetId = r.ReadEntityRefId();
+        return this;
+    }
+}
+
+internal sealed class WorldActionWorker_CombatEngage : WorldActionWorker
+{
+    internal override Type DataType => typeof(WorldActionData_CombatEngage);
 
     public static (WorldActionDef, WorldActionData) Create(Actor actor, EntityRefId targetId)
-        => (WorldActionDefOf.Combat, new Data(actor) { TargetId = targetId });
+        => (WorldActionDefOf.Combat, new WorldActionData_CombatEngage(actor) { TargetId = targetId });
 
     internal override void Resolve(WorldActionData data)
     {
-        var typed = data as Data;
+        var typed = data as WorldActionData_CombatEngage;
         var world = (StaticWorld)data.Actor.World;
         var other = world.Resolve<Actor>(typed.TargetId);
         world.Combat.Engage(data.Actor, other);

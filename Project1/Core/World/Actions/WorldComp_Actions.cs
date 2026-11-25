@@ -59,11 +59,11 @@ internal sealed class WorldComp_Actions : WorldComp
     internal bool HasActiveAction(Actor actor)
         => this.ActiveActions.ContainsKey(actor);
 
-    internal WorldActionRuntime Begin(WorldActionDef def, WorldActionData data)
+    internal WorldActionRuntime Begin(WorldActionData data)
     {
-        var runtime = new WorldActionRuntime(def, data);
+        var runtime = new WorldActionRuntime(data);
         this.ActiveActions.Add(data.Actor, runtime);
-        $"{data.Actor} starts {def.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
+        $"{data.Actor} starts {data.Def.LabelReadable} with duration {runtime.Max} ticks".ToConsole();
         this.World.Events.Post(new WorldActionStartedEvent(data.Actor, runtime));
         return runtime;
     }

@@ -31,8 +31,9 @@ internal sealed class ThoughtProcess_ItemEvaluatorVisitor : ThoughtProcess
         if (result.ItemId != EntityRefId.Null)
         {
             //world.Actions.Begin(WorldActionDefOf.Equip, new WorldActionData_Equip(actor) { Decision = result });
-            var action = WorldActionWorker_Equip.Create(actor, result);
-            world.Actions.Begin(action.Item1, action.Item2);
+            //var action = WorldActionWorker_Equip.Create(actor, result);
+            var data = new WorldActionData_Equip(actor) { Decision = result };
+            world.Actions.Begin(data);
         }
     }
 

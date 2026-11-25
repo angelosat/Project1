@@ -109,11 +109,11 @@ internal sealed class CombatRuntime(int id, Actor first, Actor second)
     static void DecideAction(Actor attacker, Actor defender)
     {
         //world.Actions.Begin(WorldActionDefOf.Attack, new WorldActionWorker_Attack.Data(attacker) { TargetId = defender.RefId });
-        var (actionDef, actionData) = ActorCombatAISystem.Decide(attacker, defender);
-        if (actionDef is null)
+        var data = ActorCombatAISystem.Decide(attacker, defender);
+        if (data is null)
             return;
         var world = (StaticWorld)attacker.World;
-        world.Actions.Begin(actionDef, actionData);
+        world.Actions.Begin(data);
     }
 
     internal Actor GetOther(Actor actor)

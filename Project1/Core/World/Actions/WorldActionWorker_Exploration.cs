@@ -8,8 +8,8 @@ internal class WorldActionWorker_Exploration : WorldActionWorker
 {
     internal override Type DataType => typeof(WorldActionData);
 
-    internal static (WorldActionDef action, WorldActionData data) Create(Actor actor)
-        => (WorldActionDefOf.Explore, new(actor));
+    //internal static (WorldActionDef action, WorldActionData data) Create(Actor actor)
+    //    => (WorldActionDefOf.Explore, new(actor));
 
     internal override void Resolve(WorldActionData data)
     {

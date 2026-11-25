@@ -6,31 +6,33 @@ using System;
 
 namespace Project1.Core.World.Actions;
 
+internal sealed record WorldActionData_HarvestResource(Actor Actor) : WorldActionData(Actor)
+{
+    internal override WorldActionDef Def => WorldActionDefOf.HarvestResource;
+
+    internal required MaterialRefinementDef Refinement;
+
+    internal required MaterialDef Material;
+
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.Refinement);
+        w.Write(this.Material);
+    }
+
+    public override ISerializable Read(IDataReader r)
+    {
+        this.Refinement = r.ReadDef<MaterialRefinementDef>();
+        this.Material = r.ReadDef<MaterialDef>();
+        return this;
+    }
+}
+
 internal sealed class WorldActionWorker_HarvestResource : WorldActionWorker
 {
-    sealed record Data(Actor Actor) : WorldActionData(Actor)
-    {
-        internal required MaterialRefinementDef Refinement;
-        internal required MaterialDef Material;
+    internal override Type DataType => typeof(WorldActionData_HarvestResource);
 
-        public override void Write(IDataWriter w)
-        {
-            w.Write(this.Refinement);
-            w.Write(this.Material);
-        }
-        public override ISerializable Read(IDataReader r)
-        {
-            this.Refinement = r.ReadDef<MaterialRefinementDef>();
-            this.Material = r.ReadDef<MaterialDef>();
-            return this;
-        }
-    }
-    internal override Type DataType => typeof(Data);
-
-    static Data Typed(WorldActionData data) => (Data)data;
-
-    static internal (WorldActionDef, WorldActionData) Create(Actor actor, MaterialRefinementDef matRef, MaterialDef mat)
-        => (WorldActionDefOf.HarvestResource, new Data(actor) { Refinement = matRef , Material=mat });
+    static WorldActionData_HarvestResource Typed(WorldActionData data) => (WorldActionData_HarvestResource)data;
 
     internal override void Resolve(WorldActionData data)
     {

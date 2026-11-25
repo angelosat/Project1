@@ -304,10 +304,10 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
         //var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
         var candidates = this.GetAvailableEncounters(actor).SelectMany(e => e.Worker.GetCandidates(frontier, actor).Where(c => c.encounter is not null)).ToArray();
         var (encounter, context, weight) = candidates.SelectRandomWeighted(this.World.Random, f => f.weight);
-        var (action, data) = encounter.Worker.DecideAction(actor, context);
-        if (action is null)
+        var data = encounter.Worker.DecideAction(actor, context);
+        if (data is null)
             return;
-        this.World.Actions.Begin(action, data);
+        this.World.Actions.Begin(data);
     }
 
     private IEnumerable<EncounterDef> GetAvailableEncounters(Actor actor)

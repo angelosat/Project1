@@ -7,30 +7,32 @@ using System.Linq;
 
 namespace Project1.Core.World.Actions;
 
-internal sealed class WorldActionWorker_Loot : WorldActionWorker
+internal sealed record WorldActionData_Loot(Actor Actor) : WorldActionData(Actor)
 {
-    sealed record Data(Actor Actor) : WorldActionData(Actor)
+    internal override WorldActionDef Def => WorldActionDefOf.Loot;
+
+    internal required EntityRefId[] Loot;
+
+    public override void Write(IDataWriter w)
     {
-        internal required EntityRefId[] Loot;
-
-        public override void Write(IDataWriter w)
-        {
-            w.Write(Loot);
-        }
-
-        public override ISerializable Read(IDataReader r)
-        {
-            Loot = r.ReadArrayEntityRefId();
-            return this;
-        }
+        w.Write(Loot);
     }
 
-    internal override Type DataType => typeof(Data);
+    public override ISerializable Read(IDataReader r)
+    {
+        Loot = r.ReadArrayEntityRefId();
+        return this;
+    }
+}
+
+internal sealed class WorldActionWorker_Loot : WorldActionWorker
+{
+    internal override Type DataType => typeof(WorldActionData_Loot);
 
     internal override void Resolve(WorldActionData data)
     {
         var actor = data.Actor;
-        var typed = (Data)data;
+        var typed = (WorldActionData_Loot)data;
         var items = actor.World.Resolve(typed.Loot);
         foreach (var treasure in items)
             actor.Inventory.InsertAndClaim(treasure);
@@ -38,5 +40,5 @@ internal sealed class WorldActionWorker_Loot : WorldActionWorker
     }
 
     static public void Begin(Actor actor, EntityRefId[] loot)
-        => (actor.World as StaticWorld).Actions.Begin(WorldActionDefOf.Loot, new Data(actor) { Loot = loot });
+        => (actor.World as StaticWorld).Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
 }

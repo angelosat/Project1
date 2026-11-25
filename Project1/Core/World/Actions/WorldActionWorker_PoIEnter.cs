@@ -6,39 +6,37 @@ using System;
 
 namespace Project1.Core.World.Actions;
 
-internal class WorldActionWorker_PoIEnter : WorldActionWorker
+internal sealed record WorldActionData_PoiEnter(Actor Actor) : WorldActionData(Actor)
 {
-    sealed record Data(Actor Actor) : WorldActionData(Actor)
-    {
-        internal PoIRuntime PoI => field ??= this.Frontier.PoIs[this.PoIId];
-        internal required int PoIId;
+    internal override WorldActionDef Def => WorldActionDefOf.EnterPoI;
 
-        public override void Write(IDataWriter w)
-        {
-            w.Write(this.PoIId);
-        }
-        public override ISerializable Read(IDataReader r)
-        {
-            this.PoIId = r.ReadInt32();
-            return this;
-        }
+    internal PoIRuntime PoI => field ??= this.Frontier.PoIs[this.PoIId];
+
+    internal required int PoIId;
+
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.PoIId);
     }
 
-    static public (WorldActionDef, WorldActionData) Create(Actor actor, int PoiId)
-        => (WorldActionDefOf.EnterPoI, new Data(actor) { PoIId = PoiId });
+    public override ISerializable Read(IDataReader r)
+    {
+        this.PoIId = r.ReadInt32();
+        return this;
+    }
+}
 
-    internal override Type DataType => typeof(Data);
+internal class WorldActionWorker_PoIEnter : WorldActionWorker
+{
+    internal override Type DataType => typeof(WorldActionData_PoiEnter);
 
-    static Data Typed(WorldActionData data) => (Data)data;
+    static WorldActionData_PoiEnter Typed(WorldActionData data) => (WorldActionData_PoiEnter)data;
 
     internal override void Resolve(WorldActionData data)
     {
-        var typed = (Data)data;
+        var typed = (WorldActionData_PoiEnter)data;
         var id = typed.PoIId;
         ((FrontierManager)data.Frontier.World.Space).ActorPoIEnter(data.Actor, data.Frontier, id);
-        //var poi = data.Frontier.PoIs[id];
-        ////var poi = typed.PoI;
-        //poi.Add(data.Actor);
     }
 
     internal override string GetStatusText(WorldActionRuntime runtime)

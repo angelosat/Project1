@@ -9,8 +9,7 @@ namespace Project1.Core.World.Actions;
 
 internal abstract class EncounterWorker
 {
-    internal virtual (WorldActionDef? action, WorldActionData data) DecideAction(Actor actor, EncounterContext context)
-        => default;
-
+    internal virtual WorldActionData? DecideAction(Actor actor, EncounterContext context)
+        => null;
     internal abstract IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor);
 }

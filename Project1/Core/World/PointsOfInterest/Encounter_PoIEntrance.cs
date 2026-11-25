@@ -11,9 +11,9 @@ namespace Project1.Core.World.PointsOfInterest;
 internal sealed class Encounter_PoIEntrance : EncounterWorker
 {
     sealed record Context(int PoiId) : EncounterContext;
- 
-    internal override (WorldActionDef? action, WorldActionData data) DecideAction(Actor actor, EncounterContext context)
-        => WorldActionWorker_PoIEnter.Create(actor, ((Context)context).PoiId);
+
+    internal override WorldActionData DecideAction(Actor actor, EncounterContext context)
+        => new WorldActionData_PoiEnter(actor) { PoIId = ((Context)context).PoiId };
 
     internal override IEnumerable<(EncounterDef encounter, EncounterContext? context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
     {

@@ -11,33 +11,35 @@ using System.Linq;
 
 namespace Project1.Core.World.Combat;
 
+internal sealed record WorldActionData_Attack(Actor Actor) : WorldActionData(Actor)
+{
+    internal override WorldActionDef Def => WorldActionDefOf.Attack;
+
+    internal required EntityRefId TargetId;
+    internal Actor Target => field ??= this.Actor.World.Resolve<Actor>(this.TargetId);
+    public override void Write(IDataWriter w)
+    {
+        w.Write(this.TargetId);
+    }
+    public override ISerializable Read(IDataReader r)
+    {
+        this.TargetId = r.ReadEntityRefId();
+        return this;
+    }
+}
+
 internal sealed class WorldActionWorker_Attack : WorldActionWorker
 {
-    sealed record Data(Actor Actor) : WorldActionData(Actor)
-    {
-        internal required EntityRefId TargetId;
-        internal Actor Target => field ??= this.Actor.World.Resolve<Actor>(this.TargetId);
-        public override void Write(IDataWriter w)
-        {
-            w.Write(this.TargetId);
-        }
-        public override ISerializable Read(IDataReader r)
-        {
-            this.TargetId = r.ReadEntityRefId();
-            return this;
-        }
-    }
-
-    internal override Type DataType => typeof(Data);
+    internal override Type DataType => typeof(WorldActionData_Attack);
 
     public static (WorldActionDef, WorldActionData) Create(Actor actor, EntityRefId targetId)
-        => (WorldActionDefOf.Attack, new Data(actor) { TargetId =  targetId });
+        => (WorldActionDefOf.Attack, new WorldActionData_Attack(actor) { TargetId =  targetId });
 
-    static Data Typed(WorldActionData data) => (Data)data;
+    static WorldActionData_Attack Typed(WorldActionData data) => (WorldActionData_Attack)data;
 
     internal override void Resolve(WorldActionData data)
     {
-        var typed = (Data)data;
+        var typed = (WorldActionData_Attack)data;
         var actor = typed.Actor;
 
         // if this is the first attack on an ambushed opponent, this means that there is not compat runtime yet

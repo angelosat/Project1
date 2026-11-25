@@ -52,7 +52,7 @@ static class Packets_WorldActions
         //var runtime = world.Actions.Start(actionDef, actor!, frontierDef);
         var data = WorldActionSystem.CreateData(actionDef, actor);
         data.Read(r);
-        var runtime = world.Actions.Begin(actionDef, data);
+        var runtime = world.Actions.Begin(data);
     }
 
     private static void ReceiveWorldActionFinish(NetEndpoint endpoint, Packet packet)

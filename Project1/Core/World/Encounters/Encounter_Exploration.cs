@@ -7,8 +7,8 @@ namespace Project1.Core.World.Encounters;
 
 internal sealed class Encounter_Exploration : EncounterWorker
 {
-    internal override (WorldActionDef action, WorldActionData data) DecideAction(Actor actor, EncounterContext context)
-        => WorldActionWorker_Exploration.Create(actor);// (WorldActionDefOf.Explore, null);
+    internal override WorldActionData DecideAction(Actor actor, EncounterContext context)
+        => new WorldActionData_Default(actor, WorldActionDefOf.Explore);// (WorldActionDefOf.Explore, null);
 
     internal override IEnumerable<(EncounterDef encounter, EncounterContext context, int weight)> GetCandidates(FrontierRuntime frontier, Actor actor)
         => [(EncounterDefOf.Exploration, null, (int)((1 - frontier.Exploration.Percentage) * 100))];

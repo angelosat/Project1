@@ -39,7 +39,7 @@ static class ActorCombatAISystem
                 return new WorldActionData_Consume(actor) { ItemId = item.RefId };
 
             if (MagicSystem.CanCastSpell(actor) &&
-               MagicSystem.ConsiderSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
+               MagicSystem.ConsiderDefensiveSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
                 return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
         }
 
@@ -51,6 +51,10 @@ static class ActorCombatAISystem
             if (healthPerc < healthThreshold)
                 return new WorldActionData_Default(actor, WorldActionDefOf.Flee);
         }
+
+        if (MagicSystem.CanCastSpell(actor) &&
+               MagicSystem.ConsiderOffensiveSpell(actor, target) is SpellDef spellOffensice)
+            return new WorldActionData_CastSpell(actor) { SpellDef = spellOffensice, TargetId = target.RefId };
 
         return new WorldActionData_Attack(actor) { TargetId = target.RefId };
     }

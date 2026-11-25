@@ -10,26 +10,38 @@ namespace Project1.Core.Systems.Magic;
 [EnsureStaticCtorCall]
 public static class SpellDefOf
 {
+    public static readonly SpellDef Fireball = new("Fireball",
+        TargetType.Entity,
+        subject: SpellSubject.Other,
+        category: SpellCategory.Offensive,
+        school: SpellSchoolDefOf.Fire,
+        manaCost: 20,
+        castTimeInSecs: 5,
+        [new(EffectDefOf.SpellDamage, ResourceDefOf.Health, 10)]);
+
     public static readonly SpellDef Healing = new("Healing", 
         TargetType.Entity, 
         subject: SpellSubject.Any,
+        category: SpellCategory.Defensive,
         school: SpellSchoolDefOf.Holy, 
         manaCost: 20, 
         castTimeInSecs: 5, 
         [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 50)]);
 
     public static readonly SpellDef HealingPotion = new("HealingPotion",
-    TargetType.Entity,
-    subject: SpellSubject.Any,
-    school: SpellSchoolDefOf.Holy,
-    manaCost: 20,
-    castTimeInSecs: 5,
-    [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
-     new(EffectDefOf.ConsumableCooldown, null, 30)]);
+        TargetType.Entity,
+        subject: SpellSubject.Any,
+        category: SpellCategory.Defensive,
+        school: SpellSchoolDefOf.Holy,
+        manaCost: 20,
+        castTimeInSecs: 5,
+        [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
+         new(EffectDefOf.ConsumableCooldown, null, 30)]);
 
     public static readonly SpellDef MaxHealthBuff = new("MaxHealthBuff", 
         TargetType.Entity,
         subject: SpellSubject.Any,
+        category: SpellCategory.Defensive,
         SpellSchoolDefOf.Holy, 
         manaCost: 10, 
         castTimeInSecs: 1, 
@@ -37,6 +49,7 @@ public static class SpellDefOf
     public static readonly SpellDef Teleporting = new("Teleporting", 
         TargetType.Entity,
         subject: SpellSubject.Self,
+        category: SpellCategory.Neutral,
         SpellSchoolDefOf.Common, 
         manaCost: 0, 
         castTimeInSecs: 5, 

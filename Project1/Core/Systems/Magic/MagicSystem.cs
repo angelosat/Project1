@@ -39,10 +39,15 @@ internal static class MagicSystem
     public static bool CanCastSpell(Actor actor, SpellDef spell)
         => actor.Resources.GetValue(ResourceDefOf.Mana) >= spell.ManaCost;
 
-    public static SpellDef? ConsiderSpell(Actor actor, EffectDef effect, Def target)
+    public static SpellDef? ConsiderDefensiveSpell(Actor actor, EffectDef effect, Def effectTarget)
         => actor.Spellbook.Spells
         .Where(s => CanCastSpell(actor, s))
-        .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == effect && e.Target == target));
+        .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == effect && e.Target == effectTarget));
+
+    public static SpellDef? ConsiderOffensiveSpell(Actor actor, Actor target)
+       => actor.Spellbook.Spells
+       .Where(s => CanCastSpell(actor, s))
+       .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == EffectDefOf.SpellDamage && e.Target == ResourceDefOf.Health));
 }
 
 [NetworkReplicate]
@@ -59,6 +64,25 @@ public record struct ActorLearnSpellEvent(StaticWorld World, EntityRefId ActorId
     public readonly IDataWriter Write(IDataWriter w)
         => w
         .Write(this.ActorId)
+        .Write(this.SpellDef);
+}
+
+[NetworkReplicate]
+public record struct ActorCastSpellEvent(StaticWorld World, EntityRefId ActorId, EntityRefId TargetId, SpellDef SpellDef)
+    : IWorldEvent, ISerializableNewNew<ActorCastSpellEvent>
+{
+    public static ActorCastSpellEvent Create(IDataReader r)
+        => new()
+        {
+            ActorId = r.ReadEntityRefId(),
+            TargetId = r.ReadEntityRefId(),
+            SpellDef = r.ReadDef<SpellDef>()
+        };
+
+    public readonly IDataWriter Write(IDataWriter w)
+        => w
+        .Write(this.ActorId)
+        .Write(this.TargetId)
         .Write(this.SpellDef);
 }
 

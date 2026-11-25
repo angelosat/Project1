@@ -7,10 +7,12 @@ namespace Project1.Core.Systems.Magic;
 
 [Flags]
 public enum SpellSubject { Self = 0x1, Other = 0x2, Any = Self | Other }
+public enum SpellCategory { Neutral, Offensive, Defensive }
 
 public sealed class SpellDef(string name,
                              TargetType targetType,
                              SpellSubject subject,
+                             SpellCategory category,
                              SpellSchoolDef school,
                              int manaCost,
                              int castTimeInSecs,
@@ -30,6 +32,8 @@ public sealed class SpellDef(string name,
                 e.Magnitude)));
 
     public readonly TargetType TargetType = targetType;
+
+    public readonly SpellCategory Category = category;
 
     public readonly SpellSubject Subject = subject;
 }

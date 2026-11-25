@@ -27,6 +27,8 @@ static class EffectDefOf
         School = SpellSchoolDefOf.Holy,
     };
 
+    static public EffectDef SpellDamage = new("DamageResource", "Damage", new Effect_DamageResource(), typeof(ResourceDef), baseMagnitude: 50);
+
     static public EffectDef TownTeleport = new("TownPortal", "Restore", new Effect_TownTeleport(), null);
 
     static public EffectDef ConsumableCooldown = new("PotionCooldown", "Cooldown", new Effect_ConsumableCooldown(), null, baseDuration: Ticks.FromMinutes(30));

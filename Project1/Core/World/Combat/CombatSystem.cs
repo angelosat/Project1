@@ -8,6 +8,7 @@ using Project1.Core.Skills;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Effects;
+using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
 using Project1.Framework;
@@ -16,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.WebSockets;
 
 #nullable enable
 
@@ -37,14 +39,17 @@ internal static class CombatSystem
 
         Registry.WorldEventHooksClient.Register<WorldCombatFleeEvent>(OnWorldCombatFlee);
         Registry.WorldEventHooksServer.Register<WorldCombatFleeEvent>(OnWorldCombatFlee);
+
+        Registry.WorldEventHooksClient.Register<ActorCastSpellEvent>(OnActorCastSpell);
+        Registry.WorldEventHooksServer.Register<ActorCastSpellEvent>(OnActorCastSpell);
     }
 
-    internal static AttackResult ResolveHit(Actor attacker, Actor defender)
+    internal static AttackResult ResolveMeleeHit(Actor attacker, Actor defender)
     {
         var tick = attacker.World.CurrentTick;
         var attackerId = attacker.RefId;
 
-        var toHit = (int)attacker.Stats.GetFinal(StatDefOf.HitChance);
+        var toHit = (int)attacker.Stats.GetFinal(StatDefOf.MeleeHitChance);
         toHit = 100;
         var random = attacker.World.Random;
         if (!random.Roll100(toHit))
@@ -96,7 +101,7 @@ internal static class CombatSystem
         return (value, type);
     }
 
-    static public void PerformAttack(Actor attacker, Actor defender)
+    static public void ResolveWeaponAttack(Actor attacker, Actor defender)
     {
         if (!attacker.Net.IsServer)
             return;
@@ -111,7 +116,7 @@ internal static class CombatSystem
                 $"Actor mismatch for existing combat runtime."
                 );
 
-        var result = ResolveHit(attacker, defender);
+        var result = ResolveMeleeHit(attacker, defender);
 
         switch (result.Type)
         {
@@ -183,5 +188,86 @@ internal static class CombatSystem
         var other = session.GetOther(actor);
         world.Actions.Interrupt(other);
         session.MarkResolved();
+    }
+
+    internal static void SpellSuccess(Actor caster, Actor target, SpellDef spell)
+    {
+        var world = (StaticWorld)caster.World;
+        var cost = spell.ManaCost;
+        caster.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
+        foreach (var (key, mag) in spell.Effects)
+            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
+    }
+
+    private static void OnActorCastSpell(ActorCastSpellEvent e)
+    {
+        var world = e.World;
+        var actor = world.Resolve<Actor>(e.ActorId);
+        if (!world.Combat.TryGet(actor, out var session))
+            return;
+        var spell = e.SpellDef;
+        switch(spell.Category)
+        {
+            case SpellCategory.Neutral:
+            case SpellCategory.Defensive:
+                SpellSuccess(actor, actor, spell);
+                break;
+
+            case SpellCategory.Offensive:
+                var target = world.Resolve<Actor>(e.TargetId);
+                ResolveMagicHit(actor, target, spell);
+                break;
+
+            default:
+                throw new UnreachableException();
+        }
+    }
+
+    internal static void ResolveMagicHit(Actor caster, Actor target, SpellDef spell)
+    {
+        var tick = caster.World.CurrentTick;
+        var attackerId = caster.RefId;
+
+        var toHit = (int)caster.Stats.GetFinal(StatDefOf.SpellHitChance);
+        toHit = 100;
+        var world = (StaticWorld)caster.World;
+        var random = world.Random;
+        if (!random.Roll100(toHit))
+            return;// new(tick, attackerId, AttackResultTypes.Miss, DamageInfo.Empty, 0, null);
+
+        // TODO create spell crit chance stat
+        //var toCrit = (int)caster.Stats.GetFinal(StatDefOf.CriticalChance);
+        //var isCrit = random.Roll100((int)toCrit);
+
+        //var (damageValue, damageType) = GetAttackDamage(caster);
+        //damageValue = 30;
+        var damageType = spell.School.DamageType;
+        var damageValue = 30;
+
+        //var bodyPartTargetDef = AttackTargets.SelectRandomWeighted(random, s => s.AttackTargetWeight); // TODO make bodypart selection weighted
+        //var bodyPartGear = target.Gear.GetGear(bodyPartTargetDef);
+        //float armor = bodyPartGear?.ToolComponent.Armor ?? 0f;
+
+        var resistandeDef = DamageToResistanceDefs[damageType];
+        var resistanceStat = StatSystem.GetDerivedStat(resistandeDef);
+        var resistance = target.Stats.GetFinal(resistanceStat);
+
+        var multiplier = 1f;// isCrit ? 1.5f : 1f;
+
+        var finalMagnitudeMultiplier = multiplier * (1f - resistance);
+
+        var rawValue = damageValue * multiplier;
+        var finalValue = rawValue * 100f / (100f + resistance);
+
+        var finalDamage = new DamageInfo((int)finalValue, damageType);
+
+        var preventedDamage = rawValue - finalDamage.Value;
+
+        foreach(var (effectKey, mag) in spell.Effects)
+        {
+            var final = mag * finalMagnitudeMultiplier;
+            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, effectKey.Def, effectKey.Target, (int)final));
+        }
+        //return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, rawValue, bodyPartTargetDef);
     }
 }

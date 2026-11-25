@@ -7,7 +7,7 @@ using System;
 
 namespace Project1.Core.Stats;
 
-sealed class StatResolver_HitChance : StatResolver
+sealed class StatResolver_MeleeHitChance : StatResolver
 {
     const int _min = 5, _fromSkill = 85, _fromDex = 5;
     const float _k = 20f;
@@ -22,6 +22,19 @@ sealed class StatResolver_HitChance : StatResolver
         s /= 100f;
         var d = Math.Max(0, dexterity);
         var h = _min + _fromSkill * s + _fromDex * s * d / (d + _k);
+        return h;
+    }
+}
+
+sealed class StatResolver_SpellHitChance : StatResolver
+{
+    const int _min = 5, _fromAttribute = 90;
+    const float _k = 20f;
+    public override float CalculateActorStat(StatDef def, Actor actor)
+    {
+        var intelligence = actor.Attributes.GetLevel(AttributeDefOf.Intelligence);
+        var d = Math.Max(0, intelligence);
+        var h = _min + _fromAttribute * d / (d + _k);
         return h;
     }
 }

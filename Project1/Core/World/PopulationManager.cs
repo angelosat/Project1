@@ -151,6 +151,7 @@ public sealed class PopulationManager : Inspectable, ISaveable, ISerializable
         actor.Skills.SetLevel(SkillDefOf.Maces, 50);
 
         actor.Spellbook.Add(SpellDefOf.Healing);
+        actor.Spellbook.Add(SpellDefOf.Fireball);
 
         //actor.Resources.SetPercentage(ResourceDefOf.Health, .2f);
 

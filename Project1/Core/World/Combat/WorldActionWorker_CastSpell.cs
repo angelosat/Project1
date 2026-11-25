@@ -1,5 +1,6 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Towns.Services.Spells;
 using Project1.Core.World.Actions;
@@ -41,6 +42,8 @@ internal sealed class WorldActionWorker_CastSpell : WorldActionWorker
         var target = data.World.Resolve<Actor>(typed.TargetId);
         var spell = typed.SpellDef;
         SpellSystem.SpellSuccess(actor, target, spell);
+        CombatSystem.SpellSuccess(actor, target, spell);
+        actor.World.Events.Post(new ActorCastSpellEvent((StaticWorld)actor.World, actor.RefId, typed.TargetId, spell));
         //var cost = spell.ManaCost;
         //actor.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
         //foreach (var (key, mag) in spell.Effects)

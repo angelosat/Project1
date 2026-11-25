@@ -64,7 +64,14 @@ public static readonly StatDef MaxHaulWeight = new("Max Haul Weight", typeof(Sta
         BaseValue = 5f,
     };
 
-    public static readonly StatDef HitChance = new("Hit Chance", typeof(StatResolver_HitChance))
+    public static readonly StatDef MeleeHitChance = new("Melee Hit Chance", typeof(StatResolver_MeleeHitChance))
+    {
+        Description = "Hit chance",
+        Type = StatDef.Types.Percentile,
+        //BaseValue = .5f,
+        //BaseValue = 50f,
+    };
+    public static readonly StatDef SpellHitChance = new("Spell Hit Chance", typeof(StatResolver_SpellHitChance))
     {
         Description = "Hit chance",
         Type = StatDef.Types.Percentile,

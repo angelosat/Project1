@@ -40,5 +40,5 @@ internal sealed class WorldActionWorker_Loot : WorldActionWorker
     }
 
     static public void Begin(Actor actor, EntityRefId[] loot)
-        => (actor.World as StaticWorld).Actions.Begin(WorldActionDefOf.Loot, new WorldActionData_Loot(actor) { Loot = loot });
+        => (actor.World as StaticWorld).Actions.Begin(new WorldActionData_Loot(actor) { Loot = loot });
 }

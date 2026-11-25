@@ -32,8 +32,8 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
 {
     internal override Type DataType => typeof(WorldActionData_Attack);
 
-    public static (WorldActionDef, WorldActionData) Create(Actor actor, EntityRefId targetId)
-        => (WorldActionDefOf.Attack, new WorldActionData_Attack(actor) { TargetId =  targetId });
+    //public static (WorldActionDef, WorldActionData) Create(Actor actor, EntityRefId targetId)
+    //    => (WorldActionDefOf.Attack, new WorldActionData_Attack(actor) { TargetId =  targetId });
 
     static WorldActionData_Attack Typed(WorldActionData data) => (WorldActionData_Attack)data;
 
@@ -61,7 +61,7 @@ internal sealed class WorldActionWorker_Attack : WorldActionWorker
             return;
         }
 
-        CombatSystem.PerformAttack(actor, target);
+        CombatSystem.ResolveWeaponAttack(actor, target);
         if (target.Biology.IsIncapacitated)
         {
             var invItems = target.Inventory.GetItems();

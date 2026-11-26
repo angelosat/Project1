@@ -49,7 +49,8 @@ static class EffectDefOf
                                           new Effect_DoT(),
                                           null,
                                           context: SpellSchoolDefOf.Fire,
-                                          baseDuration: (int)Ticks.FromSeconds(.5f),
+                                          baseDuration: null,
+                                          tickPeriod: (int)Ticks.FromSeconds(.5f),
                                           tickCount: 10,
                                           baseMagnitude: 2);
 

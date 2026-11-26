@@ -34,29 +34,41 @@ public sealed class EffectsComp : EntityComp
 
     public IReadOnlyList<EntityEffectRuntime> Active => this.ActiveEffects;
 
-    public void Apply(EntityEffectRuntime effect)
+    public void Apply(EntityEffectRuntime runtime)
     {
-        effect.Start(this.Owner as Actor);
-        if (!effect.IsInstant)
-            AddInt(effect);
-        else
-            effect.Finish(this.Owner as Actor);
-        //this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
-    }
-
-    private void AddInt(EntityEffectRuntime f)
-    {
-        if (this.Any(f.Def, f.Target))
+        if (this.Any(runtime.Def, runtime.Target))
         {
             //throw new InvalidOperationException(
-            $"Tried to apply duplicate effect {f.Def}:{f.Target}"
+            $"Tried to apply duplicate effect {runtime.Def}:{runtime.Target}"
                 .ToConsole();
             //);
             return;
         }
-        this.ActiveEffects.Add(f);
-        this.Changed?.Invoke(([f], []));
+        runtime.Start(this.Owner as Actor);
+        if (!runtime.IsInstant)
+        //AddInt(effect);
+        {
+            this.ActiveEffects.Add(runtime);
+            this.Changed?.Invoke(([runtime], []));
+        }
+        else
+            runtime.Finish(this.Owner as Actor);
+        //this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
     }
+
+    //private void AddInt(EntityEffectRuntime f)
+    //{
+    //    //if (this.Any(f.Def, f.Target))
+    //    //{
+    //    //    //throw new InvalidOperationException(
+    //    //    $"Tried to apply duplicate effect {f.Def}:{f.Target}"
+    //    //        .ToConsole();
+    //    //    //);
+    //    //    return;
+    //    //}
+    //    this.ActiveEffects.Add(f);
+    //    this.Changed?.Invoke(([f], []));
+    //}
 
     internal void RemoveInternal(EffectDef f)
     {
@@ -75,7 +87,7 @@ public sealed class EffectsComp : EntityComp
     //    }
     //}
 
-    public bool TryGet(EffectDef def, Def target, out ulong ticksRemaining)
+    public bool TryGet(EffectDef def, Def target, out SimulationDuration? ticksRemaining)
     {
         if (this.ActiveEffects.FirstOrDefault(f => f.Def == def && f.Target == target) is not EntityEffectRuntime runtime)
         {
@@ -86,13 +98,30 @@ public sealed class EffectsComp : EntityComp
         return true;
     }
 
+    //internal void Abort(EffectDef effect, Def target)
+    //{
+    //    var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect && f.Target == target);
+    //    foreach (var f in relevantEffects)
+    //    {
+    //        f.Abort();
+    //        this.Owner.Map.World.Events.Post(new ActorEffectAbortedEvent(this.Owner as Actor, f));
+    //    }
+    //}
     internal void Abort(EffectDef effect, Def target)
     {
-        var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect && f.Target == target);
+        var relevantEffects = this.ActiveEffects
+            .Where(f => f.Def == effect && f.Target == target);
+
         foreach (var f in relevantEffects)
         {
+            if (f.IsFinished || f.IsExpired)
+                continue;
+
             f.Abort();
-            this.Owner.Map.World.Events.Post(new ActorEffectAbortedEvent(this.Owner as Actor, f));
+            f.Finish(this.Owner as Actor);
+
+            this.Owner.Map.World.Events.Post(
+                new ActorEffectAbortedEvent(this.Owner as Actor, f));
         }
     }
 
@@ -103,7 +132,9 @@ public sealed class EffectsComp : EntityComp
         var actor = this.Owner as Actor;
         foreach (var w in this.ActiveEffects)
         {
-            w.Tick(actor);
+            if (!w.IsFinished)
+                w.Tick(actor);
+
             if (w.IsExpired || w.IsFinished)
             {
                 w.Finish(actor);

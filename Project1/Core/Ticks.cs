@@ -32,8 +32,8 @@ static class Ticks
         => PerGameDay * days;
     
     public static int From( int days, int hours, int minutes)
-        => FromDays(days) * FromHours(hours) * FromMinutes(minutes);
-    
+        => FromDays(days) + FromHours(hours) + FromMinutes(minutes);
+
 
     public static TimeSpan ToTimespan(int ingameTicks)
         => TimeSpan.FromSeconds(PerGameSecond * ingameTicks);

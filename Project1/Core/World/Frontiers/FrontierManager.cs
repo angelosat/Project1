@@ -36,7 +36,7 @@ public sealed class FrontierManager : WorldComp, IWorldSpaceManager
     static readonly List<PoIRuntime> PoIs = new();
     static internal List<FrontierDecider> Deciders = [];
 
-    readonly static ulong IncapacitationDuration = (ulong)Ticks.FromHours(1); //FromMinutes(10);
+    readonly static SimulationDuration IncapacitationDuration = Ticks.FromHours(1); //FromMinutes(10);
     readonly List<Actor> toKill = [];
     static FrontierManager()
     {

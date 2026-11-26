@@ -21,8 +21,10 @@ sealed class Gui_Effects : SelectionBoundControl
             .AddColumn("remaining", 128, e => new Label(() =>
             {
                 var span = e.RemainingTimespan(Comp.Owner.World.CurrentTick);
+                if (!span.HasValue)
+                    return string.Empty;
                 //return $"{span.Hours} m {span.Minutes} s";
-                return span.Hours > 0 ? $"{span.Hours} h" : $"{span.Minutes} s";
+                return span.Value.Hours > 0 ? $"{span.Value.Hours} h" : $"{span.Value.Minutes} s";
             }));
         var scrollbox = ScrollableBoxNewNewNew.FromWidth(Table, Table.RowWidth, UIManager.DefaultLabelHeight * 16);
         Controls.Add(scrollbox.ToPanelLabeled("Active Effects"));

@@ -15,6 +15,7 @@ public static class DamageDefOf
     //public static readonly DamageDef Sawing = new("Sawing", DamageTypeDefOf.Physical);
     public static readonly DamageDef Fire = new("Fire", DamageTypeDefOf.Elemental);
     public static readonly DamageDef Holy = new("Holy", DamageTypeDefOf.Elemental);
+    public static readonly DamageDef Nature = new("Nature", DamageTypeDefOf.Elemental);
     public static readonly DamageDef Ice = new("Ice", DamageTypeDefOf.Elemental);
     public static readonly DamageDef Poison = new("Poison", DamageTypeDefOf.Elemental);
     public static readonly DamageDef Acid = new("Acid", DamageTypeDefOf.Elemental);

@@ -6,6 +6,7 @@ using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Framework;
 using Project1.Framework.Serialization;
+using System;
 using System.Linq;
 
 #nullable enable
@@ -39,10 +40,27 @@ internal static class MagicSystem
     public static bool CanCastSpell(Actor actor, SpellDef spell)
         => actor.Resources.GetValue(ResourceDefOf.Mana) >= spell.ManaCost;
 
-    public static SpellDef? ConsiderDefensiveSpell(Actor actor, EffectDef effect, Def effectTarget)
+    public static SpellDef? ConsiderDefensiveSpell(Actor actor, EffectDef effect, Def? effectTarget)
         => actor.Spellbook.Spells
-        .Where(s => CanCastSpell(actor, s))
+        .Where(s => s.Category == SpellCategory.Defensive && 
+                    CanCastSpell(actor, s))
         .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == effect && e.Target == effectTarget));
+
+    public static bool TryConsiderSpellByEffect(Actor actor, EffectDef effect, Def? effectTarget, out SpellDef? spell)
+    {
+        spell = actor.Spellbook.Spells
+            .Where(s => CanCastSpell(actor, s))
+            .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == effect && e.Target == effectTarget));
+        return spell is not null;
+    }
+
+    public static bool TryConsiderSpell(Actor actor, Func<SpellDef, bool> filter, out SpellDef? spell)
+    {
+        spell = actor.Spellbook.Spells
+            .Where(s => CanCastSpell(actor, s))
+            .FirstOrDefault(filter);
+        return spell is not null;
+    }
 
     public static SpellDef? ConsiderOffensiveSpell(Actor actor, Actor target)
        => actor.Spellbook.Spells

@@ -7,7 +7,7 @@ namespace Project1.Core.Systems.Magic;
 
 public sealed class Effect_DoT : EntityEffectWorker
 {
-    public override EffectDef Def => EffectDefOf.Burning;
+    //public override EffectDef Def => EffectDefOf.Burning;
 
     protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
@@ -20,9 +20,28 @@ public sealed class Effect_DoT : EntityEffectWorker
         actor.Resources.ApplyDelta(ResourceDefOf.Health, -(int)runtime.Budget.Value);
     }
 
-    internal override Color GetTint(Def target)
-    => ((SpellSchoolDef)this.Def.Context).Color;
+    internal override Color GetTint(EffectDef def, Def target)
+        => ((SpellSchoolDef)def.Context).Color;
 
-    internal override string GetString(Def target, int magnitude)
-        => $"{base.GetString(target, magnitude)} damage over time";
+    internal override string GetString(EffectDef def, Def target, int magnitude)
+        => $"{base.GetString(def, target, magnitude)} damage over time";
+}
+
+public sealed class Effect_HoT : EntityEffectWorker
+{
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
+    {
+
+    }
+
+    protected override void OnTick(Actor actor, EntityEffectRuntime runtime)
+    {
+        actor.Resources.ApplyDelta(ResourceDefOf.Health, -(int)runtime.Budget.Value);
+    }
+
+    internal override Color GetTint(EffectDef def, Def target)
+        => ((SpellSchoolDef)def.Context).Color;
+
+    internal override string GetString(EffectDef def, Def target, int magnitude)
+        => $"{base.GetString(def, target, magnitude)} healing over time";
 }

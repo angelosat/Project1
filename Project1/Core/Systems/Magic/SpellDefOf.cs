@@ -30,6 +30,15 @@ public static class SpellDefOf
         castTimeInSecs: 5, 
         [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 50)]);
 
+    public static readonly SpellDef Mending = new("Mending",
+        TargetType.Entity,
+        subject: SpellSubject.Any,
+        category: SpellCategory.Defensive,
+        school: SpellSchoolDefOf.Nature,
+        manaCost: 20,
+        castTimeInSecs: 2,
+        [new(EffectDefOf.Mending, ResourceDefOf.Health, 50)]);
+
     public static readonly SpellDef HealingPotion = new("HealingPotion",
         TargetType.Entity,
         subject: SpellSubject.Any,
@@ -48,6 +57,7 @@ public static class SpellDefOf
         manaCost: 10, 
         castTimeInSecs: 1, 
         [new(EffectDefOf.FortifyResource, ResourceDefOf.Health, 10)]);
+
     public static readonly SpellDef Teleporting = new("Teleporting", 
         TargetType.Entity,
         subject: SpellSubject.Self,

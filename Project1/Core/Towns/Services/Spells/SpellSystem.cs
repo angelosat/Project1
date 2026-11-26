@@ -60,7 +60,7 @@ internal static class SpellSystem
             foreach (var (effect, mag) in effects)
             {
                 //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
-                var fxruntime = effect.Def.Worker.CreateRuntime(effect.Target, mag);
+                var fxruntime = effect.Def.Worker.CreateRuntime(effect.Def, effect.Target, mag);
                 target.Effects.Apply(fxruntime);
             }
             caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);

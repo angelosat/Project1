@@ -9,10 +9,10 @@ namespace Project1.Core.Systems.Effects;
 
 public abstract class EntityEffectWorker
 {
-    public abstract EffectDef Def { get; }
+    //public abstract EffectDef Def { get; }
 
-    internal virtual EntityEffectRuntime CreateRuntime(Def? context, int magnitude)
-        => new(this.Def, context, magnitude, 0);
+    internal virtual EntityEffectRuntime CreateRuntime(EffectDef def, Def? context, int magnitude)
+        => new(def, context, magnitude, 0);
 
     protected abstract void OnStart(Actor actor, EntityEffectRuntime runtime);
 
@@ -41,11 +41,12 @@ public abstract class EntityEffectWorker
         this.OnTick(actor, runtime);
     }
 
-    internal virtual string Label(Def? context) => $"{this.Def.Verb} {context?.LabelReadable}";
-    internal virtual string GetString(Def? context, int magnitude) 
-        => $"{this.Def.Verb} [{magnitude}] {context?.LabelReadable}";
+    internal virtual string Label(EffectDef def, Def? context) => $"{def.Verb} {context?.LabelReadable}";
 
-    internal virtual Color GetTint(Def context) => Color.White;
+    internal virtual string GetString(EffectDef def, Def? context, int magnitude) 
+        => $"{def.Verb} [{magnitude}] {context?.LabelReadable}";
+
+    internal virtual Color GetTint(EffectDef def, Def context) => Color.White;
 
     internal virtual IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor)
         => [];

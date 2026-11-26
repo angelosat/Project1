@@ -38,9 +38,15 @@ static class ActorCombatAISystem
                ConsumableSystem.FindInInventory(actor, ResourceDefOf.Health) is Entity item)
                 return new WorldActionData_Consume(actor) { ItemId = item.RefId };
 
-            if (MagicSystem.CanCastSpell(actor) &&
-               MagicSystem.ConsiderDefensiveSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
-                return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
+            if (MagicSystem.CanCastSpell(actor))
+            {
+                //if (MagicSystem.ConsiderDefensiveSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
+                //    return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
+                if (MagicSystem.TryConsiderSpellByEffect(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health, out var spell))
+                    return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
+                if (MagicSystem.TryConsiderSpellByEffect(actor, EffectDefOf.Mending, null, out spell))
+                    return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
+            }
         }
 
         if (session.CanFlee(actor))

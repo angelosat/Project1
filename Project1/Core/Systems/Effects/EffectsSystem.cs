@@ -41,9 +41,9 @@ static class EffectsSystem
         actor.Effects.RemoveInternal(effectDef);
     }
 
-    static public EntityEffectRuntime CreateRuntime(EntityEffectKey key, int magnitude)
-        => key.Def.Worker.CreateRuntime(key.Target, magnitude);
+    //static public EntityEffectRuntime CreateRuntime(EntityEffectKey key, int magnitude)
+    //    => key.Def.Worker.CreateRuntime(key.Target, magnitude);
 
     static EntityEffectRuntime CreateRuntime(EffectDef effect, Def? target, int magnitude)
-       => effect.Worker.CreateRuntime(target, magnitude);
+       => effect.Worker.CreateRuntime(effect, target, magnitude);
 }

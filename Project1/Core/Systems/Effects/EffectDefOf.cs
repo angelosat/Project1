@@ -54,6 +54,16 @@ static class EffectDefOf
                                           tickCount: 10,
                                           baseMagnitude: 2);
 
+    static public EffectDef Mending = new("Mending",
+                                      "Mending",
+                                      new Effect_HoT(),
+                                      null,
+                                      context: SpellSchoolDefOf.Nature,
+                                      baseDuration: null,
+                                      tickPeriod: (int)Ticks.FromSeconds(.5f),
+                                      tickCount: 10,
+                                      baseMagnitude: 2);
+
     static public EffectDef TownTeleport = new("TownPortal", "Restore", new Effect_TownTeleport(), null, baseDuration: 0);
 
     static public EffectDef ConsumableCooldown = new("PotionCooldown", "Cooldown", new Effect_ConsumableCooldown(), null, baseDuration: Ticks.FromMinutes(30));

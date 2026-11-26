@@ -47,7 +47,9 @@ internal static class MagicSystem
     public static SpellDef? ConsiderOffensiveSpell(Actor actor, Actor target)
        => actor.Spellbook.Spells
        .Where(s => CanCastSpell(actor, s))
-       .FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == EffectDefOf.SpellDamage && e.Target == ResourceDefOf.Health));
+       .Where(s => s.Effects.All(e => !target.Effects.Any(e.Key.Def)))
+       //.FirstOrDefault(s => s.Effects.Keys.Any(e => e.Def == EffectDefOf.SpellDamage && e.Target == ResourceDefOf.Health));
+       .FirstOrDefault(s => s.Category == SpellCategory.Offensive);
 }
 
 [NetworkReplicate]

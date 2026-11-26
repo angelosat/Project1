@@ -41,8 +41,8 @@ internal sealed class WorldActionWorker_CastSpell : WorldActionWorker
         var actor = data.Actor;
         var target = data.World.Resolve<Actor>(typed.TargetId);
         var spell = typed.SpellDef;
-        SpellSystem.SpellSuccess(actor, target, spell);
-        CombatSystem.SpellSuccess(actor, target, spell);
+        //SpellSystem.SpellSuccess(actor, target, spell);
+        //CombatSystem.SpellSuccess(actor, target, spell);
         actor.World.Events.Post(new ActorCastSpellEvent((StaticWorld)actor.World, actor.RefId, typed.TargetId, spell));
         //var cost = spell.ManaCost;
         //actor.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);

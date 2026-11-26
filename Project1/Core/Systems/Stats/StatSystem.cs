@@ -184,7 +184,7 @@ public static class StatSystem
         InvalidateStats(actor, wrapper);
     }
 
-    private static void InvalidateStats(Actor actor, EntityEffectWrapper effect)
+    private static void InvalidateStats(Actor actor, EntityEffectRuntime effect)
     {
         var bonuses = effect.GetStatModifiers(actor);
         foreach (var (statDef, _) in bonuses)

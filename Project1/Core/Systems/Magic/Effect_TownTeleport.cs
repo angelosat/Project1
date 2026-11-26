@@ -9,7 +9,7 @@ public sealed class Effect_TownTeleport : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.TownTeleport;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
         if (actor.IsSpawned)
             throw new InvalidOperationException();

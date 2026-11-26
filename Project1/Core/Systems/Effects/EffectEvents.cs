@@ -8,7 +8,7 @@ using Project1.Framework.Serialization;
 namespace Project1.Core.Systems.Effects
 {
     //public record struct ActorEffectAppliedEvent(Actor Actor, EntityEffectWrapper Effect) : IEventPayload { }
-    public record struct ActorEffectAbortedEvent(Actor Actor, EntityEffectWrapper Effect) : IEventPayload { }
+    public record struct ActorEffectAbortedEvent(Actor Actor, EntityEffectRuntime Effect) : IEventPayload { }
 
     [NetworkReplicate]
     public record struct ActorEffectRemovedEvent(StaticWorld World,

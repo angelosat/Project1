@@ -3,6 +3,7 @@ using Project1.Core.AI.Behaviors;
 using Project1.Core.Interactions;
 using Project1.Core.Resources;
 using Project1.Core.Systems.Effects;
+using Project1.Core.Systems.Stats;
 using Project1.Framework;
 
 namespace Project1.Core.Systems.Magic;
@@ -17,7 +18,8 @@ public static class SpellDefOf
         school: SpellSchoolDefOf.Fire,
         manaCost: 20,
         castTimeInSecs: 5,
-        [new(EffectDefOf.SpellDamage, ResourceDefOf.Health, 10)]);
+        [new(EffectDefOf.SpellDamage, 0),
+         new(EffectDefOf.Burning, 1)]);
 
     public static readonly SpellDef Healing = new("Healing", 
         TargetType.Entity, 

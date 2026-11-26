@@ -1,4 +1,5 @@
-﻿using Project1.Core.Entities;
+﻿using Project1.Core.Components;
+using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;
@@ -17,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.WebSockets;
 
 #nullable enable
 
@@ -175,7 +175,7 @@ internal static class CombatSystem
             // TODO report flee failure
             return;
         }
-        actor.Effects.Apply(new EntityEffectWrapper(EffectDefOf.Fled, null, null, 0, duration: EffectDefOf.Fled.BaseDuration));
+        actor.Effects.Apply(new EntityEffectRuntime(EffectDefOf.Fled, null, null, 0));
         world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
         // TODO report flee success
     }
@@ -202,6 +202,8 @@ internal static class CombatSystem
     private static void OnActorCastSpell(ActorCastSpellEvent e)
     {
         var world = e.World;
+        if (!world.Net.IsServer)
+            return;
         var actor = world.Resolve<Actor>(e.ActorId);
         if (!world.Combat.TryGet(actor, out var session))
             return;
@@ -239,14 +241,7 @@ internal static class CombatSystem
         //var toCrit = (int)caster.Stats.GetFinal(StatDefOf.CriticalChance);
         //var isCrit = random.Roll100((int)toCrit);
 
-        //var (damageValue, damageType) = GetAttackDamage(caster);
-        //damageValue = 30;
         var damageType = spell.School.DamageType;
-        var damageValue = 30;
-
-        //var bodyPartTargetDef = AttackTargets.SelectRandomWeighted(random, s => s.AttackTargetWeight); // TODO make bodypart selection weighted
-        //var bodyPartGear = target.Gear.GetGear(bodyPartTargetDef);
-        //float armor = bodyPartGear?.ToolComponent.Armor ?? 0f;
 
         var resistandeDef = DamageToResistanceDefs[damageType];
         var resistanceStat = StatSystem.GetDerivedStat(resistandeDef);
@@ -255,13 +250,6 @@ internal static class CombatSystem
         var multiplier = 1f;// isCrit ? 1.5f : 1f;
 
         var finalMagnitudeMultiplier = multiplier * (1f - resistance);
-
-        var rawValue = damageValue * multiplier;
-        var finalValue = rawValue * 100f / (100f + resistance);
-
-        var finalDamage = new DamageInfo((int)finalValue, damageType);
-
-        var preventedDamage = rawValue - finalDamage.Value;
 
         foreach(var (effectKey, mag) in spell.Effects)
         {

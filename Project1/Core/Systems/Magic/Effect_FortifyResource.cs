@@ -9,13 +9,13 @@ public sealed class Effect_FortifyResource : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.FortifyResource;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;
         var max = actor.Resources.GetMax(resource);
         actor.Resources.SetMax(resource, max + (int)wrapper.RemainingBudget.Value);
     }
-    protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnFinish(Actor actor, EntityEffectRuntime wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;
         var max = actor.Resources.GetMax(resource);

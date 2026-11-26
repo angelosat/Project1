@@ -9,7 +9,7 @@ public sealed class Effect_RestoreResource : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.RestoreResource;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
         var resource = (ResourceDef)wrapper.Target;
         actor.Resources.ApplyDelta(resource, (int)wrapper.Budget.Value);

@@ -53,8 +53,8 @@ static class ActorCombatAISystem
         }
 
         if (MagicSystem.CanCastSpell(actor) &&
-               MagicSystem.ConsiderOffensiveSpell(actor, target) is SpellDef spellOffensice)
-            return new WorldActionData_CastSpell(actor) { SpellDef = spellOffensice, TargetId = target.RefId };
+               MagicSystem.ConsiderOffensiveSpell(actor, target) is SpellDef spellOffensive)
+            return new WorldActionData_CastSpell(actor) { SpellDef = spellOffensive, TargetId = target.RefId };
 
         return new WorldActionData_Attack(actor) { TargetId = target.RefId };
     }

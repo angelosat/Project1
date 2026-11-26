@@ -11,7 +11,7 @@ public sealed class Effect_Flee : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.Fled;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
         //actor.World.Events.Post(new ActorStatBonusModifiedEvent((StaticWorld)actor.World,
         //                                                        actor.RefId,

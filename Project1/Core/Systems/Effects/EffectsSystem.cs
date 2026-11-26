@@ -23,7 +23,7 @@ static class EffectsSystem
     private static void OnActorEffectApplied(ActorEffectAppliedNewEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
-        actor.Effects.Apply(CreateInstance(e.EffectDef, e.OptionalTarget, e.Magnitude));
+        actor.Effects.Apply(CreateRuntime(e.EffectDef, e.OptionalTarget, e.Magnitude));
     }
 
     private static void OnActorEffectIndexedRemoved(ActorEffectRemovedIndexedEvent e)
@@ -41,9 +41,9 @@ static class EffectsSystem
         actor.Effects.RemoveInternal(effectDef);
     }
 
-    static public EntityEffectWrapper CreateInstance(EntityEffectKey key, int magnitude)
-        => key.Def.Worker.CreateWrapper(key.Target, magnitude);
+    static public EntityEffectRuntime CreateRuntime(EntityEffectKey key, int magnitude)
+        => key.Def.Worker.CreateRuntime(key.Target, magnitude);
 
-    static EntityEffectWrapper CreateInstance(EffectDef effect, Def? target, int magnitude)
-       => effect.Worker.CreateWrapper(target, magnitude);
+    static EntityEffectRuntime CreateRuntime(EffectDef effect, Def? target, int magnitude)
+       => effect.Worker.CreateRuntime(target, magnitude);
 }

@@ -22,7 +22,7 @@ public static class HungerUtility
     public static void ActorDigesting(Actor actor, Entity item)
     {
         var nutrition = GetNutrition(actor, item);
-        var effect = new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, budget: nutrition, ticksPerUnit: 0);
+        var effect = new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, budget: nutrition, ticksPerUnit: 0);
         actor.Effects.Apply(effect);
         item.Consume(1);
     }

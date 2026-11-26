@@ -18,23 +18,23 @@ public sealed class EffectsComp : EntityComp
     int NextInstanceId => ++field;
     public ChangeNotifier Notifier = new();
 
-    public event Action<(IEnumerable<EntityEffectWrapper> added, IEnumerable<EntityEffectWrapper> removed)> Changed;
+    public event Action<(IEnumerable<EntityEffectRuntime> added, IEnumerable<EntityEffectRuntime> removed)> Changed;
 
     public override EntityCompDef CompDef => EntityCompDefOf.Effects;
 
     public new class Spec : Spec<EffectsComp> { }
 
-    public EntityEffectWrapper GetEffect(EffectDef def) => this.ActiveEffects.First(e => e.Def == def);
+    public EntityEffectRuntime GetEffect(EffectDef def) => this.ActiveEffects.First(e => e.Def == def);
 
-    public EntityEffectWrapper? GetEffect(EffectDef def, Def target) => this.ActiveEffects.FirstOrDefault(e => e.Def == def && e.Target == target);
+    public EntityEffectRuntime? GetEffect(EffectDef def, Def target) => this.ActiveEffects.FirstOrDefault(e => e.Def == def && e.Target == target);
 
     public override string Name => "Effects";
 
-    List<EntityEffectWrapper> ActiveEffects = [];
+    List<EntityEffectRuntime> ActiveEffects = [];
 
-    public IReadOnlyList<EntityEffectWrapper> Active => this.ActiveEffects;
+    public IReadOnlyList<EntityEffectRuntime> Active => this.ActiveEffects;
 
-    public void Apply(EntityEffectWrapper effect)
+    public void Apply(EntityEffectRuntime effect)
     {
         effect.Start(this.Owner as Actor);
         if (!effect.IsInstant)
@@ -44,11 +44,16 @@ public sealed class EffectsComp : EntityComp
         //this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
     }
 
-    private void AddInt(EntityEffectWrapper f)
+    private void AddInt(EntityEffectRuntime f)
     {
         if (this.Any(f.Def, f.Target))
-            throw new InvalidOperationException(
-                $"Tried to apply duplicate effect {f.Def}:{f.Target}");
+        {
+            //throw new InvalidOperationException(
+            $"Tried to apply duplicate effect {f.Def}:{f.Target}"
+                .ToConsole();
+            //);
+            return;
+        }
         this.ActiveEffects.Add(f);
         this.Changed?.Invoke(([f], []));
     }
@@ -72,7 +77,7 @@ public sealed class EffectsComp : EntityComp
 
     public bool TryGet(EffectDef def, Def target, out ulong ticksRemaining)
     {
-        if (this.ActiveEffects.FirstOrDefault(f => f.Def == def && f.Target == target) is not EntityEffectWrapper runtime)
+        if (this.ActiveEffects.FirstOrDefault(f => f.Def == def && f.Target == target) is not EntityEffectRuntime runtime)
         {
             ticksRemaining = default;
             return false;
@@ -91,7 +96,7 @@ public sealed class EffectsComp : EntityComp
         }
     }
 
-    readonly List<EntityEffectWrapper> toRemove = [];
+    readonly List<EntityEffectRuntime> toRemove = [];
 
     public override void Tick()
     {
@@ -106,8 +111,14 @@ public sealed class EffectsComp : EntityComp
             }
         }
         foreach (var f in toRemove)
+            if(actor.Net.IsServer)
             this.Owner.World.Events.Post(new ActorEffectRemovedIndexedEvent((StaticWorld)this.Owner.World, this.Owner.RefId, this.ActiveEffects.IndexOf(f)));
         toRemove.Clear();
+    }
+
+    public override void TickOffMap()
+    {
+        this.Tick();
     }
 
     public override void Write(IDataWriter w)
@@ -117,7 +128,7 @@ public sealed class EffectsComp : EntityComp
 
     public override void Read(IDataReader r)
     {
-        this.ActiveEffects = r.ReadList<EntityEffectWrapper>();
+        this.ActiveEffects = r.ReadList<EntityEffectRuntime>();
     }
 
     internal override void SaveExtra(SaveTag tag)
@@ -127,7 +138,7 @@ public sealed class EffectsComp : EntityComp
 
     internal override void LoadExtra(SaveTag tag)
     {
-        this.ActiveEffects = tag.LoadList<EntityEffectWrapper>("ActiveEffects");
+        this.ActiveEffects = tag.LoadList<EntityEffectRuntime>("ActiveEffects");
     }
 
     internal override GroupBox GetDetailedGui()

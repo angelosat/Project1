@@ -7,7 +7,7 @@ namespace Project1.Core.Systems.Effects
     {
         public override EffectDef Def => null;
 
-        protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+        protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
         {
             //var rate = wrapper.Rate;
             //var need = actor.GetNeed(AdventurerNeedsDefOf.Adventuring);
@@ -16,7 +16,7 @@ namespace Project1.Core.Systems.Effects
             //else
             //    need.AddMod(EffectDefOf.Adventuring, rate); 
         }
-        protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
+        protected override void OnFinish(Actor actor, EntityEffectRuntime wrapper)
         {
             //var rate = wrapper.Rate;
             //actor.GetNeed(AdventurerNeedsDefOf.Adventuring).RemoveMod(EffectDefOf.Adventuring);

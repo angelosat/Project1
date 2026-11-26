@@ -9,7 +9,7 @@ internal sealed class Effect_ConsumableCooldown : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.ConsumableCooldown;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
     }
 

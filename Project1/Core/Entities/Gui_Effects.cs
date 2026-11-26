@@ -9,13 +9,13 @@ namespace Project1.Core.Entities;
 
 sealed class Gui_Effects : SelectionBoundControl
 {
-    readonly Table<EntityEffectWrapper> Table;
+    readonly Table<EntityEffectRuntime> Table;
 
     EffectsComp Comp;
 
     public Gui_Effects()
     {
-        Table = new Table<EntityEffectWrapper>()
+        Table = new Table<EntityEffectRuntime>()
             //.AddColumn("name", 128, e => new LabelNew(e.Def.LabelReadable))
             .AddColumn("name", 128, e => new LabelNew(e.Def.Worker.GetString(e.Target, 0)))
             .AddColumn("remaining", 128, e => new Label(() =>
@@ -40,7 +40,7 @@ sealed class Gui_Effects : SelectionBoundControl
         Table.AddItems(actor.Effects.Active);
     }
 
-    private void Comp_Changed((IEnumerable<EntityEffectWrapper> added, IEnumerable<EntityEffectWrapper> removed) e)
+    private void Comp_Changed((IEnumerable<EntityEffectRuntime> added, IEnumerable<EntityEffectRuntime> removed) e)
     {
         Table.RemoveItems(e.removed);
         Table.AddItems(e.added);

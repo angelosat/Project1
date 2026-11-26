@@ -16,7 +16,7 @@ sealed class InteractionSleepInBedLogic : InteractionLogic
     {
         NeedRuntime _energy;
         NeedRuntime Energy => _energy ??= this.Actor.GetNeed(NeedDefOf.Energy);
-        internal EntityEffectWrapper Effect => field ??= this.Actor.Effects.GetEffect(EffectDefOf.ModifyNeed, NeedDefOf.Energy);
+        internal EntityEffectRuntime Effect => field ??= this.Actor.Effects.GetEffect(EffectDefOf.ModifyNeed, NeedDefOf.Energy);
         public override float ProgressBarPercentage => this.Energy.Percentage;
     }
     protected override InteractionContext CreateContextInt() => new Context();
@@ -39,7 +39,7 @@ sealed class InteractionSleepInBedLogic : InteractionLogic
         //a.Net.LogStateChange(a);
         //a.Effects.Apply(EffectDefOf.Sleeping);
         //var mag = 10;
-        a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));
+        a.Effects.Apply(new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));
         //a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, 1));
 
         var topcell = map.GetCell(bedPos);

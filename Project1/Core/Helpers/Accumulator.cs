@@ -41,14 +41,28 @@ public sealed class Accumulator
 
 public sealed class AccumulatorWithRate : ISaveableNewNew<AccumulatorWithRate>, ISerializableNewNew<AccumulatorWithRate>
 {
-    float _inner, _rate;
+    float _inner;
+    public float Rate;
+
+    public float Progress => this._inner;
+
+    public AccumulatorWithRate()
+    {
+        
+    }
+
+    public AccumulatorWithRate(float rate)
+    {
+        this.Rate = rate;
+    }
 
     public void ApplyRateDelta(float delta)
-        => this._rate += delta;
+        => this.Rate += delta;
+
     
     public void Tick(out int whole)
     {
-        this.Add(this._rate);
+        this.Add(this.Rate);
         whole = (int)this._inner;
         if (whole != 0)
             this._inner -= whole;
@@ -60,7 +74,7 @@ public sealed class AccumulatorWithRate : ISaveableNewNew<AccumulatorWithRate>, 
     {
         var tag = new SaveTag(SaveTag.Types.Compound, name);
         tag.Save("Inner", this._inner);
-        tag.Save("Rate", this._rate);
+        tag.Save("Rate", this.Rate);
         return tag;
     }
 
@@ -68,20 +82,20 @@ public sealed class AccumulatorWithRate : ISaveableNewNew<AccumulatorWithRate>, 
     {
         var inner = tag.LoadSingle("Inner");
         var rate = tag.LoadSingle("Rate");
-        return new() { _rate = rate, _inner = inner };
+        return new() { Rate = rate, _inner = inner };
     }
     public IDataWriter Write(IDataWriter w)
     {
         w.Write(this._inner);
-        w.Write(this._rate);
+        w.Write(this.Rate);
         return w;
     }
     public static AccumulatorWithRate Create(IDataReader r)
     {
         var inner = r.ReadSingle();
         var rate = r.ReadSingle();
-        return new() { _rate = rate, _inner = inner };
+        return new() { Rate = rate, _inner = inner };
     }
     public override string ToString()
-        => $"Accumulator({nameof(this._inner)}={this._inner} {nameof(this._rate)}={this._rate})";
+        => $"Accumulator({nameof(this._inner)}={this._inner} {nameof(this.Rate)}={this.Rate})";
 }

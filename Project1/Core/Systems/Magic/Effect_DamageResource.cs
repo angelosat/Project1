@@ -2,7 +2,6 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
 using Project1.Core.Systems.Effects;
-using Project1.Core.World.Combat;
 
 namespace Project1.Core.Systems.Magic;
 
@@ -10,11 +9,10 @@ public sealed class Effect_DamageResource : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.SpellDamage;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
-        var resource = (ResourceDef)wrapper.Target;
+        var resource = ResourceDefOf.Health;
         actor.Resources.ApplyDelta(resource, -(int)wrapper.Budget.Value);
-        //CombatSystem.ResolveMagicHit(actor)
     }
 
     internal override Color GetTint(Def target)

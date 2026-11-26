@@ -22,7 +22,7 @@ namespace Project1.Core.Systems.Effects
         //    SendEffectApplied(e.Actor.Net as Server, e.Actor, e.Effect);
         //}
 
-        private static void SendEffectApplied(NetEndpoint endpoint, Actor actor, EntityEffectWrapper effect)
+        private static void SendEffectApplied(NetEndpoint endpoint, Actor actor, EntityEffectRuntime effect)
         {
             var w = endpoint.BeginPacket(_pEffectApplied)
                 .Write(actor.RefId);
@@ -44,7 +44,7 @@ namespace Project1.Core.Systems.Effects
             //var budget = r.ReadInt32();
             //var ticksPerUnit = r.ReadInt32();
             //var effect = new EntityEffectWrapper(effectdef, targetdef, hasBudget ? budget : null, ticksPerUnit/*, Magnitude: mag*/);
-            var effect = EntityEffectWrapper.Create(r);
+            var effect = EntityEffectRuntime.Create(r);
             actor.Effects.Apply(effect);
         }
 
@@ -53,7 +53,7 @@ namespace Project1.Core.Systems.Effects
             SendEffectAborted(e.Actor.Net as Server, e.Actor, e.Effect);
         }
 
-        private static void SendEffectAborted(NetEndpoint endpoint, Actor actor, EntityEffectWrapper effect)
+        private static void SendEffectAborted(NetEndpoint endpoint, Actor actor, EntityEffectRuntime effect)
         {
             endpoint.BeginPacket(_pEffectAborted)
                 .Write(actor.RefId)

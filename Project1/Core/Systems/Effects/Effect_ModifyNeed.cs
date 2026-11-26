@@ -7,15 +7,15 @@ internal class Effect_ModifyNeed : EntityEffectWorker
 {
     public override EffectDef Def => EffectDefOf.ModifyNeed;
 
-    protected override void OnStart(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
     {
     }
-    protected override void OnTick(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnTick(Actor actor, EntityEffectRuntime wrapper)
     {
         var need = actor.Needs.NeedsNew[(NeedDef)wrapper.Target];
         need.ApplyAccumulatorDelta(1f / wrapper.TicksPerUnit);
     }
-    protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
+    protected override void OnFinish(Actor actor, EntityEffectRuntime wrapper)
     {
     }
 }

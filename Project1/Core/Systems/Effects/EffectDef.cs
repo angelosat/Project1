@@ -4,7 +4,17 @@ using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Effects;
 
-public sealed class EffectDef(string name, string verb, EntityEffectWorker worker, Type targetDefType, int baseDuration = 0, int baseMagnitude = 0) : Def(name)
+public sealed class EffectDef(string name,
+                              string verb,
+                              EntityEffectWorker worker,
+                              Type targetDefType,
+                              int? baseDuration,
+                              Def context = null,
+                              int baseMagnitude = 0,
+                              int tickCount = 0
+                              //PeriodicTiming? tickPeriod = null
+    )
+    : Def(name)
 {
     internal Dictionary<Def, float> StatMods = [];
 
@@ -12,11 +22,24 @@ public sealed class EffectDef(string name, string verb, EntityEffectWorker worke
 
     internal EntityEffectWorker Worker = worker;
 
-    internal Type TargetDefType = targetDefType;
+    internal readonly Type TargetDefType = targetDefType;
+              
+    internal SpellSchoolDef School { get; init; }
+              
+    internal readonly Def Context = context;
+              
+    internal readonly int? BaseDuration = baseDuration;
+              
+    internal readonly int BaseMagnitude = baseMagnitude;
 
-    internal SpellSchoolDef School;
+    internal readonly int TickCount = tickCount;
 
-    internal int BaseDuration = baseDuration;
-
-    internal int BaseMagnitude = baseMagnitude;
+    //internal readonly PeriodicTiming? TickPeriod = tickPeriod;
 }
+
+//public readonly record struct PeriodicTiming(
+//    int Period,
+//    int TickCount)
+//{
+//    public int Duration => Period * TickCount;
+//}

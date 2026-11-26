@@ -11,44 +11,42 @@ public abstract class EntityEffectWorker
 {
     public abstract EffectDef Def { get; }
 
-    internal virtual EntityEffectWrapper CreateWrapper(Def? target, int magnitude)
-        => new(this.Def, target, magnitude, 0);
+    internal virtual EntityEffectRuntime CreateRuntime(Def? context, int magnitude)
+        => new(this.Def, context, magnitude, 0);
 
-    protected abstract void OnStart(Actor actor, EntityEffectWrapper wrapper);
+    protected abstract void OnStart(Actor actor, EntityEffectRuntime runtime);
 
-    protected virtual void OnTick(Actor actor, EntityEffectWrapper wrapper) { }
+    protected virtual void OnTick(Actor actor, EntityEffectRuntime runtime) { }
 
-    protected virtual void OnFinish(Actor actor, EntityEffectWrapper wrapper) { }
+    protected virtual void OnFinish(Actor actor, EntityEffectRuntime runtime) { }
 
-    internal void Start(Actor actor, EntityEffectWrapper entityEffectWrapper)
+    internal void Start(Actor actor, EntityEffectRuntime runtime)
     {
         if (actor.Net.IsClient)
             return;
-        this.OnStart(actor, entityEffectWrapper);
+        this.OnStart(actor, runtime);
     }
 
-    internal void Finish(Actor actor, EntityEffectWrapper entityEffectWrapper)
+    internal void Finish(Actor actor, EntityEffectRuntime runtime)
     {
         if (actor.Net.IsClient)
             return;
-        this.OnFinish(actor, entityEffectWrapper);
+        this.OnFinish(actor, runtime);
     }
 
-    internal void Tick(Actor actor, EntityEffectWrapper entityEffectWrapper)
+    internal void Tick(Actor actor, EntityEffectRuntime runtime)
     {
         if (actor.Net.IsClient)
             return;
-        this.OnTick(actor, entityEffectWrapper);
+        this.OnTick(actor, runtime);
     }
 
-    internal virtual string Label(Def? target) => $"{this.Def.Verb} {target?.LabelReadable}";
-    internal virtual string GetString(Def? target, int magnitude) 
-        => $"{this.Def.Verb} [{magnitude}] {target?.LabelReadable}";
+    internal virtual string Label(Def? context) => $"{this.Def.Verb} {context?.LabelReadable}";
+    internal virtual string GetString(Def? context, int magnitude) 
+        => $"{this.Def.Verb} [{magnitude}] {context?.LabelReadable}";
 
-    internal virtual Color GetTint(Def target) => Color.White;
+    internal virtual Color GetTint(Def context) => Color.White;
 
-    internal virtual IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor
-                                                                                  //,EntityEffectWrapper runtime
-                                                                                  )
+    internal virtual IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor)
         => [];
 }

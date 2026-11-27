@@ -1,4 +1,5 @@
 ﻿using Project1.Core.Helpers;
+using Project1.Core.Resources;
 using Project1.Core.Systems.Effects;
 using Project1.Framework.Serialization;
 
@@ -6,8 +7,12 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.Systems.Consumables;
 
-public sealed record EffectConfig_ConsumableCooldown(ConsumableDef Family) : EffectConfig
+public sealed record EffectConfig_ConsumableCooldown : EffectConfig
 {
+    public override EffectDef Def => EffectDefOf.ConsumableCooldown;
+
+    public required ConsumableDef Family { get; init; }
+
     public override EffectData CreateData()
         => new EffectData_ConsumableCooldown() { Family = Family };
 

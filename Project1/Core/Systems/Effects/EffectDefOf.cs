@@ -14,7 +14,8 @@ static class EffectDefOf
                                              "Modify",
                                              typeof(Effect_ModifyNeed),
                                              typeof(NeedDef),
-                                             typeof(EffectData_ModifyNeed)
+                                             typeof(EffectData_ModifyNeed),
+                                             typeof(EffectConfig_ModifyNeed)
         //,
         //baseDuration: null,
         //baseMagnitude: 10
@@ -24,7 +25,8 @@ static class EffectDefOf
                                                   "Fortify",
                                                   typeof(Effect_ResourceFortify),
                                                   typeof(ResourceDef),
-                                                  typeof(EffectData_ResourceFortify)
+                                                  typeof(EffectData_ResourceFortify), 
+                                                  typeof(EffectConfig_ResourceFortify)
         //,
                                                   //                                          baseDuration: Ticks.FromDays(1),
                                                   //                                          baseMagnitude: 50
@@ -37,11 +39,12 @@ static class EffectDefOf
                                                   "Restore",
                                                   typeof(Effect_ResourceDelta),
                                                   typeof(ResourceDef),
-                                                  typeof(EffectData_ResourceDelta)
+                                                  typeof(EffectData_ResourceDelta), 
+                                                  typeof(EffectConfig_ResourceDelta)
         //,
         //                                          baseDuration: 0,
         //                                          baseMagnitude: 50
-        ); 
+        );
     //{ 
     //    School = SpellSchoolDefOf.Holy,
     //};
@@ -79,11 +82,26 @@ static class EffectDefOf
     //    //                              baseMagnitude: 2
     //    );
 
-    static public EffectDef TownTeleport = new("TownPortal", "Restore", typeof(Effect_TownTeleport), null, typeof(EffectData_TownTeleport)/*, baseDuration: 0*/);
+    static public EffectDef TownTeleport = new("TownPortal",
+                                               "Restore",
+                                               typeof(Effect_TownTeleport),
+                                               null,
+                                               typeof(EffectData_TownTeleport),
+                                               typeof(EffectConfig_TownTeleport));
 
-    static public EffectDef ConsumableCooldown = new("PotionCooldown", "Cooldown", typeof(Effect_ConsumableCooldown), null, typeof(EffectData_ConsumableCooldown)/*, baseDuration: Ticks.FromMinutes(30)*/);
+    static public EffectDef ConsumableCooldown = new("PotionCooldown",
+                                                     "Cooldown",
+                                                     typeof(Effect_ConsumableCooldown),
+                                                     null,
+                                                     typeof(EffectData_ConsumableCooldown),
+                                                     typeof(EffectConfig_ConsumableCooldown));
 
-    static public EffectDef Fled = new("Fled", "Flee", typeof(Effect_Flee), null, typeof(EffectData_Flee)/*, baseDuration: Ticks.FromHours(1)*/)
+    static public EffectDef Fled = new("Fled",
+                                       "Flee",
+                                       typeof(Effect_Flee),
+                                       null,
+                                       typeof(EffectData_Flee),
+                                       typeof(EffectConfig_Flee))
     {
         StatMods = new() { { StatDefOf.AvoidCombatEncounter, 100f } }
     };

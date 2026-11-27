@@ -55,57 +55,29 @@ internal static class SpellSystem
 
         public void Cast(SpellDef spell, Actor target)
         {
-            //var effects = spell.Effects;
+            //spell.Instant.CreateData().Perform(target);
             //var placeholderMagnitude = 50;
-            //foreach (var (effect, mag) in effects)
+            //var effects = spell.Periodic;
+            //foreach (var config in effects)
             //{
-            //    //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
-            //    var fxruntime = effect.Def.Worker.CreateRuntime(effect.Def, effect.Target, mag);
-            //    target.Effects.Apply(fxruntime);
-            //}
-            //caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
-
-            //var instant = spell.Instant;
-            //var instantWorker = instant.CreateWorker(target);
-            //instantWorker.Perform();
-            spell.Instant.CreateData().Perform(target);
-
-            var placeholderMagnitude = 50;
-            var effects = spell.Periodic;
-            //foreach (var data in effects)
-            //{
-            //    //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
-            //    var worker = data.CreateWorker(target);
-            //    //var fxruntime = effect.Def.Worker.CreateRuntime(effect.Def, effect.Target, mag);
+            //    var data = config.CreateData();
             //    var runtime = new EntityEffectRuntime()
             //    {
-            //        Worker = worker,
+            //        Dto = data,
             //        TickInterval = spell.TickPeriod,
             //        TicksRemaining = spell.TickCount
             //    };
             //    target.Effects.Apply(runtime);
             //}
-            foreach (var config in effects)
+            //caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
+            foreach (var (config, schedule) in spell.EffectsNew)
             {
-                var data = config.CreateData();
-                var runtime = new EntityEffectRuntime()
-                {
-                    Dto = data,
-                    TickInterval = spell.TickPeriod,
-                    TicksRemaining = spell.TickCount
-                };
-                target.Effects.Apply(runtime);
+                target.World.Events.Post(new ActorEffectAppliedNewNewEvent((StaticWorld)target.World,
+                                                                           target.RefId,
+                                                                           config,
+                                                                           schedule));
             }
             caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
-
-            //var effects = spell.Effects;
-            //var placeholderMagnitude = 50;
-            //foreach (var fx in effects)
-            //{
-            //    var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
-            //    target.Effects.Apply(fxruntime);
-            //}
-            //caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
         }
     }
 
@@ -114,19 +86,20 @@ internal static class SpellSystem
         var world = (StaticWorld)target.World;
         var cost = spell.ManaCost;
         caster.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
-        // TODO apply instant effect
-        //foreach (var (key, mag) in spell.Periodic)
-        //    //world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
-        //    world.Events.Post(new ActorEffectAppliedNewNewEvent(world, target.RefId, key.Def, key.Target, mag));
-        foreach (var config in spell.Periodic)
+        //foreach (var config in spell.Periodic)
+        //{
+        //    world.Events.Post(new ActorEffectAppliedNewNewEvent(world,
+        //                                                        target.RefId,
+        //                                                        config,
+        //                                                        EffectSchedule.Timed(spell.TickPeriod, spell.TickCount),
+        //                                                        new() { School = spell.School }));
+        //}
+        foreach (var (config, schedule) in spell.EffectsNew)
         {
-            //actor.Effects.Apply(EffectsSystem.CreateInstance(key, mag));
-            //this.World.Events.Post(new ActorEffectAppliedNewEvent(this.World, actor.RefId, key.Def, key.Target, mag));
-            var data = config.CreateData();
             world.Events.Post(new ActorEffectAppliedNewNewEvent(world,
                                                                 target.RefId,
-                                                                data,
-                                                                EffectSchedule.Timed(spell.TickPeriod, spell.TickCount),
+                                                                config,
+                                                                schedule,//EffectSchedule.Timed(spell.TickPeriod, spell.TickCount),
                                                                 new() { School = spell.School }));
         }
     }

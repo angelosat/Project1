@@ -31,7 +31,7 @@ public static class HungerUtility
         //actor.Effects.Apply(effect);
         actor.World.Events.Post(new ActorEffectAppliedNewNewEvent((StaticWorld)actor.World,
                                                         actor.RefId,
-                                                        new EffectConfig_ModifyNeed(NeedDefOf.Hunger, nutrition).CreateData(),
+                                                        new EffectConfig_ModifyNeed(NeedDefOf.Hunger, nutrition),
                                                         EffectSchedule.Instant));
         item.Consume(1);
     }

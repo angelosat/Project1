@@ -2,13 +2,20 @@
 using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Framework.Serialization;
 
 namespace Project1.Core.Systems.Magic;
 
-public sealed record EffectConfig_ResourceFortify(ResourceDef Resource, int Delta) : EffectConfig
+public sealed record EffectConfig_ResourceFortify : EffectConfig
 {
+    public override EffectDef Def => EffectDefOf.ResourceFortify;
+
+    public required ResourceDef Resource { get; init; }
+
+    public required int Delta { get; init; }
+
     public override EffectData CreateData()
         => new EffectData_ResourceFortify() { Delta = Delta, Resource = Resource };
 

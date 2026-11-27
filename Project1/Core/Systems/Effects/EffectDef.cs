@@ -9,7 +9,8 @@ public sealed class EffectDef(string name,
                               string verb,
                               Type workerType,
                               Type targetDefType,
-                              Type dataClass//,
+                              Type dataClass,
+                              Type configClass//,
                               //SimulationDuration? baseDuration,
                               //Def context = null,
                               //int baseMagnitude = 0,
@@ -27,7 +28,7 @@ public sealed class EffectDef(string name,
 
     internal Type DataClass = dataClass;
 
-
+    internal Type ConfigClass = configClass;
     internal readonly Type TargetDefType = targetDefType;
 
     public override IEnumerable<string> ConfigErrors()

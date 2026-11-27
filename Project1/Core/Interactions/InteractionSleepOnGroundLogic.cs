@@ -29,7 +29,7 @@ sealed class InteractionSleepOnGroundLogic : InteractionLogic
         //});
         a.World.Events.Post(new ActorEffectAppliedNewNewEvent((StaticWorld)a.World,
                                                               a.RefId,
-                                                              new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate).CreateData(),
+                                                              new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate),
                                                               EffectSchedule.Timed(rate, SimulationDuration.Infinite)));
         var body = a.Body;
         body.RestingFrame = new Keyframe(0, Vector2.Zero, (float)(Math.PI / 2f));

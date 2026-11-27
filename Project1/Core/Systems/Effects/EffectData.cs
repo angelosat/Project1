@@ -4,13 +4,6 @@ using System;
 
 namespace Project1.Core.Systems.Effects;
 
-public abstract record EffectConfig
-{
-    public abstract string GetString(float scaling);
-
-    public abstract EffectData CreateData();
-}
-
 public abstract class EffectData : ISerializable
 {
     public abstract EffectDef Def { get; }

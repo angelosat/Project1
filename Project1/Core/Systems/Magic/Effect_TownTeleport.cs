@@ -8,6 +8,8 @@ namespace Project1.Core.Systems.Magic;
 
 public sealed record EffectConfig_TownTeleport : EffectConfig
 {
+    public override EffectDef Def => EffectDefOf.TownTeleport;
+
     public override EffectData CreateData()
         => new EffectData_TownTeleport();
 

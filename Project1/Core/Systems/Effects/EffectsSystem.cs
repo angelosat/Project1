@@ -26,8 +26,9 @@ static class EffectsSystem
     private static void OnActorEffectAppliedNew(ActorEffectAppliedNewNewEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
-        var data = e.Data;
+        var config = e.Config;
         var schedule = e.Schedule;
+        var data = config.CreateData();
         if (schedule.IsInstant)
         {
             data.Perform(actor);

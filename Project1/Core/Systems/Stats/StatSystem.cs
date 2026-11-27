@@ -181,7 +181,7 @@ public static class StatSystem
     private static void OnActorEffectApplied(ActorEffectAppliedNewNewEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
-        var effect = e.Data.Def;
+        var effect = e.Config.Def;
         InvalidateStats(actor, effect);
     }
     private static void OnActorEffectRemoved(ActorEffectRemovedEvent e)

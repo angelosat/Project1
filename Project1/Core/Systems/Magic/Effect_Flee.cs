@@ -1,5 +1,4 @@
-﻿using Project1.Core.Entities.Actors;
-using Project1.Core.Entities.Stats;
+﻿using Project1.Core.Entities.Stats;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Effects;
 using Project1.Framework.Serialization;
@@ -9,6 +8,8 @@ namespace Project1.Core.Systems.Magic;
 
 public sealed record EffectConfig_Flee : EffectConfig
 {
+    public override EffectDef Def => EffectDefOf.Fled;
+
     public override EffectData CreateData()
         => new EffectData_Flee();
 

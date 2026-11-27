@@ -7,6 +7,8 @@ namespace Project1.Core.Systems.Effects;
 
 public sealed record EffectConfig_ModifyNeed(NeedDef Need, float Delta) : EffectConfig
 {
+    public override EffectDef Def => EffectDefOf.ModifyNeed;
+
     public override EffectData CreateData()
         => new EffectData_ModifyNeed() { Need = Need, Delta = Delta };
 

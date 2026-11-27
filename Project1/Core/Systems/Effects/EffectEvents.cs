@@ -47,10 +47,34 @@ namespace Project1.Core.Systems.Effects
                 .Write(this.EffectId);
     }
 
+    //[NetworkReplicate]
+    //public record struct ActorEffectAppliedNewNewEvent(StaticWorld World,
+    //                                                EntityRefId ActorId,
+    //                                                EffectData Data,
+    //                                                EffectSchedule Schedule,
+    //                                                EffectMetaData MetaData = default)
+    //   : IWorldEvent, ISerializableNewNew<ActorEffectAppliedNewNewEvent>
+    //{
+    //    public static ActorEffectAppliedNewNewEvent Create(IDataReader r)
+    //        => new()
+    //        {
+    //            ActorId = r.ReadEntityRefId(),
+    //            Data = (EffectData)((EffectData)Activator.CreateInstance(r.ReadDef<EffectDef>().DataClass)).Read(r),
+    //            Schedule = EffectSchedule.Create(r),
+    //            MetaData = EffectMetaData.Create(r),
+    //        };
+
+    //    public readonly IDataWriter Write(IDataWriter w)
+    //        => w.Write(this.ActorId)
+    //            .Write(this.Data.Def)
+    //            .Write(this.Data)
+    //            .Write(this.Schedule)
+    //            .Write(this.MetaData);
+    //}
     [NetworkReplicate]
     public record struct ActorEffectAppliedNewNewEvent(StaticWorld World,
                                                     EntityRefId ActorId,
-                                                    EffectData Data,
+                                                    EffectConfig Config,
                                                     EffectSchedule Schedule,
                                                     EffectMetaData MetaData = default)
        : IWorldEvent, ISerializableNewNew<ActorEffectAppliedNewNewEvent>
@@ -59,16 +83,40 @@ namespace Project1.Core.Systems.Effects
             => new()
             {
                 ActorId = r.ReadEntityRefId(),
-                Data = (EffectData)((EffectData)Activator.CreateInstance(r.ReadDef<EffectDef>().DataClass)).Read(r),
+                Config = EffectConfig.Create(r),
                 Schedule = EffectSchedule.Create(r),
                 MetaData = EffectMetaData.Create(r),
             };
 
         public readonly IDataWriter Write(IDataWriter w)
             => w.Write(this.ActorId)
-                .Write(this.Data.Def)
-                .Write(this.Data)
+                //.Write(this.Data.Def)
+                //.Write(this.Data)
+                .Write(this.Config)
                 .Write(this.Schedule)
                 .Write(this.MetaData);
     }
+    //[NetworkReplicate]
+    //public record struct ActorEffectAppliedNewNewΝεςEvent(StaticWorld World,
+    //                                                EntityRefId ActorId,
+    //                                                EffectConfig Config,
+    //                                                EffectMetaData MetaData = default)
+    //   : IWorldEvent, ISerializableNewNew<ActorEffectAppliedNewNewEvent>
+    //{
+    //    public static ActorEffectAppliedNewNewEvent Create(IDataReader r)
+    //        => new()
+    //        {
+    //            ActorId = r.ReadEntityRefId(),
+    //            Data = (EffectData)((EffectData)Activator.CreateInstance(r.ReadDef<EffectDef>().DataClass)).Read(r),
+    //            Schedule = EffectSchedule.Create(r),
+    //            MetaData = EffectMetaData.Create(r),
+    //        };
+
+    //    public readonly IDataWriter Write(IDataWriter w)
+    //        => w.Write(this.ActorId)
+    //            .Write(this.Data.Def)
+    //            .Write(this.Data)
+    //            .Write(this.Schedule)
+    //            .Write(this.MetaData);
+    //}
 }

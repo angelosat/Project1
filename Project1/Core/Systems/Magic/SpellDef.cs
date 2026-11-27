@@ -30,14 +30,15 @@ public sealed class SpellDef(string name,
     public readonly int ManaCost = manaCost;
 
     public readonly OrderedDictionary<EntityEffectKey, int> Effects = [];
-        //new(effects.Select(e =>
-        //    KeyValuePair.Create(
-        //        new EntityEffectKey(e.Def, e.Target),
-        //        e.Magnitude)));
+    public (EffectConfig Config, EffectSchedule Schedule)[] EffectsNew { get; init; }
+    //new(effects.Select(e =>
+    //    KeyValuePair.Create(
+    //        new EntityEffectKey(e.Def, e.Target),
+    //        e.Magnitude)));
 
-    public EffectConfig Instant { get; init; }
+    //public EffectConfig Instant { get; init; }
 
-    public EffectConfig[] Periodic { get; init; }
+    //public EffectConfig[] Periodic { get; init; }
 
     public readonly TargetType TargetType = targetType;
 

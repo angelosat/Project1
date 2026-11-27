@@ -56,8 +56,10 @@ internal static class ConsumableSystem
         item.Initialize();
         item.Consumable.Spell = spell;
         //var (effect, target, magnitude) = spell.Effects[0];
-        var (effect, target) = spell.Effects.First().Key;
-        item.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
+        //var (effect, target) = spell.Effects.First().Key;
+        var (config, schedule) = spell.EffectsNew.First();
+        //item.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {effect.Verb} {target.LabelReadable}";
+        item.Name = $"{ConsumableDefOf.Potion.LabelReadable} of {config.GetString(1f)}";
         return item;
     }
 
@@ -91,7 +93,7 @@ internal static class ConsumableSystem
             //world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, EffectDefOf.ConsumableCooldown, family, 30));
             world.Events.Post(new ActorEffectAppliedNewNewEvent(world,
                                                                 target.RefId,
-                                                                new EffectConfig_ConsumableCooldown(family).CreateData(),
+                                                                new EffectConfig_ConsumableCooldown { Family = family },
                                                                 EffectSchedule.Timed(Ticks.FromMinutes(30), 1)));
     }
 

@@ -40,10 +40,10 @@ public sealed class ConsumableComp : EntityComp
         //    var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
         //    yield return box;
         //}
-        foreach (var asd in this.Spell.Periodic.Prepend( this.Spell.Instant))
+        foreach (var (config, schedule) in this.Spell.EffectsNew)//.Periodic.Prepend( this.Spell.Instant))
         {
             //var text = key.Def.Worker.GetString(key.Target, magnitude);
-            var text = asd.GetString(1f);
+            var text = $"{config.GetString(1f)} {schedule}";
             var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
             yield return box;
         }

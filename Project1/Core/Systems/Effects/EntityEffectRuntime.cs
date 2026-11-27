@@ -15,10 +15,13 @@ namespace Project1.Core.Systems.Effects;
 public class EntityEffectRuntime
     : ISaveableNewNew<EntityEffectRuntime>, ISerializableNew<EntityEffectRuntime>
 {
+    public const int IndefiniteTickCount = -1;
     internal SimulationTick StartTick;
     bool _aborted;
     public readonly EffectDef Def;
+    public required EffectData Dto;
     public readonly Def? Target;
+    public readonly Def? Context;
     public readonly float? Budget;
     public readonly int TicksPerUnit;
     //public int? Duration { get; init; }
@@ -35,10 +38,12 @@ public class EntityEffectRuntime
     public float QualityMultiplier;
 
     //int TicksRemaining;
-    public SimulationDuration? Duration { get; init; }
-    public SimulationDuration? TickInterval { get; init; }
+    internal SimulationDuration? Duration { get; init; }
+    internal SimulationDuration? TickInterval { get; init; }
 
-    int? TicksRemaining;
+    internal EntityEffectWorker Worker;
+
+    internal int? TicksRemaining = IndefiniteTickCount;
 
     readonly AccumulatorWithRate Accumulator = new();
     float Rate;
@@ -93,14 +98,19 @@ public class EntityEffectRuntime
         this.Def = def;
         this.Target = target;
     }
-
+    public EntityEffectRuntime()
+    {
+        
+    }
     public EntityEffectRuntime(EffectDef def,
                                Def? target,
                                float? budget,
                                int ticksPerUnit,
                                //int duration = 0,
                                float multiplier = 1,
-                               float rateMultiplier = 1) 
+                               SimulationDuration? duration = null,
+                               int? tickCount = null,
+                               int? tickInterval = null) 
         : this(def, target)
     {
         this.Budget = budget;
@@ -115,9 +125,9 @@ public class EntityEffectRuntime
         //if(this.TicksRemaining > 0)
         //    this.Accumulator.Rate = rateMultiplier / this.Duration.Value;
 
-        this.Duration = def.Duration;
-        this.TickInterval = def.TickInterval;
-        this.TicksRemaining = def.TickCount;
+        this.Duration = duration;
+        this.TickInterval = tickInterval;
+        this.TicksRemaining = tickCount;
 
         if (this.TickInterval is { } interval)
             this.Accumulator.Rate = 1f / interval.Value;
@@ -147,7 +157,7 @@ public class EntityEffectRuntime
                     break;
 
                 this.TicksRemaining--;
-                this.Def.Worker.Tick(actor, this);
+                this.Dto.Perform(actor);
             }
 
             if (this.TicksRemaining is 0)
@@ -180,7 +190,8 @@ public class EntityEffectRuntime
     internal void Start(Actor actor)
     {
         this.StartTick = actor.World.CurrentTick;
-        this.Def.Worker.Start(actor, this);
+        //this.Worker.Start();
+        this.Dto.Start(actor);
     }
     //internal void Finish(Actor actor) => this.Def.Worker.Finish(actor, this);
     bool _finishCalled;
@@ -191,7 +202,7 @@ public class EntityEffectRuntime
             return;
 
         this._finishCalled = true;
-        this.Def.Worker.Finish(actor, this);
+        this.Dto.Finish(actor);
     }
 
     internal void Abort() => this._aborted = true;
@@ -207,7 +218,7 @@ public class EntityEffectRuntime
         w.Write(this.TicksPerUnit);
         w.Write(this.StartTick);
         w.Write(this.Duration.HasValue);
-        if(this.Duration.HasValue)
+        if (this.Duration.HasValue)
             w.Write(this.Duration.Value);
         w.Write(this.QualityMultiplier);
         //w.Write(this.TicksRemaining);
@@ -221,7 +232,7 @@ public class EntityEffectRuntime
         var rate = r.ReadInt32();
         var starttick = (SimulationTick)r.ReadUInt64();
         int? duration = null;
-        if(r.ReadBoolean())
+        if (r.ReadBoolean())
             duration = r.ReadInt32();
         var multiplier = r.ReadSingle();
         //var ticksRemaining = r.ReadInt32();
@@ -230,8 +241,9 @@ public class EntityEffectRuntime
         //{
         //    StartTick = starttick,
         //};
-        var fx = new EntityEffectRuntime(def, target)
+        var fx = new EntityEffectRuntime()
         {
+            Dto = null, // HACK
             StartTick = starttick,
             Duration = duration,
             //TicksRemaining = ticksRemaining
@@ -240,14 +252,14 @@ public class EntityEffectRuntime
         return fx;
     }
 
-    bool IsExpiredAt(SimulationTick now)
-    {
-        if (this.Def.TickInterval.HasValue)
-            return this.Def.TickCount.HasValue && this.TicksRemaining == 0;
+    //bool IsExpiredAt(SimulationTick now)
+    //{
+    //    if (this.Def.TickInterval.HasValue)
+    //        return this.Def.TickCount.HasValue && this.TicksRemaining == 0;
 
-        return this.Def.Duration.HasValue
-            && now >= this.StartTick + this.Def.Duration.Value;
-    }
+    //    return this.Def.Duration.HasValue
+    //        && now >= this.StartTick + this.Def.Duration.Value;
+    //}
 
     public SaveTag Save(string name = "")
     {
@@ -258,7 +270,7 @@ public class EntityEffectRuntime
             tag.Save("Budget", this.RemainingBudget.Value);
         this.TicksPerUnit.Save(tag, "Rate");
         tag.Save("StartTick", this.StartTick);
-        if(this.Def.Duration.HasValue)
+        if(this.Duration.HasValue)
             tag.Save("Duration", this.Duration.Value);
         return tag;
     }
@@ -280,21 +292,34 @@ public class EntityEffectRuntime
         int? duration = null;
         if (tag.TryLoadInt("Duration", out var dur))
             duration = dur;
-        //var duration = tag.LoadInt("Duration");
-        //var mag = tag.LoadInt("Magnitude");
-        //return new EntityEffectRuntime(def, target, budget, rate, duration) { StartTick = starttick };
-        return new EntityEffectRuntime(def, target) { 
+        //return new EntityEffectRuntime(def, target) { 
+        //    StartTick = starttick,
+        //    Duration = duration,
+        //};
+
+        return new EntityEffectRuntime()
+        {
+            Dto = null, // HACK
             StartTick = starttick,
             Duration = duration,
         };
     }
 
-    internal IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor)
-        => this.Def.Worker.GetStatModifiers(actor);
+    internal IEnumerable<(StatDef statDef, float value)> GetStatModifiers()
+        => this.Worker.GetStatModifiers();
 
     public override string ToString()
-        => EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);
-}
+    //=> EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);
+        {
+            //var basestring = $"{this.Dto.Def.Verb} {(int)(effect.BaseMagnitude * multiplier)} {target?.LabelReadable}";
+            var basestring = $"{this.Dto.Def.Verb} {this.Dto.Def.LabelReadable}"; // TODO
+            if (this.Duration is { } dur)
+                if (dur > 0)
+                    //basestring += $" for {TimeSpan.FromMinutes(Ticks.PerGameMinute * effect.BaseDuration)}";
+                    basestring += $" for {Ticks.ToString(dur)}";
+            return basestring;
+        }
+    }
 
 public record struct EntityEffectKey(EffectDef Def, Def? Target);
 

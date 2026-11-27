@@ -4,7 +4,7 @@ namespace Project1.Core.Systems.Effects;
 
 internal sealed class EffectScorer_FortifyResource : EffectScorer
 {
-    internal override EffectDef Effect => EffectDefOf.FortifyResource;
+    internal override EffectDef Effect => EffectDefOf.ResourceFortify;
 
     internal override int Score(Actor actor, Def target)
     {

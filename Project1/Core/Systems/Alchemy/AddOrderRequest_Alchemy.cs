@@ -25,7 +25,8 @@ internal class AddOrderRequest_Alchemy : AddOrderRequest
     }
 
     public override string GetLabel()
-        => $"{ConsumableDefOf.Potion.Verb}: {this.Effect.Worker.Label(this.Target)}";
+        //=> $"{ConsumableDefOf.Potion.Verb}: {this.Effect.Worker.Label(this.Target)}";
+        => $"{ConsumableDefOf.Potion.Verb}: {this.Target.LabelReadable}";
 
     protected override void WriteExtra(IDataWriter w)
     {

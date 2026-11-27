@@ -42,10 +42,10 @@ static class ActorCombatAISystem
             {
                 //if (MagicSystem.ConsiderDefensiveSpell(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health) is SpellDef spell)
                 //    return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
-                if (MagicSystem.TryConsiderSpellByEffect(actor, EffectDefOf.RestoreResource, ResourceDefOf.Health, out var spell))
+                if (MagicSystem.TryConsiderSpellByEffect(actor, EffectDefOf.ResourceDelta, ResourceDefOf.Health, out var spell))
                     return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
-                if (MagicSystem.TryConsiderSpellByEffect(actor, EffectDefOf.Mending, null, out spell))
-                    return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
+                //if (MagicSystem.TryConsiderSpellByEffect(actor, EffectDefOf.Mending, null, out spell))
+                //    return new WorldActionData_CastSpell(actor) { SpellDef = spell, TargetId = actor.RefId };
             }
         }
 

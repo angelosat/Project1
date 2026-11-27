@@ -84,13 +84,17 @@ internal static class ConsumableSystem
         item.Consume(1);
         var world = (StaticWorld)item.World;
         //item.Consumable.ApplyEffects(target);
-        foreach (var (key, mag) in item.Consumable.Spell.Effects)
-            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
+        SpellSystem.SpellSuccess(null, target, item.Consumable.Spell);
+        //foreach (var (key, mag) in item.Consumable.Spell.Effects)
+        //    world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
 
         if (family.TriggersCooldown)
-        //    target.Effects.Apply(
-        //        EffectDefOf.ConsumableCooldown.Worker.CreateWrapper(family, 30));
-        world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, EffectDefOf.ConsumableCooldown, family, 30));
+            //world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, EffectDefOf.ConsumableCooldown, family, 30));
+            world.Events.Post(new ActorEffectAppliedNewNewEvent(world,
+                                                                target.RefId,
+                                                                new EffectConfig_ConsumableCooldown(family).CreateData(),
+                                                                Ticks.FromMinutes(30),
+                                                                1));
     }
 
     internal static bool CanUsePotion(Actor actor)
@@ -101,7 +105,7 @@ internal static class ConsumableSystem
 
     internal static Entity FindInInventory(Actor actor, ResourceDef restore)
         //=> actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));
-        => actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, restore));
+        => actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.ResourceDelta, restore));
 
     extension(Entity item)
     {

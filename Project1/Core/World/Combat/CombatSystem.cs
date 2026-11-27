@@ -12,6 +12,7 @@ using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Stats;
 using Project1.Core.Systems.Tools;
+using Project1.Core.Towns.Services.Spells;
 using Project1.Framework;
 using Project1.Framework.Helpers;
 using System;
@@ -175,7 +176,11 @@ internal static class CombatSystem
             // TODO report flee failure
             return;
         }
-        actor.Effects.Apply(new EntityEffectRuntime(EffectDefOf.Fled, null, null, 0));
+        //actor.Effects.Apply(new EntityEffectRuntime(EffectDefOf.Fled, null, null, 0));
+        actor.Effects.Apply(new EntityEffectRuntime()
+        {
+            Dto = new EffectConfig_Flee().CreateData()
+        });
         world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
         // TODO report flee success
     }
@@ -195,8 +200,15 @@ internal static class CombatSystem
         var world = (StaticWorld)caster.World;
         var cost = spell.ManaCost;
         caster.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
-        foreach (var (key, mag) in spell.Effects)
-            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
+        // TODO apply instant effect
+        //foreach (var (key, mag) in spell.Effects)
+        //    world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
+        SpellSystem.SpellSuccess(caster, target, spell);
+        //foreach (var config in spell.Periodic)
+        //{
+        //    var data = config.CreateData();
+        //    world.Events.Post(new ActorEffectAppliedNewNewEvent(world, target.RefId, data, spell.TickPeriod, spell.TickCount));
+        //}
     }
 
     private static void OnActorCastSpell(ActorCastSpellEvent e)
@@ -251,11 +263,15 @@ internal static class CombatSystem
 
         var finalMagnitudeMultiplier = multiplier * (1f - resistance);
 
-        foreach(var (effectKey, mag) in spell.Effects)
-        {
-            var final = mag * finalMagnitudeMultiplier;
-            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, effectKey.Def, effectKey.Target, (int)final));
-        }
+        // TODO hit chance should only be the deciding factor on whether the spell casts at all
+        // TODO and the final magnitude should be calculated by the spell effect itself on application
+        SpellSystem.SpellSuccess(caster, target, spell); 
+        
+        //foreach(var (effectKey, mag) in spell.Effects)
+        //{
+        //    var final = mag * finalMagnitudeMultiplier;
+        //    world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, effectKey.Def, effectKey.Target, (int)final));
+        //}
         //return new(tick, attackerId, isCrit ? AttackResultTypes.Critical : AttackResultTypes.Hit, finalDamage, rawValue, bodyPartTargetDef);
     }
 }

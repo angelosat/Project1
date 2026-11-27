@@ -5,19 +5,19 @@ using Project1.Core.Systems.Effects;
 
 namespace Project1.Core.Systems.Magic;
 
-public sealed class Effect_DamageResource : EntityEffectWorker
-{
-    public override EffectDef Def => EffectDefOf.SpellDamage;
+//public sealed record Effect_DamageResource : EntityEffectWorker
+//{
+//    public override EffectDef Def => EffectDefOf.;
 
-    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
-    {
-        var resource = ResourceDefOf.Health;
-        actor.Resources.ApplyDelta(resource, -(int)wrapper.Budget.Value);
-    }
+//    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
+//    {
+//        var resource = ResourceDefOf.Health;
+//        actor.Resources.ApplyDelta(resource, -(int)wrapper.Budget.Value);
+//    }
 
-    internal override Color GetTint(Def target)
-    => ((ResourceDef)target).Color;
+//    internal override Color GetTint(EntityEffectRuntime runtime)
+//    => ((SpellSchoolDef)runtime.Context).Color;
 
-    internal override string GetString(Def target, int magnitude)
-        => $"Damages {base.GetString(target, magnitude)} instantly";
-}
+//    //internal override string GetString(EntityEffectRuntime runtime)
+//    //    => $"Damages {base.GetString(target, magnitude)} instantly";
+//}

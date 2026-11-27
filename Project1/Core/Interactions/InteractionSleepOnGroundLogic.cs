@@ -19,8 +19,13 @@ sealed class InteractionSleepOnGroundLogic : InteractionLogic
     {
         var a = i.Actor;
         var t = i.Target;
-        a.Effects.Apply(new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));// 
-
+        //a.Effects.Apply(new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));// 
+        var rate = Ticks.FromMinutes(1);
+        a.Effects.Apply(new EntityEffectRuntime()
+        {
+            Dto = new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate).CreateData(),
+            TickInterval = rate
+        });
         var body = a.Body;
         body.RestingFrame = new Keyframe(0, Vector2.Zero, (float)(Math.PI / 2f));
         body.OriginGroundOffset = new Vector2(0, -4);/// Vector2.Zero;

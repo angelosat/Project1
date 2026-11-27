@@ -179,7 +179,7 @@ public sealed class EffectsComp : EntityComp
     //    => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner));
 
     public float GetStatMod(StatDef target)
-        => this.ActiveEffects.SelectMany(e => e.GetStatModifiers((Actor)this.Owner))
+        => this.ActiveEffects.SelectMany(e => e.GetStatModifiers())
                              .Where(b => b.statDef == target)
                              .Sum(b => b.value);
 

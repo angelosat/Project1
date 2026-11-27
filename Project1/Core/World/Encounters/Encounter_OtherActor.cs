@@ -25,7 +25,7 @@ internal sealed class Encounter_OtherActor : EncounterWorker
 
     private static bool TryUsePotion(Actor actor, Actor other)
     {
-        if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.RestoreResource, ResourceDefOf.Health)) is not Entity potion)
+        if (actor.Inventory.First(i => i.Profile == ConsumableDefOf.Potion && i.Consumable.HasEffect(EffectDefOf.ResourceDelta, ResourceDefOf.Health)) is not Entity potion)
             return false;
         var health = other.Resources.View(ResourceDefOf.Health);
         var prevHealth = health.Value;

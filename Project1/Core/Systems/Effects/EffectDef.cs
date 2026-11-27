@@ -7,13 +7,14 @@ namespace Project1.Core.Systems.Effects;
 
 public sealed class EffectDef(string name,
                               string verb,
-                              EntityEffectWorker worker,
+                              Type workerType,
                               Type targetDefType,
-                              SimulationDuration? baseDuration,
-                              Def context = null,
-                              int baseMagnitude = 0,
-                              int? tickCount = null,
-                              SimulationDuration? tickPeriod = null
+                              Type dataClass//,
+                              //SimulationDuration? baseDuration,
+                              //Def context = null,
+                              //int baseMagnitude = 0,
+                              //int? tickCount = null,
+                              //SimulationDuration? tickPeriod = null
     //PeriodicTiming? tickPeriod = null
     )
     : Def(name)
@@ -22,22 +23,34 @@ public sealed class EffectDef(string name,
 
     internal string Verb = verb;
 
-    internal EntityEffectWorker Worker = worker;
+    internal Type WorkerClass = workerType;
+
+    internal Type DataClass = dataClass;
+
 
     internal readonly Type TargetDefType = targetDefType;
 
-    internal SpellSchoolDef School { get; init; }
+    public override IEnumerable<string> ConfigErrors()
+    {
+        foreach (var error in base.ConfigErrors())
+            yield return error;
 
-    internal readonly Def Context = context;
+        if (!typeof(EntityEffectWorker).IsAssignableFrom(this.WorkerClass))
+            yield return $"{this.WorkerClass} is not a {nameof(EntityEffectWorker)}";
+    }
 
-    internal readonly SimulationDuration? Duration = baseDuration;
+    public EntityEffectWorker Worker => field ??= (EntityEffectWorker)Activator.CreateInstance(this.WorkerClass);
 
-    internal readonly int BaseMagnitude = baseMagnitude;
+    //internal SpellSchoolDef School { get; init; }
 
-    internal readonly int? TickCount = tickCount;
-    internal readonly SimulationDuration? TickInterval = tickPeriod;
+    //internal readonly Def Context = context;
 
-    //internal readonly PeriodicTiming? TickPeriod = tickPeriod;
+    //internal readonly SimulationDuration? Duration = baseDuration;
+
+    //internal readonly int BaseMagnitude = baseMagnitude;
+
+    //internal readonly int? TickCount = tickCount;
+    //internal readonly SimulationDuration? TickInterval = tickPeriod;
 
     //public override IEnumerable<string> ConfigErrors()
     //{
@@ -53,41 +66,20 @@ public sealed class EffectDef(string name,
     //    if (this.TickCount is <= 0)
     //        yield return "Tick count must be greater than zero.";
 
-    //    if (this.TickInterval is null && this.TickCount is not null)
+    //    if (this.TickCount is not null && this.TickInterval is null)
     //        yield return "Tick count requires a tick interval.";
 
     //    if (this.TickInterval is not null && this.Duration is not null)
     //        yield return "Periodic effects derive their duration from tick interval and tick count.";
+
+    //    if (this.TickInterval is { } interval && this.TickCount is > 0)
+    //    {
+    //        long totalDuration = (long)interval.Value * this.TickCount.Value;
+
+    //        if (totalDuration > int.MaxValue)
+    //            yield return "Periodic effect duration exceeds the maximum supported simulation duration.";
+    //    }
     //}
-
-    public override IEnumerable<string> ConfigErrors()
-    {
-        foreach (var error in base.ConfigErrors())
-            yield return error;
-
-        if (this.Duration is { Value: < 0 })
-            yield return "Duration cannot be negative.";
-
-        if (this.TickInterval is { Value: <= 0 })
-            yield return "Tick interval must be greater than zero.";
-
-        if (this.TickCount is <= 0)
-            yield return "Tick count must be greater than zero.";
-
-        if (this.TickCount is not null && this.TickInterval is null)
-            yield return "Tick count requires a tick interval.";
-
-        if (this.TickInterval is not null && this.Duration is not null)
-            yield return "Periodic effects derive their duration from tick interval and tick count.";
-
-        if (this.TickInterval is { } interval && this.TickCount is > 0)
-        {
-            long totalDuration = (long)interval.Value * this.TickCount.Value;
-
-            if (totalDuration > int.MaxValue)
-                yield return "Periodic effect duration exceeds the maximum supported simulation duration.";
-        }
-    }
 }
 
 //public readonly record struct PeriodicTiming(

@@ -48,23 +48,23 @@ internal static class PotionSystem
     public static void PostProcess(Entity entity)
     {
         throw new Exception();
-        var mat = entity.Body.Material;
-        var effect = mat.Type.AlchemyEffect;
-        var target = mat.AlchemyTarget;
-        // todo calculate potion magnitude/level from item quality
-        var quality = entity.QualityComp.Tier;
-        var qualityMod = quality.Multiplier;
-        //var finalMagnitude = effect.BaseMagnitude * (1 + quality.Multiplier / 100f);
-        var finalMagnitude = effect.BaseMagnitude * quality.Multiplier;
-        //var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
-        //var cooldownEffect = new EntityEffectWrapper(EffectDefOf.PotionCooldown, null, 0, 1, EffectDefOf.PotionCooldown.BaseDuration);
-        var comp = entity.GetComponent<ConsumableComp>();
+        //var mat = entity.Body.Material;
+        //var effect = mat.Type.AlchemyEffect;
+        //var target = mat.AlchemyTarget;
+        //// todo calculate potion magnitude/level from item quality
+        //var quality = entity.QualityComp.Tier;
+        //var qualityMod = quality.Multiplier;
+        ////var finalMagnitude = effect.BaseMagnitude * (1 + quality.Multiplier / 100f);
+        //var finalMagnitude = effect.BaseMagnitude * quality.Multiplier;
+        ////var wrapper = new EntityEffectWrapper(effect, target, effect.BaseMagnitude, 1, effect.BaseDuration);
+        ////var cooldownEffect = new EntityEffectWrapper(EffectDefOf.PotionCooldown, null, 0, 1, EffectDefOf.PotionCooldown.BaseDuration);
+        //var comp = entity.GetComponent<ConsumableComp>();
 
-        //comp.Add(wrapper);
-        //comp.Add(cooldownEffect);
+        ////comp.Add(wrapper);
+        ////comp.Add(cooldownEffect);
 
-        entity.Name = GetName(comp);
-        entity.Body.TintΟverride = effect.Worker.GetTint(target);
+        //entity.Name = GetName(comp);
+        //entity.Body.TintΟverride = effect.Worker.GetTint(target);
     }
 
     internal static string GetName(ConsumableComp comp)

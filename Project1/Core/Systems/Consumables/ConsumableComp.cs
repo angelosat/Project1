@@ -5,6 +5,7 @@ using Project1.Core.Serialization;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Quality;
+using Project1.Core.Towns.Services.Spells;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;
@@ -34,9 +35,17 @@ public sealed class ConsumableComp : EntityComp
 
     internal override IEnumerable<Control> GetTooltipControls()
     {
-        foreach (var (key, magnitude) in this.Spell.Effects)
+        //foreach (var (key, magnitude) in this.Spell.Effects)
+        //{
+        //    //var text = key.Def.Worker.GetString(key.Target, magnitude);
+        //    var text = key.Def.Worker.GetString(key.Target, magnitude);
+        //    var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
+        //    yield return box;
+        //}
+        foreach (var asd in this.Spell.Periodic.Prepend( this.Spell.Instant))
         {
-            var text = key.Def.Worker.GetString(key.Target, magnitude);
+            //var text = key.Def.Worker.GetString(key.Target, magnitude);
+            var text = asd.GetString(1f);
             var box = new GroupBox().AddControlsLineWrap(LabelNew.ParseNewNew(text), 200);
             yield return box;
         }
@@ -78,17 +87,6 @@ public sealed class ConsumableComp : EntityComp
     {
         this.Spell = tag.LoadDef<SpellDef>("Spell");
     }
-
-    internal void ApplyEffects(Actor actor)
-    {
-        foreach (var (key, mag) in this.Spell.Effects)
-        {
-            //actor.Effects.Apply(EffectsSystem.CreateInstance(key, mag));
-            this.World.Events.Post(new ActorEffectAppliedNewEvent(this.World, actor.RefId, key.Def, key.Target, mag));
-        }
-    }
-
-
 
     public new class Spec : Spec<ConsumableComp>
     {

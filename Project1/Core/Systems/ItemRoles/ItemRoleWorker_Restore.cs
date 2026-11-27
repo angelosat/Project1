@@ -13,14 +13,14 @@ sealed class ItemRoleWorker_Restore(ResourceDef resource) : ItemRoleWorker
     {
         if (!item.TryGetComponent<ConsumableComp>(out var comp))
             return -1;
-        var magnitude = comp.GetMagnitude(EffectDefOf.RestoreResource, resource);
+        var magnitude = comp.GetMagnitude(EffectDefOf.ResourceDelta, resource);
         return magnitude;
     }
 
     public override int GetSituationalScore(Actor actor, Entity item)
     {
         var comp = item.GetComponent<ConsumableComp>();
-        var magnitude = comp.GetMagnitude(EffectDefOf.RestoreResource, resource);
+        var magnitude = comp.GetMagnitude(EffectDefOf.ResourceDelta, resource);
         var deficit = actor.Resources.GetDeficit(resource);
         return Math.Min(deficit, magnitude);
         //return deficit > magnitude ? deficit : -1;

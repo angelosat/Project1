@@ -55,13 +55,46 @@ internal static class SpellSystem
 
         public void Cast(SpellDef spell, Actor target)
         {
-            var effects = spell.Effects;
+            //var effects = spell.Effects;
+            //var placeholderMagnitude = 50;
+            //foreach (var (effect, mag) in effects)
+            //{
+            //    //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
+            //    var fxruntime = effect.Def.Worker.CreateRuntime(effect.Def, effect.Target, mag);
+            //    target.Effects.Apply(fxruntime);
+            //}
+            //caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
+
+            //var instant = spell.Instant;
+            //var instantWorker = instant.CreateWorker(target);
+            //instantWorker.Perform();
+            spell.Instant.CreateData().Perform(target);
+
             var placeholderMagnitude = 50;
-            foreach (var (effect, mag) in effects)
+            var effects = spell.Periodic;
+            //foreach (var data in effects)
+            //{
+            //    //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
+            //    var worker = data.CreateWorker(target);
+            //    //var fxruntime = effect.Def.Worker.CreateRuntime(effect.Def, effect.Target, mag);
+            //    var runtime = new EntityEffectRuntime()
+            //    {
+            //        Worker = worker,
+            //        TickInterval = spell.TickPeriod,
+            //        TicksRemaining = spell.TickCount
+            //    };
+            //    target.Effects.Apply(runtime);
+            //}
+            foreach (var config in effects)
             {
-                //var fxruntime = new EntityEffectWrapper(fx.Def, fx.Target, budget: placeholderMagnitude, ticksPerUnit: 1);
-                var fxruntime = effect.Def.Worker.CreateRuntime(effect.Def, effect.Target, mag);
-                target.Effects.Apply(fxruntime);
+                var data = config.CreateData();
+                var runtime = new EntityEffectRuntime()
+                {
+                    Dto = data,
+                    TickInterval = spell.TickPeriod,
+                    TicksRemaining = spell.TickCount
+                };
+                target.Effects.Apply(runtime);
             }
             caster.Resources.ApplyDelta(ResourceDefOf.Mana, -spell.ManaCost);
 
@@ -81,7 +114,16 @@ internal static class SpellSystem
         var world = (StaticWorld)caster.World;
         var cost = spell.ManaCost;
         caster.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
-        foreach (var (key, mag) in spell.Effects)
-            world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
+        // TODO apply instant effect
+        //foreach (var (key, mag) in spell.Periodic)
+        //    //world.Events.Post(new ActorEffectAppliedNewEvent(world, target.RefId, key.Def, key.Target, mag));
+        //    world.Events.Post(new ActorEffectAppliedNewNewEvent(world, target.RefId, key.Def, key.Target, mag));
+        foreach (var config in spell.Periodic)
+        {
+            //actor.Effects.Apply(EffectsSystem.CreateInstance(key, mag));
+            //this.World.Events.Post(new ActorEffectAppliedNewEvent(this.World, actor.RefId, key.Def, key.Target, mag));
+            var data = config.CreateData();
+            world.Events.Post(new ActorEffectAppliedNewNewEvent(world, target.RefId, data, spell.TickPeriod, spell.TickCount));
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace Project1.Core.Systems.Effects;
 
 internal sealed class EffectScorer_RestoreResource : EffectScorer
 {
-    internal override EffectDef Effect => EffectDefOf.RestoreResource;
+    internal override EffectDef Effect => EffectDefOf.ResourceDelta;
 
     internal override int Score(Actor actor, Def target)
     {

@@ -2,8 +2,8 @@
 using Project1.Core.AI.Behaviors;
 using Project1.Core.Interactions;
 using Project1.Core.Resources;
+using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
-using Project1.Core.Systems.Stats;
 using Project1.Framework;
 
 namespace Project1.Core.Systems.Magic;
@@ -17,18 +17,30 @@ public static class SpellDefOf
         category: SpellCategory.Offensive,
         school: SpellSchoolDefOf.Fire,
         manaCost: 20,
-        castTimeInSecs: 5,
-        [new(EffectDefOf.SpellDamage, 0),
-         new(EffectDefOf.Burning, 1)]);
+        castTimeInSecs: 5
+        )
+    {
+        Instant = new EffectConfig_ResourceDelta(ResourceDefOf.Health, 10)
+        //{
+        //    Resource = ResourceDefOf.Health,
+        //    Delta = 10
+        //}
+    };
 
-    public static readonly SpellDef Healing = new("Healing", 
-        TargetType.Entity, 
+    public static readonly SpellDef Healing = new("Healing",
+        TargetType.Entity,
         subject: SpellSubject.Any,
         category: SpellCategory.Defensive,
-        school: SpellSchoolDefOf.Holy, 
-        manaCost: 20, 
-        castTimeInSecs: 5, 
-        [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 50)]);
+        school: SpellSchoolDefOf.Holy,
+        manaCost: 20,
+        castTimeInSecs: 5)
+    {
+        Instant = new EffectConfig_ResourceDelta(ResourceDefOf.Health, 50)
+        //{
+        //    Resource = ResourceDefOf.Health,
+        //    Delta = 50
+        //}
+    };
 
     public static readonly SpellDef Mending = new("Mending",
         TargetType.Entity,
@@ -36,41 +48,60 @@ public static class SpellDefOf
         category: SpellCategory.Defensive,
         school: SpellSchoolDefOf.Nature,
         manaCost: 20,
-        castTimeInSecs: 2,
-        [new(EffectDefOf.Mending, ResourceDefOf.Health, 50)]);
+        castTimeInSecs: 2)
+    {
+        Periodic = [new EffectConfig_ResourceDelta(ResourceDefOf.Health, 5)
+        //{
+        //    Resource = ResourceDefOf.Health,
+        //    Delta = 5
+        //}
+        ]
+    };
 
     public static readonly SpellDef HealingPotion = new("HealingPotion",
+            TargetType.Entity,
+            subject: SpellSubject.Any,
+            category: SpellCategory.Defensive,
+            school: SpellSchoolDefOf.Holy,
+            manaCost: 20,
+            castTimeInSecs: 5)
+    {
+        Instant = new EffectConfig_ResourceDelta(ResourceDefOf.Health, 10)
+        //{
+        //    Resource = ResourceDefOf.Health,
+        //    Delta = 10
+        //}
+        ,
+        Periodic = [new EffectConfig_ConsumableCooldown(ConsumableDefOf.Potion)
+        //{
+        //    Family = ConsumableDefOf.Potion
+        //}
+        ]
+    };
+
+    public static readonly SpellDef MaxHealthBuff = new("MaxHealthBuff",
         TargetType.Entity,
         subject: SpellSubject.Any,
         category: SpellCategory.Defensive,
-        school: SpellSchoolDefOf.Holy,
-        manaCost: 20,
-        castTimeInSecs: 5,
-        [new(EffectDefOf.RestoreResource, ResourceDefOf.Health, 10),
-         new(EffectDefOf.ConsumableCooldown, null, 30)]);
+        SpellSchoolDefOf.Holy,
+        manaCost: 10,
+        castTimeInSecs: 1)
+    {
+        Instant = new EffectConfig_ResourceFortify(ResourceDefOf.Health, 10)
+    };
 
-    public static readonly SpellDef MaxHealthBuff = new("MaxHealthBuff", 
-        TargetType.Entity,
-        subject: SpellSubject.Any,
-        category: SpellCategory.Defensive,
-        SpellSchoolDefOf.Holy, 
-        manaCost: 10, 
-        castTimeInSecs: 1, 
-        [new(EffectDefOf.FortifyResource, ResourceDefOf.Health, 10)]);
-
-    public static readonly SpellDef Teleporting = new("Teleporting", 
+    public static readonly SpellDef Teleporting = new("Teleporting",
         TargetType.Entity,
         subject: SpellSubject.Self,
         category: SpellCategory.Neutral,
-        SpellSchoolDefOf.Common, 
-        manaCost: 0, 
-        castTimeInSecs: 5, 
-        [new(EffectDefOf.TownTeleport, null, 0)]);
+        SpellSchoolDefOf.Common,
+        manaCost: 0,
+        castTimeInSecs: 5)
+    {
+        Instant = new EffectConfig_TownTeleport()
+    };
 
     static public readonly PlanDef PlanCastSpell = new("CastSpell", typeof(BehaviorExecutePlanNew), InteractionDefOf.CastSpell);
 
-    static SpellDefOf()
-    {
-        Def.Register(typeof(SpellDefOf));
-    }
+    static SpellDefOf() => Def.Register(typeof(SpellDefOf));
 }

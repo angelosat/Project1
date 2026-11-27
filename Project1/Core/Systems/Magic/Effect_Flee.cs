@@ -2,22 +2,39 @@
 using Project1.Core.Entities.Stats;
 using Project1.Core.Stats;
 using Project1.Core.Systems.Effects;
-using System;
+using Project1.Framework.Serialization;
 using System.Collections.Generic;
 
 namespace Project1.Core.Systems.Magic;
 
-public sealed class Effect_Flee : EntityEffectWorker
+public sealed record EffectConfig_Flee : EffectConfig
+{
+    public override EffectData CreateData()
+        => new EffectData_Flee();
+
+    public override string GetString(float scaling)
+        => $"Recently fled combat";
+}
+
+public sealed class EffectData_Flee : EffectData
 {
     public override EffectDef Def => EffectDefOf.Fled;
 
-    protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
-    {
-        //actor.World.Events.Post(new ActorStatBonusModifiedEvent((StaticWorld)actor.World,
-        //                                                        actor.RefId,
-        //                                                        StatDefOf.AvoidCombatEncounter,
-        //                                                        100f));
-    }
+    public override ISerializable Read(IDataReader r)
+        => this;
+    public override void Write(IDataWriter w) { }
+}
+
+public sealed class Effect_Flee : EntityEffectWorker<EffectData_Flee>
+{
+
+    //protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
+    //{
+    //    //actor.World.Events.Post(new ActorStatBonusModifiedEvent((StaticWorld)actor.World,
+    //    //                                                        actor.RefId,
+    //    //                                                        StatDefOf.AvoidCombatEncounter,
+    //    //                                                        100f));
+    //}
     //protected override void OnFinish(Actor actor, EntityEffectWrapper wrapper)
     //{
     //    actor.World.Events.Post(new ActorStatBonusModifiedEvent((StaticWorld)actor.World,
@@ -26,7 +43,7 @@ public sealed class Effect_Flee : EntityEffectWorker
     //                                                            -100f));
     //}
 
-    internal override IEnumerable<(StatDef statDef, float value)> GetStatModifiers(Actor actor/*, EntityEffectWrapper runtime*/)
+    internal override IEnumerable<(StatDef statDef, float value)> GetStatModifiers(/*Actor actor*//*, EntityEffectWrapper runtime*/)
     {
         yield return (StatDefOf.AvoidCombatEncounter, 100f);
     }

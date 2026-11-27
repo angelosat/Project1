@@ -19,7 +19,7 @@ namespace Project1.Core.Systems.Materials
             JobToExtract = DutyDefOf.Miner,
             GatheringSkill = SkillDefOf.Mining, 
             SkillToRefine = SkillDefOf.Smithing,
-            AlchemyEffect = EffectDefOf.FortifyResource
+            AlchemyEffect = EffectDefOf.ResourceFortify
         };
 
         static public readonly MaterialTypeDef Gas = new("Gas", MaterialChemistryDefOf.Inorganic);
@@ -35,9 +35,9 @@ namespace Project1.Core.Systems.Materials
             GatheringSkill = SkillDefOf.Plantcutting,
             JobToExtract = DutyDefOf.Lumberjack, 
             Shininess = .8f,
-            AlchemyEffect = EffectDefOf.FortifyResource };
+            AlchemyEffect = EffectDefOf.ResourceFortify };
         static public readonly MaterialTypeDef Seed = new("Seed", MaterialChemistryDefOf.Organic);
-        static public readonly MaterialTypeDef Fruit = new("Fruit", MaterialChemistryDefOf.Organic) { AlchemyEffect = EffectDefOf.RestoreResource };
+        static public readonly MaterialTypeDef Fruit = new("Fruit", MaterialChemistryDefOf.Organic) { AlchemyEffect = EffectDefOf.ResourceDelta };
         
         static public readonly MaterialTypeDef Fiber = new("Fiber", MaterialChemistryDefOf.Organic);
         static public readonly MaterialTypeDef Dye = new("Dye", MaterialChemistryDefOf.Inorganic);

@@ -16,20 +16,20 @@ public abstract class SpellWorker_RestoreResource(ResourceDef resource) : SpellW
         caster.Resources.ApplyDelta(this.Resource, -placeholderManaCost);
     }
 }
-public sealed class SpellWorker_FortifyHealth() : SpellWorker_FortifyResource(ResourceDefOf.Health);
-public abstract class SpellWorker_FortifyResource(ResourceDef resource) : SpellWorker
-{
-    readonly ResourceDef Resource = resource;
-    public override void Cast(Actor caster, InteractionTarget target)
-    {
-        var targetActor = target.Object as Actor;
-        var effect = new EntityEffectRuntime(def: EffectDefOf.FortifyResource,
-                                             target: ResourceDefOf.Health,
-                                             budget: Ticks.FromHours(1),
-                                             ticksPerUnit: 1);
-        targetActor.Effects.Apply(effect);
-    }
-}
+//public sealed class SpellWorker_FortifyHealth() : SpellWorker_FortifyResource(ResourceDefOf.Health);
+//public abstract class SpellWorker_FortifyResource(ResourceDef resource) : SpellWorker
+//{
+//    readonly ResourceDef Resource = resource;
+//    public override void Cast(Actor caster, InteractionTarget target)
+//    {
+//        var targetActor = target.Object as Actor;
+//        var effect = new EntityEffectRuntime(def: EffectDefOf.ResourceFortify,
+//                                             target: ResourceDefOf.Health,
+//                                             budget: Ticks.FromHours(1),
+//                                             ticksPerUnit: 1);
+//        targetActor.Effects.Apply(effect);
+//    }
+//}
 
 
 public sealed class SpellWorker_Null : SpellWorker

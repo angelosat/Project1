@@ -12,16 +12,16 @@ sealed class ItemRoleWorker_Fortify(ResourceDef resource) : ItemRoleWorker
     {
         if (!item.TryGetComponent<ConsumableComp>(out var comp))
             return -1;
-        var magnitude = comp.GetMagnitude(EffectDefOf.FortifyResource, resource);
+        var magnitude = comp.GetMagnitude(EffectDefOf.ResourceFortify, resource);
         return magnitude;
     }
 
     public override int GetSituationalScore(Actor actor, Entity item)
     {
-        if (actor.Effects.Any(EffectDefOf.FortifyResource, resource))
+        if (actor.Effects.Any(EffectDefOf.ResourceFortify, resource))
             return 0;
         var comp = item.GetComponent<ConsumableComp>();
-        var magnitude = comp.GetMagnitude(EffectDefOf.FortifyResource, resource);
+        var magnitude = comp.GetMagnitude(EffectDefOf.ResourceFortify, resource);
         return magnitude;
     }
 }

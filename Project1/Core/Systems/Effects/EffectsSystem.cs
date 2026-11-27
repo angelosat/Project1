@@ -10,8 +10,11 @@ static class EffectsSystem
 {
     static EffectsSystem()
     {
-        Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
-        Registry.WorldEventHooksServer.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
+        //Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
+        //Registry.WorldEventHooksServer.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
+
+        Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewNewEvent>(OnActorEffectAppliedNew);
+        Registry.WorldEventHooksServer.Register<ActorEffectAppliedNewNewEvent>(OnActorEffectAppliedNew);
 
         Registry.WorldEventHooksClient.Register<ActorEffectRemovedEvent>(OnActorEffectRemoved);
         Registry.WorldEventHooksServer.Register<ActorEffectRemovedEvent>(OnActorEffectRemoved);
@@ -20,10 +23,17 @@ static class EffectsSystem
         Registry.WorldEventHooksServer.Register<ActorEffectRemovedIndexedEvent>(OnActorEffectIndexedRemoved);
     }
 
-    private static void OnActorEffectApplied(ActorEffectAppliedNewEvent e)
+    //private static void OnActorEffectApplied(ActorEffectAppliedNewEvent e)
+    //{
+    //    var actor = e.World.Resolve<Actor>(e.ActorId);
+    //    actor.Effects.Apply(CreateRuntime(e.EffectDef, e.OptionalTarget, e.Magnitude));
+    //}
+
+    private static void OnActorEffectAppliedNew(ActorEffectAppliedNewNewEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
-        actor.Effects.Apply(CreateRuntime(e.EffectDef, e.OptionalTarget, e.Magnitude));
+        var data = e.Data;
+        actor.Effects.Apply(new EntityEffectRuntime() { Dto = data });
     }
 
     private static void OnActorEffectIndexedRemoved(ActorEffectRemovedIndexedEvent e)
@@ -44,6 +54,9 @@ static class EffectsSystem
     //static public EntityEffectRuntime CreateRuntime(EntityEffectKey key, int magnitude)
     //    => key.Def.Worker.CreateRuntime(key.Target, magnitude);
 
-    static EntityEffectRuntime CreateRuntime(EffectDef effect, Def? target, int magnitude)
-       => effect.Worker.CreateRuntime(effect, target, magnitude);
+    //static EntityEffectRuntime CreateRuntime(EffectDef effect, Def? target, int magnitude)
+    //   => effect.WorkerClass.CreateRuntime(effect, target, magnitude);
+
+   // static EntityEffectRuntime CreateRuntime(EffectDef effect, EffectData data)
+   //=> effect.Worker.CreateRuntime(effect, target, magnitude);
 }

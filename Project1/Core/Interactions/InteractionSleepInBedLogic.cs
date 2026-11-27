@@ -39,7 +39,13 @@ sealed class InteractionSleepInBedLogic : InteractionLogic
         //a.Net.LogStateChange(a);
         //a.Effects.Apply(EffectDefOf.Sleeping);
         //var mag = 10;
-        a.Effects.Apply(new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));
+        //a.Effects.Apply(new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));
+        var rate = Ticks.FromMinutes(1);
+        a.Effects.Apply(new EntityEffectRuntime() 
+        { 
+            Dto = new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate).CreateData(),
+            TickInterval = Ticks.FromMinutes(1)
+        });
         //a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, 1));
 
         var topcell = map.GetCell(bedPos);

@@ -1,6 +1,5 @@
 ﻿using Project1.Core.Entities.Actors;
 using Project1.Core.Resources;
-using Project1.Core.Systems.Effects;
 
 namespace Project1.Core.Systems.Magic;
 public sealed class SpellWorker_RestoreHealth() : SpellWorker_RestoreResource(ResourceDefOf.Health);

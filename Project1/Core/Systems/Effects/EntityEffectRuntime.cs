@@ -15,7 +15,7 @@ namespace Project1.Core.Systems.Effects;
 public class EntityEffectRuntime
     : ISaveableNewNew<EntityEffectRuntime>, ISerializableNew<EntityEffectRuntime>
 {
-    public const int IndefiniteTickCount = -1;
+    //public const int IndefiniteTickCount = -1;
     internal SimulationTick StartTick;
     bool _aborted;
     public readonly EffectDef Def;
@@ -41,7 +41,7 @@ public class EntityEffectRuntime
 
     //internal EntityEffectWorker Worker;
 
-    internal int? TicksRemaining = IndefiniteTickCount;
+    internal int? TicksRemaining;// = IndefiniteTickCount;
 
     readonly AccumulatorWithRate Accumulator = new();
     float Rate;

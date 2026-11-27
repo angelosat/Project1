@@ -4,7 +4,6 @@ using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Materials;
 using System;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core.Needs;
 

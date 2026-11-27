@@ -1,5 +1,4 @@
-﻿using Project1.Core.Components;
-using Project1.Core.Entities;
+﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
 using Project1.Core.Entities.Stats;
 using Project1.Core.Gear;

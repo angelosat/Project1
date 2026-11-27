@@ -1,11 +1,9 @@
 ﻿using Project1.Core.Entities;
-using Project1.Core.Entities.Actors;
 using Project1.Core.Helpers;
 using Project1.Core.Serialization;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.Systems.Quality;
-using Project1.Core.Towns.Services.Spells;
 using Project1.Framework;
 using Project1.Framework.Serialization;
 using Project1.Framework.UI;

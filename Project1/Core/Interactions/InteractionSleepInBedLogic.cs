@@ -49,7 +49,7 @@ sealed class InteractionSleepInBedLogic : InteractionLogic
         a.World.Events.Post(new ActorEffectAppliedNewNewEvent((StaticWorld)a.World,
                                                               a.RefId,
                                                               new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate).CreateData(),
-                                                              EffectSchedule.Timed(rate, SimulationDuration.Infinite)
+                                                              EffectSchedule.Permanent(rate)
                                                               ));
         //a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, 1));
 

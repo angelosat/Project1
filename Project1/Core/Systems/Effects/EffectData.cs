@@ -16,8 +16,6 @@ public abstract class EffectData : ISerializable
 {
     public abstract EffectDef Def { get; }
 
-    public SpellSchoolDef School { get; init; }
-
     internal virtual void Perform(Actor actor)
     => this.Def.Worker.Perform(actor, this);
 
@@ -52,6 +50,4 @@ public abstract class EffectData<T> : EffectData where T : EffectConfig
     public abstract ISerializable Read(IDataReader r);
 
     public abstract void Write(IDataWriter w);
-
-    
 }

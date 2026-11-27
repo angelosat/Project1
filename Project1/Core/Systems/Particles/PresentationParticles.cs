@@ -47,34 +47,13 @@ internal sealed class PresentationParticles : IPresentationWorker
         EmitSpellParticles(item, quality.Tier.Color);
     }
 
-    //private void OnEffectApplied(ActorEffectAppliedEvent e)
-    //{
-    //    var actor = e.Actor;
-    //    if (!actor.IsSpawned)
-    //        return;
-    //    if (e.Effect.Def.School is not SpellSchoolDef school)
-    //        return;
-    //    EmitSpellParticles(actor, school.Color);
-    //}
-
-    //private void OnEffectApplied(ActorEffectAppliedNewEvent e)
-    //{
-    //    var actor = e.World.Resolve(e.ActorId);
-    //    var effect = e.EffectDef;
-    //    if (!actor.IsSpawned)
-    //        return;
-    //    //if (effect.School is not SpellSchoolDef school)
-    //    //    return;
-    //    //EmitSpellParticles(actor, school.Color);
-    //}
-
     private void OnEffectApplied(ActorEffectAppliedNewNewEvent e)
     {
         var actor = e.World.Resolve(e.ActorId);
-        var effectData = e.Data;
+        var metaData = e.MetaData;
         if (!actor.IsSpawned)
             return;
-        if (effectData.School is not SpellSchoolDef school)
+        if (metaData.School is not SpellSchoolDef school)
             return;
         EmitSpellParticles(actor, school.Color);
     }

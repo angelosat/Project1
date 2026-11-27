@@ -1,8 +1,10 @@
 ﻿using Project1.Core.Entities;
 using Project1.Core.Entities.Actors;
+using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Materials;
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core.Needs;
 
@@ -23,11 +25,15 @@ public static class HungerUtility
     {
         var nutrition = GetNutrition(actor, item);
         //var effect = new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Hunger, budget: nutrition, ticksPerUnit: 0);
-        var effect = new EntityEffectRuntime()
-        {
-            Dto = new EffectConfig_ModifyNeed(NeedDefOf.Hunger, nutrition).CreateData()
-        };
-        actor.Effects.Apply(effect);
+        //var effect = new EntityEffectRuntime()
+        //{
+        //    Dto = new EffectConfig_ModifyNeed(NeedDefOf.Hunger, nutrition).CreateData()
+        //};
+        //actor.Effects.Apply(effect);
+        actor.World.Events.Post(new ActorEffectAppliedNewNewEvent((StaticWorld)actor.World,
+                                                        actor.RefId,
+                                                        new EffectConfig_ModifyNeed(NeedDefOf.Hunger, nutrition).CreateData(),
+                                                        EffectSchedule.Instant));
         item.Consume(1);
     }
 }

@@ -93,8 +93,7 @@ internal static class ConsumableSystem
             world.Events.Post(new ActorEffectAppliedNewNewEvent(world,
                                                                 target.RefId,
                                                                 new EffectConfig_ConsumableCooldown(family).CreateData(),
-                                                                Ticks.FromMinutes(30),
-                                                                1));
+                                                                EffectSchedule.Timed(Ticks.FromMinutes(30), 1)));
     }
 
     internal static bool CanUsePotion(Actor actor)

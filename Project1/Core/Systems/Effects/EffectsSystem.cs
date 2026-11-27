@@ -1,5 +1,9 @@
 ﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
+using Project1.Core.Simulation;
+using Project1.Core.Systems.Magic;
 using Project1.Framework;
+using Project1.Framework.Serialization;
 
 #nullable enable
 
@@ -23,17 +27,25 @@ static class EffectsSystem
         Registry.WorldEventHooksServer.Register<ActorEffectRemovedIndexedEvent>(OnActorEffectIndexedRemoved);
     }
 
-    //private static void OnActorEffectApplied(ActorEffectAppliedNewEvent e)
-    //{
-    //    var actor = e.World.Resolve<Actor>(e.ActorId);
-    //    actor.Effects.Apply(CreateRuntime(e.EffectDef, e.OptionalTarget, e.Magnitude));
-    //}
-
     private static void OnActorEffectAppliedNew(ActorEffectAppliedNewNewEvent e)
     {
         var actor = e.World.Resolve<Actor>(e.ActorId);
         var data = e.Data;
-        actor.Effects.Apply(new EntityEffectRuntime() { Dto = data });
+        var schedule = e.Schedule;
+        if (schedule.IsInstant)
+        {
+            data.Perform(actor);
+            return;
+        }
+
+        var runtime = new EntityEffectRuntime
+        {
+            Dto = data,
+            TickInterval = schedule.TickInterval,
+            TicksRemaining = schedule.TickCount
+        };
+
+        actor.Effects.Apply(runtime);
     }
 
     private static void OnActorEffectIndexedRemoved(ActorEffectRemovedIndexedEvent e)
@@ -50,13 +62,59 @@ static class EffectsSystem
         var effectDef = e.EffectDef;
         actor.Effects.RemoveInternal(effectDef);
     }
+}
 
-    //static public EntityEffectRuntime CreateRuntime(EntityEffectKey key, int magnitude)
-    //    => key.Def.Worker.CreateRuntime(key.Target, magnitude);
+public readonly record struct EffectSchedule : ISerializableNewNew<EffectSchedule>
+{
+    public bool IsInstant { get; init; }
+    public SimulationDuration TickInterval { get; init; }
+    public int TickCount { get; init; }
 
-    //static EntityEffectRuntime CreateRuntime(EffectDef effect, Def? target, int magnitude)
-    //   => effect.WorkerClass.CreateRuntime(effect, target, magnitude);
+    public static EffectSchedule Instant => new()
+    {
+        IsInstant = true
+    };
 
-   // static EntityEffectRuntime CreateRuntime(EffectDef effect, EffectData data)
-   //=> effect.Worker.CreateRuntime(effect, target, magnitude);
+    public static EffectSchedule Timed(
+        SimulationDuration tickInterval,
+        int tickCount) => new()
+        {
+            TickInterval = tickInterval,
+            TickCount = tickCount
+        };
+
+    public static EffectSchedule Permanent(
+      SimulationDuration tickInterval,
+      int tickCount) => new()
+      {
+          TickInterval = tickInterval,
+          TickCount = tickCount
+      };
+
+    public IDataWriter Write(IDataWriter w)
+        => w.Write(this.IsInstant)
+            .Write(this.TickInterval)
+            .Write(this.TickCount);
+
+    public static EffectSchedule Create(IDataReader r)
+        => new()
+        {
+            IsInstant = r.ReadBoolean(),
+            TickInterval = r.ReadInt32(),
+            TickCount = r.ReadInt32()
+        };
+}
+
+public readonly record struct EffectMetaData : ISerializableNewNew<EffectMetaData>
+{
+    public SpellSchoolDef School { get; init; }
+
+    public static EffectMetaData Create(IDataReader r)
+        => new()
+        {
+            School = r.ReadDef<SpellSchoolDef>()
+        };
+
+    public IDataWriter Write(IDataWriter w)
+        => w.Write(this.School);
 }

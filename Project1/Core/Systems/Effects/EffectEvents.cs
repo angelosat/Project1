@@ -47,36 +47,12 @@ namespace Project1.Core.Systems.Effects
                 .Write(this.EffectId);
     }
 
-    //[NetworkReplicate]
-    //public record struct ActorEffectAppliedNewEvent(StaticWorld World,
-    //                                                EntityRefId ActorId,
-    //                                                EffectDef EffectDef,
-    //                                                Def OptionalTarget = null,
-    //                                                int Magnitude = 0)
-    //   : IWorldEvent, ISerializableNewNew<ActorEffectAppliedNewEvent>
-    //{
-    //    public static ActorEffectAppliedNewEvent Create(IDataReader r)
-    //        => new()
-    //        {
-    //            ActorId = r.ReadEntityRefId(),
-    //            EffectDef = r.ReadDef<EffectDef>(),
-    //            OptionalTarget = r.ReadDef<Def>(),
-    //            Magnitude = r.ReadInt32()
-    //        };
-
-    //    public readonly IDataWriter Write(IDataWriter w)
-    //        => w.Write(this.ActorId)
-    //            .Write(this.EffectDef)
-    //            .Write(this.OptionalTarget)
-    //            .Write(this.Magnitude);
-    //}
-
     [NetworkReplicate]
     public record struct ActorEffectAppliedNewNewEvent(StaticWorld World,
                                                     EntityRefId ActorId,
                                                     EffectData Data,
-                                                    SimulationDuration TickInterval,
-                                                    int TickCount)
+                                                    EffectSchedule Schedule,
+                                                    EffectMetaData MetaData = default)
        : IWorldEvent, ISerializableNewNew<ActorEffectAppliedNewNewEvent>
     {
         public static ActorEffectAppliedNewNewEvent Create(IDataReader r)
@@ -84,15 +60,15 @@ namespace Project1.Core.Systems.Effects
             {
                 ActorId = r.ReadEntityRefId(),
                 Data = (EffectData)((EffectData)Activator.CreateInstance(r.ReadDef<EffectDef>().DataClass)).Read(r),
-                TickInterval = r.ReadInt32(),
-                TickCount = r.ReadInt32()
+                Schedule = EffectSchedule.Create(r),
+                MetaData = EffectMetaData.Create(r),
             };
 
         public readonly IDataWriter Write(IDataWriter w)
             => w.Write(this.ActorId)
                 .Write(this.Data.Def)
                 .Write(this.Data)
-                .Write(this.TickInterval)
-                .Write(this.TickCount);
+                .Write(this.Schedule)
+                .Write(this.MetaData);
     }
 }

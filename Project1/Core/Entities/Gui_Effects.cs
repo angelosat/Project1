@@ -18,7 +18,7 @@ sealed class Gui_Effects : SelectionBoundControl
         Table = new Table<EntityEffectRuntime>()
             //.AddColumn("name", 128, e => new LabelNew(e.Def.LabelReadable))
             //.AddColumn("name", 128, e => new LabelNew(e.Def.Worker.GetString(e.Target, 0)))
-            .AddColumn("name", 128, e => new LabelNew(() => e.Worker.GetString))
+            .AddColumn("name", 128, e => new LabelNew(() => e.Dto.Def.Worker.GetString))
             .AddColumn("remaining", 128, e => new Label(() =>
             {
                 var span = e.RemainingTimespan(Comp.Owner.World.CurrentTick);

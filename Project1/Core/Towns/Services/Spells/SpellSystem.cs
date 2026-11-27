@@ -111,7 +111,7 @@ internal static class SpellSystem
 
     public static void SpellSuccess(Actor caster, Actor target, SpellDef spell)
     {
-        var world = (StaticWorld)caster.World;
+        var world = (StaticWorld)target.World;
         var cost = spell.ManaCost;
         caster.Resources.ApplyDelta(ResourceDefOf.Mana, -cost);
         // TODO apply instant effect
@@ -123,7 +123,11 @@ internal static class SpellSystem
             //actor.Effects.Apply(EffectsSystem.CreateInstance(key, mag));
             //this.World.Events.Post(new ActorEffectAppliedNewEvent(this.World, actor.RefId, key.Def, key.Target, mag));
             var data = config.CreateData();
-            world.Events.Post(new ActorEffectAppliedNewNewEvent(world, target.RefId, data, spell.TickPeriod, spell.TickCount));
+            world.Events.Post(new ActorEffectAppliedNewNewEvent(world,
+                                                                target.RefId,
+                                                                data,
+                                                                EffectSchedule.Timed(spell.TickPeriod, spell.TickCount),
+                                                                new() { School = spell.School }));
         }
     }
 }

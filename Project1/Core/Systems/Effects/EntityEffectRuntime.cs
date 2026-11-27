@@ -21,12 +21,10 @@ public class EntityEffectRuntime
     public readonly EffectDef Def;
     public required EffectData Dto;
     public readonly Def? Target;
-    public readonly Def? Context;
     public readonly float? Budget;
     public readonly int TicksPerUnit;
     //public int? Duration { get; init; }
     public readonly float Magnitude;
-    public float MagnitudeFinal => this.Magnitude * this.QualityMultiplier;
     public float? RemainingBudget { get; private set; }
     internal bool IsExpired { get; private set; }
     public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
@@ -41,7 +39,7 @@ public class EntityEffectRuntime
     internal SimulationDuration? Duration { get; init; }
     internal SimulationDuration? TickInterval { get; init; }
 
-    internal EntityEffectWorker Worker;
+    //internal EntityEffectWorker Worker;
 
     internal int? TicksRemaining = IndefiniteTickCount;
 
@@ -306,7 +304,7 @@ public class EntityEffectRuntime
     }
 
     internal IEnumerable<(StatDef statDef, float value)> GetStatModifiers()
-        => this.Worker.GetStatModifiers();
+        => this.Dto.Def.Worker.GetStatModifiers();
 
     public override string ToString()
     //=> EffectsUtils.GetString(this.Def, this.Target, this.QualityMultiplier);

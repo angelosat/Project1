@@ -16,7 +16,7 @@ public sealed record EffectConfig_ModifyNeed(NeedDef Need, float Delta) : Effect
         => $"Modifies {this.Need.LabelReadable} by {this.Delta}";
 }
 
-public sealed class EffectData_ModifyNeed : EffectData
+public sealed class EffectData_ModifyNeed : EffectData<EffectConfig_ModifyNeed>
 {
     public override EffectDef Def => EffectDefOf.ModifyNeed;
 
@@ -38,7 +38,8 @@ public sealed class EffectData_ModifyNeed : EffectData
     }
 }
 
-internal sealed class Effect_ModifyNeed : EntityEffectWorker<EffectData_ModifyNeed>
+internal sealed class Effect_ModifyNeed
+    : EntityEffectWorker<EffectConfig_ModifyNeed, EffectData_ModifyNeed>
 {
     protected override void OnPerform(Actor actor, EffectData_ModifyNeed dto)
     {

@@ -47,7 +47,8 @@ public sealed class EffectData_ResourceFortify : EffectData<EffectConfig_Resourc
     }
 }
 
-public sealed class Effect_ResourceFortify : EntityEffectWorker<EffectData_ResourceFortify>
+public sealed class Effect_ResourceFortify
+    : EntityEffectWorker<EffectConfig_ResourceFortify, EffectData_ResourceFortify>
 {
     internal override Color Tint(EffectData_ResourceFortify dto) => dto.Resource.Color;
 

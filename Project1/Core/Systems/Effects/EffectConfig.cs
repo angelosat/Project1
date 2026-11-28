@@ -1,4 +1,5 @@
-﻿using Project1.Core.Helpers;
+﻿using Project1.Core.Entities.Actors;
+using Project1.Core.Helpers;
 using Project1.Framework.Serialization;
 using System;
 
@@ -9,6 +10,9 @@ public abstract record EffectConfig : ISerializableNewNew<EffectConfig>
     public abstract EffectDef Def { get; }
 
     //public required EffectSchedule Schedule;// { get; init; }
+
+    public float Score(Actor actor)
+        => this.Def.Worker.Score(actor, this);
 
     public abstract string GetString(float scaling);
 

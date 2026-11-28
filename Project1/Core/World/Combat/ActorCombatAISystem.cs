@@ -9,6 +9,7 @@ using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
 using Project1.Core.World.Actions;
 using System;
+using System.Linq;
 
 #nullable enable
 
@@ -59,10 +60,21 @@ static class ActorCombatAISystem
         }
 
         if (MagicSystem.CanCastSpell(actor) &&
-               MagicSystem.ConsiderOffensiveSpell(actor, target) is SpellDef spellOffensive)
+               //MagicSystem.ConsiderOffensiveSpell(actor, target) is SpellDef spellOffensive)
+               TryOffensiveSpell(actor, target, out var spellOffensive))
             return new WorldActionData_CastSpell(actor) { SpellDef = spellOffensive, TargetId = target.RefId };
 
         return new WorldActionData_Attack(actor) { TargetId = target.RefId };
+    }
+
+    static bool TryOffensiveSpell(Actor caster, Actor target, out SpellDef spell)
+    {
+        spell = caster.Spellbook.Spells
+            .Where(s => s.Category == SpellCategory.Offensive && MagicSystem.CanCastSpell(caster, s))
+            .Select(s => (spell: s, score: s.EffectsNew.Sum(e => e.Config.Score(target))))
+            .OrderByDescending(r => r.score)
+            .FirstOrDefault().spell;
+        return spell is not null;
     }
 
     static internal bool IsConfident(Actor actor)

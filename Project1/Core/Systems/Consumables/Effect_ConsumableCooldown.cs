@@ -38,7 +38,8 @@ public sealed class EffectData_ConsumableCooldown : EffectData<EffectConfig_Cons
     }
 }
 
-internal sealed class Effect_ConsumableCooldown : EntityEffectWorker<EffectData_ConsumableCooldown>
+internal sealed class Effect_ConsumableCooldown 
+    : EntityEffectWorker<EffectConfig_ConsumableCooldown, EffectData_ConsumableCooldown>
 {
     protected override string GetString(EffectData_ConsumableCooldown dto)
         => dto.Family.LabelReadable;

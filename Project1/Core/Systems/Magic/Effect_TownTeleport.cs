@@ -27,7 +27,8 @@ public sealed class EffectData_TownTeleport : EffectData<EffectConfig_TownTelepo
     public override void Write(IDataWriter w) { }
 }
 
-public sealed class Effect_TownTeleport : EntityEffectWorker<EffectData_TownTeleport>
+public sealed class Effect_TownTeleport
+    : EntityEffectWorker<EffectConfig_TownTeleport, EffectData_TownTeleport>
 {
     //protected override void OnPerform(Actor actor)
     //{

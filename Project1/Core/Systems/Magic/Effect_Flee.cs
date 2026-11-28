@@ -17,7 +17,7 @@ public sealed record EffectConfig_Flee : EffectConfig
         => $"Recently fled combat";
 }
 
-public sealed class EffectData_Flee : EffectData
+public sealed class EffectData_Flee : EffectData<EffectConfig_Flee>
 {
     public override EffectDef Def => EffectDefOf.Fled;
 
@@ -26,7 +26,8 @@ public sealed class EffectData_Flee : EffectData
     public override void Write(IDataWriter w) { }
 }
 
-public sealed class Effect_Flee : EntityEffectWorker<EffectData_Flee>
+public sealed class Effect_Flee
+    : EntityEffectWorker<EffectConfig_Flee, EffectData_Flee>
 {
 
     //protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)

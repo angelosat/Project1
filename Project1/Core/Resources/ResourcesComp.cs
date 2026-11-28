@@ -246,6 +246,9 @@ public sealed class ResourcesComp : EntityComp
             set => this.Comp.SetTicksPerRecoverOne(this.Def, value);
         }
 
+        public int Deficit
+             => this.Comp.GetDeficit(this.Def);
+
         public void ApplyDelta(int delta) => this.Comp.ApplyDelta(this.Def, delta);
 
         public void ApplyAccumulatorRateDelta(float delta) => this.Comp.ApplyAccumulatorRateDelta(this.Def, delta);

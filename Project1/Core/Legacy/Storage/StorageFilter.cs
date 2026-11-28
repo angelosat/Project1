@@ -32,12 +32,13 @@ namespace Project1.Core.Legacy.Storage
         }
         static public HashSet<StorageFilter> CreateFilterSet()
         {
-            var filters = Def.Database.Values.OfType<StorageFilter>();
+            //var filters = Def.Database.Values.OfType<StorageFilter>();
+            var filters = Def.Get<StorageFilter>();
             return new HashSet<StorageFilter>(filters);
         }
         static StorageFilter()
         {
-            var itemByDef = Def.Database.Values.OfType<ItemDef>().GroupBy(d => d.Category);
+            var itemByDef = Def.Get<ItemDef>().GroupBy(d => d.Category);
             foreach(var group in itemByDef)
             {
                 if (group.Key == null)

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Project1.Core;
 
@@ -13,7 +12,8 @@ public abstract class Def : Inspectable
     public string Name;
     string _label;
     public override string LabelReadable => this._label;
-    static public Dictionary<string, Def> Database = new();
+    static readonly Dictionary<string, Def> Database = [];
+    static public IEnumerable<Def> All => Database.Values;
     public Def()
     {
 

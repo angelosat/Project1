@@ -15,71 +15,44 @@ namespace Project1.Core.Systems.Effects;
 public class EntityEffectRuntime
     : ISaveableNewNew<EntityEffectRuntime>, ISerializableNew<EntityEffectRuntime>
 {
-    //public const int IndefiniteTickCount = -1;
     internal SimulationTick StartTick;
     bool _aborted;
-    public readonly EffectDef Def;
-    public required EffectData Dto;
+    public EffectDef Def => this.Dto.Def;
+    public EffectData Dto;
     public readonly Def? Target;
     public readonly float? Budget;
     public readonly int TicksPerUnit;
-    //public int? Duration { get; init; }
     public readonly float Magnitude;
     public float? RemainingBudget { get; private set; }
     internal bool IsExpired { get; private set; }
     public bool IsFinished => this._aborted || (this.RemainingBudget.HasValue && this.RemainingBudget == 0);
-    //SimulationTick Period = (ulong)Ticks.FromSeconds(.5f);
-    //public bool IsInstant => this.Def.Duration == 0 && this.Accumulator.Rate == 0;
+
     public bool IsInstant =>
         this.Duration is { Value: 0 } &&
         this.TickInterval is null;
     public float QualityMultiplier;
 
-    //int TicksRemaining;
     internal SimulationDuration? Duration { get; init; }
     internal SimulationDuration? TickInterval { get; init; }
 
-    //internal EntityEffectWorker Worker;
-
-    internal int? TicksRemaining;// = IndefiniteTickCount;
+    internal int TicksRemaining;// = IndefiniteTickCount;
 
     readonly AccumulatorWithRate Accumulator = new();
-    float Rate;
-    //public SimulationDuration? RemainingDuration(SimulationTick now) => this.StartTick + this.Duration - now;
-    public SimulationDuration? RemainingDuration(SimulationTick now)
+
+    public SimulationDuration? GetRemainingDuration()
     {
-        if (this.TickInterval is not null)
-        {
-            if (this.TicksRemaining is not { } ticksRemaining)
-                return null;
+        if (this.Accumulator.Rate == 0)
+            return null;
+        float remainingProgress = this.TicksRemaining - this.Accumulator.Progress;
+        int remainingTicks = checked((int)Math.Ceiling(
+            remainingProgress / this.Accumulator.Rate));
 
-            float remainingProgress = ticksRemaining - this.Accumulator.Progress;
-            int remainingTicks = checked((int)Math.Ceiling(
-                remainingProgress / this.Accumulator.Rate));
-
-            return new(remainingTicks);
-        }
-
-        if (this.Duration is { } duration)
-        {
-            var expiration = this.StartTick + duration;
-
-            return now >= expiration
-                ? 0
-                : expiration - now;
-        }
-
-        return null;
+        return new(remainingTicks);
     }
 
-    //public TimeSpan RemainingTimespan(SimulationTick now) 
-    //    //=> TimeSpan.FromMinutes((long)((ulong)this.StartTick + (ulong)this.Def.BaseDuration - now) / Ticks.PerGameMinute);
-    //    => TimeSpan.FromMinutes((this.TotalRemainingSimulationTicks ?? -1) / Ticks.PerGameMinute);
-
-    public TimeSpan? RemainingTimespan(SimulationTick now)
+    public TimeSpan? GetRemainingTimespan()
     {
-        var remaining = this.RemainingDuration(now);
-
+        var remaining = this.GetRemainingDuration();
         return remaining is { } duration
             ? Ticks.ToTimespan(duration.Value)
             : null;
@@ -91,107 +64,44 @@ public class EntityEffectRuntime
     public int SimulationTicksRemaining
         => (int)((this.TicksRemaining - this.Accumulator.Progress) / this.Accumulator.Rate);
 
-    EntityEffectRuntime(EffectDef def, Def? target)
-    {
-        this.Def = def;
-        this.Target = target;
-    }
-    public EntityEffectRuntime()
+  
+    EntityEffectRuntime()
     {
         
     }
-    public EntityEffectRuntime(EffectDef def,
-                               Def? target,
-                               float? budget,
-                               int ticksPerUnit,
-                               //int duration = 0,
-                               float multiplier = 1,
-                               SimulationDuration? duration = null,
-                               int? tickCount = null,
-                               int? tickInterval = null) 
-        : this(def, target)
+
+    public EntityEffectRuntime(EffectData dto, EffectSchedule schedule)
     {
-        this.Budget = budget;
-        this.RemainingBudget = budget;
-        this.TicksPerUnit = ticksPerUnit;
-        //this.Duration = def.Duration;
-        this.Magnitude = budget ?? 0;
-        this.QualityMultiplier = multiplier;
-        //this.TicksRemaining = def.TickPeriod?.TickCount ?? 0;
-        //var rate = def.TickPeriod.HasValue ? 1f/ def.TickPeriod.Value.Period : 0;
-        //this.TicksRemaining = def.TickCount;
-        //if(this.TicksRemaining > 0)
-        //    this.Accumulator.Rate = rateMultiplier / this.Duration.Value;
-
-        this.Duration = duration;
-        this.TickInterval = tickInterval;
-        this.TicksRemaining = tickCount;
-
-        if (this.TickInterval is { } interval)
-            this.Accumulator.Rate = 1f / interval.Value;
+        this.Dto = dto;
+        this.TicksRemaining = schedule.TickCount;
+        this.Accumulator.Rate = schedule.TickInterval.IsInfinite ? 0 : 1f / schedule.TickInterval;
     }
-
-    //public EntityEffectRuntime(EntityEffectSpec spec)
-    //{
-    //    this.Def = spec.Def;
-    //    this.Target = spec.Target;
-    //}
-
-    //public static EntityEffectRuntime CopyFrom(EntityEffectRuntime source)
-    //    => new(source.Def, source.Target, source.Budget, source.TicksPerUnit, source.Duration);
-    //public EntityEffectRuntime Clone()
-    // => new(this.Def, this.Target, this.Budget, this.TicksPerUnit, this.Duration);
+    
     internal void Tick(Actor actor)
     {
-        var now = actor.World.CurrentTick;
+        this.Accumulator.Tick(out var ticks);
 
-        if (this.TickInterval is { })
+        for (int i = 0; i < ticks; i++)
         {
-            this.Accumulator.Tick(out var ticks);
-
-            for (int i = 0; i < ticks; i++)
-            {
-                if (this.TicksRemaining is 0)
-                    break;
-
-                this.TicksRemaining--;
-                this.Dto.Perform(actor);
-            }
-
             if (this.TicksRemaining is 0)
-                this.IsExpired = true;
+                break;
+
+            this.TicksRemaining--;
+            this.Dto.Perform(actor);
         }
-        else if (this.Duration is { } duration)
-        {
-            if (now >= this.StartTick + duration)
-                this.IsExpired = true;
-        }
+
+        if (this.TicksRemaining is 0)
+            this.IsExpired = true;
+
+        // Handle duration-based expiration independently.
     }
-    //internal void Tick(Actor actor)
-    //{
-    //    var now = actor.World.CurrentTick;
-    //    //if((now - this.StartTick) % this.Period == 0)
-    //    //    this.Def.Worker.Tick(actor, this);
-    //    this.Accumulator.Tick(out var ticks);
-    //    for (int i = 0; i < ticks; i++)
-    //    {
-    //        this.TicksRemaining--;
-    //        this.Def.Worker.Tick(actor, this);
-    //    }
-    //    //if (now > this.StartTick + (ulong)this.Duration)
-    //    if (this.Accumulator.Rate == 0 || (this.Def.TickCount > 0 && this.TicksRemaining == 0))
-    //    {
-    //        //if (now > this.StartTick + (ulong)this.Def.BaseDuration)
-    //            this.IsExpired = true;
-    //    }
-    //}
+
     internal void Start(Actor actor)
     {
         this.StartTick = actor.World.CurrentTick;
-        //this.Worker.Start();
         this.Dto.Start(actor);
     }
-    //internal void Finish(Actor actor) => this.Def.Worker.Finish(actor, this);
+
     bool _finishCalled;
 
     internal void Finish(Actor actor)
@@ -249,15 +159,6 @@ public class EntityEffectRuntime
         fx.Accumulator.Rate = accrate;
         return fx;
     }
-
-    //bool IsExpiredAt(SimulationTick now)
-    //{
-    //    if (this.Def.TickInterval.HasValue)
-    //        return this.Def.TickCount.HasValue && this.TicksRemaining == 0;
-
-    //    return this.Def.Duration.HasValue
-    //        && now >= this.StartTick + this.Def.Duration.Value;
-    //}
 
     public SaveTag Save(string name = "")
     {
@@ -317,7 +218,10 @@ public class EntityEffectRuntime
                     basestring += $" for {Ticks.ToString(dur)}";
             return basestring;
         }
-    }
+
+    internal string GetString()
+        => this.Dto.GetString();
+}
 
 public record struct EntityEffectKey(EffectDef Def, Def? Target);
 

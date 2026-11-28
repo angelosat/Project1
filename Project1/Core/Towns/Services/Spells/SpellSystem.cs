@@ -3,29 +3,20 @@ using Project1.Core.Resources;
 using Project1.Core.Simulation;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
-using Project1.Framework.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace Project1.Core.Towns.Services.Spells;
 
 internal static class SpellSystem
 {
-    static bool initialized;
-    static List<EffectScorer> CreateCache()
-    {
-        if (initialized)
-            throw new Exception();
-        initialized = true;
-        var types = Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsSubclassOf(typeof(EffectScorer)) && !t.IsAbstract);
-        return [.. types.Select(t => ActivatorSafe<EffectScorer>.CreateInstance(t))];
-    }
-    static public IEnumerable<EffectScorer> Scorers => field ??= CreateCache();
-    static Dictionary<EffectDef, EffectScorer> _scorersByEffect => field ??= Scorers.ToDictionary(s => s.Effect);
+    [Obsolete]
     static public int Score(Actor actor, EffectDef effect, Def target)
-        => _scorersByEffect[effect].Score(actor, target);
+        //=> _scorersByEffect[effect].Score(actor, target);
+        => throw new Exception();
+
+    static public float Score(Actor caster, Actor target, SpellDef spell)
+        => spell.EffectsNew.Sum(e => e.Config.Score(target));
 
     extension(Actor caster)
     {

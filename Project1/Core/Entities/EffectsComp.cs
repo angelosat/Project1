@@ -56,20 +56,6 @@ public sealed class EffectsComp : EntityComp
         //this.Owner.World.Events.Post(new ActorEffectAppliedEvent(this.Owner as Actor, effect));
     }
 
-    //private void AddInt(EntityEffectRuntime f)
-    //{
-    //    //if (this.Any(f.Def, f.Target))
-    //    //{
-    //    //    //throw new InvalidOperationException(
-    //    //    $"Tried to apply duplicate effect {f.Def}:{f.Target}"
-    //    //        .ToConsole();
-    //    //    //);
-    //    //    return;
-    //    //}
-    //    this.ActiveEffects.Add(f);
-    //    this.Changed?.Invoke(([f], []));
-    //}
-
     internal void RemoveInternal(EffectDef f)
     {
         var wrapper = this.ActiveEffects.First(w => w.Def == f); // HACK
@@ -77,36 +63,6 @@ public sealed class EffectsComp : EntityComp
         this.Changed?.Invoke(([], [wrapper]));
     }
     
-    //internal void Remove(EffectDef effect)
-    //{
-    //    var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect);
-    //    foreach (var f in relevantEffects)
-    //    {
-    //        f.Finish(this.Owner as Actor);
-    //        RemoveInternal(f.Def);
-    //    }
-    //}
-
-    public bool TryGet(EffectDef def, Def target, out SimulationDuration? ticksRemaining)
-    {
-        if (this.ActiveEffects.FirstOrDefault(f => f.Def == def && f.Target == target) is not EntityEffectRuntime runtime)
-        {
-            ticksRemaining = default;
-            return false;
-        }
-        ticksRemaining = runtime.RemainingDuration(this.Owner.World.CurrentTick);
-        return true;
-    }
-
-    //internal void Abort(EffectDef effect, Def target)
-    //{
-    //    var relevantEffects = this.ActiveEffects.Where(f => f.Def == effect && f.Target == target);
-    //    foreach (var f in relevantEffects)
-    //    {
-    //        f.Abort();
-    //        this.Owner.Map.World.Events.Post(new ActorEffectAbortedEvent(this.Owner as Actor, f));
-    //    }
-    //}
     internal void Abort(EffectDef effect, Def target)
     {
         var relevantEffects = this.ActiveEffects

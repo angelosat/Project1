@@ -16,9 +16,6 @@ static class EffectDefOf
                                              typeof(NeedDef),
                                              typeof(EffectData_ModifyNeed),
                                              typeof(EffectConfig_ModifyNeed)
-        //,
-        //baseDuration: null,
-        //baseMagnitude: 10
         );
 
     static public EffectDef ResourceFortify = new("FortifyResource",
@@ -27,13 +24,7 @@ static class EffectDefOf
                                                   typeof(ResourceDef),
                                                   typeof(EffectData_ResourceFortify), 
                                                   typeof(EffectConfig_ResourceFortify)
-        //,
-                                                  //                                          baseDuration: Ticks.FromDays(1),
-                                                  //                                          baseMagnitude: 50
                                                   );
-    //{ 
-    //School = SpellSchoolDefOf.Holy 
-    //};
 
     static public EffectDef ResourceDelta = new("RestoreResource",
                                                   "Restore",
@@ -41,46 +32,7 @@ static class EffectDefOf
                                                   typeof(ResourceDef),
                                                   typeof(EffectData_ResourceDelta), 
                                                   typeof(EffectConfig_ResourceDelta)
-        //,
-        //                                          baseDuration: 0,
-        //                                          baseMagnitude: 50
         );
-    //{ 
-    //    School = SpellSchoolDefOf.Holy,
-    //};
-
-    //static public EffectDef SpellDamage = new("DamageResource",
-    //                                          "Damage",
-    //                                          typeof(Effect_DamageResource),
-    //                                          typeof(ResourceDef)
-    //    //,
-    //                                          //baseDuration: 0,
-    //                                          //baseMagnitude: 50
-    //    );
-
-    //static public EffectDef Burning = new("Burning",
-    //                                      "Burn",
-    //                                      typeof Effect_DoT(),
-    //                                      null
-    //    //,
-    //    //                                  context: SpellSchoolDefOf.Fire,
-    //    //                                  baseDuration: null,
-    //    //                                  tickPeriod: (int)Ticks.FromSeconds(.5f),
-    //    //                                  tickCount: 10,
-    //    //                                  baseMagnitude: 2
-    //    );
-
-    //static public EffectDef Mending = new("Mending",
-    //                                  "Mending",
-    //                                  new Effect_HoT(),
-    //                                  null
-    //    //,
-    //    //                              context: SpellSchoolDefOf.Nature,
-    //    //                              baseDuration: null,
-    //    //                              tickPeriod: (int)Ticks.FromSeconds(.5f),
-    //    //                              tickCount: 10,
-    //    //                              baseMagnitude: 2
-    //    );
 
     static public EffectDef TownTeleport = new("TownPortal",
                                                "Restore",

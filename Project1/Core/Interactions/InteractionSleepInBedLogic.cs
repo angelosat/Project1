@@ -36,22 +36,14 @@ sealed class InteractionSleepInBedLogic : InteractionLogic
         var map = a.Map;
         var bedPos = t.Global; // the bed position passed should be the origin cell
         a.SetPosition(bedPos + new Vector3(0, 0, Block.GetBlockHeight(a.Map, bedPos)));
-        //a.Net.LogStateChange(a);
-        //a.Effects.Apply(EffectDefOf.Sleeping);
-        //var mag = 10;
-        //a.Effects.Apply(new EntityEffectRuntime(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, Ticks.FromMinutes(1)/*, Magnitude: mag*/)); //1));
+
         var rate = Ticks.FromMinutes(1);
-        //a.Effects.Apply(new EntityEffectRuntime() 
-        //{ 
-        //    Dto = new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate).CreateData(),
-        //    TickInterval = rate
-        //});
+
         a.World.Events.Post(new ActorEffectAppliedNewNewEvent((StaticWorld)a.World,
                                                               a.RefId,
-                                                              new EffectConfig_ModifyNeed(NeedDefOf.Energy, 1f / rate),
+                                                              new EffectConfig_ModifyNeed { Need = NeedDefOf.Energy, Delta = 1f / rate },
                                                               EffectSchedule.Permanent(rate)
                                                               ));
-        //a.Effects.Apply(new EntityEffectWrapper(EffectDefOf.ModifyNeed, NeedDefOf.Energy, null, 1));
 
         var topcell = map.GetCell(bedPos);
         var testcell = map.GetCell((IntVec3)bedPos + IntVec3.UnitY);

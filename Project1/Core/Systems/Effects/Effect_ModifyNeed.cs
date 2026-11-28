@@ -5,9 +5,13 @@ using Project1.Framework.Serialization;
 
 namespace Project1.Core.Systems.Effects;
 
-public sealed record EffectConfig_ModifyNeed(NeedDef Need, float Delta) : EffectConfig
+public sealed record EffectConfig_ModifyNeed : EffectConfig
 {
     public override EffectDef Def => EffectDefOf.ModifyNeed;
+
+    public required NeedDef Need;
+
+    public required float Delta;
 
     public override EffectData CreateData()
         => new EffectData_ModifyNeed() { Need = Need, Delta = Delta };
@@ -46,15 +50,4 @@ internal sealed class Effect_ModifyNeed
         var need = actor.Needs.NeedsNew[dto.Need];
         need.ApplyAccumulatorDelta(dto.Delta);
     }
-    //protected override void OnStart(Actor actor, EntityEffectRuntime wrapper)
-    //{
-    //}
-    //protected override void OnTick(Actor actor, EntityEffectRuntime wrapper)
-    //{
-    //    var need = actor.Needs.NeedsNew[(NeedDef)wrapper.Target];
-    //    need.ApplyAccumulatorDelta(1f / wrapper.TicksPerUnit);
-    //}
-    //protected override void OnFinish(Actor actor, EntityEffectRuntime wrapper)
-    //{
-    //}
 }

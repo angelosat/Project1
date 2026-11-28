@@ -41,13 +41,29 @@ static class Ticks
     public static string ToString(int ingameTicks)
     {
         var span = ToTimespan(ingameTicks);
-        List<string> final = [];
+        return span.Format();
+        //List<string> final = [];
 
-        if (span.Days > 0) final.Add($"{span.Days} d");
-        if (span.Hours > 0) final.Add($"{span.Hours} h");
-        if (span.Minutes > 0) final.Add($"{span.Minutes} m");
-        if (span.Seconds > 0) final.Add($"{span.Seconds} s");
+        //if (span.Days > 0) final.Add($"{span.Days} d");
+        //if (span.Hours > 0) final.Add($"{span.Hours} h");
+        //if (span.Minutes > 0) final.Add($"{span.Minutes} m");
+        //if (span.Seconds > 0) final.Add($"{span.Seconds} s");
 
-        return string.Join(" ", final);
+        //return string.Join(" ", final);
+    }
+
+    extension(TimeSpan span)
+    {
+        public string Format()
+        {
+            List<string> final = [];
+
+            if (span.Days > 0) final.Add($"{span.Days} d");
+            if (span.Hours > 0) final.Add($"{span.Hours} h");
+            if (span.Minutes > 0) final.Add($"{span.Minutes} m");
+            if (span.Seconds > 0) final.Add($"{span.Seconds} s");
+
+            return string.Join(" ", final);
+        }
     }
 }

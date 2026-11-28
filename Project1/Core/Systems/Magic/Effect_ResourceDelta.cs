@@ -40,4 +40,10 @@ public sealed class Effect_ResourceDelta
 
         return 0f;
     }
+
+    protected override string GetString(EffectData_ResourceDelta dto)
+        => string.Join(' ', [
+            $"{dto.Delta}", 
+            $"{(dto.Delta >= 0 ? "healing" : "damage")}"
+            ]);
 }

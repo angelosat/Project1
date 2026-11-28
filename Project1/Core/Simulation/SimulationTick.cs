@@ -29,11 +29,3 @@ public record struct SimulationTick(ulong Value)
         return new(checked(tick.Value + (ulong)duration.Value));
     }
 }
-
-public record struct SimulationDuration(int Value)
-{
-    public static SimulationDuration Infinite => new(-1);
-    public readonly bool IsInfinite => this.Value == -1;
-    public static implicit operator int(SimulationDuration d) => d.Value;
-    public static implicit operator SimulationDuration(int i) => new() { Value = i };
-}

@@ -219,7 +219,7 @@ public sealed class Stockpile : Zone, IStorageNew, IContextable, ISelectable, IU
     }
     static StorageFilterCategoryNewNew InitFilters()
     {
-        var cats = Def.Database.Values.OfType<ItemDef>().GroupBy(d => d.Category);
+        var cats = Def.Get<ItemDef>().GroupBy(d => d.Category);
 
         var all = new StorageFilterCategoryNewNew("All");
         foreach (var cat in cats)

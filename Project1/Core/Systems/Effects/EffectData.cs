@@ -26,6 +26,9 @@ public abstract class EffectData : ISerializable
     {
         throw new NotImplementedException();
     }
+
+    internal string GetString()
+        => $"{this.Def.LabelReadable}: {this.Def.Worker.GetString(this)}";
 }
 
 public abstract class EffectData<T> : EffectData where T : EffectConfig

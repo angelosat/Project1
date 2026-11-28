@@ -175,11 +175,13 @@ internal static class CombatSystem
             // TODO report flee failure
             return;
         }
-        //actor.Effects.Apply(new EntityEffectRuntime(EffectDefOf.Fled, null, null, 0));
-        actor.Effects.Apply(new EntityEffectRuntime()
-        {
-            Dto = new EffectConfig_Flee().CreateData()
-        });
+        //actor.Effects.Apply(new EntityEffectRuntime()
+        //{
+        //    Dto = new EffectConfig_Flee().CreateData()
+        //});
+        world.Events.Post(new ActorEffectAppliedNewNewEvent(world, actor.RefId,
+            new EffectConfig_Flee(),
+            EffectSchedule.Timed(Ticks.FromMinutes(30), 1)));
         world.Events.Post(new WorldCombatFleeEvent(world, actor.RefId));
         // TODO report flee success
     }

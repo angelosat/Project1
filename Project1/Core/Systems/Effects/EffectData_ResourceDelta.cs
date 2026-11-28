@@ -8,9 +8,9 @@ public sealed record EffectConfig_ResourceDelta : EffectConfig
 {
     public override EffectDef Def => EffectDefOf.ResourceDelta;
 
-    public required ResourceDef Resource { get; init; }
+    public required ResourceDef Resource;
 
-    public required int Delta { get; init; }
+    public required int Delta;
 
     public override EffectData CreateData()
     {
@@ -19,6 +19,16 @@ public sealed record EffectConfig_ResourceDelta : EffectConfig
 
     public override string GetString(float scaling) =>
         $"Restores {this.Delta} {this.Resource.LabelReadable}";
+
+    protected override void WriteInt(IDataWriter w)
+        => w.Write(this.Resource)
+            .Write(this.Delta);
+
+    protected override void ReadInt(IDataReader r)
+    {
+        this.Resource = r.ReadDef<ResourceDef>();
+        this.Delta = r.ReadInt32();
+    }
 }
 
 public sealed class EffectData_ResourceDelta : EffectData<EffectConfig_ResourceDelta>

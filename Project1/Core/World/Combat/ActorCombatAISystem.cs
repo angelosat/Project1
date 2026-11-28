@@ -7,6 +7,7 @@ using Project1.Core.Systems.Biology;
 using Project1.Core.Systems.Consumables;
 using Project1.Core.Systems.Effects;
 using Project1.Core.Systems.Magic;
+using Project1.Core.Towns.Services.Spells;
 using Project1.Core.World.Actions;
 using System;
 using System.Linq;
@@ -71,7 +72,7 @@ static class ActorCombatAISystem
     {
         spell = caster.Spellbook.Spells
             .Where(s => s.Category == SpellCategory.Offensive && MagicSystem.CanCastSpell(caster, s))
-            .Select(s => (spell: s, score: s.EffectsNew.Sum(e => e.Config.Score(target))))
+            .Select(s => (spell: s, score: SpellSystem.Score(caster, target, s)))
             .OrderByDescending(r => r.score)
             .FirstOrDefault().spell;
         return spell is not null;

@@ -10,9 +10,6 @@ static class EffectsSystem
 {
     static EffectsSystem()
     {
-        //Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
-        //Registry.WorldEventHooksServer.Register<ActorEffectAppliedNewEvent>(OnActorEffectApplied);
-
         Registry.WorldEventHooksClient.Register<ActorEffectAppliedNewNewEvent>(OnActorEffectAppliedNew);
         Registry.WorldEventHooksServer.Register<ActorEffectAppliedNewNewEvent>(OnActorEffectAppliedNew);
 
@@ -29,18 +26,14 @@ static class EffectsSystem
         var config = e.Config;
         var schedule = e.Schedule;
         var data = config.CreateData();
+
         if (schedule.IsInstant)
         {
             data.Perform(actor);
             return;
         }
 
-        var runtime = new EntityEffectRuntime
-        {
-            Dto = data,
-            TickInterval = schedule.TickInterval,
-            TicksRemaining = schedule.TickCount
-        };
+        var runtime = new EntityEffectRuntime(data, schedule);
 
         actor.Effects.Apply(runtime);
     }

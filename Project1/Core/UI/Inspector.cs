@@ -147,7 +147,7 @@ namespace Project1.Core.UI
         static void InitDefDirectory()
         {
             var list = new ListBoxNoScroll<Def>(d => new Label(d.Name, () => Refresh(d)));
-            list.AddItems(Def.Database.Values.OrderBy(d => d.Name));
+            list.AddItems(Def.All.OrderBy(d => d.Name));
             var search = new SearchBarNew<Def>(Width, id => id.Name).BindTo(list).ToPanelLabeled("Search");
             var scrollablebox = new ScrollableBoxNewNewNew(list, Width, MaxHeight - search.Height, ScrollModes.Vertical) { SmallStep = UIManager.DefaultLabelHeight + list.Spacing };
             var box = new GroupBox().AddControlsVertically(search, scrollablebox.ToPanel());

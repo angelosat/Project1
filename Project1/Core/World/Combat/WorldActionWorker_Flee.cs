@@ -12,7 +12,7 @@ internal sealed record WorldActionData_Flee(Actor Actor) : WorldActionData(Actor
 
 internal sealed class WorldActionWorker_Flee : WorldActionWorker
 {
-    internal override Type DataType => typeof(WorldActionData);
+    internal override Type DataType => typeof(WorldActionData_Flee);
 
     internal override void Resolve(WorldActionData data)
     {

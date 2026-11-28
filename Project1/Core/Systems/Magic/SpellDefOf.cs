@@ -20,12 +20,9 @@ public static class SpellDefOf
         castTimeInSecs: 5
         )
     {
-        //Instant = new EffectConfig_ResourceDelta(ResourceDefOf.Health, 10),
-        EffectsNew = [(new EffectConfig_ResourceDelta { Resource = ResourceDefOf.Health, Delta = -10 }, EffectSchedule.Instant)]
-        //{
-        //    Resource = ResourceDefOf.Health,
-        //    Delta = 10
-        //}
+        EffectsNew = [
+            (new EffectConfig_ResourceDelta { Resource = ResourceDefOf.Health, Delta = -10 }, EffectSchedule.Instant),
+            (new EffectConfig_ResourceDelta { Resource = ResourceDefOf.Health, Delta = -1 }, EffectSchedule.Timed((int)Ticks.FromSeconds(.5f), 10))]
     };
 
     public static readonly SpellDef Healing = new("Healing",
@@ -36,13 +33,7 @@ public static class SpellDefOf
         manaCost: 20,
         castTimeInSecs: 5)
     {
-        //Instant = new EffectConfig_ResourceDelta(ResourceDefOf.Health, 50),
         EffectsNew = [(new EffectConfig_ResourceDelta { Resource = ResourceDefOf.Health, Delta = 50 }, EffectSchedule.Instant)]
-
-        //{
-        //    Resource = ResourceDefOf.Health,
-        //    Delta = 50
-        //}
     };
 
     public static readonly SpellDef Mending = new("Mending",
@@ -53,14 +44,7 @@ public static class SpellDefOf
         manaCost: 20,
         castTimeInSecs: 2)
     {
-        //Periodic = [new EffectConfig_ResourceDelta(ResourceDefOf.Health, 5)],
         EffectsNew = [(new EffectConfig_ResourceDelta { Resource = ResourceDefOf.Health, Delta = 50 }, EffectSchedule.Timed(Ticks.FromMinutes(5), 5))]
-
-        //{
-        //    Resource = ResourceDefOf.Health,
-        //    Delta = 5
-        //}
-        
     };
 
     public static readonly SpellDef HealingPotion = new("HealingPotion",
@@ -71,15 +55,6 @@ public static class SpellDefOf
             manaCost: 20,
             castTimeInSecs: 5)
     {
-        //Instant = new EffectConfig_ResourceDelta(ResourceDefOf.Health, 10)
-        //{
-        //    Resource = ResourceDefOf.Health,
-        //    Delta = 10
-        //}
-        //,
-        //Periodic = [new EffectConfig_ConsumableCooldown(ConsumableDefOf.Potion),
-
-        //],
         EffectsNew = [
             (new EffectConfig_ResourceDelta { Resource = ResourceDefOf.Health, Delta = 10 }, EffectSchedule.Instant),
             (new EffectConfig_ConsumableCooldown { Family = ConsumableDefOf.Potion }, EffectSchedule.Timed(Ticks.FromMinutes(30), 1))
@@ -94,7 +69,6 @@ public static class SpellDefOf
         manaCost: 10,
         castTimeInSecs: 1)
     {
-        //Instant = new EffectConfig_ResourceFortify(ResourceDefOf.Health, 10),
         EffectsNew = [(new EffectConfig_ResourceFortify { Resource = ResourceDefOf.Health, Delta = 10 }, EffectSchedule.Timed(Ticks.FromHours(1), 1))]
     };
 
@@ -106,7 +80,6 @@ public static class SpellDefOf
         manaCost: 0,
         castTimeInSecs: 5)
     {
-        //Instant = new EffectConfig_TownTeleport()
         EffectsNew = [(new EffectConfig_TownTeleport(), EffectSchedule.Instant)]
     };
 

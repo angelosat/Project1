@@ -16,17 +16,8 @@ sealed class Gui_Effects : SelectionBoundControl
     public Gui_Effects()
     {
         Table = new Table<EntityEffectRuntime>()
-            //.AddColumn("name", 128, e => new LabelNew(e.Def.LabelReadable))
-            //.AddColumn("name", 128, e => new LabelNew(e.Def.Worker.GetString(e.Target, 0)))
-            .AddColumn("name", 128, e => new LabelNew(() => e.Dto.Def.Worker.GetString))
-            .AddColumn("remaining", 128, e => new Label(() =>
-            {
-                var span = e.RemainingTimespan(Comp.Owner.World.CurrentTick);
-                if (!span.HasValue)
-                    return string.Empty;
-                //return $"{span.Hours} m {span.Minutes} s";
-                return span.Value.Hours > 0 ? $"{span.Value.Hours} h" : $"{span.Value.Minutes} s";
-            }));
+            .AddColumn("name", 128, e => new LabelNew(e.GetString))
+            .AddColumn("remaining", 128, e => new Label(() => e.GetRemainingDuration()?.Format() ?? string.Empty));
         var scrollbox = ScrollableBoxNewNewNew.FromWidth(Table, Table.RowWidth, UIManager.DefaultLabelHeight * 16);
         Controls.Add(scrollbox.ToPanelLabeled("Active Effects"));
     }
